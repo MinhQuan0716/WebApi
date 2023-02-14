@@ -31,7 +31,7 @@ public class UserService : IUserService
     public async Task<string> LoginAsync(LoginDTO userDto)
     {
         //var user = await _unitOfWork.UserRepository.GetUserByUserNameANdPaswordHashAsync(userDto.UserName, userDto.Password);
-        var user = await _unitOfWork.UserRepository.GetUserByEmailAsync(userDto.UserName);
+        var user = await _unitOfWork.UserRepository.GetUserByEmailAsync(userDto.Email);
         if (userDto.Password.CheckPassword(user.PasswordHash)==false)
         {
             throw new Exception("Password is not incorrect!!");
@@ -41,8 +41,7 @@ public class UserService : IUserService
 
     public async Task<bool> RegisterAsync(RegisterDTO userDto)
     {
-        var isExisted = await _unitOfWork.UserRepository.CheckUserNameExistedAsync(userDto.UserName)
-                                && await _unitOfWork.UserRepository.CheckEmailExistedAsync(userDto.Email);
+        var isExisted = await _unitOfWork.UserRepository.CheckEmailExistedAsync(userDto.Email);
         
         if (isExisted)
         {
@@ -51,7 +50,7 @@ public class UserService : IUserService
 
         var newUser = new User
         {
-            UserName = userDto.UserName,
+            UserName = userDto.Email, // lay email lam username luon
             PasswordHash = userDto.Password.Hash(),
             Email = userDto.Email
         };

@@ -221,6 +221,15 @@ project.lock.json
 # UWP Projects
 AppPackages/
 
+### DotnetCore ###
+# .NET Core build folders
+bin/
+obj/
+
+# Common node modules locations
+/node_modules
+/wwwroot/node_modules
+
 #####
 # End of core ignore list, below put you custom 'per project' settings (patterns or path)
 #####
