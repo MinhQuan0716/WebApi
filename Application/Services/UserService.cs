@@ -30,11 +30,16 @@ public class UserService : IUserService
 
     public async Task<string> LoginAsync(LoginDTO userDto)
     {
-        var user = await _unitOfWork.UserRepository.GetUserByUserNameANdPaswordHashAsync(userDto.UserName, userDto.Password);
+        //var user = await _unitOfWork.UserRepository.GetUserByUserNameANdPaswordHashAsync(userDto.UserName, userDto.Password);
+        var user = await _unitOfWork.UserRepository.GetUserByEmailAsync(userDto.UserName);
+        if (userDto.Password.CheckPassword(user.PasswordHash)==false)
+        {
+            throw new Exception("Password is not incorrect!!");
+        }
         return user.GenerateJsonWebToken(_configuration.JWTSecretKey, _currentTime.GetCurrentTime());
     }
 
-    public async Task RegisterAsync(RegisterDTO userDto)
+    public async Task<bool> RegisterAsync(RegisterDTO userDto)
     {
         var isExisted = await _unitOfWork.UserRepository.CheckUserNameExistedAsync(userDto.UserName)
                                 && await _unitOfWork.UserRepository.CheckEmailExistedAsync(userDto.Email);
@@ -52,6 +57,6 @@ public class UserService : IUserService
         };
 
         await _unitOfWork.UserRepository.AddAsync(newUser);
-        await _unitOfWork.SaveChangeAsync();
+        return await _unitOfWork.SaveChangeAsync()>0;
     }
 }

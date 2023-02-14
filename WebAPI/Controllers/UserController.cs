@@ -14,9 +14,21 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost]
-        public async Task RegisterAsync(RegisterDTO loginObject) => await _userService.RegisterAsync(loginObject);
+        public async Task<IActionResult> RegisterAsync(RegisterDTO loginObject)
+        {
+            var checkAdd = await _userService.RegisterAsync(loginObject);
+            if (checkAdd)
+            {
+                return Ok("Register Successfully!");
+            }
+            return BadRequest("Register Failed!");
+        }
 
         [HttpPost]
-        public async Task<string> LoginAsync(LoginDTO loginObject) => await _userService.LoginAsync(loginObject);
+        public async Task<IActionResult> LoginAsync(LoginDTO loginObject)
+        {
+            var accessToken= await _userService.LoginAsync(loginObject);
+            return Ok(accessToken);
+        }
     }
 }
