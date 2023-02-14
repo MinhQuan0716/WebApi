@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace Domain.Entities
 {
-    public class DetailUnitLecture
+    public class DetailUnitLecture : BaseEntity
     {
+        
         public Guid UnitId { get; set; }
         public Unit Unit { get; set; }
 
