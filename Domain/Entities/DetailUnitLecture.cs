@@ -8,7 +8,6 @@ namespace Domain.Entities
 {
     public class DetailUnitLecture : BaseEntity
     {
-        
         public Guid UnitId { get; set; }
         public Unit Unit { get; set; }
 

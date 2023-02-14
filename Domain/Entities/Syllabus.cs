@@ -19,5 +19,8 @@ namespace Domain.Entities
         public User User { get; set; }
 
         
+        public ICollection<Unit> Units { get; set; }
+
+        
     }
 }

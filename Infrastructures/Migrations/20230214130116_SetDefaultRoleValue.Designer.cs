@@ -4,6 +4,7 @@ using Infrastructures;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructures.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230214130116_SetDefaultRoleValue")]
+    partial class SetDefaultRoleValue
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -190,7 +193,7 @@ namespace Infrastructures.Migrations
                             RoleName = "Student",
                             SyllabusPermission = "View",
                             TrainingProgramPermission = "View",
-                            UserPermission = "AccessDenied"
+                            UserPermission = "FullAccess"
                         });
                 });
 
@@ -283,9 +286,6 @@ namespace Infrastructures.Migrations
                     b.Property<int>("Session")
                         .HasColumnType("int");
 
-                    b.Property<Guid>("SyllabusID")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<double>("TotalTime")
                         .HasColumnType("float");
 
@@ -294,8 +294,6 @@ namespace Infrastructures.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("SyllabusID");
 
                     b.ToTable("Units");
                 });
@@ -401,17 +399,6 @@ namespace Infrastructures.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Unit", b =>
-                {
-                    b.HasOne("Domain.Entities.Syllabus", "Syllabus")
-                        .WithMany("Units")
-                        .HasForeignKey("SyllabusID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Syllabus");
-                });
-
             modelBuilder.Entity("Domain.Entities.User", b =>
                 {
                     b.HasOne("Domain.Entities.Role", "Role")
@@ -431,11 +418,6 @@ namespace Infrastructures.Migrations
             modelBuilder.Entity("Domain.Entities.Role", b =>
                 {
                     b.Navigation("Users");
-                });
-
-            modelBuilder.Entity("Domain.Entities.Syllabus", b =>
-                {
-                    b.Navigation("Units");
                 });
 
             modelBuilder.Entity("Domain.Entities.Unit", b =>

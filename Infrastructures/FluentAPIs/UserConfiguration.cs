@@ -16,8 +16,9 @@ namespace Infrastructures.FluentAPIs
             builder.Property(x => x.UserName).HasMaxLength(100);
             builder.Property(x => x.CreationDate).HasDefaultValueSql("getutcdate()");
             builder.Property(x => x.LoginDate).HasDefaultValueSql("getutcdate()");
-            builder.Property(x => x.Role).HasDefaultValue("User");
+            builder.Property(x => x.RoleId).HasDefaultValue("4");
             builder.Property(x => x.IsDeleted).HasDefaultValue("False");
+            builder.HasOne(u => u.Role).WithMany(r => r.Users).HasForeignKey(u => u.RoleId);
         }
     }
 }
