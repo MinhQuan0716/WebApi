@@ -13,5 +13,8 @@ namespace Domain.Entities
         public int Session { get; set; }
 
         public ICollection<DetailUnitLecture> DetailUnitLectures { get; set; }
+
+        public Guid SyllabusID { get; set; }
+        public Syllabus Syllabus { get; set; }
     }
 }

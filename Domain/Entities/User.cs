@@ -16,7 +16,8 @@ namespace Domain.Entities
         public string Email { get; set; } = null!;
         public DateTime? DateOfBirth { get; set; }
         public string? Gender { get; set; }
-        public string Role { get; set; } = null!;
+        public int RoleId { get; set; }
+        public Role Role { get; set; }
         public DateTime LoginDate { get; set; }
 
         public ICollection<Syllabus> Syllabuses { get; set; }   
