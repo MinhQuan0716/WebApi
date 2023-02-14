@@ -58,4 +58,26 @@ public class UserService : IUserService
         await _unitOfWork.UserRepository.AddAsync(newUser);
         return await _unitOfWork.SaveChangeAsync()>0;
     }
+
+    public async Task<bool> UpdateUserInformation(UpdateDTO updateUser)
+    {
+
+        var user = await _unitOfWork.UserRepository.GetByIdAsync(updateUser.UserID);
+        
+        if (user != null)
+        {
+            user.Email = updateUser.Email;
+            user.UserName = updateUser.Email;
+            user.Gender = updateUser.Gender;
+            user.FullName = updateUser.FullName;
+            user.RoleId = updateUser.RoleID;
+            user.DateOfBirth = updateUser.DateOfBirth;
+            
+            _unitOfWork.UserRepository.Update(user);
+            if (await _unitOfWork.SaveChangeAsync() > 0) return true;
+            else return false;
+        }
+        else throw new Exception();
+
+    }
 }
