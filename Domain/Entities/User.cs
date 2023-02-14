@@ -18,5 +18,7 @@ namespace Domain.Entities
         public string? Gender { get; set; }
         public string Role { get; set; } = null!;
         public DateTime LoginDate { get; set; }
+
+        public ICollection<Syllabus> Syllabuses { get; set; }   
     }
 }
