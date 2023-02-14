@@ -13,4 +13,6 @@ public interface IUserRepository : IGenericRepository<User>
 
     Task<bool> CheckUserNameExistedAsync(string username);
     Task<bool> CheckEmailExistedAsync(string email);
+
+    Task<User> GetUserByEmailAsync(string email);
 }
