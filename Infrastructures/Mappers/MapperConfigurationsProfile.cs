@@ -20,7 +20,12 @@ namespace Infrastructures.Mappers
                 .ForMember(uu => uu.RoleId, opt => opt.MapFrom(src => src.RoleID))
                 .ForMember(uu => uu.Email, opt => opt.MapFrom(src => src.Email))
                 .ForMember(uu => uu.Id, opt => opt.MapFrom(src => src.UserID))
-                .ForMember(uu => uu.PasswordHash, opt => opt.MapFrom(src => src.HashPassword))
+                .ReverseMap();
+
+            CreateMap<RegisterDTO, User>()
+                .ForMember(rd => rd.Email, opt => opt.MapFrom(src => src.Email))
+                .ForMember(rd => rd.UserName, opt => opt.MapFrom(src => src.Email))
+                .ForMember(rd => rd.PasswordHash, opt => opt.MapFrom(src => src.Password))
                 .ReverseMap();
         }
     }

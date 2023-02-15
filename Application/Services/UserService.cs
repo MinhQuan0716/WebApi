@@ -60,17 +60,18 @@ public class UserService : IUserService
     }
 
     public async Task<bool> UpdateUserInformation(UpdateDTO updateUser)
-    {
-
-        var user = _mapper.Map<User>(updateUser);
-        
-        if (user != null)
+    {   
+        if(updateUser != null)
         {
+            User user = await _unitOfWork.UserRepository.GetByIdAsync(updateUser.UserID);
+            _ = _mapper.Map(updateUser, user, typeof(UpdateDTO), typeof(User));
+
             _unitOfWork.UserRepository.Update(user);
             if (await _unitOfWork.SaveChangeAsync() > 0) return true;
             else return false;
-        }
-        else throw new Exception();
-
+        } throw new Exception("User can not be null");
+        
+        
+      
     }
 }
