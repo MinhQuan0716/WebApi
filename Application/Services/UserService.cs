@@ -111,4 +111,22 @@ public class UserService : IUserService
         await _unitOfWork.UserRepository.AddAsync(newUser);
         return await _unitOfWork.SaveChangeAsync()>0;
     }
+
+    public async Task<bool> UpdateUserInformation(UpdateDTO updateUser)
+    {   
+        if(updateUser != null)
+        {
+            User user = await _unitOfWork.UserRepository.GetByIdAsync(updateUser.UserID);
+            _ = _mapper.Map(updateUser, user, typeof(UpdateDTO), typeof(User));
+
+            _unitOfWork.UserRepository.Update(user);
+            if (await _unitOfWork.SaveChangeAsync() > 0) return true;
+            else return false;
+        } throw new Exception("User can not be null");
+        
+        
+      
+    }
+
+
 }
