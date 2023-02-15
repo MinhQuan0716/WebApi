@@ -52,5 +52,16 @@ namespace WebAPI.Controllers
             var test = _claimsService.GetCurrentUserId;
             return Ok(test);
         }
+
+        [HttpPut] 
+        public async Task<IActionResult> UpdateUser(UpdateDTO updateObject)
+        {
+            var result = await _userService.UpdateUserInformation(updateObject);
+            if(result)
+            {
+                return NoContent();
+            }
+            return BadRequest();
+        }
     }
 }

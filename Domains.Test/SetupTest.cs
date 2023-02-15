@@ -1,4 +1,5 @@
 using Application;
+using Application.Commons;
 using Application.Interfaces;
 using Application.Repositories;
 using AutoFixture;
@@ -23,6 +24,8 @@ namespace Domains.Test
 
         protected readonly Mock<IUserRepository> _userRepository;
         protected readonly AppDbContext _dbContext;
+        protected readonly Mock<AppConfiguration> _appConfigurationMock;
+    
         public SetupTest()
         {
             var mappingConfig = new MapperConfiguration(mc =>
@@ -46,6 +49,7 @@ namespace Domains.Test
 
             _currentTimeMock.Setup(x => x.GetCurrentTime()).Returns(DateTime.UtcNow);
             _claimsServiceMock.Setup(x => x.GetCurrentUserId).Returns(Guid.Empty);
+            _appConfigurationMock = new Mock<AppConfiguration>();
         }
 
         public void Dispose()
