@@ -3,6 +3,7 @@ using Application.Repositories;
 using Application.Commons;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace Infrastructures.Repositories
 {
@@ -20,11 +21,16 @@ namespace Infrastructures.Repositories
         }
         public Task<List<TEntity>> GetAllAsync() => _dbSet.ToListAsync();
 
-        public async Task<TEntity?> GetByIdAsync(Guid id)
+        public async Task<TEntity?> GetByIdAsync(Guid id, params Expression<Func<TEntity, object>>[] includes)
         {
-            var result = await _dbSet.FirstOrDefaultAsync(x => x.Id == id);
-            // todo should throw exception when not found
-            return result;
+            //    var result = await _dbSet.FirstOrDefaultAsync(x => x.Id == id);
+            //    // todo should throw exception when not found
+            //    return result;
+            return await includes
+               .Aggregate(_dbSet.AsQueryable(),
+                   (entity, property) => entity.Include(property))
+               .AsNoTracking()
+               .FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public async Task AddAsync(TEntity entity)

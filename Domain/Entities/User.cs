@@ -16,6 +16,12 @@ namespace Domain.Entities
         public string Email { get; set; } = null!;
         public DateTime? DateOfBirth { get; set; }
         public string? Gender { get; set; }
+
+        //RefreshToken
+
+        public string? RefreshToken { get; set; }
+        public DateTime ? ExpireTokenTime { get; set; }
+
         public int RoleId { get; set; }
         public Role Role { get; set; }
         public DateTime LoginDate { get; set; }
