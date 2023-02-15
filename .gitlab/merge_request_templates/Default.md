@@ -1,6 +1,6 @@
 ### Self checklist before start review code
-- [ ] I Create Pull Request with format - my-team - short description about this pull request
-```example: Group 1 - Create Trainee table```
+- [ ] I Create Pull Request with format - my-name - short description about this pull request
+```example: YourName - Create Trainee table```
 - [ ] Description my code change
 - [ ] I wrote unit test for my own code(100% my code are tested)
 - [ ] My Code change the database structure & I need to update database after merge
