@@ -19,12 +19,35 @@ namespace Application.Utils
                 new Claim(ClaimTypes.Role, user.Role.RoleName),
             };
             var token = new JwtSecurityToken(
-                claims: claims,
-                expires: now.AddMinutes(15),
-                signingCredentials: credentials);
+               issuer: secretKey,
+               audience: secretKey,
+               claims,
+               expires: now.AddMinutes(12),
+               signingCredentials: credentials);
 
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
+
+        public static ClaimsPrincipal? GetPrincipalFromExpiredToken(this string? token, string secretKey)
+        {
+            var tokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateAudience = false,
+                ValidateIssuer = false,
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey)),
+                ValidateLifetime = false
+            };
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out SecurityToken securityToken);
+            if (securityToken is not JwtSecurityToken jwtSecurityToken || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
+                throw new SecurityTokenException("Invalid token");
+
+            return principal;
+
+        }
+
     }
 }

@@ -1,16 +1,19 @@
 using Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Application.ViewModels.UserViewModels;
+using Microsoft.AspNetCore.Authorization;
+using Application.ViewModels.TokenModels;
 
 namespace WebAPI.Controllers
 {
   public class UserController : BaseController
     {
         private readonly IUserService _userService;
-
-        public UserController(IUserService userService)
+        private readonly IClaimsService _claimsService;
+        public UserController(IUserService userService, IClaimsService claimsService)
         {
             _userService = userService;
+            _claimsService = claimsService;
         }
 
         [HttpPost]
@@ -27,8 +30,27 @@ namespace WebAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> LoginAsync(LoginDTO loginObject)
         {
-            var accessToken= await _userService.LoginAsync(loginObject);
-            return Ok(accessToken);
+            var token= await _userService.LoginAsync(loginObject);
+            return Ok(token);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> RefreshToken(string accessToken, string  refreshtoken)
+        {
+            var newToken = await _userService.RefreshToken(accessToken,refreshtoken);
+            if(newToken == null)
+            {
+                return BadRequest();
+            }
+            return Ok(newToken);
+        }
+
+        [Authorize]
+        [HttpGet]
+        public async Task<IActionResult> TestAuthorize()
+        {
+            var test = _claimsService.GetCurrentUserId;
+            return Ok(test);
         }
     }
 }
