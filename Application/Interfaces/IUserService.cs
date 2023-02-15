@@ -1,5 +1,5 @@
-﻿using Application.ViewModels.TokenModels;
-using Application.ViewModels.UserViewModels;
+﻿using Application.ViewModels.UserViewModels;
+using Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +12,6 @@ public interface IUserService
 {
     public Task<bool> RegisterAsync(RegisterDTO userDto);
 
-    public Task<Token> LoginAsync(LoginDTO userDto);
-
-    public Task<Token> RefreshToken(string accessToken, string refreshtoken);
+    public Task<string> LoginAsync(LoginDTO userDto);
+    public Task<bool> UpdateUserInformation(UpdateDTO updateUser);
 }
