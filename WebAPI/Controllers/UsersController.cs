@@ -7,14 +7,14 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace WebAPI.Controllers
 {
-  public class UserController : BaseController
+    public class UsersController : BaseController
     {
         private readonly IUserService _userService;
-        //private readonly IClaimsService _claimsService;
-        public UserController(IUserService userService)
+        private readonly IClaimsService _claimsService;
+        public UsersController(IUserService userService, IClaimsService claimsService)
         {
             _userService = userService;
-           //_claimsService = claimsService;
+            _claimsService = claimsService;
         }
 
         [HttpPost]

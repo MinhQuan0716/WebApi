@@ -18,10 +18,10 @@ namespace WebAPI.Tests.Controllers
 {
     public class UserControllerTest:SetupTest
     {
-        private readonly UserController _userController;
+        private readonly UsersController _userController;
         public UserControllerTest()
         {
-                _userController=new UserController(_userServiceMock.Object);
+                _userController=new UsersController(_userServiceMock.Object,_claimsServiceMock.Object);
         }
 
         [Fact]
