@@ -19,7 +19,7 @@ using System.Threading.Tasks;
 namespace Application.Services;
 
 public class UserService : IUserService
-{
+{ 
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
     private readonly ICurrentTime _currentTime;

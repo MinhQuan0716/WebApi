@@ -104,5 +104,7 @@ namespace Infrastructures.Repositories
             }
             _dbSet.UpdateRange(entities);
         }
+
+        public async Task<List<TEntity>> FindAsync(Expression<Func<TEntity, bool>> expression) => await _dbSet.Where(expression).ToListAsync();
     }
 }
