@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Application.ViewModels.UserViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Application.ViewModels.TokenModels;
+using Microsoft.IdentityModel.Tokens;
 
 namespace WebAPI.Controllers
 {
@@ -66,6 +67,22 @@ namespace WebAPI.Controllers
                 return NoContent();
             }
             return BadRequest();
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetAllUserAsync()
+        {
+            var users = await _userService.GetAllAsync();
+            if (users.IsNullOrEmpty())
+            {
+                return NoContent();
+            }
+            return Ok(users);
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetUserPaginationAsync(int pageIndex = 0, int pageSize = 10)
+        {
+            var users = await _userService.GetUserPaginationAsync(pageIndex, pageSize);
+            return Ok(users);
         }
     }
 }

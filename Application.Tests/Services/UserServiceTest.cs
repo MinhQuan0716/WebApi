@@ -1,3 +1,4 @@
+using Application.Commons;
 using Application.Interfaces;
 using Application.Services;
 using Application.Utils;
@@ -201,6 +202,42 @@ namespace Application.Tests.Services
             //Assert
             result.Should().BeNull();
         }
+        [Fact]
+        public async void GetAllAsync_ShouldReturnCorrectData()
+        {
+            //arrange
+            var mockUsers = _fixture.Build<User>().CreateMany(100).ToList();
+            var expected = _mapperConfig.Map<List<UserViewModel>>(mockUsers);
+            _unitOfWorkMock.Setup(x => x.UserRepository.GetAllAsync()).ReturnsAsync(mockUsers);
 
+            //act
+            var result = await _userService.GetAllAsync();
+
+            //assert
+            _unitOfWorkMock.Verify(x => x.UserRepository.GetAllAsync(), Times.Once);
+            result.Should().BeEquivalentTo(expected);
+        }
+        [Fact]
+        public async void GetUserPaginationAsync_ShouldReturnCorrectData_WhenPassTheParameter()
+        {
+            //arrange
+            var mockData = new Pagination<User>
+            {
+                Items = _fixture.Build<User>().CreateMany(100).ToList(),
+                PageIndex = 0,
+                PageSize = 100,
+                TotalItemsCount = 100,
+            };
+            var expected = _mapperConfig.Map<Pagination<UserViewModel>>(mockData);
+
+            _unitOfWorkMock.Setup(x => x.UserRepository.ToPagination(0, 10)).ReturnsAsync(mockData);
+
+            //act
+            var result = await _userService.GetUserPaginationAsync(0, 10);
+
+            //assert
+            _unitOfWorkMock.Verify(x => x.UserRepository.ToPagination(0, 10), Times.Once());
+            result.Should().BeEquivalentTo(expected);
+        }
     }
 }

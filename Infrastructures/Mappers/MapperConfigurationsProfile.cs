@@ -27,6 +27,8 @@ namespace Infrastructures.Mappers
                 .ForMember(rd => rd.UserName, opt => opt.MapFrom(src => src.Email))
                 .ForMember(rd => rd.PasswordHash, opt => opt.MapFrom(src => src.Password))
                 .ReverseMap();
+            CreateMap<User, UserViewModel>()
+                .ForMember(desc => desc._Id, src => src.MapFrom(u => u.Id));
         }
     }
 }

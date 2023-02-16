@@ -1,4 +1,5 @@
-﻿using Application.ViewModels.TokenModels;
+﻿using Application.Commons;
+using Application.ViewModels.TokenModels;
 using Application.ViewModels.UserViewModels;
 using Domain.Entities;
 using System;
@@ -15,5 +16,6 @@ public interface IUserService
     public Task<Token> RefreshToken(string accessToken, string refreshToken);
     public Task<Token> LoginAsync(LoginDTO userDto);
     public Task<bool> UpdateUserInformation(UpdateDTO updateUser);
-
+    Task<Pagination<UserViewModel>> GetUserPaginationAsync(int pageIndex = 0, int pageSize = 10);
+    Task<List<UserViewModel>> GetAllAsync();
 }

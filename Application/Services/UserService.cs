@@ -123,6 +123,22 @@ public class UserService : IUserService
         
       
     }
-
-
+    /// <summary>
+    /// Return collection of item with parameter
+    /// </summary>
+    /// <param name="pageIndex"></param>
+    /// <param name="pageSize"></param>
+    /// <returns></returns>
+    public async Task<Pagination<UserViewModel>> GetUserPaginationAsync(int pageIndex = 0, int pageSize = 10)
+    {
+        var users = await _unitOfWork.UserRepository.ToPagination(pageIndex, pageSize);
+        var result = _mapper.Map<Pagination<UserViewModel>>(users);
+        return result;
+    }
+    public async Task<List<UserViewModel>> GetAllAsync()
+    {
+        var users = await _unitOfWork.UserRepository.GetAllAsync();
+        var result = _mapper.Map<List<UserViewModel>>(users);
+        return result;
+    }
 }
