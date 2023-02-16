@@ -15,4 +15,5 @@ public interface IUserRepository : IGenericRepository<User>
     Task<bool> CheckEmailExistedAsync(string email);
 
     Task<User> GetUserByEmailAsync(string email);
+    Task EditRoleAsync(Guid userId, int roleId);
 }

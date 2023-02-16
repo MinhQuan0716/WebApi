@@ -33,6 +33,20 @@ public class UserService : IUserService
         _configuration = configuration;
     }
 
+    public async Task<bool> ChangeUserRole(Guid userId, int roleId)
+    {
+        var updateUser = await _unitOfWork.UserRepository.GetByIdAsync(userId);
+        if (updateUser != null)
+        {
+            updateUser.RoleId = roleId;
+            _unitOfWork.UserRepository.Update(updateUser);
+            await _unitOfWork.SaveChangeAsync();
+            return true;
+        }
+        return false;
+        
+    }
+
     public async Task<Token> LoginAsync(LoginDTO userDto)
     {
         var user = await _unitOfWork.UserRepository.GetUserByEmailAsync(userDto.Email);

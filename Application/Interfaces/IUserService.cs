@@ -18,4 +18,5 @@ public interface IUserService
     public Task<bool> UpdateUserInformation(UpdateDTO updateUser);
     Task<Pagination<UserViewModel>> GetUserPaginationAsync(int pageIndex = 0, int pageSize = 10);
     Task<List<UserViewModel>> GetAllAsync();
+    public Task<bool> ChangeUserRole(Guid userId, int roleId);
 }

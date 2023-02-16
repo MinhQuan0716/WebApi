@@ -84,5 +84,17 @@ namespace WebAPI.Controllers
             var users = await _userService.GetUserPaginationAsync(pageIndex, pageSize);
             return Ok(users);
         }
+
+        [Authorize(Roles = "SuperAdmin")]
+        [HttpPut]
+        public async Task<IActionResult> ChangeUserRole(UpdateRoleDTO updateDTO)
+        {
+            var result = await _userService.ChangeUserRole(updateDTO.UserID, updateDTO.RoleID);
+            if (result)
+            {
+                return NoContent();
+            }
+            return BadRequest();
+        }
     }
 }

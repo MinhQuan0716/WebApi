@@ -19,6 +19,12 @@ public class UserRepository : GenericRepository<User>, IUserRepository
         _dbContext = dbContext;
     }
 
+    public async Task EditRoleAsync(Guid userId, int roleId)
+    {
+        var userAccount =  await GetByIdAsync(userId);
+        userAccount!.RoleId = roleId;
+    }
+
     public Task<bool> CheckEmailExistedAsync(string email)
     => _dbContext.Users.AnyAsync(u => u.Email == email);
 
