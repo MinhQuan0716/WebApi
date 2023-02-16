@@ -9,7 +9,6 @@ namespace Application.ViewModels.TokenModels
     public class Token
     {
         public string UserName { get; set; }
-        public string Status { get; set; }
         public string AccessToken { get; set; }
         public string RefreshToken { get; set; }
 

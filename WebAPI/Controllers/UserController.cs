@@ -9,11 +9,11 @@ namespace WebAPI.Controllers
   public class UserController : BaseController
     {
         private readonly IUserService _userService;
-        private readonly IClaimsService _claimsService;
-        public UserController(IUserService userService, IClaimsService claimsService)
+        //private readonly IClaimsService _claimsService;
+        public UserController(IUserService userService)
         {
             _userService = userService;
-            _claimsService = claimsService;
+           //_claimsService = claimsService;
         }
 
         [HttpPost]
@@ -31,6 +31,10 @@ namespace WebAPI.Controllers
         public async Task<IActionResult> LoginAsync(LoginDTO loginObject)
         {
             var token= await _userService.LoginAsync(loginObject);
+            if(token== null)
+            {
+                return BadRequest();
+            }
             return Ok(token);
         }
 
@@ -45,13 +49,13 @@ namespace WebAPI.Controllers
             return Ok(newToken);
         }
 
-        [Authorize]
-        [HttpGet]
-        public async Task<IActionResult> TestAuthorize()
-        {
-            var test = _claimsService.GetCurrentUserId;
-            return Ok(test);
-        }
+        //[Authorize]
+        //[HttpGet]
+        //public async Task<IActionResult> TestAuthorize()
+        //{
+        //    var test = _claimsService.GetCurrentUserId;
+        //    return Ok(test);
+        //}
 
         [HttpPut] 
         public async Task<IActionResult> UpdateUser(UpdateDTO updateObject)

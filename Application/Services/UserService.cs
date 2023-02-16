@@ -7,6 +7,7 @@ using AutoMapper;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
@@ -50,7 +51,6 @@ public class UserService : IUserService
         return new Token 
         {
             UserName=user.UserName,
-            Status="Login Successfully!",
             AccessToken=accessToken,
             RefreshToken=refreshToken
         };
@@ -59,15 +59,12 @@ public class UserService : IUserService
 
     public async Task<Token> RefreshToken(string accessToken, string refreshToken)
     {
-        if (accessToken == null || refreshToken==null)
+        if (accessToken.IsNullOrEmpty() || refreshToken.IsNullOrEmpty())
         {
             return null;
         }
         var principal = accessToken.GetPrincipalFromExpiredToken(_configuration.JWTSecretKey);
-        if (principal == null)
-        {
-            return null;
-        }
+
         var id = principal.FindFirstValue("userID");
         _ = Guid.TryParse(id, out Guid userID);
         var userLogin = await _unitOfWork.UserRepository.GetByIdAsync(userID, x => x.Role);
@@ -86,7 +83,6 @@ public class UserService : IUserService
         return new Token
         {
             UserName= userLogin.UserName,
-            Status = "Login Successfully!",
             AccessToken = newAccessToken,
             RefreshToken = newRefreshToken
         };

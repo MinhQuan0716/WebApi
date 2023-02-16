@@ -34,6 +34,9 @@ namespace Domains.Test
             });
             _mapperConfig = mappingConfig.CreateMapper();
             _fixture = new Fixture();
+            _fixture.Behaviors.OfType<ThrowingRecursionBehavior>().ToList()
+    .ForEach(b => _fixture.Behaviors.Remove(b));
+            _fixture.Behaviors.Add(new OmitOnRecursionBehavior());
             _unitOfWorkMock = new Mock<IUnitOfWork>();
 
             _userServiceMock = new Mock<IUserService>();
