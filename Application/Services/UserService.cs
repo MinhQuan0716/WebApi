@@ -19,6 +19,7 @@ using System.Reflection.PortableExecutable;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
 
 namespace Application.Services;
 
@@ -39,6 +40,23 @@ public class UserService : IUserService
         _currentTime = currentTime;
         _configuration = configuration;
     }
+
+    public async Task<User> AddUserManualAsync(AddUserManually addUserManually)
+    {
+        addUserManually.Pass = addUserManually.Pass.Hash();
+        var mapUserwithAddUserManual = _mapper.Map<User>(addUserManually);
+    
+
+        await _unitOfWork.UserRepository.AddAsync(mapUserwithAddUserManual);
+        
+        
+        if (await _unitOfWork.SaveChangeAsync() > 0)
+        {
+            return await _unitOfWork.UserRepository.GetUserByEmailAsync(addUserManually.Email);
+        };
+        return null;
+    }
+
 
     public async Task<bool> ChangeUserRole(Guid userId, int roleId)
     {

@@ -29,6 +29,15 @@ namespace Infrastructures.Mappers
                 .ForMember(rd => rd.PasswordHash, opt => opt.MapFrom(src => src.Password))
                 .ReverseMap();
 
+            CreateMap<AddUserManually, User>()
+               .ForMember(destinationMember => destinationMember.UserName, options => options.MapFrom(src => src.UserName))
+               .ForMember(destinationMember => destinationMember.PasswordHash, options => options.MapFrom(src => src.Pass))
+              .ForMember(destinationMember => destinationMember.FullName, options => options.MapFrom(src => src.FullName))
+              .ForMember(destinationMember => destinationMember.Email, options => options.MapFrom(src => src.Email))
+              .ForMember(destinationMember => destinationMember.DateOfBirth, options => options.MapFrom(src => src.DateOfBirth))
+              .ForMember(destinationMember => destinationMember.Gender, options => options.MapFrom(src => src.Gender))
+              .ForMember(destinationMember => destinationMember.RoleId, options => options.MapFrom(src => src.RoleId)).ReverseMap();
+
             CreateMap<ResetPasswordDTO, User>()
                 .ForMember(rp => rp.PasswordHash, opt => opt.MapFrom(src => src.NewPassword)).ReverseMap();
             CreateMap<User, UserViewModel>()

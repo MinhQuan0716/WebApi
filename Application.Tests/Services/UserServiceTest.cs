@@ -3,6 +3,7 @@ using Application.Interfaces;
 using Application.Services;
 using Application.Utils;
 using Application.ViewModels.TokenModels;
+using Application.Utils;
 using Application.ViewModels.UserViewModels;
 using AutoFixture;
 using AutoMapper;
@@ -115,6 +116,33 @@ namespace Application.Tests.Services
 
             Func<Task> act = async () => await newUserService.SendResetPassword(mockUser.Email);
             act.Should().ThrowAsync<Exception>();
+        }
+        [Fact]
+        public async Task AddUserManual_ShouldReturnTrue()
+        {
+            //Arrange
+            var mockData = _fixture.Build<AddUserManually>().Create();
+            mockData.Pass = mockData.Pass.Hash();
+            var user=_mapperConfig.Map<User>(mockData);
+            _unitOfWorkMock.Setup(x => x.UserRepository.AddAsync(user)).Verifiable();
+            _unitOfWorkMock.Setup(x => x.SaveChangeAsync()).ReturnsAsync(1);
+            _unitOfWorkMock.Setup(x => x.UserRepository.GetUserByEmailAsync(user.Email)).ReturnsAsync(user);
+            //Act
+            var result = await _userService.AddUserManualAsync(mockData);
+            //Assert
+            result.Email.Should().Be(mockData.Email); 
+
+        }
+
+        [Fact]
+        public async Task AddUserManual_ShouldReturnNull()
+        {
+            var mockData=_fixture.Build<AddUserManually>().Create();
+            var user = _mapperConfig.Map<User>(mockData);
+            _unitOfWorkMock.Setup(x => x.UserRepository.AddAsync(user)).Verifiable();
+            _unitOfWorkMock.Setup(x => x.SaveChangeAsync()).ReturnsAsync(0);
+            var result = await _userService.AddUserManualAsync(mockData);
+            result.Should().BeNull();
         }
 
         [Fact]
