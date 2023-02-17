@@ -28,6 +28,8 @@ namespace Domains.Test
         protected readonly Mock<IClaimsService> _claimsServiceMock;
         protected readonly Mock<ICurrentTime> _currentTimeMock;
 
+        protected readonly Mock<ISyllabusRepository> _syllabusRepositoryMock;
+     
         protected readonly Mock<SyllabusController> _syllabusControllerMock;
         protected readonly Mock<ISyllabusRepository> _syllabusRepository;
 
@@ -59,6 +61,13 @@ namespace Domains.Test
             _currentTimeMock = new Mock<ICurrentTime>();
             _sendMailMock = new Mock<ISendMailHelper>();
             _userRepository = new Mock<IUserRepository>();
+
+
+            _syllabusRepositoryMock=new Mock<ISyllabusRepository>();
+            _syllabusServiceMock=new Mock<ISyllabusService>();
+
+            _unitServiceMock = new Mock<IUnitService>();
+            _syllabusServiceMock = new Mock<ISyllabusService>();
             var options = new DbContextOptionsBuilder<AppDbContext>()
                 .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
                 .Options;

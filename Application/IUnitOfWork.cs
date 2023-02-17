@@ -6,8 +6,11 @@ namespace Application
     {
         public ISyllabusRepository SyllabusRepository { get; }
         
-        public IUnitRepository UnitRepository { get; }
+
         public IUserRepository UserRepository { get; }
+
+        public IUnitRepository UnitRepository { get; }
+
         public Task<int> SaveChangeAsync();
     }
 }

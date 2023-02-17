@@ -20,6 +20,17 @@ namespace Application.Services
             _claimsservice = claimsservice;
         }
 
+        public async Task<List<Syllabus>> FilterSyllabus(double duration1, double duration2)
+        {
+            var filterSyllabusList = await _unitofWork.SyllabusRepository.FilterSyllabusByDuration(duration1, duration2);
+            return filterSyllabusList;
+        }
+
+        public Task<List<Syllabus>> GetAllSyllabus()
+        {
+            var syllabusList = _unitofWork.SyllabusRepository.GetAllAsync();
+            return syllabusList;
+        }
 
         public async Task<bool> DeleteSyllabussAsync(string syllabusID)
         {
@@ -37,17 +48,11 @@ namespace Application.Services
 
 
         }
-
-        public async Task<List<Syllabus>> FilterSyllabus(double duration1, double duration2)
-        {
-           var filterSyllabusList=await _unitofWork.SyllabusRepository.FilterSyllabusByDuration(duration1, duration2);
-            return filterSyllabusList;
-        }
-
-        public Task<List<Syllabus>> GetAllSyllabus()
-        {
-         var syllabusList=_unitofWork.SyllabusRepository.GetAllAsync();
-            return syllabusList;
-        }
     }
-    }
+}
+
+
+
+     
+    
+    

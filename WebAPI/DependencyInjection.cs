@@ -1,4 +1,8 @@
 ﻿using Application.Interfaces;
+using Application.Repositories;
+using Application.Services;
+using FluentValidation.AspNetCore;
+using Infrastructures.Repositories;
 using Application.Services;
 using Application.Utils;
 using FluentValidation.AspNetCore;
@@ -27,6 +31,10 @@ namespace WebAPI
             services.AddSingleton<PerformanceMiddleware>();
             services.AddSingleton<Stopwatch>();
             services.AddScoped<IClaimsService, ClaimsService>();
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<ISyllabusService, SyllabusService>();
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<ISyllabusRepository, SyllabusRepository>();
             services.AddScoped<ISyllabusService, SyllabusService>();
             services.AddHttpContextAccessor();
             services.AddFluentValidationAutoValidation();

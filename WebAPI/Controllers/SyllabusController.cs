@@ -1,5 +1,7 @@
 ﻿using Application.Interfaces;
 using Domain.Entities;
+using Microsoft.AspNetCore.Http;
+using Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Controllers
@@ -9,20 +11,6 @@ namespace WebAPI.Controllers
         private readonly ISyllabusService _syllabusService;
         public SyllabusController(ISyllabusService syllabusService) => _syllabusService = syllabusService;
 
-        [HttpGet("{id:maxlength(50):Guid}")]
-        public async Task<IActionResult> DeleteSyllabus(string id)
-        {
-            var checkSyllabus = await _syllabusService.DeleteSyllabussAsync(id);
-
-
-            if (checkSyllabus)
-            {
-                return NoContent();
-            }
-
-
-            return BadRequest("Delete Syllabus Not Successfully");
-        }
         [HttpGet]
         public async Task<IActionResult> GetAllSyllabus()
         {
@@ -43,8 +31,8 @@ namespace WebAPI.Controllers
         [HttpGet]
         public async Task<IActionResult> FilerSyllabus(double firstDuration, double secondDuration)
         {
-            var filterSyllabusList = _syllabusService.FilterSyllabus(firstDuration, secondDuration);
-            if (filterSyllabusList != null)
+            List<Syllabus> filterSyllabusList = await _syllabusService.FilterSyllabus(firstDuration, secondDuration);
+            if (filterSyllabusList.Count() > 0)
             {
                 return Ok(new
                 {
@@ -56,6 +44,24 @@ namespace WebAPI.Controllers
             {
                 return NotFound();
             }
+
+
+
         }
+        [HttpGet("{id:maxlength(50):Guid}")]
+        public async Task<IActionResult> DeleteSyllabus(string id)
+        {
+            var checkSyllabus = await _syllabusService.DeleteSyllabussAsync(id);
+
+
+            if (checkSyllabus)
+            {
+                return NoContent();
+            }
+
+
+            return BadRequest("Delete Syllabus Not Successfully");
+        }
+       
     }
 }

@@ -14,13 +14,16 @@ namespace Infrastructures.Repositories
         private readonly AppDbContext _dbContext;
         public SyllabusRepository(AppDbContext context, ICurrentTime timeService, IClaimsService claimsService) : base(context, timeService, claimsService)
         {
-            _dbContext = context;
+
+            _dbContext= context;
         }
 
         public async Task<List<Syllabus>> FilterSyllabusByDuration(double duration1, double duration2)
         {
-            List<Syllabus>? result = _dbContext.Syllabuses.Where(x => x.Duration > duration1 && x.Duration < duration2).ToList();
+            List<Syllabus> result = _dbContext.Syllabuses.Where(x => x.Duration > duration1 && x.Duration < duration2).ToList();
             return result;
+          
+
         }
     }
 }

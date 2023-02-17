@@ -8,6 +8,7 @@ using WebAPI.Controllers;
 
 namespace WebAPI.Tests.Controllers
 {
+ 
    public  class SyllabusControllerTest:SetupTest
     {
         private readonly SyllabusController syllabusController;
@@ -33,10 +34,13 @@ namespace WebAPI.Tests.Controllers
             double firstDuration = 9;
             double secondDuration = 12;
             //Act
-            var filterResult = await syllabusController.FilerSyllabus(firstDuration, secondDuration);
+            var filterResult = syllabusController.FilerSyllabus(firstDuration, secondDuration);
             //Assert
             Assert.NotNull(filterResult);
         }
     }
+
 }
 
+
+        

@@ -24,6 +24,10 @@ namespace Infrastructures
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IUserService, UserService>();
+
+            services.AddSingleton<ICurrentTime, CurrentTime>();
+            
+
             services.AddScoped<ISyllabusService, SyllabusService>();
    
             services.AddScoped<IUserService, UserService>();
@@ -36,7 +40,6 @@ namespace Infrastructures
             //});
 
             //services.AddSingleton<IAuthorizationHandler, SyllabusPermissionAuthorizationHandler>();
-
             // ATTENTION: if you do migration please check file README.md
             services.AddDbContext<AppDbContext>(option => option.UseSqlServer(databaseConnection));
 

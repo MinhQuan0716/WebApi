@@ -10,25 +10,24 @@ namespace Infrastructures
         private readonly ISyllabusRepository _syllabusRepository;
         private readonly IUnitRepository _unitRepository;
 
-       
-
         public UnitOfWork(AppDbContext dbContext,
             IUserRepository userRepository,
-            ISyllabusRepository syllabusRepository,
-            IUnitRepository unitRepository)
+            ISyllabusRepository syllabusRepository,IUnitRepository unitRepository)
         {
             _dbContext = dbContext;
             _userRepository = userRepository;
-            _syllabusRepository = syllabusRepository;
-            _unitRepository = unitRepository;
+            _syllabusRepository= syllabusRepository;
+            _unitRepository= unitRepository;
         }
-
         public IUserRepository UserRepository => _userRepository;
         public ISyllabusRepository SyllabusRepository => _syllabusRepository;
 
 
+
         public IUnitRepository UnitRepository => _unitRepository;
 
+
+    
         public async Task<int> SaveChangeAsync()
         {
             return await _dbContext.SaveChangesAsync();
