@@ -20,8 +20,6 @@ namespace Application.Utils
 
        
 
-      
-
         public async Task<bool> SendMailAsync(string email, string subject, string message)
         {
             try

@@ -3,6 +3,7 @@ using Application.Commons;
 using Domain.Entities;
 using Application.ViewModels.UserViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Application.ViewModels.SyllabusModels;
 
 namespace Infrastructures.Mappers
 {
@@ -43,6 +44,14 @@ namespace Infrastructures.Mappers
             CreateMap<User, UserViewModel>()
                 .ForMember(desc => desc._Id, src => src.MapFrom(u => u.Id))
                 .ReverseMap();
+
+            CreateMap<SyllabusGeneralDTO, Syllabus>()
+           .ForMember(ss => ss.SyllabusName, ss => ss.MapFrom(src => src.SyllabusName))
+            .ForMember(ss => ss.Duration, ss => ss.MapFrom(src => src.Duration))
+             .ForMember(ss => ss.CourseObjective, ss => ss.MapFrom(src => src.CourseObject))
+               .ForMember(ss => ss.TechRequirements, ss => ss.MapFrom(src => src.TechRequirement))
+               .ForMember(ss => ss.Duration, ss => ss.MapFrom(src => src.Duration))
+               .ReverseMap();
         }
     }
 }
