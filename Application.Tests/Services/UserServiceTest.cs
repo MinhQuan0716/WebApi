@@ -10,7 +10,9 @@ using Domains.Test;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.ActionConstraints;
 using Moq;
-using System;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Caching.Memory;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Application.Tests.Services
 {
@@ -74,6 +76,134 @@ namespace Application.Tests.Services
             Func<Task> act = async () => await _userService.RegisterAsync(mockData);
             act.Should().ThrowAsync<Exception>();
         }
+
+        [Fact]
+        public async Task SendResetPasswordTest_ShouldReturnString()
+        {
+            // Setup
+            _fixture.Behaviors.OfType<ThrowingRecursionBehavior>().ToList()
+            .ForEach(b => _fixture.Behaviors.Remove(b));
+            _fixture.Behaviors.Add(new OmitOnRecursionBehavior());
+            var mockUser = _fixture.Build<User>().Create(); 
+            _unitOfWorkMock.Setup(u => u.UserRepository.GetUserByEmailAsync(mockUser.Email)).ReturnsAsync(mockUser);
+            _sendMailMock.Setup(sm => sm.SendMailAsync(mockUser.Email, "ResetPassword", It.IsAny<string>())).ReturnsAsync(true);
+            Mock<IConfiguration> _mockConfig = new Mock<IConfiguration>();
+            var cache = new MemoryCache(new MemoryCacheOptions());
+            // Act
+            IUserService newUserService = new UserService(_unitOfWorkMock.Object,
+                _mapperConfig, _currentTimeMock.Object, _appConfigurationMock.Object,
+                _mockConfig.Object, cache, _sendMailMock.Object);
+ 
+            var result = await newUserService.SendResetPassword(mockUser.Email);
+            // Assert
+            result.Should().NotBeNullOrEmpty();
+        }
+
+        [Fact]
+        public async Task SendResetPassword_ShouldThrowException()
+        {
+            _fixture.Behaviors.OfType<ThrowingRecursionBehavior>().ToList()
+           .ForEach(b => _fixture.Behaviors.Remove(b));
+            _fixture.Behaviors.Add(new OmitOnRecursionBehavior());
+            User mockUser = _fixture.Build<User>().Create();
+            _unitOfWorkMock.Setup(um => um.UserRepository.GetUserByEmailAsync(mockUser.Email)).ReturnsAsync(mockUser = null);
+            Mock<IConfiguration> _mockConfig = new Mock<IConfiguration>();
+            var cache = new MemoryCache(new MemoryCacheOptions());
+            // Act
+            IUserService newUserService = new UserService(_unitOfWorkMock.Object, _mapperConfig, _currentTimeMock.Object, _appConfigurationMock.Object, _mockConfig.Object, cache, _sendMailMock.Object);
+
+            Func<Task> act = async () => await newUserService.SendResetPassword(mockUser.Email);
+            act.Should().ThrowAsync<Exception>();
+        }
+
+        [Fact]
+        public async Task SendResetPassword_ShouldReturnEmptyString()
+        {
+            _fixture.Behaviors.OfType<ThrowingRecursionBehavior>().ToList()
+            .ForEach(b => _fixture.Behaviors.Remove(b));
+            _fixture.Behaviors.Add(new OmitOnRecursionBehavior());
+            var mockUser = _fixture.Build<User>().Create();
+            _unitOfWorkMock.Setup(u => u.UserRepository.GetUserByEmailAsync(mockUser.Email)).ReturnsAsync(mockUser);
+            _sendMailMock.Setup(sm => sm.SendMailAsync(mockUser.Email, "ResetPassword", It.IsAny<string>())).ReturnsAsync(false);
+            Mock<IConfiguration> _mockConfig = new Mock<IConfiguration>();
+            var cache = new MemoryCache(new MemoryCacheOptions());
+            // Act
+            IUserService newUserService = new UserService(_unitOfWorkMock.Object,
+                _mapperConfig, _currentTimeMock.Object, _appConfigurationMock.Object,
+                _mockConfig.Object, cache, _sendMailMock.Object);
+
+            var result = await newUserService.SendResetPassword(mockUser.Email);
+            // Assert
+            result.Should().BeNullOrEmpty();
+        }
+        [Fact]
+        public async Task ResetPassword_ShouldReturnTrue()
+        {
+            _fixture.Behaviors.OfType<ThrowingRecursionBehavior>().ToList()
+           .ForEach(b => _fixture.Behaviors.Remove(b));
+            _fixture.Behaviors.Add(new OmitOnRecursionBehavior());
+            // Setup
+            var cache = new MemoryCache(new MemoryCacheOptions());
+            var ResetPassDTO = _fixture.Build<ResetPasswordDTO>().Create();
+            var user = _fixture.Build<User>().Create();
+            string email = "MockEMail@gmail.com";
+            cache.Set(ResetPassDTO.Code, email);
+            ResetPassDTO.ConfirmPassword = ResetPassDTO.NewPassword;
+            _unitOfWorkMock.Setup(um => um.UserRepository.GetUserByEmailAsync(email)).ReturnsAsync(user);
+            _unitOfWorkMock.Setup(um => um.UserRepository.Update(user)).Verifiable();
+            _unitOfWorkMock.Setup(um => um.SaveChangeAsync()).ReturnsAsync(1);
+            Mock<IConfiguration> _mockConfig = new Mock<IConfiguration>();
+            IUserService newUserService = new UserService(_unitOfWorkMock.Object,
+              _mapperConfig, _currentTimeMock.Object, _appConfigurationMock.Object,
+              _mockConfig.Object, cache, _sendMailMock.Object);
+            var result = await newUserService.ResetPassword(ResetPassDTO);
+            result.Should().BeTrue();
+        }
+
+
+
+
+        [Fact]
+        public async Task ResetPassword_ShouldReturnFalse()
+        {
+            _fixture.Behaviors.OfType<ThrowingRecursionBehavior>().ToList()
+          .ForEach(b => _fixture.Behaviors.Remove(b));
+            _fixture.Behaviors.Add(new OmitOnRecursionBehavior());
+            var cache = new MemoryCache(new MemoryCacheOptions());
+            var ResetPassDTO = _fixture.Build<ResetPasswordDTO>().Create();
+            var user = _fixture.Build<User>().Create();
+            string email = "MockEMail@gmail.com";
+            cache.Set("ABSDSE", email);
+            Mock<IConfiguration> _mockConfig = new Mock<IConfiguration>();
+            IUserService newUserService = new UserService(_unitOfWorkMock.Object,
+            _mapperConfig, _currentTimeMock.Object, _appConfigurationMock.Object,
+            _mockConfig.Object, cache, _sendMailMock.Object);
+
+            Func<Task> act = async () => await newUserService.ResetPassword(ResetPassDTO);
+            act.Should().ThrowAsync<Exception>();
+        }
+/*        [Fact]
+        public async Task ResetPassword_ConfirmFalse_ShouldThrowException()
+        {
+            _fixture.Behaviors.OfType<ThrowingRecursionBehavior>().ToList()
+           .ForEach(b => _fixture.Behaviors.Remove(b));
+            _fixture.Behaviors.Add(new OmitOnRecursionBehavior());
+            // Setup
+            var cache = new MemoryCache(new MemoryCacheOptions());
+            var ResetPassDTO = _fixture.Build<ResetPasswordDTO>().Create();
+            var user = _fixture.Build<User>().Create();
+            string email = "MockEMail@gmail.com";
+            cache.Set(ResetPassDTO.Code, email);
+            Mock<IConfiguration> _mockConfig = new Mock<IConfiguration>();
+            IUserService newUserService = new UserService(_unitOfWorkMock.Object,
+              _mapperConfig, _currentTimeMock.Object, _appConfigurationMock.Object,
+              _mockConfig.Object, cache, _sendMailMock.Object);
+            var result = await newUserService.ResetPassword(ResetPassDTO);
+            Func<Task> act = async () => await newUserService.ResetPassword(ResetPassDTO);
+            act.Should().ThrowAsync<Exception>();
+
+        }*/
+  
 
         [Fact]
         public async Task LoginAsync_ReturnCorrectData()

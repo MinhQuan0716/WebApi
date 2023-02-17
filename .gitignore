@@ -233,3 +233,9 @@ obj/
 #####
 # End of core ignore list, below put you custom 'per project' settings (patterns or path)
 #####
+/.vs/fa-training-management-system/v17/TestStore/0/testlog.manifest
+/.vs/fa-training-management-system/FileContentIndex/7bb81481-bb37-483d-92cb-4b412125093b.vsidx
+/.vs/ProjectEvaluation/fa-training-management-system.projects.v5.1
+/WebAPI.Tests/UnitTest1.cs
+/WebAPI.Tests/WebAPI.Tests.csproj
+*.cs

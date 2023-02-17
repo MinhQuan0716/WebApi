@@ -2,6 +2,7 @@
 using Application.Commons;
 using Domain.Entities;
 using Application.ViewModels.UserViewModels;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Infrastructures.Mappers
 {
@@ -27,6 +28,9 @@ namespace Infrastructures.Mappers
                 .ForMember(rd => rd.UserName, opt => opt.MapFrom(src => src.Email))
                 .ForMember(rd => rd.PasswordHash, opt => opt.MapFrom(src => src.Password))
                 .ReverseMap();
+
+            CreateMap<ResetPasswordDTO, User>()
+                .ForMember(rp => rp.PasswordHash, opt => opt.MapFrom(src => src.NewPassword)).ReverseMap();
             CreateMap<User, UserViewModel>()
                 .ForMember(desc => desc._Id, src => src.MapFrom(u => u.Id));
         }

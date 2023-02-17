@@ -40,14 +40,5 @@ public class UserRepository : GenericRepository<User>, IUserRepository
         }
         return user;
     }
-    public async Task<User> GetUserByUserNameANdPaswordHashAsync(string username, string passwordHash)
-    {
-        var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.UserName == username
-                                                                && u.PasswordHash == passwordHash);
-        if (user == null)
-        {
-            throw new Exception("UserName & password is not correct");
-        }
-        return user;
-    }
+
 }

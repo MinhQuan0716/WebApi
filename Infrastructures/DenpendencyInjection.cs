@@ -2,6 +2,7 @@
 using Application.Interfaces;
 using Application.Repositories;
 using Application.Services;
+using Application.Utils;
 using Infrastructures.Mappers;
 using Infrastructures.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -13,14 +14,9 @@ namespace Infrastructures
     {
         public static IServiceCollection AddInfrastructuresService(this IServiceCollection services, string databaseConnection)
         {
+            services.AddScoped<ISendMailHelper, SendMailHelper>();
             services.AddScoped<IUserRepository, UserRepository>();
-            services.AddScoped<IUnitRepository, UnitRepository>();
-            services.AddScoped<ISyllabusRepository, SyllabusRepository>();
-
             services.AddScoped<IUnitOfWork, UnitOfWork>();
-            services.AddScoped<IUserService, UserService>();
-            services.AddScoped<ISyllabusService, SyllabusService>();
-   
             services.AddScoped<IUserService, UserService>();
             services.AddSingleton<ICurrentTime, CurrentTime>();
 

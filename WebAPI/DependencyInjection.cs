@@ -17,6 +17,7 @@ namespace WebAPI
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen();
             services.AddHealthChecks();
+            services.AddMemoryCache(); 
             services.AddSingleton<GlobalExceptionMiddleware>();
             services.AddSingleton<PerformanceMiddleware>();
             services.AddSingleton<Stopwatch>();

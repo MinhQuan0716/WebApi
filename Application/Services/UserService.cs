@@ -5,13 +5,17 @@ using Application.ViewModels.TokenModels;
 using Application.ViewModels.UserViewModels;
 using AutoMapper;
 using Domain.Entities;
+using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Reflection.PortableExecutable;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,11 +23,14 @@ using System.Threading.Tasks;
 namespace Application.Services;
 
 public class UserService : IUserService
-{ 
+{
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
     private readonly ICurrentTime _currentTime;
     private readonly AppConfiguration _configuration;
+    private readonly IConfiguration _config;
+    private readonly IMemoryCache _memoryCache;
+    private readonly ISendMailHelper _sendMailHelper;
 
     public UserService(IUnitOfWork unitOfWork, IMapper mapper, ICurrentTime currentTime, AppConfiguration configuration)
     {
@@ -45,6 +52,17 @@ public class UserService : IUserService
         }
         return false;
         
+    }
+
+    public UserService(IUnitOfWork unitOfWork, IMapper mapper, ICurrentTime currentTime, AppConfiguration configuration, IConfiguration config, IMemoryCache memoryCache, ISendMailHelper sendMailHelper)
+    {
+        _unitOfWork = unitOfWork;
+        _mapper = mapper;
+        _currentTime = currentTime;
+        _configuration = configuration;
+        _config = config;
+        _memoryCache = memoryCache;
+        _sendMailHelper = sendMailHelper;
     }
 
     public async Task<Token> LoginAsync(LoginDTO userDto)
@@ -122,6 +140,68 @@ public class UserService : IUserService
         return await _unitOfWork.SaveChangeAsync()>0;
     }
 
+    public async Task<bool> ResetPassword(ResetPasswordDTO resetPasswordDTO)
+    {
+        string email;
+        _ = _memoryCache.TryGetValue(resetPasswordDTO.Code, out email);
+        
+      
+        if(email != null)
+        {
+            if(resetPasswordDTO.NewPassword.Equals(resetPasswordDTO.ConfirmPassword))
+            {
+
+                var user =  await _unitOfWork.UserRepository.GetUserByEmailAsync(email);
+                if(user != null) 
+                {
+                    resetPasswordDTO.NewPassword = resetPasswordDTO.NewPassword.Hash();
+                    _ = _mapper.Map(resetPasswordDTO, user, typeof(ResetPasswordDTO), typeof(User));
+                    _unitOfWork.UserRepository.Update(user);
+                    if(await _unitOfWork.SaveChangeAsync() > 0)
+                    {
+                        return true;
+                    }
+                }
+            } else
+            {
+                throw new Exception("Password and Confirm Password is not match");
+            }
+        } throw new Exception("Not exsited Code");
+        
+
+
+    }
+
+
+    // <summarry>
+    // Method send Confirmation Code Through Email 
+    // </summary>
+    public async Task<string> SendResetPassword(string email)
+    {
+        var user = await _unitOfWork.UserRepository.GetUserByEmailAsync(email);
+        if (user != null)
+        {
+          
+            var key = StringUtils.RandomString(6);
+            var result = await _sendMailHelper.SendMailAsync(email, "ResetPassword", key);
+            if(result)
+            {
+                _memoryCache.Set(key, email);
+                return key;
+            }
+
+            return "";
+        }
+        else
+        {
+            
+            throw new Exception("User not available");
+            
+        }
+        
+        
+    }
+
     public async Task<bool> UpdateUserInformation(UpdateDTO updateUser)
     {   
         if(updateUser != null)
@@ -134,8 +214,6 @@ public class UserService : IUserService
             else return false;
         } throw new Exception("User can not be null");
         
-        
-      
     }
     /// <summary>
     /// Return collection of item with parameter

@@ -68,6 +68,30 @@ namespace WebAPI.Controllers
             }
             return BadRequest();
         }
+
+        [HttpGet]
+        public async Task<IActionResult> ForgotPassword(string email)
+        {
+            var result = await _userService.SendResetPassword(email);
+            if (!result.IsNullOrEmpty())
+            {
+                return Ok(result);
+            }
+            else return BadRequest("Can Not found User");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ResetPassword(ResetPasswordDTO resetObj)
+        {
+            var result = await _userService.ResetPassword(resetObj);
+            if (result)
+            {
+                return Ok(result);
+            }
+            else return BadRequest();
+        }
+
+
         [HttpGet]
         public async Task<IActionResult> GetAllUserAsync()
         {
