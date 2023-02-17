@@ -208,7 +208,7 @@ namespace WebAPI.Tests.Controllers
         }
 
         [Fact]
-        public async Task GetUserGetUserByIdAsync_ShouldReturnCorrectData()
+        public async Task GetUserByIdAsync_ShouldReturnCorrectData()
         {
             //arrange
             var mockUser = _fixture.Build<UserViewModel>().Create();
@@ -228,7 +228,7 @@ namespace WebAPI.Tests.Controllers
             Assert.Equal(mockUser, result.Value);
         }
         [Fact]
-        public async Task GetUserGetUserByIdAsync_ShouldReturnNoContent_WhenPassNonExistId()
+        public async Task GetUserByIdAsync_ShouldReturnNoContent_WhenPassNonExistId()
         {
             //arrange
             var mockUser = _fixture.Build<UserViewModel>().Create();
@@ -244,6 +244,40 @@ namespace WebAPI.Tests.Controllers
                     mockUser._Id), Times.Never);
             Assert.NotNull(result);
             Assert.Equal(StatusCodes.Status204NoContent, result.StatusCode);
+        }
+        [Fact]
+        public async Task DisableUserById_ShouldReturnOk()
+        {
+            //arrange
+            var mock = _fixture.Build<UserViewModel>().Create();
+
+            _userServiceMock.Setup(
+                x => x.DisableUserById(mock._Id)).ReturnsAsync(true);
+
+            //act
+            var result = await _userController.DisableUserById(mock._Id) as OkObjectResult;
+
+            //assert
+            _userServiceMock.Verify(x => x.DisableUserById(It.Is<string>(x => x.Equals(mock._Id))), Times.Once);
+            Assert.NotNull(result);
+            Assert.Equal(StatusCodes.Status200OK, result.StatusCode);
+        }
+        [Fact]
+        public async Task DisableUserById_ShouldReturnBadRequest()
+        {
+            //arrange
+            var mock = _fixture.Build<UserViewModel>().Create();
+
+            _userServiceMock.Setup(
+                x => x.DisableUserById(It.IsAny<string>())).ReturnsAsync(false);
+
+            //act
+            var result = await _userController.DisableUserById(It.IsAny<string>()) as BadRequestObjectResult;
+
+            //assert
+            _userServiceMock.Verify(x => x.DisableUserById(It.IsAny<string>()), Times.Once);
+            Assert.NotNull(result);
+            Assert.Equal(StatusCodes.Status400BadRequest, result.StatusCode);
         }
     }
 }

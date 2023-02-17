@@ -4,7 +4,6 @@ using Application.ViewModels.UserViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Application.ViewModels.TokenModels;
 using Microsoft.IdentityModel.Tokens;
-
 namespace WebAPI.Controllers
 {
     public class UsersController : BaseController
@@ -131,6 +130,17 @@ namespace WebAPI.Controllers
                 return NoContent();
             }
             return Ok(user);
+        }
+        [Authorize(Roles = "SuperAdmin")]
+        [HttpPut]
+        public async Task<IActionResult> DisableUserById(string userId)
+        {
+            var result = await _userService.DisableUserById(userId);
+            if (result is false)
+            {
+                return BadRequest("Disable failed");
+            }
+            return Ok("Disable successfully!");
         }
     }
 }

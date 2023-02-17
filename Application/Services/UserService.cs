@@ -245,4 +245,21 @@ public class UserService : IUserService
         var result = _mapper.Map<UserViewModel>(user);
         return result;
     }
+
+    public async Task<bool> DisableUserById(string userId)
+    {
+        var result = false;
+        var user = await _unitOfWork.UserRepository.GetByIdAsync(_mapper.Map<Guid>(userId));
+        if(user!= null)
+        {
+            _unitOfWork.UserRepository.SoftRemove(user);
+            var success = await _unitOfWork.SaveChangeAsync();
+            if (success == 1)
+            {
+                result = true;
+            }
+        }
+        return result;
+    }
+
 }

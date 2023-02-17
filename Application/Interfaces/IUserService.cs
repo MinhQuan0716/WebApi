@@ -24,4 +24,5 @@ public interface IUserService
     Task<Pagination<UserViewModel>> GetUserPaginationAsync(int pageIndex = 0, int pageSize = 10);
     Task<List<UserViewModel>> GetAllAsync();
     public Task<bool> ChangeUserRole(Guid userId, int roleId);
+    public Task<bool> DisableUserById(string userId);
 }

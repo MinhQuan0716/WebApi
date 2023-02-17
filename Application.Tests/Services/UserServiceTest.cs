@@ -371,6 +371,63 @@ namespace Application.Tests.Services
             result.Should().BeEquivalentTo(expected);
         }
         [Fact]
+        public async void DisableUser_ShouldReturnTrue()
+        {
+            //arrange
+            var mockUser = _fixture.Build<User>().Create();
+            var userViewModel = _mapperConfig.Map<UserViewModel>(mockUser);
+            var userId = userViewModel._Id;
+            _unitOfWorkMock.Setup(x => x.UserRepository.GetByIdAsync(mockUser.Id)).ReturnsAsync(mockUser);
+            _unitOfWorkMock.Setup(x => x.UserRepository.SoftRemove(It.IsAny<User>())).Verifiable();
+            _unitOfWorkMock.Setup(x => x.SaveChangeAsync()).ReturnsAsync(1);
+            //act
+            var result = await _userService.DisableUserById(userId);
+            //assert
+            _unitOfWorkMock.Verify(x => x.UserRepository.GetByIdAsync(mockUser.Id),Times.Once);
+            _unitOfWorkMock.Verify(x => x.UserRepository.SoftRemove(mockUser), Times.Once);
+            _unitOfWorkMock.Verify(x=>x.SaveChangeAsync(), Times.Once);
+            Assert.IsType<bool>(result);
+            result.Should().BeTrue();
+        }
+        [Fact]
+        public async void DisableUser_ShouldReturnFalse_WhenSaveChangesFailed()
+        {
+            //arrange
+            var mockUser = _fixture.Build<User>().Create();
+            var userViewModel = _mapperConfig.Map<UserViewModel>(mockUser);
+            var userId = userViewModel._Id;
+            _unitOfWorkMock.Setup(x => x.UserRepository.GetByIdAsync(mockUser.Id)).ReturnsAsync(mockUser);
+            _unitOfWorkMock.Setup(x => x.UserRepository.SoftRemove(It.IsAny<User>())).Verifiable();
+            _unitOfWorkMock.Setup(x => x.SaveChangeAsync()).ReturnsAsync(-1);
+
+            //act
+            var result = await _userService.DisableUserById(userId);
+
+            //assert
+            _unitOfWorkMock.Verify(x => x.UserRepository.GetByIdAsync(mockUser.Id), Times.Once);
+            _unitOfWorkMock.Verify(x => x.UserRepository.SoftRemove(mockUser), Times.AtMostOnce);
+            _unitOfWorkMock.Verify(x => x.SaveChangeAsync(), Times.AtMostOnce);
+            Assert.IsType<bool>(result);
+            result.Should().BeFalse();
+        }
+        [Fact]
+        public async void DisableUser_ShouldThrowException_WhenUsingNonexistedId()
+        {
+            //arrange
+            var mockUser = _fixture.Build<User>().Create();
+            var userViewModel = _mapperConfig.Map<UserViewModel>(mockUser);
+            var userId = "";
+            _unitOfWorkMock.Setup(x => x.UserRepository.SoftRemove(It.IsAny<User>())).Verifiable();
+
+            //act
+            Func<Task> act = async () => await _userService.DisableUserById(userId);
+
+            //assert
+            _unitOfWorkMock.Verify(x => x.UserRepository.SoftRemove(It.IsAny<User>()), Times.Never);
+            _unitOfWorkMock.Verify(x => x.SaveChangeAsync(), Times.Never);
+            await act.Should().ThrowAsync<AutoMapperMappingException>();
+        }
+        [Fact]
         public async void GetUserByIdAsync_ShouldReturnCorrectData()
         {
             //arrange
