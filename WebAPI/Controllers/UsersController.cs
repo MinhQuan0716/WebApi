@@ -113,6 +113,11 @@ namespace WebAPI.Controllers
         [HttpPut]
         public async Task<IActionResult> ChangeUserRole(UpdateRoleDTO updateDTO)
         {
+            var currentUserId = _claimsService.GetCurrentUserId;
+            if (currentUserId == updateDTO.UserID)
+            {
+                return BadRequest();
+            }
             var result = await _userService.ChangeUserRole(updateDTO.UserID, updateDTO.RoleID);
             if (result)
             {
