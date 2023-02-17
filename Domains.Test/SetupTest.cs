@@ -28,7 +28,8 @@ namespace Domains.Test
         protected readonly AppDbContext _dbContext;
         protected readonly Mock<AppConfiguration> _appConfigurationMock;
         protected readonly Mock<ISendMailHelper> _sendMailMock;
-    
+        protected readonly Mock<ISyllabusService> _syllabusServiceMock;
+        protected readonly Mock<IUnitService> _unitServiceMock;
         public SetupTest()
         {
             var mappingConfig = new MapperConfiguration(mc =>
@@ -47,7 +48,8 @@ namespace Domains.Test
             _currentTimeMock = new Mock<ICurrentTime>();
             _sendMailMock = new Mock<ISendMailHelper>();
             _userRepository = new Mock<IUserRepository>();
-
+            _unitServiceMock = new Mock<IUnitService>();
+            _syllabusServiceMock = new Mock<ISyllabusService>();
             var options = new DbContextOptionsBuilder<AppDbContext>()
                 .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
                 .Options;
