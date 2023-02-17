@@ -6,7 +6,6 @@ namespace Application
     {
         
         public IUserRepository UserRepository { get; }
-        public ISyllabusRepository SyllabusRepository { get; }
         public Task<int> SaveChangeAsync();
     }
 }
