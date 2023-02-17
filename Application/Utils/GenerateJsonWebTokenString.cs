@@ -15,6 +15,11 @@ namespace Application.Utils
             var claims = new[]
             {
                 new Claim("UserId", user.Id.ToString()),
+                new Claim("SyllabusPermission",user.Role.SyllabusPermission),
+                new Claim("TrainingProgramPermission",user.Role.TrainingProgramPermission),
+                new Claim("ClassPermission",user.Role.ClassPermission),
+                new Claim("LearningMaterial",user.Role.LearningMaterial),
+                new Claim("UserPermission",user.Role.UserPermission),
                 new Claim(ClaimTypes.NameIdentifier ,user.UserName),
                 new Claim(ClaimTypes.Role, user.Role.RoleName),
             };

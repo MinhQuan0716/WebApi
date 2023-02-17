@@ -5,8 +5,11 @@ using Application.Services;
 using Application.Utils;
 using Infrastructures.Mappers;
 using Infrastructures.Repositories;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using System.Security.Claims;
 
 namespace Infrastructures
 {
@@ -25,6 +28,14 @@ namespace Infrastructures
    
             services.AddScoped<IUserService, UserService>();
             services.AddSingleton<ICurrentTime, CurrentTime>();
+            services.AddScoped<ISyllabusRepository, SyllabusRepository>();
+            //Add Policy
+            //services.AddAuthorization(options =>
+            //{
+            //    options.AddPolicy("CanUpdateOrder", policy => policy.RequireClaim("SyllabusPermission", "View"));
+            //});
+
+            //services.AddSingleton<IAuthorizationHandler, SyllabusPermissionAuthorizationHandler>();
 
             // ATTENTION: if you do migration please check file README.md
             services.AddDbContext<AppDbContext>(option => option.UseSqlServer(databaseConnection));

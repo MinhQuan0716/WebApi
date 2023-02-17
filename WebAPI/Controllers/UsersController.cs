@@ -7,6 +7,10 @@ using Application.Utils;
 using WebAPI.Services;
 using Application.ViewModels.TokenModels;
 using Microsoft.IdentityModel.Tokens;
+using Application.Utils;
+using Domain.Enums;
+using System.Security.Claims;
+
 namespace WebAPI.Controllers
 {
     public class UsersController : BaseController
@@ -107,6 +111,7 @@ namespace WebAPI.Controllers
         }
 
         [Authorize]
+        [ClaimRequirement(nameof(PermissionItem.UserPermission), nameof(PermissionEnum.View))]
         [HttpGet]
         public async Task<IActionResult> GetAllUserAsync()
         {
