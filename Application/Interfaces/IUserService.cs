@@ -17,6 +17,7 @@ public interface IUserService
     public Task<Token> RefreshToken(string accessToken, string refreshToken);
     public Task<Token> LoginAsync(LoginDTO userDto);
     public Task<bool> UpdateUserInformation(UpdateDTO updateUser);
+    public Task<UserViewModel> GetUserByIdAsync(string id);
     Task<string> SendResetPassword(string email);
     Task<bool> ResetPassword(ResetPasswordDTO resetPasswordDTO);
 

@@ -91,7 +91,7 @@ namespace WebAPI.Controllers
             else return BadRequest();
         }
 
-
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> GetAllUserAsync()
         {
@@ -102,6 +102,7 @@ namespace WebAPI.Controllers
             }
             return Ok(users);
         }
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> GetUserPaginationAsync(int pageIndex = 0, int pageSize = 10)
         {
@@ -119,6 +120,17 @@ namespace WebAPI.Controllers
                 return NoContent();
             }
             return BadRequest();
+        }
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> GetUserByIdAsync(string id)
+        {
+            var user = await _userService.GetUserByIdAsync(id);
+            if (user is null)
+            {
+                return NoContent();
+            }
+            return Ok(user);
         }
     }
 }

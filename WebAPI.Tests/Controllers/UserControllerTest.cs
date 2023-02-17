@@ -206,5 +206,44 @@ namespace WebAPI.Tests.Controllers
             Assert.Equal(StatusCodes.Status200OK, result.StatusCode);
             Assert.Equal(mock, result.Value);
         }
+
+        [Fact]
+        public async Task GetUserGetUserByIdAsync_ShouldReturnCorrectData()
+        {
+            //arrange
+            var mockUser = _fixture.Build<UserViewModel>().Create();
+
+            _userServiceMock.Setup(
+                x => x.GetUserByIdAsync(mockUser._Id)).ReturnsAsync(mockUser);
+            //act
+            var result = await _userController.GetUserByIdAsync(mockUser._Id) as OkObjectResult;
+
+            //assert
+            _userServiceMock.Verify(
+                x => x.GetUserByIdAsync(
+                    It.IsAny<string>()), Times.Once);
+            Assert.NotNull(result);
+            Assert.IsType<UserViewModel>(result.Value);
+            Assert.Equal(StatusCodes.Status200OK, result.StatusCode);
+            Assert.Equal(mockUser, result.Value);
+        }
+        [Fact]
+        public async Task GetUserGetUserByIdAsync_ShouldReturnNoContent_WhenPassNonExistId()
+        {
+            //arrange
+            var mockUser = _fixture.Build<UserViewModel>().Create();
+
+            _userServiceMock.Setup(
+                x => x.GetUserByIdAsync(mockUser._Id)).ReturnsAsync(mockUser);
+            //act
+            var result = await _userController.GetUserByIdAsync(It.IsAny<string>()) as NoContentResult;
+
+            //assert
+            _userServiceMock.Verify(
+                x => x.GetUserByIdAsync(
+                    mockUser._Id), Times.Never);
+            Assert.NotNull(result);
+            Assert.Equal(StatusCodes.Status204NoContent, result.StatusCode);
+        }
     }
 }

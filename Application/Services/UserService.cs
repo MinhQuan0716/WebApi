@@ -233,4 +233,16 @@ public class UserService : IUserService
         var result = _mapper.Map<List<UserViewModel>>(users);
         return result;
     }
+    /// <summary>
+    /// Find and return UserViewModel 
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    public async Task<UserViewModel> GetUserByIdAsync(string id)
+    {
+        var userId = _mapper.Map<Guid>(id);
+        var user = await _unitOfWork.UserRepository.GetByIdAsync(userId);
+        var result = _mapper.Map<UserViewModel>(user);
+        return result;
+    }
 }

@@ -5,6 +5,7 @@ using Application.Utils;
 using Application.ViewModels.TokenModels;
 using Application.ViewModels.UserViewModels;
 using AutoFixture;
+using AutoMapper;
 using Domain.Entities;
 using Domains.Test;
 using FluentAssertions;
@@ -364,10 +365,42 @@ namespace Application.Tests.Services
 
             //act
             var result = await _userService.GetUserPaginationAsync(0, 10);
-
+        
             //assert
             _unitOfWorkMock.Verify(x => x.UserRepository.ToPagination(0, 10), Times.Once());
             result.Should().BeEquivalentTo(expected);
+        }
+        [Fact]
+        public async void GetUserByIdAsync_ShouldReturnCorrectData()
+        {
+            //arrange
+            var mockUser = _fixture.Build<User>().Create();
+            var expected = _mapperConfig.Map<UserViewModel>(mockUser);
+
+            _unitOfWorkMock.Setup(x => x.UserRepository.GetByIdAsync(mockUser.Id)).ReturnsAsync(mockUser);
+
+            //act
+            var result = await _userService.GetUserByIdAsync(expected._Id);
+
+            //assert
+            _unitOfWorkMock.Verify(x => x.UserRepository.GetByIdAsync(mockUser.Id), Times.Once());
+            result.Should().BeEquivalentTo(expected);
+        }
+        [Fact]
+        public async void GetUserByIdAsync_ShouldThrowException_WhenPassWrongFormat()
+        {
+            //arrange
+            var mockUser = _fixture.Build<User>().Create();
+            var incorrectFormatId = "abc123";
+
+            _unitOfWorkMock.Setup(x => x.UserRepository.GetByIdAsync(mockUser.Id)).ReturnsAsync(mockUser);
+
+            //act
+            Func<Task> act = async()=> await _userService.GetUserByIdAsync(incorrectFormatId);
+
+            //assert
+            _unitOfWorkMock.Verify(x => x.UserRepository.GetByIdAsync(mockUser.Id), Times.Never);
+            await act.Should().ThrowAsync<AutoMapperMappingException>();
         }
     }
 }
