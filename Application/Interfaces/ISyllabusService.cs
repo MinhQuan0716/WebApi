@@ -1,4 +1,5 @@
 ﻿using Domain.Entities;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,5 +13,7 @@ namespace Application.Interfaces
      
 
         public Task<bool> DeleteSyllabussAsync(string syllabusID);
+        public Task<List<Syllabus>> FilterSyllabus(double duration1, double duration2);
+        public Task<List<Syllabus>> GetAllSyllabus();
     }
 }

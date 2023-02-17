@@ -1,7 +1,10 @@
-using Application.Interfaces;
+﻿using Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Application.ViewModels.UserViewModels;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Application.Utils;
+using WebAPI.Services;
 using Application.ViewModels.TokenModels;
 using Microsoft.IdentityModel.Tokens;
 namespace WebAPI.Controllers
@@ -15,6 +18,7 @@ namespace WebAPI.Controllers
             _userService = userService;
             _claimsService = claimsService;
         }
+
 
         [HttpPost]
         public async Task<IActionResult> RegisterAsync(RegisterDTO loginObject)
@@ -31,18 +35,30 @@ namespace WebAPI.Controllers
         public async Task<IActionResult> LoginAsync(LoginDTO loginObject)
         {
             var token= await _userService.LoginAsync(loginObject);
-            if(token== null)
+            if (token == null)
             {
-                return BadRequest();
+                return BadRequest("Login Failed!");
             }
             return Ok(token);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> RefreshToken(string accessToken, string  refreshtoken)
+        //Innovation! We can pass 2 parameter with FromFrom but not FromBody
+        [HttpPut]
+        [Authorize]
+        public async Task<IActionResult> ChangePasswordAsync([FromForm] string oldPassword, [FromForm] string newPassword)
         {
-            var newToken = await _userService.RefreshToken(accessToken,refreshtoken);
-            if(newToken == null)
+            var checkChanged = await _userService.ChangePasswordAsync(oldPassword,newPassword);
+           
+            if (!checkChanged.Contains("Success"))
+                return BadRequest(checkChanged);
+            
+            return Ok(checkChanged);
+        }
+        [HttpPost]
+        public async Task<IActionResult> RefreshToken(string accessToken, string refreshtoken)
+        {
+            var newToken = await _userService.RefreshToken(accessToken, refreshtoken);
+            if (newToken == null)
             {
                 return BadRequest();
             }

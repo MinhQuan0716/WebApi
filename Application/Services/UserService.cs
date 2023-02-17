@@ -5,17 +5,14 @@ using Application.ViewModels.TokenModels;
 using Application.ViewModels.UserViewModels;
 using AutoMapper;
 using Domain.Entities;
-using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
-using System.Reflection.PortableExecutable;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
@@ -32,7 +29,6 @@ public class UserService : IUserService
     private readonly IConfiguration _config;
     private readonly IMemoryCache _memoryCache;
     private readonly ISendMailHelper _sendMailHelper;
-
     public UserService(IUnitOfWork unitOfWork, IMapper mapper, ICurrentTime currentTime, AppConfiguration configuration)
     {
         _unitOfWork = unitOfWork;
@@ -57,6 +53,17 @@ public class UserService : IUserService
         return null;
     }
 
+    public UserService(IUnitOfWork unitOfWork, IMapper mapper, ICurrentTime currentTime, AppConfiguration configuration, IConfiguration config, IMemoryCache memoryCache, ISendMailHelper sendMailHelper)
+    {
+        _unitOfWork = unitOfWork;
+        _mapper = mapper;
+        _currentTime = currentTime;
+        _configuration = configuration;
+        _config = config;
+        _memoryCache = memoryCache;
+        _sendMailHelper = sendMailHelper;
+    }
+
 
     public async Task<bool> ChangeUserRole(Guid userId, int roleId)
     {
@@ -72,21 +79,26 @@ public class UserService : IUserService
         
     }
 
-    public UserService(IUnitOfWork unitOfWork, IMapper mapper, ICurrentTime currentTime, AppConfiguration configuration, IConfiguration config, IMemoryCache memoryCache, ISendMailHelper sendMailHelper)
+    public async Task<string> ChangePasswordAsync(string oldPassword, string newPassword)
     {
-        _unitOfWork = unitOfWork;
-        _mapper = mapper;
-        _currentTime = currentTime;
-        _configuration = configuration;
-        _config = config;
-        _memoryCache = memoryCache;
-        _sendMailHelper = sendMailHelper;
+
+        var user = await _unitOfWork.UserRepository.GetAuthorizedUserAsync();
+        if (user == null) throw new Exception("User Not Exist");
+
+        if (oldPassword.CheckPassword(user.PasswordHash) == false)
+            throw new Exception("Old password are wrong");
+
+        var result = await _unitOfWork.UserRepository.ChangeUserPasswordAsync(user,newPassword);
+        if (result)
+            return "Update Success!";
+        return "Update Failed";
     }
+
 
     public async Task<Token> LoginAsync(LoginDTO userDto)
     {
         var user = await _unitOfWork.UserRepository.GetUserByEmailAsync(userDto.Email);
-        if (userDto.Password.CheckPassword(user.PasswordHash)==false)
+        if (userDto.Password.CheckPassword(user.PasswordHash) == false)
         {
             throw new Exception("Password is not incorrect!!");
         }
@@ -98,11 +110,11 @@ public class UserService : IUserService
         user.ExpireTokenTime = expireRefreshTokenTime;
         _unitOfWork.UserRepository.Update(user);
         await _unitOfWork.SaveChangeAsync();
-        return new Token 
+        return new Token
         {
-            UserName=user.UserName,
-            AccessToken=accessToken,
-            RefreshToken=refreshToken
+            UserName = user.UserName,
+            AccessToken = accessToken,
+            RefreshToken = refreshToken
         };
 
     }
@@ -115,7 +127,7 @@ public class UserService : IUserService
         }
         var principal = accessToken.GetPrincipalFromExpiredToken(_configuration.JWTSecretKey);
 
-        var id = principal.FindFirstValue("userID");
+        var id = principal?.FindFirstValue("userID");
         _ = Guid.TryParse(id, out Guid userID);
         var userLogin = await _unitOfWork.UserRepository.GetByIdAsync(userID, x => x.Role);
         if (userLogin == null || userLogin.RefreshToken != refreshToken || userLogin.ExpireTokenTime <= DateTime.Now)
@@ -132,7 +144,7 @@ public class UserService : IUserService
 
         return new Token
         {
-            UserName= userLogin.UserName,
+            UserName = userLogin.UserName,
             AccessToken = newAccessToken,
             RefreshToken = newRefreshToken
         };
@@ -141,7 +153,7 @@ public class UserService : IUserService
     public async Task<bool> RegisterAsync(RegisterDTO userDto)
     {
         var isExisted = await _unitOfWork.UserRepository.CheckEmailExistedAsync(userDto.Email);
-        
+
         if (isExisted)
         {
             throw new Exception("Username exited please try again");
@@ -149,43 +161,44 @@ public class UserService : IUserService
 
         var newUser = new User
         {
-            UserName = userDto.Email, // lay email lam username luon
+            UserName = userDto.Email,
             PasswordHash = userDto.Password.Hash(),
-            Email = userDto.Email
+            Email = userDto.Email, // lay email lam username luon
         };
-
         await _unitOfWork.UserRepository.AddAsync(newUser);
-        return await _unitOfWork.SaveChangeAsync()>0;
+        return await _unitOfWork.SaveChangeAsync() > 0;
     }
 
     public async Task<bool> ResetPassword(ResetPasswordDTO resetPasswordDTO)
     {
         string email;
         _ = _memoryCache.TryGetValue(resetPasswordDTO.Code, out email);
-        
-      
-        if(email != null)
+
+
+        if (email != null)
         {
-            if(resetPasswordDTO.NewPassword.Equals(resetPasswordDTO.ConfirmPassword))
+            if (resetPasswordDTO.NewPassword.Equals(resetPasswordDTO.ConfirmPassword))
             {
 
-                var user =  await _unitOfWork.UserRepository.GetUserByEmailAsync(email);
-                if(user != null) 
+                var user = await _unitOfWork.UserRepository.GetUserByEmailAsync(email);
+                if (user != null)
                 {
                     resetPasswordDTO.NewPassword = resetPasswordDTO.NewPassword.Hash();
                     _ = _mapper.Map(resetPasswordDTO, user, typeof(ResetPasswordDTO), typeof(User));
                     _unitOfWork.UserRepository.Update(user);
-                    if(await _unitOfWork.SaveChangeAsync() > 0)
+                    if (await _unitOfWork.SaveChangeAsync() > 0)
                     {
                         return true;
                     }
                 }
-            } else
+            }
+            else
             {
                 throw new Exception("Password and Confirm Password is not match");
             }
-        } throw new Exception("Not exsited Code");
-        
+        }
+        throw new Exception("Not exsited Code");
+
 
 
     }
@@ -199,10 +212,10 @@ public class UserService : IUserService
         var user = await _unitOfWork.UserRepository.GetUserByEmailAsync(email);
         if (user != null)
         {
-          
+
             var key = StringUtils.RandomString(6);
             var result = await _sendMailHelper.SendMailAsync(email, "ResetPassword", key);
-            if(result)
+            if (result)
             {
                 _memoryCache.Set(key, email);
                 return key;
@@ -212,17 +225,17 @@ public class UserService : IUserService
         }
         else
         {
-            
+
             throw new Exception("User not available");
-            
+
         }
-        
-        
+
+
     }
 
     public async Task<bool> UpdateUserInformation(UpdateDTO updateUser)
-    {   
-        if(updateUser != null)
+    {
+        if (updateUser != null)
         {
             User user = await _unitOfWork.UserRepository.GetByIdAsync(updateUser.UserID);
             _ = _mapper.Map(updateUser, user, typeof(UpdateDTO), typeof(User));
@@ -230,8 +243,11 @@ public class UserService : IUserService
             _unitOfWork.UserRepository.Update(user);
             if (await _unitOfWork.SaveChangeAsync() > 0) return true;
             else return false;
-        } throw new Exception("User can not be null");
-        
+        }
+        throw new Exception("User can not be null");
+
+
+
     }
     /// <summary>
     /// Return collection of item with parameter
@@ -279,5 +295,6 @@ public class UserService : IUserService
         }
         return result;
     }
+
 
 }

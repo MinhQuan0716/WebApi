@@ -16,7 +16,13 @@ namespace Infrastructures
         {
             services.AddScoped<ISendMailHelper, SendMailHelper>();
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IUnitRepository, UnitRepository>();
+            services.AddScoped<ISyllabusRepository, SyllabusRepository>();
+
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<ISyllabusService, SyllabusService>();
+   
             services.AddScoped<IUserService, UserService>();
             services.AddSingleton<ICurrentTime, CurrentTime>();
 

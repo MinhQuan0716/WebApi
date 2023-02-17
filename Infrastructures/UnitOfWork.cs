@@ -9,6 +9,7 @@ namespace Infrastructures
         private readonly IUserRepository _userRepository;
         private readonly ISyllabusRepository _syllabusRepository;
         private readonly IUnitRepository _unitRepository;
+
        
 
         public UnitOfWork(AppDbContext dbContext,
@@ -23,8 +24,8 @@ namespace Infrastructures
         }
 
         public IUserRepository UserRepository => _userRepository;
-
         public ISyllabusRepository SyllabusRepository => _syllabusRepository;
+
 
         public IUnitRepository UnitRepository => _unitRepository;
 

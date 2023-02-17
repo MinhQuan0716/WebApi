@@ -11,7 +11,7 @@ namespace Infrastructures.Repositories
     {
         protected DbSet<TEntity> _dbSet;
         private readonly ICurrentTime _timeService;
-        private readonly IClaimsService _claimsService;
+        protected readonly IClaimsService _claimsService;
 
         public GenericRepository(AppDbContext context, ICurrentTime timeService, IClaimsService claimsService)
         {
@@ -104,5 +104,7 @@ namespace Infrastructures.Repositories
             }
             _dbSet.UpdateRange(entities);
         }
+
+        public async Task<List<TEntity>> FindAsync(Expression<Func<TEntity, bool>> expression) => await _dbSet.Where(expression).ToListAsync();
     }
 }

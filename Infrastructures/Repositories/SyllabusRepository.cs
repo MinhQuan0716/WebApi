@@ -16,5 +16,11 @@ namespace Infrastructures.Repositories
         {
             _dbContext = context;
         }
+
+        public async Task<List<Syllabus>> FilterSyllabusByDuration(double duration1, double duration2)
+        {
+            List<Syllabus>? result = _dbContext.Syllabuses.Where(x => x.Duration > duration1 && x.Duration < duration2).ToList();
+            return result;
+        }
     }
 }

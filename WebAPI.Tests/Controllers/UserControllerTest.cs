@@ -78,7 +78,7 @@ public class UserControllerTest : SetupTest
 
         var result = await _userController.LoginAsync(loginDTo);
         //Assert
-        result.Should().BeOfType<BadRequestResult>();
+        result.Should().BeOfType<BadRequestObjectResult>();
 
     }
 

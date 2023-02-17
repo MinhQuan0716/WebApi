@@ -18,7 +18,6 @@ namespace WebAPI
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen();
             services.AddHealthChecks();
-            services.AddMemoryCache(); 
             services.AddSingleton<GlobalExceptionMiddleware>();
             services.AddSingleton<PerformanceMiddleware>();
             services.AddSingleton<Stopwatch>();
@@ -27,8 +26,7 @@ namespace WebAPI
             services.AddFluentValidationAutoValidation();
             services.AddFluentValidationClientsideAdapters();
             services.AddControllers().AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
-
-
+            services.AddMemoryCache();
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {

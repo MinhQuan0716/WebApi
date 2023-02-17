@@ -4,6 +4,7 @@ using Domain.Entities;
 using Domains.Test;
 using FluentAssertions;
 using Infrastructures.Repositories;
+using Moq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -103,7 +104,23 @@ namespace Infrastructures.Tests.Repository
             //Assert
             act.Should().ThrowAsync<Exception>();
         }
+        [Fact]
+        public async Task ChangeUserPasswordAsync_ShouldReturnCorrectData()
+        {
+            //Arrange
+            var userMock = _fixture.Build<User>().Create();
+            await _dbContext.Users.AddAsync(userMock);
+            await _dbContext.SaveChangesAsync();
+            string newPassword = "string1";
 
+            _unitOfWorkMock.Setup(u => u.UserRepository.Update(userMock)).Verifiable();
+            _unitOfWorkMock.Setup(u => u.SaveChangeAsync()).ReturnsAsync(1);
+             //Act
+             var result = await _userRepository.ChangeUserPasswordAsync(userMock,newPassword);
+
+            //Assert
+            result.Should().BeTrue();
+        }
 
 
     }

@@ -3,18 +3,15 @@ using Application.Interfaces;
 using Application.Services;
 using Application.Utils;
 using Application.ViewModels.TokenModels;
-using Application.Utils;
 using Application.ViewModels.UserViewModels;
 using AutoFixture;
 using AutoMapper;
 using Domain.Entities;
 using Domains.Test;
 using FluentAssertions;
-using Microsoft.AspNetCore.Mvc.ActionConstraints;
-using Moq;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Caching.Memory;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Moq;
 
 namespace Application.Tests.Services
 {
@@ -23,62 +20,12 @@ namespace Application.Tests.Services
         private readonly IUserService _userService;
         public UserServiceTest()
         {
-            _userService = new UserService(_unitOfWorkMock.Object, _mapperConfig, _currentTimeMock.Object, _appConfigurationMock.Object);
+            _userService = new UserService(_unitOfWorkMock.Object,
+                                           _mapperConfig,
+                                           _currentTimeMock.Object,
+                                           _appConfigurationMock.Object);
         }
-
-        [Fact]
-        public async Task UpdateUser_ShouldReturnTrue()
-        {
-            var mockData = _fixture.Create<UpdateDTO>();
-            _unitOfWorkMock.Setup(um => um.UserRepository.Update(It.IsAny<User>())).Verifiable();
-            _unitOfWorkMock.Setup(um => um.SaveChangeAsync()).ReturnsAsync(1);
-            var result = await _userService.UpdateUserInformation(mockData);
-            Assert.True(result);
-
-        }
-
-
-        [Fact]
-        public async Task UpdateUser_ShouldReturnFalse()
-        {
-            var mockData = _fixture.Create<UpdateDTO>();
-            _unitOfWorkMock.Setup(um => um.UserRepository.Update(It.IsAny<User>())).Verifiable();
-            _unitOfWorkMock.Setup(um => um.SaveChangeAsync()).ReturnsAsync(-1);
-            var result = await _userService.UpdateUserInformation(mockData);
-            result.Should().BeFalse();
-        }
-
-        [Fact]
-        public async Task UpdateUser_ShouldThrowException()
-        {
-            UpdateDTO mockData = null;
-            //Get Return Exception
-            Func<Task> act = async () => await _userService.UpdateUserInformation(mockData);
-            act.Should().ThrowAsync<Exception>();
-        }
-
-        [Fact]
-        public async Task Register_ShouldReturnUser()
-        {
-            var mockData = _fixture.Build<RegisterDTO>().Create();
-            _unitOfWorkMock.Setup(um => um.UserRepository.CheckEmailExistedAsync(mockData.Email)).ReturnsAsync(false);
-            var addMockData = _mapperConfig.Map<User>(mockData);
-            _unitOfWorkMock.Setup(um => um.UserRepository.AddAsync(addMockData)).Verifiable();
-            _unitOfWorkMock.Setup(um => um.SaveChangeAsync()).ReturnsAsync(1);
-            var result = await _userService.RegisterAsync(mockData);
-            result.Should().BeTrue();
-        }
-
-        [Fact]
-        public async Task Register_ShouldThrowException()
-        {
-
-            var mockData = _fixture.Build<RegisterDTO>().Create();
-            _unitOfWorkMock.Setup(u => u.UserRepository.CheckEmailExistedAsync(mockData.Email)).ReturnsAsync(true);
-            Func<Task> act = async () => await _userService.RegisterAsync(mockData);
-            act.Should().ThrowAsync<Exception>();
-        }
-
+       
         [Fact]
         public async Task SendResetPasswordTest_ShouldReturnString()
         {
@@ -86,7 +33,7 @@ namespace Application.Tests.Services
             _fixture.Behaviors.OfType<ThrowingRecursionBehavior>().ToList()
             .ForEach(b => _fixture.Behaviors.Remove(b));
             _fixture.Behaviors.Add(new OmitOnRecursionBehavior());
-            var mockUser = _fixture.Build<User>().Create(); 
+            var mockUser = _fixture.Build<User>().Create();
             _unitOfWorkMock.Setup(u => u.UserRepository.GetUserByEmailAsync(mockUser.Email)).ReturnsAsync(mockUser);
             _sendMailMock.Setup(sm => sm.SendMailAsync(mockUser.Email, "ResetPassword", It.IsAny<string>())).ReturnsAsync(true);
             Mock<IConfiguration> _mockConfig = new Mock<IConfiguration>();
@@ -95,7 +42,7 @@ namespace Application.Tests.Services
             IUserService newUserService = new UserService(_unitOfWorkMock.Object,
                 _mapperConfig, _currentTimeMock.Object, _appConfigurationMock.Object,
                 _mockConfig.Object, cache, _sendMailMock.Object);
- 
+
             var result = await newUserService.SendResetPassword(mockUser.Email);
             // Assert
             result.Should().NotBeNullOrEmpty();
@@ -211,28 +158,81 @@ namespace Application.Tests.Services
             Func<Task> act = async () => await newUserService.ResetPassword(ResetPassDTO);
             act.Should().ThrowAsync<Exception>();
         }
-/*        [Fact]
-        public async Task ResetPassword_ConfirmFalse_ShouldThrowException()
-        {
-            _fixture.Behaviors.OfType<ThrowingRecursionBehavior>().ToList()
-           .ForEach(b => _fixture.Behaviors.Remove(b));
-            _fixture.Behaviors.Add(new OmitOnRecursionBehavior());
-            // Setup
-            var cache = new MemoryCache(new MemoryCacheOptions());
-            var ResetPassDTO = _fixture.Build<ResetPasswordDTO>().Create();
-            var user = _fixture.Build<User>().Create();
-            string email = "MockEMail@gmail.com";
-            cache.Set(ResetPassDTO.Code, email);
-            Mock<IConfiguration> _mockConfig = new Mock<IConfiguration>();
-            IUserService newUserService = new UserService(_unitOfWorkMock.Object,
-              _mapperConfig, _currentTimeMock.Object, _appConfigurationMock.Object,
-              _mockConfig.Object, cache, _sendMailMock.Object);
-            var result = await newUserService.ResetPassword(ResetPassDTO);
-            Func<Task> act = async () => await newUserService.ResetPassword(ResetPassDTO);
-            act.Should().ThrowAsync<Exception>();
+        /*        [Fact]
+                public async Task ResetPassword_ConfirmFalse_ShouldThrowException()
+                {
+                    _fixture.Behaviors.OfType<ThrowingRecursionBehavior>().ToList()
+                   .ForEach(b => _fixture.Behaviors.Remove(b));
+                    _fixture.Behaviors.Add(new OmitOnRecursionBehavior());
+                    // Setup
+                    var cache = new MemoryCache(new MemoryCacheOptions());
+                    var ResetPassDTO = _fixture.Build<ResetPasswordDTO>().Create();
+                    var user = _fixture.Build<User>().Create();
+                    string email = "MockEMail@gmail.com";
+                    cache.Set(ResetPassDTO.Code, email);
+                    Mock<IConfiguration> _mockConfig = new Mock<IConfiguration>();
+                    IUserService newUserService = new UserService(_unitOfWorkMock.Object,
+                      _mapperConfig, _currentTimeMock.Object, _appConfigurationMock.Object,
+                      _mockConfig.Object, cache, _sendMailMock.Object);
+                    var result = await newUserService.ResetPassword(ResetPassDTO);
+                    Func<Task> act = async () => await newUserService.ResetPassword(ResetPassDTO);
+                    act.Should().ThrowAsync<Exception>();
 
-        }*/
-  
+                }*/
+
+
+        [Fact]
+        public async Task UpdateUser_ShouldReturnTrue()
+        {
+            var mockData = _fixture.Create<UpdateDTO>();
+            _unitOfWorkMock.Setup(um => um.UserRepository.Update(It.IsAny<User>())).Verifiable();
+            _unitOfWorkMock.Setup(um => um.SaveChangeAsync()).ReturnsAsync(1);
+            var result = await _userService.UpdateUserInformation(mockData);
+            Assert.True(result);
+
+        }
+
+
+        [Fact]
+        public async Task UpdateUser_ShouldReturnFalse()
+        {
+            var mockData = _fixture.Create<UpdateDTO>();
+            _unitOfWorkMock.Setup(um => um.UserRepository.Update(It.IsAny<User>())).Verifiable();
+            _unitOfWorkMock.Setup(um => um.SaveChangeAsync()).ReturnsAsync(-1);
+            var result = await _userService.UpdateUserInformation(mockData);
+            result.Should().BeFalse();
+        }
+
+        [Fact]
+        public async Task UpdateUser_ShouldThrowException()
+        {
+            UpdateDTO mockData = null;
+            //Get Return Exception
+            Func<Task> act = async () => await _userService.UpdateUserInformation(mockData);
+            act.Should().ThrowAsync<Exception>();
+        }
+
+        [Fact]
+        public async Task Register_ShouldReturnUser()
+        {
+            var mockData = _fixture.Build<RegisterDTO>().Create();
+            _unitOfWorkMock.Setup(um => um.UserRepository.CheckEmailExistedAsync(mockData.Email)).ReturnsAsync(false);
+            var addMockData = _mapperConfig.Map<User>(mockData);
+            _unitOfWorkMock.Setup(um => um.UserRepository.AddAsync(addMockData)).Verifiable();
+            _unitOfWorkMock.Setup(um => um.SaveChangeAsync()).ReturnsAsync(1);
+            var result = await _userService.RegisterAsync(mockData);
+            result.Should().BeTrue();
+        }
+
+        [Fact]
+        public async Task Register_ShouldThrowException()
+        {
+
+            var mockData = _fixture.Build<RegisterDTO>().Create();
+            _unitOfWorkMock.Setup(u => u.UserRepository.CheckEmailExistedAsync(mockData.Email)).ReturnsAsync(true);
+            Func<Task> act = async () => await _userService.RegisterAsync(mockData);
+            act.Should().ThrowAsync<Exception>();
+        }
 
         [Fact]
         public async Task LoginAsync_ReturnCorrectData()
@@ -470,6 +470,22 @@ namespace Application.Tests.Services
             //assert
             _unitOfWorkMock.Verify(x => x.UserRepository.GetByIdAsync(mockUser.Id), Times.Once());
             result.Should().BeEquivalentTo(expected);
+        }
+
+        [Fact]
+        public async Task UserService_ChangePasswordAsync_ShouldReturnCorrectData()
+        {
+            var mockData = _fixture.Build<User>().Without(u => u.Syllabuses).Without(u => u.Role).Create();
+            mockData.PasswordHash = "string".Hash();
+
+            var newPassword = "string1";
+            _unitOfWorkMock.Setup(service => service.UserRepository.GetAuthorizedUserAsync()).ReturnsAsync(mockData);
+
+            _unitOfWorkMock.Setup(s => s.UserRepository.ChangeUserPasswordAsync(mockData,newPassword)).ReturnsAsync(true);
+            var result = await _userService.ChangePasswordAsync("string", newPassword);
+
+            result.Should().Be("Update Success!");
+
         }
         [Fact]
         public async void GetUserByIdAsync_ShouldThrowException_WhenPassWrongFormat()

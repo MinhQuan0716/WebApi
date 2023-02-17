@@ -9,5 +9,7 @@ namespace Application.Repositories
 {
     public interface ISyllabusRepository : IGenericRepository<Syllabus>
     {
+        public Task<List<Syllabus>> FilterSyllabusByDuration(double duration1, double duration2);
+
     }
 }

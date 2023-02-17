@@ -1,13 +1,14 @@
 ﻿using Application.Commons;
 using Application.ViewModels.TokenModels;
+using Application.Utils;
 using Application.ViewModels.UserViewModels;
 using Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Application.Interfaces;
 
@@ -24,6 +25,15 @@ public interface IUserService
     Task<Pagination<UserViewModel>> GetUserPaginationAsync(int pageIndex = 0, int pageSize = 10);
     Task<List<UserViewModel>> GetAllAsync();
     public Task<bool> ChangeUserRole(Guid userId, int roleId);
-    public Task<User> AddUserManualAsync(AddUserManually addUserManually);
+    /// <summary>
+    /// Change current User password.
+    /// Authorized as anyone
+    /// </summary>
+    /// <param name="oldPassword">send the old password</param>
+    /// <param name="newPassword">send the new password</param>
+    /// <returns></returns>
+    public Task<string> ChangePasswordAsync(string oldPassword, string newPassword);
+
     public Task<bool> DisableUserById(string userId);
+    Task<User> AddUserManualAsync(AddUserManually addUserManually);
 }
