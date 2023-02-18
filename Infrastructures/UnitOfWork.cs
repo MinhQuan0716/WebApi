@@ -1,5 +1,6 @@
 ﻿using Application;
 using Application.Repositories;
+using System.Runtime.CompilerServices;
 
 namespace Infrastructures
 {

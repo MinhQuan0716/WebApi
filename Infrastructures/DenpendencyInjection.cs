@@ -26,20 +26,10 @@ namespace Infrastructures
             services.AddScoped<IUserService, UserService>();
 
             services.AddSingleton<ICurrentTime, CurrentTime>();
-            
-
-            services.AddScoped<ISyllabusService, SyllabusService>();
    
             services.AddScoped<IUserService, UserService>();
             services.AddSingleton<ICurrentTime, CurrentTime>();
-            services.AddScoped<ISyllabusRepository, SyllabusRepository>();
-            //Add Policy
-            //services.AddAuthorization(options =>
-            //{
-            //    options.AddPolicy("CanUpdateOrder", policy => policy.RequireClaim("SyllabusPermission", "View"));
-            //});
-
-            //services.AddSingleton<IAuthorizationHandler, SyllabusPermissionAuthorizationHandler>();
+            services.AddScoped<ISyllabusService, SyllabusService>();
             // ATTENTION: if you do migration please check file README.md
             services.AddDbContext<AppDbContext>(option => option.UseSqlServer(databaseConnection));
 

@@ -14,6 +14,7 @@ namespace Application.Interfaces
         public Task<List<Syllabus>> FilterSyllabus(double duration1, double duration2);
         public Task<List<Syllabus>> GetAllSyllabus();
         public Task<bool> DeleteSyllabussAsync(string syllabusID);
+        public Task<List<Syllabus>> GetByName(string name);
     }
 }
 

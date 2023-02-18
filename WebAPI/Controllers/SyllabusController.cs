@@ -44,9 +44,6 @@ namespace WebAPI.Controllers
             {
                 return NotFound();
             }
-
-
-
         }
         [HttpGet("{id:maxlength(50):Guid}")]
         public async Task<IActionResult> DeleteSyllabus(string id)
@@ -62,6 +59,17 @@ namespace WebAPI.Controllers
 
             return BadRequest("Delete Syllabus Not Successfully");
         }
+
+            [HttpGet("GetName/{name}")]
+            public async Task<IActionResult> Get(string name)
+            {
+                var result = await _syllabusService.GetByName(name);
+                if (result != null)
+                {
+                    return Ok(result);
+                }
+                return BadRequest("Cannot find");
+            }
        
     }
 }
