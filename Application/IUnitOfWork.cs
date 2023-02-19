@@ -10,7 +10,8 @@ namespace Application
         public IUserRepository UserRepository { get; }
 
         public IUnitRepository UnitRepository { get; }
-
+        public ILectureRepository LectureRepository { get; }
+        public IDetailUnitLectureRepository DetailUnitLectureRepository { get; }
         public Task<int> SaveChangeAsync();
     }
 }

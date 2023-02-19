@@ -21,10 +21,10 @@ namespace Infrastructures
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IUnitRepository, UnitRepository>();
             services.AddScoped<ISyllabusRepository, SyllabusRepository>();
-
+            services.AddScoped<ILectureRepository, LectureRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IUserService, UserService>();
-
+            services.AddScoped<IDetailUnitLectureRepository, DetailUnitLectureRepository>();
             services.AddSingleton<ICurrentTime, CurrentTime>();
    
             services.AddScoped<IUserService, UserService>();

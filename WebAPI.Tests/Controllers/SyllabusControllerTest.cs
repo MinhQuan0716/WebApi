@@ -1,10 +1,16 @@
-﻿using Domains.Test;
+﻿using Application.ViewModels.SyllabusModels.UpdateSyllabusModels;
+using AutoFixture;
+using Domains.Test;
+using FluentAssertions;
+using Microsoft.AspNetCore.Mvc;
+using Moq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WebAPI.Controllers;
+using Xunit.Sdk;
 
 namespace WebAPI.Tests.Controllers
 {
@@ -38,6 +44,31 @@ namespace WebAPI.Tests.Controllers
             //Assert
             Assert.NotNull(filterResult);
         }
+
+        [Fact]
+        public async Task UpdateSyllabus_ShouldReturnNoContent()
+        {
+            Guid id = Guid.NewGuid();
+            var updateSyllabusDTO = _fixture.Create<UpdateSyllabusDTO>();
+            _syllabusServiceMock.Setup(sm => sm.UpdateSyllabus(id, updateSyllabusDTO)).ReturnsAsync(true);
+            var result = await syllabusController.UpdateSyllabus(id , updateSyllabusDTO);
+            result.Should().BeOfType<NoContentResult>();
+        }
+
+        [Fact]
+        public async Task UpdateSyllabus_ShouldReturnBadRequest()
+        {
+            Guid id = Guid.NewGuid();
+            var updateSyllabusDTO = _fixture.Create<UpdateSyllabusDTO>();
+            _syllabusServiceMock.Setup(sm => sm.UpdateSyllabus(id, updateSyllabusDTO)).ReturnsAsync(false);
+            var result = await syllabusController.UpdateSyllabus(id, updateSyllabusDTO);
+            result.Should().BeOfType<BadRequestObjectResult>();
+            var objResult = result as BadRequestObjectResult;
+            if(objResult is not null)
+            objResult.Value.Should().BeSameAs("Update Failed");
+        }
+
+
     }
 
 }

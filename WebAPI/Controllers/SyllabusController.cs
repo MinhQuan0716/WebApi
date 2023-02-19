@@ -3,6 +3,10 @@ using Domain.Entities;
 using Microsoft.AspNetCore.Http;
 using Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
+using Application.ViewModels.SyllabusModels.UpdateSyllabusModels;
+using Microsoft.AspNetCore.Authorization;
+using Application.Utils;
+using Domain.Enums;
 
 namespace WebAPI.Controllers
 {
@@ -70,6 +74,17 @@ namespace WebAPI.Controllers
                 }
                 return BadRequest("Cannot find");
             }
+       
+
+        [HttpPut] 
+        [Authorize]
+        [ClaimRequirement(nameof(PermissionItem.SyllabusPermission), nameof(PermissionEnum.FullAccess))]
+        public async Task<IActionResult> UpdateSyllabus(Guid syllabusId, UpdateSyllabusDTO updateObject)
+        {
+            var result = await _syllabusService.UpdateSyllabus(syllabusId, updateObject);
+            if (result) return NoContent();
+            else return BadRequest("Update Failed");
+        }
        
     }
 }
