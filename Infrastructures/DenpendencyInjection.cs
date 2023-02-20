@@ -25,11 +25,16 @@ namespace Infrastructures
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IDetailUnitLectureRepository, DetailUnitLectureRepository>();
-            services.AddSingleton<ICurrentTime, CurrentTime>();   
+            services.AddScoped<ITrainingClassRepository, TraingClassRepository>();
+            services.AddScoped<ILocationRepository, LocationRepository>();
+            services.AddSingleton<ICurrentTime, CurrentTime>();
+
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<ISyllabusService, SyllabusService>();
             services.AddSingleton<ExternalAuthUtils>();
 
+            services.AddScoped<ITrainingClassRepository, TraingClassRepository>();
+            services.AddScoped<ILocationRepository, LocationRepository>();
             // ATTENTION: if you do migration please check file README.md
             services.AddDbContext<AppDbContext>(option => option.UseSqlServer(databaseConnection));
 

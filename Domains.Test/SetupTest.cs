@@ -30,11 +30,16 @@ namespace Domains.Test
         protected readonly Mock<ICurrentTime> _currentTimeMock;
 
         protected readonly Mock<ISyllabusRepository> _syllabusRepositoryMock;
-     
+
         protected readonly Mock<SyllabusController> _syllabusControllerMock;
         protected readonly Mock<ISyllabusRepository> _syllabusRepository;
 
         protected readonly Mock<IUserRepository> _userRepository;
+
+        protected readonly Mock<ITrainingClassRepository> _trainingClassRepositoryMock;
+        protected readonly Mock<ITrainingClassService> _trainingClassServiceMock;
+        protected readonly Mock<ILocationRepository> _locationRepositoryMock;
+        protected readonly Mock<ILocationService> _locationServiceMock;
 
         protected readonly AppConfiguration configuration;
         protected readonly AppDbContext _dbContext;
@@ -66,8 +71,13 @@ namespace Domains.Test
             _userRepository = new Mock<IUserRepository>();
 
 
-            _syllabusRepositoryMock=new Mock<ISyllabusRepository>();
-            _syllabusServiceMock=new Mock<ISyllabusService>();
+            _syllabusRepositoryMock = new Mock<ISyllabusRepository>();
+            _syllabusServiceMock = new Mock<ISyllabusService>();
+
+            _trainingClassRepositoryMock = new Mock<ITrainingClassRepository>();
+            _trainingClassServiceMock = new Mock<ITrainingClassService>();
+            _locationRepositoryMock = new Mock<ILocationRepository>();
+            _locationServiceMock = new Mock<ILocationService>();
 
             _unitServiceMock = new Mock<IUnitService>();
             _syllabusServiceMock = new Mock<ISyllabusService>();

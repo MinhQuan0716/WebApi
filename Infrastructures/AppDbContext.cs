@@ -27,8 +27,10 @@ namespace Infrastructures
         public DbSet<Role> Roles { get; set; }
         public DbSet<DetailUnitLecture> DetailUnitLecture { get; set; }
         public DbSet<Unit> Units { get; set; }
-        public DbSet<Lecture> Lectures { get;set; }
-
+        public DbSet<Lecture> Lectures { get; set; }
+        public DbSet<TrainingClass> TrainingClasses { get; set; }
+        public DbSet<Location> Locations { get; set; }
+        public DbSet<DetailTrainingClassParticipate> DetailTrainingClassParticipates { get; set; }
         #endregion
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -37,6 +39,9 @@ namespace Infrastructures
             new UserConfiguration().Configure(modelBuilder.Entity<User>());
             new RoleConfiguration().Configure(modelBuilder.Entity<Role>());
             new SyllabusConfiguration().Configure(modelBuilder.Entity<Syllabus>());
+            new TrainingClassConfiguration().Configure(modelBuilder.Entity<TrainingClass>());
+            new LocationConfiguration().Configure(modelBuilder.Entity<Location>());
+            new DetailTrainingClassParticipateConfiguration().Configure(modelBuilder.Entity<DetailTrainingClassParticipate>());
         }
 
     }

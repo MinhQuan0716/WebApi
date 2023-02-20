@@ -28,5 +28,6 @@ namespace Domain.Entities
         public DateTime LoginDate { get; set; }
 
         public ICollection<Syllabus> Syllabuses { get; set; }   
+        public ICollection<DetailTrainingClassParticipate> DetailTrainingClassParticipate { get;set; }
     }
 }

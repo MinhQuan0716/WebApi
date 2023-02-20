@@ -12,9 +12,11 @@ namespace Infrastructures
         private readonly IUnitRepository _unitRepository;
         private readonly ILectureRepository _lectureRepository;
         private readonly IDetailUnitLectureRepository _detailUnitLectureRepository;
+        private readonly ITrainingClassRepository _trainingClassRepository;
+        public readonly ILocationRepository _locationRepository;
         public UnitOfWork(AppDbContext dbContext,
             IUserRepository userRepository,
-            ISyllabusRepository syllabusRepository,IUnitRepository unitRepository, ILectureRepository lectureRepository, IDetailUnitLectureRepository detailUnitLectureRepository)
+            ISyllabusRepository syllabusRepository, IUnitRepository unitRepository, ILectureRepository lectureRepository, IDetailUnitLectureRepository detailUnitLectureRepository, ITrainingClassRepository trainingClassRepository, ILocationRepository locationRepository)
         {
             _dbContext = dbContext;
             _userRepository = userRepository;
@@ -22,6 +24,8 @@ namespace Infrastructures
             _unitRepository = unitRepository;
             _lectureRepository = lectureRepository;
             _detailUnitLectureRepository = detailUnitLectureRepository;
+            _trainingClassRepository = trainingClassRepository;
+            _locationRepository = locationRepository;
         }
         public IUserRepository UserRepository => _userRepository;
         public ISyllabusRepository SyllabusRepository => _syllabusRepository;
@@ -32,6 +36,8 @@ namespace Infrastructures
         public ILectureRepository LectureRepository => _lectureRepository;
 
         public IDetailUnitLectureRepository DetailUnitLectureRepository => _detailUnitLectureRepository;
+        public ITrainingClassRepository TrainingClassRepository => _trainingClassRepository;
+        public ILocationRepository LocationRepository => _locationRepository;
         public async Task<int> SaveChangeAsync()
         {
             return await _dbContext.SaveChangesAsync();
