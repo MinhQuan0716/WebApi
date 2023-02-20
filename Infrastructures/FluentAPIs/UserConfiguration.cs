@@ -12,12 +12,14 @@ namespace Infrastructures.FluentAPIs
         {
             builder.HasKey(x => x.Id);
             builder.Property(x => x.Id).HasDefaultValueSql("NEWID()");
-            builder.Property(x => x.UserName).HasMaxLength(100);
+            builder.Property(x => x.UserName).HasMaxLength(100);            
             builder.Property(x => x.CreationDate).HasDefaultValueSql("getutcdate()");
             builder.Property(x => x.LoginDate).HasDefaultValueSql("getutcdate()");
             builder.Property(x => x.RoleId).HasDefaultValue("4");
             builder.Property(x => x.IsDeleted).HasDefaultValue("False");
             builder.HasOne(u => u.Role).WithMany(r => r.Users).HasForeignKey(u => u.RoleId);
+            builder.HasIndex(u => u.Email).IsUnique();
+            builder.HasIndex(u => u.UserName).IsUnique();
         }
     }
 }

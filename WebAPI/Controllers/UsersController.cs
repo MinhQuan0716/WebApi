@@ -7,9 +7,10 @@ using Application.Utils;
 using WebAPI.Services;
 using Application.ViewModels.TokenModels;
 using Microsoft.IdentityModel.Tokens;
-using Application.Utils;
 using Domain.Enums;
 using System.Security.Claims;
+using Domain.Entities;
+using AutoMapper;
 
 namespace WebAPI.Controllers
 {
@@ -17,12 +18,16 @@ namespace WebAPI.Controllers
     {
         private readonly IUserService _userService;
         private readonly IClaimsService _claimsService;
-        public UsersController(IUserService userService, IClaimsService claimsService)
+        private readonly ExternalAuthUtils _externalAuthUtils;
+        private readonly IMapper _mapper;
+
+        public UsersController(IUserService userService, IClaimsService claimsService, ExternalAuthUtils externalAuthUtils, IMapper mapper)
         {
             _userService = userService;
             _claimsService = claimsService;
+            _externalAuthUtils = externalAuthUtils;
+            _mapper = mapper;
         }
-
 
         [HttpPost]
         public async Task<IActionResult> RegisterAsync(RegisterDTO loginObject)
@@ -130,7 +135,8 @@ namespace WebAPI.Controllers
             return Ok(users);
         }
 
-        [Authorize(Roles = "SuperAdmin")]
+        [Authorize]
+        [ClaimRequirement(nameof(PermissionItem.UserPermission), nameof(PermissionEnum.Modifed))]
         [HttpPut]
         public async Task<IActionResult> ChangeUserRole(UpdateRoleDTO updateDTO)
         {
@@ -180,5 +186,31 @@ namespace WebAPI.Controllers
             }
             return Unauthorized();
         }
+
+        [HttpPost]
+        public async Task<IActionResult> LoginWithGoogle([FromBody] ExternalAuthDto externalAuthDto)
+        {
+            var payload = await _externalAuthUtils.VerifyGoogleToken(externalAuthDto);
+            if (payload == null)
+            {
+                return BadRequest("Invalid external authentication");
+            }
+            var newUser = new User
+            {
+                Email = payload.Email,
+                FullName = payload.Name,
+                UserName = payload.Email,
+                AvatarUrl = payload.Picture
+            };
+            var user = (await _userService.GetAllAsync()).SingleOrDefault(u => u.Email == newUser.Email);
+            if (user == null)
+            {
+                await _userService.AddUserAsync(newUser);
+            }
+            
+            var token = await _userService.LoginWithEmail(_mapper.Map<LoginWithEmailDto>(newUser));
+            return Ok(token);
+        }
+    
     }
 }

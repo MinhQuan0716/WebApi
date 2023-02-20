@@ -10,6 +10,7 @@ using Infrastructures.Mappers;
 using Microsoft.EntityFrameworkCore;
 using Moq;
 using WebAPI.Controllers;
+using Microsoft.Extensions.Configuration;
 
 namespace Domains.Test
 {
@@ -37,8 +38,10 @@ namespace Domains.Test
 
         protected readonly AppConfiguration configuration;
         protected readonly AppDbContext _dbContext;
-        protected readonly Mock<AppConfiguration> _appConfigurationMock;
+        protected readonly Mock<AppConfiguration> _appConfigurationMock;        
         protected readonly Mock<ISendMailHelper> _sendMailMock;
+        protected readonly Mock<IConfiguration> _config;
+        protected readonly Mock<IMapper> _mapperMock;
         public SetupTest()
         {
             var mappingConfig = new MapperConfiguration(mc =>
@@ -76,6 +79,8 @@ namespace Domains.Test
             _currentTimeMock.Setup(x => x.GetCurrentTime()).Returns(DateTime.UtcNow);
             _claimsServiceMock.Setup(x => x.GetCurrentUserId).Returns(Guid.Empty);
             _appConfigurationMock = new Mock<AppConfiguration>();
+            _config = new Mock<IConfiguration>();
+            _mapperMock = new Mock<IMapper>();
         }
 
         public void Dispose()

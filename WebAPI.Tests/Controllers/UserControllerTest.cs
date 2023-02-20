@@ -22,7 +22,7 @@ public class UserControllerTest : SetupTest
     private readonly UsersController _userController;
     public UserControllerTest()
     {
-        _userController = new UsersController(_userServiceMock.Object, _claimsServiceMock.Object);
+        _userController = new UsersController(_userServiceMock.Object, _claimsServiceMock.Object, new Application.Utils.ExternalAuthUtils(_config.Object), _mapperMock.Object);
     }
 
     [Fact]

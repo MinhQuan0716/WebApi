@@ -38,4 +38,6 @@ public interface IUserService
     Task<User> AddUserManualAsync(AddUserManually addUserManually);
 
     Task<bool> LogoutAsync();
+    Task AddUserAsync(User user);
+    Task<Token> LoginWithEmail(LoginWithEmailDto loginDto);
 }

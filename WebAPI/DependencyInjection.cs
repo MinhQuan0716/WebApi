@@ -36,6 +36,7 @@ namespace WebAPI
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<ISyllabusRepository, SyllabusRepository>();
             services.AddScoped<ISyllabusService, SyllabusService>();
+            services.AddSingleton<ExternalAuthUtils>();
             services.AddHttpContextAccessor();
             services.AddFluentValidationAutoValidation();
             services.AddFluentValidationClientsideAdapters();

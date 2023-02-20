@@ -92,6 +92,10 @@ namespace Infrastructures.Mappers
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.LectureID, opt => opt.MapFrom(src => src.LectureId))
                 .ForMember(dest => dest.UnitId, opt => opt.MapFrom(src => src.UnitId)).ReverseMap();
+
+            CreateMap<User, LoginWithEmailDto>()
+                .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
+                .ReverseMap();
         }
     }
 }

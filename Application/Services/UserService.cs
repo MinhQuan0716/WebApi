@@ -313,4 +313,34 @@ public class UserService : IUserService
         }
         return true;
     }
+    public async Task AddUserAsync(User user)
+    {
+        await _unitOfWork.UserRepository.AddAsync(user);
+        await _unitOfWork.SaveChangeAsync();
+    }
+
+    public async Task<Token> LoginWithEmail(LoginWithEmailDto loginDto)
+    {
+        var user = await _unitOfWork.UserRepository.GetUserByEmailAsync(loginDto.Email);
+        if (user != null)
+        {
+            var refreshToken = RefreshTokenString.GetRefreshToken();
+            var accessToken = user.GenerateJsonWebToken(_configuration.JWTSecretKey, _currentTime.GetCurrentTime());
+            var expireRefreshTokenTime = DateTime.Now.AddHours(24);
+
+            user.RefreshToken = refreshToken;
+            user.ExpireTokenTime = expireRefreshTokenTime;
+            _unitOfWork.UserRepository.Update(user);
+            await _unitOfWork.SaveChangeAsync();
+            return new Token
+            {
+                UserName = user.UserName,
+                AccessToken = accessToken,
+                RefreshToken = refreshToken
+            };
+        }
+        return null;
+    }
+
+
 }
