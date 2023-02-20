@@ -25,6 +25,17 @@ namespace Infrastructures.Repositories
         {
             _dbContext = dbContext;
         }
+        public Guid GetLectureIdByName(string name)
+        {
+            //query to get id through name
+            var id = from a in _dbContext.Lectures
+                     where a.LectureName.Equals(name)
+                     select a.Id;
+
+            //convert result to Guid
+            Guid idResult = Guid.Parse(id.FirstOrDefault().ToString());
+            return idResult;
+        }
         public async Task<IEnumerable<Lecture>> GetLectureBySyllabusId(Guid syllabusId)
         {
             var result = from l in _dbContext.Lectures

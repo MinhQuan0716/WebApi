@@ -13,6 +13,9 @@ namespace Application
         public ILectureRepository LectureRepository { get; }
         public IDetailUnitLectureRepository DetailUnitLectureRepository { get; }
 
+        public ITrainingMaterialRepository TrainingMaterialRepository { get; }
+
+
         public ITrainingClassRepository TrainingClassRepository { get; }
         public ILocationRepository LocationRepository { get; }
         public Task<int> SaveChangeAsync();

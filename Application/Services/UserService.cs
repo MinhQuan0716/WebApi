@@ -5,10 +5,12 @@ using Application.ViewModels.TokenModels;
 using Application.ViewModels.UserViewModels;
 using AutoMapper;
 using Domain.Entities;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
@@ -341,6 +343,69 @@ public class UserService : IUserService
         }
         return null;
     }
+    public async Task<List<User>> ImportExcel(IFormFile file)
+    {
+        // chỉ nhận các file extension của excel
+        var supportedTypes = new[] { "xls", "xlsx" };
+        var fileExt = System.IO.Path.GetExtension(file.FileName).Substring(1);
+        if (!supportedTypes.Contains(fileExt))
+        {
+            throw new Exception("You can only upload Excel files (.xls / .xlsx");
+        }
 
+        // license của EPPlus
+        ExcelPackage.LicenseContext = OfficeOpenXml.LicenseContext.NonCommercial;
+
+        try
+        {
+            var list = new List<User>();
+            using (var stream = new MemoryStream())
+            {
+                await file.CopyToAsync(stream);
+                using (var package = new ExcelPackage(stream))
+                {
+                    ExcelWorksheet worksheet = package.Workbook.Worksheets[0];
+                    var rowcount = worksheet.Dimension.Rows;
+
+                    for (int row = 2; row <= rowcount; row++)
+                    {
+                        try
+                        {
+                            list.Add(new User
+                            {
+                                UserName = worksheet.Cells[row, 2].Value.ToString().Trim(),
+                                PasswordHash = worksheet.Cells[row, 3].Value.ToString().Trim(),
+                                FullName = worksheet.Cells[row, 4].Value.ToString().Trim(),
+                                Email = worksheet.Cells[row, 5].Value.ToString().Trim(),
+                                DateOfBirth = DateTime.Parse(worksheet.Cells[row, 6].Value.ToString().Trim()),
+                                Gender = worksheet.Cells[row, 7].Value.ToString().Trim(),
+                                LoginDate = DateTime.Parse(worksheet.Cells[row, 8].Value.ToString().Trim()),
+                                CreationDate = DateTime.Parse(worksheet.Cells[row, 9].Value.ToString().Trim()),
+                                //CreatedBy = Guid.Parse(worksheet.Cells[row,10].Value.ToString().Trim()),
+                                ModificationDate = DateTime.Parse(worksheet.Cells[row, 11].Value.ToString().Trim()),
+                                //ModificationBy = Guid.Parse(worksheet.Cells[row,12].Value.ToString().Trim()),
+                                DeletionDate = DateTime.Parse(worksheet.Cells[row, 13].Value.ToString().Trim()),
+                                //DeleteBy = Guid.Parse(worksheet.Cells[row, 14].Value.ToString().Trim()),
+                                IsDeleted = bool.Parse(worksheet.Cells[row, 15].Value.ToString().Trim()),
+                                RoleId = int.Parse(worksheet.Cells[row, 16].Value.ToString().Trim()),
+                                AvatarUrl = worksheet.Cells[row, 19].Value.ToString().Trim(),
+                            });
+                        }
+                        catch (NullReferenceException)
+                        {
+                            throw new Exception("Excel file is missing some data");
+                        }
+                    }
+                    await _unitOfWork.UserRepository.AddRangeAsync(list);
+                    await _unitOfWork.SaveChangeAsync();
+                }
+                return list;
+            }
+        }
+        catch (Exception)
+        {
+            throw new Exception("Excel file has invalid data");
+        }
+    }
 
 }

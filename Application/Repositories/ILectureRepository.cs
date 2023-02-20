@@ -11,6 +11,7 @@ namespace Application.Repositories
     public interface ILectureRepository : IGenericRepository<Lecture>
     {
         public Task<IEnumerable<Lecture>> GetLectureBySyllabusId(Guid syllabusId);
+        public Guid GetLectureIdByName(string name);
 
     }
 }

@@ -15,6 +15,7 @@ namespace Domain.Entities
         public string Status { get; set; }
 
          public ICollection<DetailUnitLecture> DetailUnitLectures { get; set; }
+        public ICollection<TrainingMaterial> TrainingMaterials { get; set;}
 
     }
 }

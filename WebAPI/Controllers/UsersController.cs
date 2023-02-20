@@ -211,6 +211,16 @@ namespace WebAPI.Controllers
             var token = await _userService.LoginWithEmail(_mapper.Map<LoginWithEmailDto>(newUser));
             return Ok(token);
         }
-    
+
+        [HttpPost]
+        public async Task<IActionResult> ImportExcel(IFormFile file)
+        {
+            var import = await _userService.ImportExcel(file);
+            if (!import.IsNullOrEmpty())
+            {
+                return Ok(import);
+            }
+            return BadRequest();
+        }
     }
 }
