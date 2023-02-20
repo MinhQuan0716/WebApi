@@ -97,7 +97,7 @@ public class UserService : IUserService
 
     public async Task<Token> LoginAsync(LoginDTO userDto)
     {
-        var user = await _unitOfWork.UserRepository.GetUserByEmailAsync(userDto.Email);
+        var user = await _unitOfWork.UserRepository.GetUserByUserNameAsync(userDto.UserName);
         if (userDto.Password.CheckPassword(user.PasswordHash) == false)
         {
             throw new Exception("Password is not incorrect!!");
@@ -296,5 +296,21 @@ public class UserService : IUserService
         return result;
     }
 
-
+    public async Task<bool> LogoutAsync()
+    {
+        var user = await _unitOfWork.UserRepository.GetAuthorizedUserAsync();
+        if (user== null)
+        {
+            return false;
+        }
+        user.RefreshToken = null;
+        user.ExpireTokenTime = null;
+        _unitOfWork.UserRepository.Update(user);
+        var result = await _unitOfWork.SaveChangeAsync() > 0;
+        if (result==false) 
+        {
+            throw new Exception("SaveChange Fail!");
+        }
+        return true;
+    }
 }

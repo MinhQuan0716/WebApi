@@ -16,4 +16,5 @@ public interface IUserRepository : IGenericRepository<User>
     Task<User> GetUserByEmailAsync(string email);
     Task EditRoleAsync(Guid userId, int roleId);
     Task<User> GetAuthorizedUserAsync();
+    Task<User> GetUserByUserNameAsync(string userName);
 }

@@ -239,10 +239,10 @@ namespace Application.Tests.Services
         {
             //Arange
             var mockUser = _fixture.Build<User>().Create();
-            var loginDTO = new LoginDTO { Email = mockUser.Email, Password = mockUser.PasswordHash };
+            var loginDTO = new LoginDTO { UserName = mockUser.UserName, Password = mockUser.PasswordHash };
             mockUser.PasswordHash = mockUser.PasswordHash.Hash();
             mockUser.ExpireTokenTime = DateTime.UtcNow.AddDays(1);
-            _unitOfWorkMock.Setup(u => u.UserRepository.GetUserByEmailAsync(mockUser.Email)).ReturnsAsync(mockUser);
+            _unitOfWorkMock.Setup(u => u.UserRepository.GetUserByUserNameAsync(mockUser.UserName)).ReturnsAsync(mockUser);
             _unitOfWorkMock.Setup(u => u.UserRepository.Update(mockUser)).Verifiable();
             _unitOfWorkMock.Setup(u => u.SaveChangeAsync()).ReturnsAsync(1);
             _appConfigurationMock.SetupAllProperties();
@@ -258,7 +258,7 @@ namespace Application.Tests.Services
         {
             //Arange
             var mockUser = _fixture.Build<User>().Create();
-            var loginDTO = new LoginDTO { Email = mockUser.Email, Password = _fixture.Create<string>() };
+            var loginDTO = new LoginDTO { UserName = mockUser.UserName, Password = _fixture.Create<string>() };
             mockUser.PasswordHash = mockUser.PasswordHash.Hash();
             mockUser.ExpireTokenTime = DateTime.UtcNow.AddDays(1);
             _unitOfWorkMock.Setup(u => u.UserRepository.GetUserByEmailAsync(mockUser.Email)).ReturnsAsync(mockUser);
@@ -275,10 +275,10 @@ namespace Application.Tests.Services
         {
             //Arange
             var mockUser = _fixture.Build<User>().Create();
-            var loginDTO = new LoginDTO { Email = mockUser.Email, Password = mockUser.PasswordHash };
+            var loginDTO = new LoginDTO { UserName = mockUser.UserName, Password = mockUser.PasswordHash };
             mockUser.PasswordHash = mockUser.PasswordHash.Hash();
             mockUser.ExpireTokenTime = DateTime.UtcNow.AddDays(1);
-            _unitOfWorkMock.Setup(u => u.UserRepository.GetUserByEmailAsync(mockUser.Email)).ReturnsAsync(mockUser);
+            _unitOfWorkMock.Setup(u => u.UserRepository.GetUserByUserNameAsync(mockUser.UserName)).ReturnsAsync(mockUser);
             _unitOfWorkMock.Setup(u => u.UserRepository.Update(mockUser)).Verifiable();
             _unitOfWorkMock.Setup(u => u.SaveChangeAsync()).ReturnsAsync(1);
             _appConfigurationMock.SetupAllProperties();
@@ -322,10 +322,10 @@ namespace Application.Tests.Services
             // Arange
             var tokenRefresh = _fixture.Create<string>();
             var mockUser = _fixture.Build<User>().Create();
-            var loginDTO = new LoginDTO { Email = mockUser.Email, Password = mockUser.PasswordHash };
+            var loginDTO = new LoginDTO { UserName = mockUser.UserName, Password = mockUser.PasswordHash };
             mockUser.PasswordHash = mockUser.PasswordHash.Hash();
             mockUser.ExpireTokenTime = DateTime.UtcNow.AddDays(1);
-            _unitOfWorkMock.Setup(u => u.UserRepository.GetUserByEmailAsync(mockUser.Email)).ReturnsAsync(mockUser);
+            _unitOfWorkMock.Setup(u => u.UserRepository.GetUserByUserNameAsync(mockUser.UserName)).ReturnsAsync(mockUser);
             _unitOfWorkMock.Setup(u => u.UserRepository.Update(mockUser)).Verifiable();
             _unitOfWorkMock.Setup(u => u.SaveChangeAsync()).ReturnsAsync(1);
             _appConfigurationMock.SetupAllProperties();
@@ -345,10 +345,10 @@ namespace Application.Tests.Services
             // Arange
             var tokenRefresh = _fixture.Create<string>();
             var mockUser = _fixture.Build<User>().Create();
-            var loginDTO = new LoginDTO { Email = mockUser.Email, Password = mockUser.PasswordHash };
+            var loginDTO = new LoginDTO { UserName = mockUser.UserName, Password = mockUser.PasswordHash };
             mockUser.PasswordHash = mockUser.PasswordHash.Hash();
             mockUser.ExpireTokenTime = DateTime.Now;
-            _unitOfWorkMock.Setup(u => u.UserRepository.GetUserByEmailAsync(mockUser.Email)).ReturnsAsync(mockUser);
+            _unitOfWorkMock.Setup(u => u.UserRepository.GetUserByUserNameAsync(mockUser.UserName)).ReturnsAsync(mockUser);
             _unitOfWorkMock.Setup(u => u.UserRepository.Update(mockUser)).Verifiable();
             _unitOfWorkMock.Setup(u => u.SaveChangeAsync()).ReturnsAsync(1);
             _appConfigurationMock.SetupAllProperties();
@@ -502,6 +502,51 @@ namespace Application.Tests.Services
             //assert
             _unitOfWorkMock.Verify(x => x.UserRepository.GetByIdAsync(mockUser.Id), Times.Never);
             await act.Should().ThrowAsync<AutoMapperMappingException>();
+        }
+
+        [Fact]
+        public async void LogoutAsync_ReturnTrue()
+        {
+            var mockUser = _fixture.Build<User>().Create();
+            _unitOfWorkMock.Setup(u => u.UserRepository.GetAuthorizedUserAsync()).ReturnsAsync(mockUser);
+
+            mockUser.RefreshToken = null;
+            mockUser.ExpireTokenTime = null;
+            _unitOfWorkMock.Setup(u => u.UserRepository.Update(mockUser)).Verifiable();
+            _unitOfWorkMock.Setup(u => u.SaveChangeAsync()).ReturnsAsync(1);
+
+            //Act
+            var result = await _userService.LogoutAsync();
+            //Assert
+            result.Should().BeTrue();
+        }
+
+        [Fact]
+        public async void LogoutAsync_ReturnFalse_WhenUserIsNull()
+        {
+            User mockUser =null;
+            _unitOfWorkMock.Setup(u => u.UserRepository.GetAuthorizedUserAsync()).ReturnsAsync(mockUser);
+
+            //Act
+            var result = await _userService.LogoutAsync();
+            //Assert
+            result.Should().BeFalse();
+        }
+        [Fact]
+        public async void LogoutAsync_ThrowExcpetion_WhenSaveChangeFalse()
+        {
+            var mockUser = _fixture.Build<User>().Create();
+            _unitOfWorkMock.Setup(u => u.UserRepository.GetAuthorizedUserAsync()).ReturnsAsync(mockUser);
+
+            mockUser.RefreshToken = null;
+            mockUser.ExpireTokenTime = null;
+            _unitOfWorkMock.Setup(u => u.UserRepository.Update(mockUser)).Verifiable();
+            _unitOfWorkMock.Setup(u => u.SaveChangeAsync()).ReturnsAsync(0);
+
+            //Act
+            Func<Task> act = async () => await _userService.LogoutAsync();
+            //Assert
+            act.Should().ThrowAsync<Exception>();
         }
     }
 }

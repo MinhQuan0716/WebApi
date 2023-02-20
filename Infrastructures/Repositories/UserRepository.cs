@@ -51,6 +51,7 @@ public class UserRepository : GenericRepository<User>, IUserRepository
         }
         return user;
     }
+
     public async Task<User> GetUserByUserNameANdPaswordHashAsync(string username, string passwordHash)
     {
         var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.UserName == username
@@ -67,5 +68,15 @@ public class UserRepository : GenericRepository<User>, IUserRepository
         user.PasswordHash = newPassword.Hash();
         Update(user);
         return await _dbContext.SaveChangesAsync() > 0;
+    }
+
+    public async Task<User> GetUserByUserNameAsync(string userName)
+    {
+        var user = await _dbContext.Users.Include(u => u.Role).FirstOrDefaultAsync(e => e.UserName == userName);
+        if (user == null)
+        {
+            throw new Exception("UserName is not exist!");
+        }
+        return user;
     }
 }

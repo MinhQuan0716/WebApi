@@ -36,4 +36,6 @@ public interface IUserService
 
     public Task<bool> DisableUserById(string userId);
     Task<User> AddUserManualAsync(AddUserManually addUserManually);
+
+    Task<bool> LogoutAsync();
 }

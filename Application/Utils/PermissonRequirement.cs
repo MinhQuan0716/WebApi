@@ -8,6 +8,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using Domain.Enums;
 
 namespace Application.Utils
 {
@@ -39,10 +40,14 @@ namespace Application.Utils
 
         public void OnAuthorization(AuthorizationFilterContext context)
         {
-            var hasClaim = context.HttpContext.User.Claims.Any(c => c.Type == _claim.Type && c.Value == _claim.Value);
-            if (!hasClaim)
+            var getClaimValue = context.HttpContext.User.FindFirst(c => c.Type == _claim.Type).Value;
+            if(getClaimValue != "FullAccess")
             {
-                context.Result = new ForbidResult();
+                var hasClaim = context.HttpContext.User.Claims.Any(c => c.Type == _claim.Type && c.Value == _claim.Value);
+                if (!hasClaim)
+                {
+                    context.Result = new ForbidResult();
+                }
             }
         }
     }

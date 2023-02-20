@@ -122,6 +122,33 @@ namespace Infrastructures.Tests.Repository
             result.Should().BeTrue();
         }
 
+        [Fact]
+        public async Task GetUserByUserNameAsync_ReturnTrue()
+        {
+            //Arrange
+            var userMock = _fixture.Build<User>().Create();
+            await _dbContext.Users.AddAsync(userMock);
+            await _dbContext.SaveChangesAsync();
+            //Act
+            var result = await _userRepository.GetUserByUserNameAsync(userMock.UserName);
+
+            //Assert
+            result.Id.Should().Be(userMock.Id);
+        }
+
+        [Fact]
+        public async Task GetUserByUserNameAsync_ThrowExcpetion_WhenUserNull()
+        {
+            //Arrange
+            var userMock = _fixture.Build<User>().Create();
+            await _dbContext.Users.AddAsync(userMock);
+            await _dbContext.SaveChangesAsync();
+            //Act
+            Func<Task> act = async () => await _userRepository.GetUserByUserNameAsync(_fixture.Create<string>());
+
+            //Assert
+            act.Should().ThrowAsync<Exception>();
+        }
 
     }
 }

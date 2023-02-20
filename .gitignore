@@ -783,3 +783,7 @@ FodyWeavers.xsd
 
 # End of https://www.toptal.com/developers/gitignore/api/visualstudiocode,visualstudio,dotnetcore,aspnetcore
 /.vs/fa-training-management-system/v17/.suo
+/.vs/fa-training-management-system/v17/.futdcache.v2
+/.gitignore
+/.gitignore
+/.vs/fa-training-management-system/DesignTimeBuild/.dtbcache.v2

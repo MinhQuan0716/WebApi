@@ -311,4 +311,26 @@ public class UserControllerTest : SetupTest
         var result = await _userController.ChangeUserRole(updateDTO);
         Assert.IsType<BadRequestResult>(result);
     }
+
+    [Fact]
+    public async Task Logout_ReturnNoContentResult()
+    {
+        _userServiceMock.Setup(u => u.LogoutAsync()).ReturnsAsync(true);
+
+        //Act
+        var result = await _userController.Logout();
+        //Assert
+        result.Should().BeOfType<NoContentResult>();
+    }
+
+    [Fact]
+    public async Task Logout_ReturnUnAuthorizeResult()
+    {
+        _userServiceMock.Setup(u => u.LogoutAsync()).ReturnsAsync(false);
+
+        //Act
+        var result = await _userController.Logout();
+        //Assert
+        result.Should().BeOfType<UnauthorizedResult>();
+    }
 }

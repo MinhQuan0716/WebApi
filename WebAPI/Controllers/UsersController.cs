@@ -36,7 +36,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> LoginAsync(LoginDTO loginObject)
+        public async Task<IActionResult> LoginAsync([FromForm]LoginDTO loginObject)
         {
             var token= await _userService.LoginAsync(loginObject);
             if (token == null)
@@ -167,6 +167,18 @@ namespace WebAPI.Controllers
                 return BadRequest("Disable failed");
             }
             return Ok("Disable successfully!");
+        }
+
+        [Authorize]
+        [HttpGet]
+        public async Task<IActionResult> Logout()
+        {
+            var result= await _userService.LogoutAsync();
+            if (result)
+            {
+                return NoContent();
+            }
+            return Unauthorized();
         }
     }
 }

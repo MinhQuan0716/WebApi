@@ -21,7 +21,12 @@ namespace WebAPI.Tests.ControllerT
         {
             _syllabusController = new SyllabusController(_syllabusServiceMock.Object);
         }
+        //Hàm này sai
+        //Có 2 cái cái syllabus test lận
 
+        //[Fact]
+        //public async Task SearchNameSyllabus_Get_ShuuldReturnCorrectValues()
+        //{
 
         [Fact]
         public async Task SearchNameSyllabus_Get_ShuuldReturnCorrectValues()
