@@ -53,7 +53,7 @@ namespace Infrastructures.Tests.Repository
         [Fact]
         public async Task GenericRepository_GetByIdAsync_ShouldReturnCorrectData()
         {
-            var mockData = _fixture.Build<User>().Without(u => u.Syllabuses).Without(u => u.Role).Create();
+            var mockData = _fixture.Build<User>().Without(u => u.Syllabuses).Without(u => u.Role).Without(u => u.DetailTrainingClassParticipate).Create();
             await _dbContext.Users.AddRangeAsync(mockData);
 
             await _dbContext.SaveChangesAsync();
@@ -76,7 +76,7 @@ namespace Infrastructures.Tests.Repository
         [Fact]
         public async Task GenericRepository_AddAsync_ShouldReturnCorrectData()
         {
-            var mockData = _fixture.Build<User>().Without(u=>u.Syllabuses).Without(u=>u.Role).Create();
+            var mockData = _fixture.Build<User>().Without(u=>u.Syllabuses).Without(u=>u.Role).Without(u=>u.DetailTrainingClassParticipate).Create();
 
 
             await _genericRepository.AddAsync(mockData);
@@ -88,7 +88,7 @@ namespace Infrastructures.Tests.Repository
         [Fact]
         public async Task GenericRepository_AddRangeAsync_ShouldReturnCorrectData()
         {
-            var mockData = _fixture.Build<User>().Without(u => u.Syllabuses).Without(u => u.Role).CreateMany(10).ToList();
+            var mockData = _fixture.Build<User>().Without(u => u.Syllabuses).Without(u => u.Role).Without(u => u.DetailTrainingClassParticipate).CreateMany(10).ToList();
 
 
             await _genericRepository.AddRangeAsync(mockData);
