@@ -1,5 +1,7 @@
-﻿using Application.ViewModels.SyllabusModels.UpdateSyllabusModels;
+﻿using Application.ViewModels.SyllabusModels;
+using Application.ViewModels.SyllabusModels.UpdateSyllabusModels;
 using AutoFixture;
+using Domain.Entities;
 using Domains.Test;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
@@ -14,14 +16,32 @@ using Xunit.Sdk;
 
 namespace WebAPI.Tests.Controllers
 {
- 
-   public  class SyllabusControllerTest:SetupTest
+
+    public class SyllabusControllerTest : SetupTest
     {
-        private readonly SyllabusController syllabusController;
+        private readonly SyllabusController _syllabusController;
         public SyllabusControllerTest()
         {
 
-            syllabusController = new SyllabusController(_syllabusServiceMock.Object);
+            _syllabusController = new SyllabusController(_syllabusServiceMock.Object, _unitServiceMock.Object, _lectureServiceMock.Object);
+        }
+        [Fact]
+        public async Task SearchNameSyllabus_Get_ShuuldReturnCorrectValues()
+        {
+            //_fixture.Behaviors.OfType<ThrowingRecursionBehavior>().ToList()
+            //   .ForEach(b => _fixture.Behaviors.Remove(b));
+            //_fixture.Behaviors.Add(new OmitOnRecursionBehavior());
+            List<Syllabus> mockData_1 = _fixture.Build<Syllabus>().Without(u => u.Units).Without(u => u.User).CreateMany(10).ToList();
+            await _dbContext.AddRangeAsync(mockData_1);
+            await _dbContext.SaveChangesAsync();
+
+            string name1 = "anything";
+            //string name2 = "this shout return nothing";
+            _syllabusServiceMock.Setup(s => s.GetByName(name1)).ReturnsAsync(mockData_1);
+            //_syllabusServiceMock.Setup(s => s.GetByName(name2)).ReturnsAsync(mockData_2);
+            var result = await _syllabusController.Get(name1);
+
+            result.Should().BeOfType<OkObjectResult>();
         }
         [Fact]
         public async Task GetAllSyllabus_Should_ReturnData()
@@ -29,7 +49,7 @@ namespace WebAPI.Tests.Controllers
             //Arrange
 
             //Act
-            var result = await syllabusController.GetAllSyllabus();
+            var result = await _syllabusController.GetAllSyllabus();
             //Assert
             Assert.NotNull(result);
         }
@@ -40,38 +60,76 @@ namespace WebAPI.Tests.Controllers
             double firstDuration = 9;
             double secondDuration = 12;
             //Act
-            var filterResult = syllabusController.FilerSyllabus(firstDuration, secondDuration);
+            var filterResult = _syllabusController.FilerSyllabus(firstDuration, secondDuration);
             //Assert
             Assert.NotNull(filterResult);
         }
-
         [Fact]
         public async Task UpdateSyllabus_ShouldReturnNoContent()
         {
             Guid id = Guid.NewGuid();
             var updateSyllabusDTO = _fixture.Create<UpdateSyllabusDTO>();
             _syllabusServiceMock.Setup(sm => sm.UpdateSyllabus(id, updateSyllabusDTO)).ReturnsAsync(true);
-            var result = await syllabusController.UpdateSyllabus(id , updateSyllabusDTO);
+            var result = await _syllabusController.UpdateSyllabus(id, updateSyllabusDTO);
             result.Should().BeOfType<NoContentResult>();
         }
-
         [Fact]
         public async Task UpdateSyllabus_ShouldReturnBadRequest()
         {
             Guid id = Guid.NewGuid();
             var updateSyllabusDTO = _fixture.Create<UpdateSyllabusDTO>();
             _syllabusServiceMock.Setup(sm => sm.UpdateSyllabus(id, updateSyllabusDTO)).ReturnsAsync(false);
-            var result = await syllabusController.UpdateSyllabus(id, updateSyllabusDTO);
+            var result = await _syllabusController.UpdateSyllabus(id, updateSyllabusDTO);
             result.Should().BeOfType<BadRequestObjectResult>();
             var objResult = result as BadRequestObjectResult;
-            if(objResult is not null)
-            objResult.Value.Should().BeSameAs("Update Failed");
+            if (objResult is not null)
+                objResult.Value.Should().BeSameAs("Update Failed");
         }
+        [Fact]
+        public async Task AddNewSyllabus_ShouldReturnCorrectData()
+        {
+            //Arrange
+            var mockData = _fixture.Build<SyllabusViewDTO>().Without(u => u.Units).Create();
 
+            var units = mockData.Units = _fixture.Build<UnitDTO>()
+                                                .Without(l => l.Lectures)
+                                                .CreateMany(1)
+                                                .ToList();
+            var lectures = mockData.Units.First().Lectures = _fixture.Build<LectureDTO>()
+                                                                    .CreateMany(1)
+                                                                    .ToList();
+            var syllabus = _fixture.Build<Syllabus>().Without(s=>s.Units).Create();
+            var detailUnitLectures = _fixture.Build<DetailUnitLecture>()
+                                             .With(u => u.Unit).With(u => u.Lecture)
+                                             .Create();
+            _syllabusServiceMock.Setup(s => s.AddSyllabusAsync(mockData.SyllabusBase))
+                                .ReturnsAsync(syllabus);
+            _unitServiceMock.Setup(s => s.AddNewUnit(mockData.Units.First(), syllabus))
+                            .ReturnsAsync(detailUnitLectures.Unit);
+            _lectureServiceMock.Setup(l => l.AddNewLecture(lectures.First()))
+                               .ReturnsAsync(detailUnitLectures.Lecture);
+            _lectureServiceMock.Setup(l => l.AddNewDetailLecture(detailUnitLectures.Lecture,
+                                                                 detailUnitLectures.Unit)).ReturnsAsync(detailUnitLectures);
+            //Act
+            var result = await _syllabusController.AddNewSyllabus(mockData);
 
+            //Assert
+            result.Should().BeOfType<OkObjectResult>();
+        }
+        [Fact]
+        public async Task AddNewSyllabus_ShouldReturnBadResult()
+        {
+            //Arrange
+            var mockData_1 = _fixture.Build<SyllabusViewDTO>().Without(u => u.Units).Create();
+            var mockData_2 = _fixture.Build<SyllabusViewDTO>().With(u => u.Units).Create();
+            //Act
+            var result = await _syllabusController.AddNewSyllabus(mockData_1);
+            //Assert
+            result.Should().BeOfType<BadRequestResult>();
+        }
     }
 
 }
 
 
-        
+

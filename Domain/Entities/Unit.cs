@@ -16,5 +16,7 @@ namespace Domain.Entities
 
         public Guid SyllabusID { get; set; }
         public Syllabus Syllabus { get; set; }
+
+     
     }
 }

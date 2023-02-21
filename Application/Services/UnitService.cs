@@ -1,5 +1,6 @@
 ﻿using Application;
 using Application.Interfaces;
+using Application.ViewModels.SyllabusModels;
 using Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -29,6 +30,22 @@ namespace Infrastructures
             return listUnit;
 
 
+        }
+
+        public async Task<Unit> AddNewUnit(UnitDTO unitDTO,Syllabus syllabus)
+        {
+            var NewUnit = new Unit() {
+                Id = new Guid(),
+                UnitName = unitDTO.UnitName,
+                TotalTime = unitDTO.TotalTime,
+                Session = unitDTO.Session,
+                IsDeleted = false,
+                Syllabus=syllabus
+            };
+            //throw new Exception();
+            await _unitOfWork.UnitRepository.AddAsync(NewUnit);
+            await _unitOfWork.SaveChangeAsync();
+            return NewUnit;
         }
     }
 }

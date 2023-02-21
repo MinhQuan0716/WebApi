@@ -9,20 +9,12 @@ namespace Application.ViewModels.SyllabusModels
 {
     public class SyllabusViewDTO
     {
-        public SyllabusGeneralDTO newSyllabus { get; set; }
+        public SyllabusGeneralDTO SyllabusBase { get; set; }
 
-        public string Code { get; set; }
+       
 
-        public string CourseObject { get; set; }
+      
 
-        public string TechRequirements { get; set; }
-
-        public double Duration { get; set; }
-
-        public User User { get; set; }
-
-        public DateTime CreationDate { get; set; }
-
-        public ICollection<Unit> Units { get; set; }
+        public ICollection<UnitDTO> Units { get; set; }
     }
 }

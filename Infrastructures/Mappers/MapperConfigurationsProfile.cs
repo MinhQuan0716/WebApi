@@ -51,7 +51,7 @@ namespace Infrastructures.Mappers
            .ForMember(ss => ss.SyllabusName, ss => ss.MapFrom(src => src.SyllabusName))
             .ForMember(ss => ss.Duration, ss => ss.MapFrom(src => src.Duration))
              .ForMember(ss => ss.CourseObjective, ss => ss.MapFrom(src => src.CourseObject))
-               .ForMember(ss => ss.TechRequirements, ss => ss.MapFrom(src => src.TechRequirement))
+               .ForMember(ss => ss.TechRequirements, ss => ss.MapFrom(src => src.TechRequirements))
                .ForMember(ss => ss.Duration, ss => ss.MapFrom(src => src.Duration))
                .ReverseMap();
 
@@ -92,6 +92,22 @@ namespace Infrastructures.Mappers
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.LectureID, opt => opt.MapFrom(src => src.LectureId))
                 .ForMember(dest => dest.UnitId, opt => opt.MapFrom(src => src.UnitId)).ReverseMap();
+
+            CreateMap<UnitDTO, Unit>()
+                    .ForMember(uu => uu.UnitName, uu => uu.MapFrom(src => src.UnitName))
+                    .ForMember(uu => uu.TotalTime, uu => uu.MapFrom(src => src.TotalTime))
+                    .ForMember(uu => uu.Session,uu => uu.MapFrom(src => src.Session))
+                    .ReverseMap();
+
+
+            CreateMap<LectureDTO, Lecture>()
+                    .ForMember(ll => ll.LectureName, ll => ll.MapFrom(src => src.LectureName))
+                    .ForMember(ll => ll.OutputStandards, ll => ll.MapFrom(src => src.OutputStandards))
+                    .ForMember(ll => ll.Duration, ll => ll.MapFrom(src => src.Duration))
+                    .ForMember(ll => ll.DeliveryType, ll => ll.MapFrom(src => src.DeliveryType))
+                    .ForMember(ll => ll.Status , ll => ll.MapFrom(src=> src.Status))
+                    .ReverseMap();
+        
 
             CreateMap<User, LoginWithEmailDto>()
                 .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))

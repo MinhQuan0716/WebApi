@@ -16,6 +16,7 @@ using System.Text;
 using System.Text.Json.Serialization;
 using WebAPI.Middlewares;
 using WebAPI.Services;
+using Infrastructures;
 
 namespace WebAPI
 {
@@ -30,9 +31,12 @@ namespace WebAPI
             services.AddSingleton<GlobalExceptionMiddleware>();
             services.AddSingleton<PerformanceMiddleware>();
             services.AddSingleton<Stopwatch>();
+         services.AddScoped<ILectureService, LectureService>();
+            
             services.AddScoped<IClaimsService, ClaimsService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<ISyllabusService, SyllabusService>();
+            services.AddScoped<IUnitService, UnitService>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<ISyllabusRepository, SyllabusRepository>();
             services.AddScoped<ISyllabusService, SyllabusService>();

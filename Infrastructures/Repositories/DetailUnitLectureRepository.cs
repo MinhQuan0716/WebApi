@@ -9,13 +9,12 @@ using System.Threading.Tasks;
 
 namespace Infrastructures.Repositories
 {
-    public class DetailUnitLectureRepository : GenericRepository<DetailUnitLecture>, IDetailUnitLectureRepository
+    public class DetailUnitLectureRepository : GenericRepository<DetailUnitLecture>,IDetailUnitLectureRepository
     {
-        private readonly AppDbContext _appDbContext;
-
+        private readonly AppDbContext _AppDbContext;
         public DetailUnitLectureRepository(AppDbContext context, ICurrentTime timeService, IClaimsService claimsService) : base(context, timeService, claimsService)
         {
-            _appDbContext = context;
+            _AppDbContext = context;
         }
     }
 }

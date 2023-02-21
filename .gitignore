@@ -787,3 +787,4 @@ FodyWeavers.xsd
 /.gitignore
 /.gitignore
 /.vs/fa-training-management-system/DesignTimeBuild/.dtbcache.v2
+/WebAPI/appsettings.Development.json

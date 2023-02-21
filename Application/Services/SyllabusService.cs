@@ -1,16 +1,16 @@
 ﻿using Application.Commons;
 using Application.Interfaces;
+using Application.ViewModels.SyllabusModels;
+using AutoMapper;
+using Domain.Entities;
+using System.Security.Authentication;
 using Application.ViewModels.SyllabusModels.UpdateSyllabusModels;
 using AutoMapper;
 using Domain.Entities;
 using Microsoft.AspNetCore.Connections.Features;
 using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml.Linq;
+using Application.Repositories;
 
 namespace Application.Services
 {
@@ -19,46 +19,46 @@ namespace Application.Services
         private readonly IUnitOfWork _unitOfWork;
         private readonly IClaimsService _claimsservice;
         private readonly IMapper _mapper;
-        private readonly AppConfiguration _configuration;
-
-
-        public SyllabusService(IUnitOfWork unitOfWork, IClaimsService claimsService)
+        public SyllabusService(IUnitOfWork unitOfWork, IClaimsService claimsservice)
         {
             _unitOfWork = unitOfWork;
-            _claimsservice = claimsService;
-        }
-        public SyllabusService(IUnitOfWork unitofwork, IClaimsService claimsservice, IUnitOfWork unitOfWork, IMapper mapper,AppConfiguration configuration )
-        {
-            _unitOfWork = unitOfWork;
-            _mapper = mapper;
-            _configuration = configuration;    
             _claimsservice = claimsservice;
         }
-
-        public SyllabusService(IUnitOfWork unitofWork, IClaimsService claimsservice, IMapper mapper) : this(unitofWork, claimsservice)
+        public SyllabusService(IUnitOfWork unitOfWork, IClaimsService claimsservice, IMapper mapper) : this(unitOfWork, claimsservice)
         {
             _mapper = mapper;
         }
-
+        //Add newSyllabus base
+        public async Task<Syllabus> AddSyllabusAsync(SyllabusGeneralDTO syllabusDTO)
+        {
+            if (_claimsservice.GetCurrentUserId == Guid.Empty) throw new AuthenticationException("User not Logined!");
+            var syllabusId = Guid.NewGuid();
+            Guid userID = _claimsservice.GetCurrentUserId;
+            var syllabus = _mapper.Map<Syllabus>(syllabusDTO);
+            syllabus.Id = syllabusId;
+            syllabus.UserId = userID;
+            //var newSyllabus = new Syllabus
+            //{
+            //    Id = new Guid(),
+            //    SyllabusName = syllabusDTO.SyllabusName,
+            //    Code = syllabusDTO.Code,
+            //    CourseObjective = syllabusDTO.CourseObject,
+            //    Duration = syllabusDTO.Duration,
+            //    TechRequirements = syllabusDTO.TechRequirements,
+            //    UserId = _claimsservice.GetCurrentUserId,
+            //    CreationDate = DateTime.Now,
+            //    IsDeleted = false
+            //};
+            await _unitOfWork.SyllabusRepository.AddAsync(syllabus);
+            await _unitOfWork.SaveChangeAsync();
+            return syllabus;
+        }
         public async Task<List<Syllabus>> FilterSyllabus(double duration1, double duration2)
         {
             var filterSyllabusList = await _unitOfWork.SyllabusRepository.FilterSyllabusByDuration(duration1, duration2);
             return filterSyllabusList;
-           
-        }
 
-        public Task<List<Syllabus>> GetAllSyllabus()
-        {
-            var syllabusList = _unitOfWork.SyllabusRepository.GetAllAsync();
-            return syllabusList;
         }
-        public Task<List<Syllabus>> GetByName(string name)
-        {
-            
-           var result=_unitOfWork.SyllabusRepository.SearchByName(name);
-            return result;
-        }
-
         public async Task<bool> DeleteSyllabussAsync(string syllabusID)
         {
             bool check = false;
@@ -75,7 +75,6 @@ namespace Application.Services
 
 
         }
-
         /// <summary>
         /// Update a Syllabus
         /// </summary>
@@ -84,7 +83,7 @@ namespace Application.Services
         /// <returns>bool</returns>
         public async Task<bool> UpdateSyllabus(Guid syllabusId, UpdateSyllabusDTO updateItem)
         {
-           var result = false;
+            var result = false;
             var syllabus = await _unitOfWork.SyllabusRepository.GetByIdAsync(syllabusId);
 
             if (syllabus is not null)
@@ -126,7 +125,7 @@ namespace Application.Services
                     _mapper.Map(updateItem, syllabus, typeof(UpdateSyllabusDTO), typeof(Syllabus));
                     _unitOfWork.SyllabusRepository.Update(syllabus);
                     await _unitOfWork.SaveChangeAsync();
-                   
+
                     // Starting Update/Create lecture
                     foreach (var item in updateLectureList)
                     {
@@ -139,8 +138,8 @@ namespace Application.Services
                             await _unitOfWork.LectureRepository.AddAsync(lecture);
                             if (await _unitOfWork.SaveChangeAsync() > 0)
                             {
-                                if (item.UnitID is null) return false; 
-                                UpdateUnitLectureDTO detailDTO = new UpdateUnitLectureDTO
+                                if (item.UnitID is null) return false;
+                                UpdateUnitLectureDTO detailDTO = new()
                                 {
                                     UnitId = item.UnitID.Value,
                                     LectureId = newID
@@ -165,11 +164,30 @@ namespace Application.Services
             }
             return result;
         }
+        public Task<List<Syllabus>> GetAllSyllabus()
+        {
+            var syllabusList = _unitOfWork.SyllabusRepository.GetAllAsync();
+            return syllabusList;
+        }
+        public Task<List<Syllabus>> GetByName(string name)
+        {
+
+            var result = _unitOfWork.SyllabusRepository.SearchByName(name);
+            return result;
+        }
+
+        public async Task<Syllabus> GetSyllabusByID(Guid id)
+        {
+        
+
+            throw new NotImplementedException();
+        
+        }
     }
 }
 
 
 
-     
-    
-    
+
+
+

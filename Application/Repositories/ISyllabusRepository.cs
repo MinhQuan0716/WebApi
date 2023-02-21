@@ -1,4 +1,5 @@
-﻿using Domain.Entities;
+﻿using Application.ViewModels.SyllabusModels;
+using Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,9 +14,7 @@ namespace Application.Repositories
         public Task<List<Syllabus>> FilterSyllabusByDuration(double duration1, double duration2);
 
         public Task<List<Syllabus>> SearchByName(string name);
-        public interface ISyllabusRepository : IGenericRepository<Syllabus>
-        {
-        }
 
+        Task<Syllabus> AddSyllabusAsync(SyllabusGeneralDTO syllabusDTO);
     }
 }

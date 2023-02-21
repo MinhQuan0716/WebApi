@@ -43,6 +43,8 @@ namespace Infrastructures
         public IUnitRepository UnitRepository => _unitRepository;
         public ILectureRepository LectureRepository => _lectureRepository;
 
+
+
         public IDetailUnitLectureRepository DetailUnitLectureRepository => _detailUnitLectureRepository;
 
 

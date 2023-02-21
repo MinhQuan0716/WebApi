@@ -36,7 +36,7 @@ namespace Infrastructures
             services.AddScoped<ITrainingClassRepository, TraingClassRepository>();
             services.AddScoped<ILocationRepository, LocationRepository>();
             // ATTENTION: if you do migration please check file README.md
-            services.AddDbContext<AppDbContext>(option => option.UseSqlServer(databaseConnection));
+            services.AddDbContext<AppDbContext>(option => option.UseSqlServer(databaseConnection).EnableSensitiveDataLogging());
 
             // this configuration just use in-memory for fast develop
             //services.AddDbContext<AppDbContext>(option => option.UseInMemoryDatabase("test"));

@@ -14,9 +14,11 @@ namespace Application.ViewModels.SyllabusModels
 
         public string CourseObject { get; set; }
 
-        public string TechRequirement { get; set; }
+        public string TechRequirements { get; set; }
 
         public double Duration { get; set; }
+
+        //public Guid UserId { get; set; }
 
 
     }

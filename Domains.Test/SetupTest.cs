@@ -20,18 +20,22 @@ namespace Domains.Test
         protected readonly IMapper _mapperConfig;
         protected readonly Fixture _fixture;
         protected readonly Mock<IUnitOfWork> _unitOfWorkMock;
-        protected readonly Mock<IUserService> _userServiceMock;
 
-        protected readonly Mock<IUnitRepository> _unitRepositoryMock;
+        protected readonly Mock<IUserRepository> _userRepositoryMock;
+        protected readonly Mock<IUserService> _userServiceMock;
+        
         protected readonly Mock<IUnitService> _unitServiceMock;
+        protected readonly Mock<IUnitRepository> _unitRepositoryMock;
+
+        protected readonly Mock<SyllabusController> _syllabusControllerMock;
         protected readonly Mock<ISyllabusService> _syllabusServiceMock;
+        protected readonly Mock<ISyllabusRepository> _syllabusRepositoryMock;
 
         protected readonly Mock<IClaimsService> _claimsServiceMock;
         protected readonly Mock<ICurrentTime> _currentTimeMock;
 
-        protected readonly Mock<ISyllabusRepository> _syllabusRepositoryMock;
 
-        protected readonly Mock<SyllabusController> _syllabusControllerMock;
+
         protected readonly Mock<ISyllabusRepository> _syllabusRepository;
 
         protected readonly Mock<IUserRepository> _userRepository;
@@ -47,6 +51,7 @@ namespace Domains.Test
         protected readonly Mock<ISendMailHelper> _sendMailMock;
         protected readonly Mock<IConfiguration> _config;
         protected readonly Mock<IMapper> _mapperMock;
+        protected readonly Mock<ILectureService> _lectureServiceMock;
         public SetupTest()
         {
             var mappingConfig = new MapperConfiguration(mc =>
@@ -59,28 +64,24 @@ namespace Domains.Test
     .ForEach(b => _fixture.Behaviors.Remove(b));
             _fixture.Behaviors.Add(new OmitOnRecursionBehavior());
             _unitOfWorkMock = new Mock<IUnitOfWork>();
+            
             _syllabusControllerMock = new Mock<SyllabusController>();
-            _syllabusRepository = new Mock<ISyllabusRepository>();
+            _syllabusRepositoryMock = new Mock<ISyllabusRepository>();
             _unitRepositoryMock = new Mock<IUnitRepository>();
+            
             _unitServiceMock = new Mock<IUnitService>();
+            _lectureServiceMock = new Mock<ILectureService>();
+       
             _syllabusServiceMock = new Mock<ISyllabusService>();
             _userServiceMock = new Mock<IUserService>();
             _claimsServiceMock = new Mock<IClaimsService>();
             _currentTimeMock = new Mock<ICurrentTime>();
             _sendMailMock = new Mock<ISendMailHelper>();
-            _userRepository = new Mock<IUserRepository>();
 
 
-            _syllabusRepositoryMock = new Mock<ISyllabusRepository>();
-            _syllabusServiceMock = new Mock<ISyllabusService>();
+            _syllabusRepositoryMock=new Mock<ISyllabusRepository>();
+            _syllabusServiceMock=new Mock<ISyllabusService>();
 
-            _trainingClassRepositoryMock = new Mock<ITrainingClassRepository>();
-            _trainingClassServiceMock = new Mock<ITrainingClassService>();
-            _locationRepositoryMock = new Mock<ILocationRepository>();
-            _locationServiceMock = new Mock<ILocationService>();
-
-            _unitServiceMock = new Mock<IUnitService>();
-            _syllabusServiceMock = new Mock<ISyllabusService>();
             var options = new DbContextOptionsBuilder<AppDbContext>()
                 .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
                 .Options;

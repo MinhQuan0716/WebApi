@@ -14,13 +14,13 @@ namespace Domain.Entities
         public string TechRequirements { get; set; }
         public double Duration { get; set; }
 
-
-        public Guid userID { get; set; }
+        public Guid UserId { get; set; }
         public User User { get; set; }
 
-        
+
         public ICollection<Unit> Units { get; set; }
 
+       
         
     }
 }

@@ -12,6 +12,9 @@ namespace Application.ViewModels.SyllabusModels
 
         public float TotalTime { get; set; }
 
+        public int Session { get; set; }
+
+        //public Guid SyllabusID { get; set; }
         public ICollection<LectureDTO> Lectures { get; set; }
 
 

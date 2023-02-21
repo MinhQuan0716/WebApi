@@ -17,7 +17,7 @@ namespace Domains.Test.Controller
 
         public SyllabusClassTest()
         {
-            _syllabusController = new SyllabusController(_syllabusServiceMock.Object);
+            _syllabusController = new SyllabusController(_syllabusServiceMock.Object,_unitServiceMock.Object,_lectureServiceMock.Object);
         }
 
         [Fact]
