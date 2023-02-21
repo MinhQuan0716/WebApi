@@ -16,5 +16,6 @@ namespace Domain.Entities
         public Location Location { get; set; } = default!;
 
         public ICollection<DetailTrainingClassParticipate> TrainingClassParticipates { get; set; } = default!;
+        public ICollection<Attendance> Attendances { get; set; } = default!;
     }
 }

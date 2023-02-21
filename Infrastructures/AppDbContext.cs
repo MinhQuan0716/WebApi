@@ -14,13 +14,6 @@ namespace Infrastructures
 
         }
 
-        /*        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-                {
-                    base.OnConfiguring(optionsBuilder);
-                    optionsBuilder.UseSqlServer("server=ojthcmnetdb.cyxrb6mlaiqt.ap-southeast-1.rds.amazonaws.com; Database=MockProjectDb; uid=sa; pwd=11112222; TrustServerCertificate=true");
-                }*/
-
-
         #region DBSet
         public DbSet<User> Users { get; set; }
         public DbSet<Syllabus> Syllabuses { get; set; }
@@ -33,6 +26,9 @@ namespace Infrastructures
         public DbSet<TrainingClass> TrainingClasses { get; set; }
         public DbSet<Location> Locations { get; set; }
         public DbSet<DetailTrainingClassParticipate> DetailTrainingClassParticipates { get; set; }
+        public DbSet<Attendance> Attendances { get; set; }
+        public DbSet<Applications> Applications { get; set; }
+        
         #endregion
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -45,7 +41,8 @@ namespace Infrastructures
             new TrainingClassConfiguration().Configure(modelBuilder.Entity<TrainingClass>());
             new LocationConfiguration().Configure(modelBuilder.Entity<Location>());
             new DetailTrainingClassParticipateConfiguration().Configure(modelBuilder.Entity<DetailTrainingClassParticipate>());
-
+            new ApplicationsConfiguration().Configure(modelBuilder.Entity<Applications>());
+            new AttendanceConfiguration().Configure(modelBuilder.Entity<Attendance>());
         }
 
     }

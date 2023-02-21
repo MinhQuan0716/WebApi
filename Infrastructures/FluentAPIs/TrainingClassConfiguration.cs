@@ -18,6 +18,7 @@ namespace Infrastructures.FluentAPIs
             builder.Property(x => x.CreationDate).HasDefaultValueSql("getutcdate()");
             builder.Property(x => x.IsDeleted).HasDefaultValue("false");
             builder.HasOne(x => x.Location).WithMany(x=>x.TrainingClasses).HasForeignKey(x=>x.LocationID);
+            builder.HasMany(x => x.Attendances).WithOne(x => x.TrainingClass).HasForeignKey(x => x.TrainingClassId);
         }
     }
 }
