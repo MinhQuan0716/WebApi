@@ -26,9 +26,9 @@ namespace Application.Services
             _configuration = configuration;
         }
 
-        public async Task<TrainingMaterial> GetFile(string name)
+        public async Task<TrainingMaterial> GetFile(Guid id)
         {
-            var file = await _unitOfWork.TrainingMaterialRepository.GetFileWithName(name);
+            var file = await _unitOfWork.TrainingMaterialRepository.GetByIdAsync(id);
             return file;
         }
 

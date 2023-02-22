@@ -13,9 +13,9 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet("Download File")]
-        public async Task<IActionResult> Download(string name)
+        public async Task<IActionResult> Download(Guid id)
         {
-            var file = await _trainingMaterialService.GetFile(name);
+            var file = await _trainingMaterialService.GetFile(id);
             MemoryStream ms = new MemoryStream(file.TMatContent);
 
             byte[] content = ms.ToArray();
@@ -47,7 +47,7 @@ namespace WebAPI.Controllers
             return BadRequest();
         }
 
-        [HttpPut]
+        [HttpPut("Edit file")]
         public async Task<IActionResult> UpdateTrainingMaterial(IFormFile file, Guid id)
         {
             bool updateTrainingMaterial = await _trainingMaterialService.UpdateTrainingMaterial(file, id);

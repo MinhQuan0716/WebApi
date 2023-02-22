@@ -9,7 +9,6 @@ namespace Application.Repositories
 {
     public  interface ITrainingMaterialRepository:IGenericRepository<TrainingMaterial>
     {
-        Task<TrainingMaterial> GetFileWithName(string name);
         Task<bool> DeleteTrainingMaterial(Guid id);
     }
 }

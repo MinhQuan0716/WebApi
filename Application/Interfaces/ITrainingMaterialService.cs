@@ -10,7 +10,7 @@ namespace Application.Interfaces
 {
     public interface ITrainingMaterialService
     {
-        public Task<TrainingMaterial> GetFile(string name);
+        public Task<TrainingMaterial> GetFile(Guid id);
         public Task<TrainingMaterial> Upload(IFormFile file, string lectureNames);
         public Dictionary<string, string> GetMimeTypes();
         public Task<bool> DeleteTrainingMaterial(Guid id);
