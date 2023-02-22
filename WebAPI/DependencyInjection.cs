@@ -45,6 +45,7 @@ namespace WebAPI
             services.AddSingleton<ExternalAuthUtils>();
             services.AddScoped<ITrainingClassService, TrainingClassService>();
             services.AddScoped<ILocationService, LocationService>();
+            services.AddScoped<IFeedbackService, FeedbackService>();
             services.AddHttpContextAccessor();
             services.AddFluentValidationAutoValidation();
             services.AddFluentValidationClientsideAdapters();

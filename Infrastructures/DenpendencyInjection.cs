@@ -35,6 +35,9 @@ namespace Infrastructures
 
             services.AddScoped<ITrainingClassRepository, TraingClassRepository>();
             services.AddScoped<ILocationRepository, LocationRepository>();
+
+            services.AddScoped<IFeedbackRepository, FeedbackRepository>();
+
             // ATTENTION: if you do migration please check file README.md
             services.AddDbContext<AppDbContext>(option => option.UseSqlServer(databaseConnection).EnableSensitiveDataLogging());
 

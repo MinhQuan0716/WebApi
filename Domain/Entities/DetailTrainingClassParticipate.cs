@@ -9,8 +9,8 @@ namespace Domain.Entities
     public class DetailTrainingClassParticipate : BaseEntity
     {
         public Guid UserId { get; set; }
-        public User User { get; set; } = default!;
+        public virtual User User { get; set; }
         public Guid TrainingClassID { get; set; }
-        public TrainingClass TrainingClass { get; set; } = default!;
+        public virtual TrainingClass TrainingClass { get; set; }
     }
 }

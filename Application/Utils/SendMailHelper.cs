@@ -18,15 +18,13 @@ namespace Application.Utils
             _config = config;
         }
 
-       
-
         public async Task<bool> SendMailAsync(string email, string subject, string message)
         {
             try
             {
-                var _email = "thyvnse162031@fpt.edu.vn";
-                var _epass = _config["EmailPass"];
-                var _dispName = "TestMail";
+                var _email = _config["EmailSetting:Email"];
+                var _epass = _config["EmailSetting:Password"];
+                var _dispName = _config["EmailSetting:DisplayName"];
                 MailMessage myMessage = new MailMessage();
                 myMessage.To.Add(email);
                 myMessage.From = new MailAddress(_email, _dispName);
@@ -49,6 +47,39 @@ namespace Application.Utils
             {
                 return false;
                 throw ex;
+            }
+        }
+        public async Task<bool> SendMailAsync(List<string> emails, string subject, string message)
+        {
+            try
+            {
+                var _email = _config["EmailSetting:Email"];
+                var _epass = _config["EmailSetting:Password"];
+                var _dispName = _config["EmailSetting:DisplayName"];
+                MailMessage myMessage = new MailMessage();
+                foreach (var email in emails)
+                {
+                    myMessage.To.Add(email);
+                }
+                myMessage.From = new MailAddress(_email, _dispName);
+                myMessage.Subject = subject;
+                myMessage.Body = message;
+                using (SmtpClient smtp = new SmtpClient())
+                {
+                    smtp.EnableSsl = true;
+                    smtp.Host = "smtp.gmail.com";
+                    smtp.Port = 587;
+                    smtp.UseDefaultCredentials = false;
+                    smtp.Credentials = new NetworkCredential(_email, _epass);
+                    smtp.DeliveryMethod = SmtpDeliveryMethod.Network;
+                    smtp.SendCompleted += (s, e) => { smtp.Dispose(); };
+                    await smtp.SendMailAsync(myMessage);
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);                
             }
         }
     }

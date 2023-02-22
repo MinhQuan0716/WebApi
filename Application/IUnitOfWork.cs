@@ -15,6 +15,7 @@ namespace Application
 
         public ITrainingClassRepository TrainingClassRepository { get; }
         public ILocationRepository LocationRepository { get; }
+        public IFeedbackRepository FeedbackRepository { get; }
         public Task<int> SaveChangeAsync();
     }
 }

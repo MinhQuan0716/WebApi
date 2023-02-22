@@ -9,5 +9,6 @@ namespace Application.Utils
     public interface ISendMailHelper
     {
         public Task<bool> SendMailAsync(string email, string subject, string message);
+        public Task<bool> SendMailAsync(List<string> email, string subject, string message);
     }
 }

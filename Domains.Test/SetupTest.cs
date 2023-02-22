@@ -44,6 +44,9 @@ namespace Domains.Test
         protected readonly Mock<ITrainingClassService> _trainingClassServiceMock;
         protected readonly Mock<ILocationRepository> _locationRepositoryMock;
         protected readonly Mock<ILocationService> _locationServiceMock;
+                
+        protected readonly Mock<IFeedbackService> _feedbackServiceMock;
+        protected readonly Mock<IFeedbackRepository> _feedbackRepositoryMock;
 
         protected readonly AppConfiguration configuration;
         protected readonly AppDbContext _dbContext;
@@ -81,6 +84,9 @@ namespace Domains.Test
 
             _syllabusRepositoryMock=new Mock<ISyllabusRepository>();
             _syllabusServiceMock=new Mock<ISyllabusService>();
+
+            _feedbackServiceMock = new Mock<IFeedbackService>();
+            _feedbackRepositoryMock = new Mock<IFeedbackRepository>();
 
             var options = new DbContextOptionsBuilder<AppDbContext>()
                 .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())

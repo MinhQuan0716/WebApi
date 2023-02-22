@@ -26,12 +26,12 @@ namespace Domain.Entities
 
         public int RoleId { get; set; }
         public Role Role { get; set; }
-        public int ApplicationId { get; set; }
-        public ICollection<Applications> Applications { get; set; }
-        public int AttendanceId { get; set; }
-        public ICollection<Attendance> Attendances { get; set; }
+
+        public ICollection<Applications>? Applications { get; set; }
+        public ICollection<Attendance>? Attendances { get; set; }
 
         public ICollection<Syllabus> Syllabuses { get; set; }
         public ICollection<DetailTrainingClassParticipate> DetailTrainingClassParticipate { get; set; }
+        public ICollection<Feedback> Feedbacks { get; set; } = default!;
     }
 }

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Application.ViewModels.SyllabusModels;
 using Application.ViewModels.SyllabusModels.UpdateSyllabusModels;
 using Microsoft.AspNetCore.Session;
+using Application.ViewModels.FeedbackModels;
 
 namespace Infrastructures.Mappers
 {
@@ -112,6 +113,9 @@ namespace Infrastructures.Mappers
             CreateMap<User, LoginWithEmailDto>()
                 .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
                 .ReverseMap();
+
+            CreateMap<Feedback, FeedbackModel>().ReverseMap();
+            CreateMap<Feedback, FeedbackVM>().ReverseMap();
         }
     }
 }

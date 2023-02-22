@@ -58,6 +58,7 @@ namespace Infrastructures.Tests.Repository
                                                  .Without(u => u.DetailTrainingClassParticipate)
                                                  .Without(u => u.Applications)
                                                  .Without(u => u.Attendances)
+                                                 .Without(u => u.Feedbacks)
                                                  .Create();
             await _dbContext.Users.AddRangeAsync(mockData);
 
@@ -86,6 +87,7 @@ namespace Infrastructures.Tests.Repository
                                                  .Without(u=>u.DetailTrainingClassParticipate)
                                                  .Without(u => u.Applications)
                                                  .Without(u => u.Attendances)
+                                                 .Without(u => u.Feedbacks)
                                                  .Create();
 
 
@@ -103,6 +105,7 @@ namespace Infrastructures.Tests.Repository
                                                  .Without(u => u.DetailTrainingClassParticipate)
                                                  .Without(u => u.Applications)
                                                  .Without(u => u.Attendances)
+                                                 .Without(u => u.Feedbacks)
                                                  .CreateMany(10).ToList();
 
 
