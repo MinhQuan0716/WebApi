@@ -27,7 +27,10 @@ namespace Infrastructures
         public DbSet<Location> Locations { get; set; }
         public DbSet<DetailTrainingClassParticipate> DetailTrainingClassParticipates { get; set; }
         public DbSet<Attendance> Attendances { get; set; }
-        public DbSet<Applications> Applications { get; set; }        
+        public DbSet<Applications> Applications { get; set; }
+        public DbSet<TrainingProgram> TrainingPrograms { get; set; }
+        public DbSet<DetailTrainingProgramSyllabus> detailTrainingProgramSyllabuses { get; set; }
+              
         public DbSet<Feedback> Feedbakcks { get; set; }
         #endregion
 
@@ -43,6 +46,8 @@ namespace Infrastructures
             new DetailTrainingClassParticipateConfiguration().Configure(modelBuilder.Entity<DetailTrainingClassParticipate>());
             new ApplicationsConfiguration().Configure(modelBuilder.Entity<Applications>());
             new AttendanceConfiguration().Configure(modelBuilder.Entity<Attendance>());
+            new TrainingProgramConfiguration().Configure(modelBuilder.Entity<TrainingProgram>());
+            new DetailTrainingProgramSyllabusConfiguration().Configure(modelBuilder.Entity<DetailTrainingProgramSyllabus>());
             new FeedbackConfiguration().Configure(modelBuilder.Entity<Feedback>());
         }
 

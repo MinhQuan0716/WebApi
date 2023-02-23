@@ -19,8 +19,9 @@ namespace Domain.Entities
 
 
         public ICollection<Unit> Units { get; set; }
+        public ICollection<DetailTrainingProgramSyllabus> DetailTrainingProgramSyllabus { get; set; }
 
-       
-        
+
+
     }
 }

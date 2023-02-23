@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using Moq;
 using WebAPI.Controllers;
 using Microsoft.Extensions.Configuration;
+using Application.Services;
 
 namespace Domains.Test
 {
@@ -54,7 +55,11 @@ namespace Domains.Test
         protected readonly Mock<ISendMailHelper> _sendMailMock;
         protected readonly Mock<IConfiguration> _config;
         protected readonly Mock<IMapper> _mapperMock;
+
+        protected readonly Mock<ITrainingProgramService> _trainingProgramServiceMock;
+
         protected readonly Mock<ILectureService> _lectureServiceMock;
+
         public SetupTest()
         {
             var mappingConfig = new MapperConfiguration(mc =>
@@ -83,8 +88,14 @@ namespace Domains.Test
 
 
             _syllabusRepositoryMock=new Mock<ISyllabusRepository>();
-            _syllabusServiceMock=new Mock<ISyllabusService>();
 
+            _trainingClassRepositoryMock = new Mock<ITrainingClassRepository>();
+            _trainingClassServiceMock = new Mock<ITrainingClassService>();
+            _locationRepositoryMock = new Mock<ILocationRepository>();
+            _locationServiceMock = new Mock<ILocationService>();
+            _trainingProgramServiceMock = new Mock<ITrainingProgramService>();
+            _unitServiceMock = new Mock<IUnitService>();
+            _syllabusServiceMock = new Mock<ISyllabusService>();
             _feedbackServiceMock = new Mock<IFeedbackService>();
             _feedbackRepositoryMock = new Mock<IFeedbackRepository>();
 

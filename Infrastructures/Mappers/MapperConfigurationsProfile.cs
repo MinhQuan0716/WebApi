@@ -7,6 +7,7 @@ using Application.ViewModels.SyllabusModels;
 using Application.ViewModels.SyllabusModels.UpdateSyllabusModels;
 using Microsoft.AspNetCore.Session;
 using Application.ViewModels.FeedbackModels;
+using Application.ViewModels.TrainingProgramModels;
 
 namespace Infrastructures.Mappers
 {
@@ -113,6 +114,14 @@ namespace Infrastructures.Mappers
             CreateMap<User, LoginWithEmailDto>()
                 .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
                 .ReverseMap();
+
+            CreateMap<TrainingProgram, TrainingProgramViewModel>()
+                .ForMember(dest => dest.TrainingProgramId, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.CreatedOn, opt => opt.MapFrom(src => src.CreationDate)).ReverseMap();
+
+  
+            CreateMap<CreateTrainingProgramDTO, TrainingProgram>().ReverseMap();
+            CreateMap<UpdateTrainingProgramDTO, TrainingProgram>().ReverseMap();
 
             CreateMap<Feedback, FeedbackModel>().ReverseMap();
             CreateMap<Feedback, FeedbackVM>().ReverseMap();
