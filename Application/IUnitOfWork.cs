@@ -11,11 +11,10 @@ namespace Application
         public IDetailUnitLectureRepository DetailUnitLectureRepository { get; }
 
         public ITrainingMaterialRepository TrainingMaterialRepository { get; }
-        public ITrainingProgramRepository TrainingProgramRepository { get; }
+
 
         public ITrainingClassRepository TrainingClassRepository { get; }
         public ILocationRepository LocationRepository { get; }
-        public IDetailTrainingProgramSyllabusRepository DetailTrainingProgramSyllabusRepository { get; }
         public IFeedbackRepository FeedbackRepository { get; }
         public Task<int> SaveChangeAsync();
     }

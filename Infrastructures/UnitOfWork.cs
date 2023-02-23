@@ -14,15 +14,14 @@ namespace Infrastructures
         private readonly IDetailUnitLectureRepository _detailUnitLectureRepository;
 
         private readonly ITrainingMaterialRepository _trainingMaterialRepository;
-        private readonly ITrainingProgramRepository _trainingProgramRepository;
+
         private readonly ITrainingClassRepository _trainingClassRepository;
         public readonly ILocationRepository _locationRepository;
         private readonly IFeedbackRepository _feedbackRepository;
 
-        private readonly IDetailTrainingProgramSyllabusRepository _detailTrainingProgramSyllabusRepository;
         public UnitOfWork(AppDbContext dbContext,
             IUserRepository userRepository, ITrainingMaterialRepository trainingMaterialRepository,
-            ISyllabusRepository syllabusRepository, IUnitRepository unitRepository, ILectureRepository lectureRepository, IDetailUnitLectureRepository detailUnitLectureRepository, ITrainingClassRepository trainingClassRepository, ILocationRepository locationRepository, ITrainingProgramRepository trainingProgramRepository, IDetailTrainingProgramSyllabusRepository detailTrainingProgramSyllabusRepository,
+            ISyllabusRepository syllabusRepository, IUnitRepository unitRepository, ILectureRepository lectureRepository, IDetailUnitLectureRepository detailUnitLectureRepository, ITrainingClassRepository trainingClassRepository, ILocationRepository locationRepository,
             IFeedbackRepository feedbackRepository)
 
         {
@@ -37,8 +36,6 @@ namespace Infrastructures
 
             _trainingClassRepository = trainingClassRepository;
             _locationRepository = locationRepository;
-            _trainingProgramRepository = trainingProgramRepository;
-            _detailTrainingProgramSyllabusRepository = detailTrainingProgramSyllabusRepository;
             _feedbackRepository = feedbackRepository;
         }
         public IUserRepository UserRepository => _userRepository;
@@ -60,8 +57,6 @@ namespace Infrastructures
         public ITrainingClassRepository TrainingClassRepository => _trainingClassRepository;
         public ILocationRepository LocationRepository => _locationRepository;
 
-        public ITrainingProgramRepository TrainingProgramRepository => _trainingProgramRepository;
-        public IDetailTrainingProgramSyllabusRepository DetailTrainingProgramSyllabusRepository => _detailTrainingProgramSyllabusRepository;
         public IFeedbackRepository FeedbackRepository => _feedbackRepository;
 
         public async Task<int> SaveChangeAsync()

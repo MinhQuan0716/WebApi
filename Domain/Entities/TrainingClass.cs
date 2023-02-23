@@ -17,9 +17,6 @@ namespace Domain.Entities
 
         public ICollection<DetailTrainingClassParticipate> TrainingClassParticipates { get; set; } = default!;
         public ICollection<Attendance> Attendances { get; set; } = default!;
-
-        public Guid TrainingProgramId { get; set; }
-        public TrainingProgram TrainingProgram { get; set; }
         public ICollection<Feedback> Feedbacks { get; set; } = default!;
     }
 }

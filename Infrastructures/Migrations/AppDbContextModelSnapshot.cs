@@ -175,7 +175,7 @@ namespace Infrastructures.Migrations
                     b.ToTable("DetailTrainingClassParticipates", (string)null);
                 });
 
-            modelBuilder.Entity("Domain.Entities.DetailTrainingProgramSyllabus", b =>
+            modelBuilder.Entity("Domain.Entities.DetailUnitLecture", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -194,9 +194,10 @@ namespace Infrastructures.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<bool>("IsDeleted")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(false);
+                        .HasColumnType("bit");
+
+                    b.Property<Guid>("LectureID")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid?>("ModificationBy")
                         .HasColumnType("uniqueidentifier");
@@ -295,95 +296,6 @@ namespace Infrastructures.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("SyllabusId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("TrainingProgramId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("SyllabusId");
-
-                    b.HasIndex("TrainingProgramId");
-
-                    b.ToTable("Lectures", (string)null);
-                });
-
-            modelBuilder.Entity("Domain.Entities.DetailUnitLecture", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("CreatedBy")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreationDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid?>("DeleteBy")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime?>("DeletionDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<Guid>("LectureID")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("ModificationBy")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime?>("ModificationDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("UnitId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("LectureID");
-
-                    b.HasIndex("UnitId");
-
-                    b.ToTable("DetailUnitLecture");
-                });
-
-            modelBuilder.Entity("Domain.Entities.Lecture", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("CreatedBy")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreationDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid?>("DeleteBy")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime?>("DeletionDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("DeliveryType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<double>("Duration")
-                        .HasColumnType("float");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("LectureName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<Guid?>("ModificationBy")
                         .HasColumnType("uniqueidentifier");
 
@@ -400,7 +312,102 @@ namespace Infrastructures.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Lectures");
+                    b.ToTable("Lectures", (string)null);
+                });
+
+            modelBuilder.Entity("Domain.Entities.Question", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("BankId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ContentQuestion")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("CreatedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("DeleteBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("DeletionDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid?>("ModificationBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("ModificationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("QuestionDetailId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("TypeID1")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BankId");
+
+                    b.HasIndex("QuestionDetailId");
+
+                    b.HasIndex("TypeID1");
+
+                    b.ToTable("Question");
+                });
+
+            modelBuilder.Entity("Domain.Entities.QuestionDetail", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("CreatedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("DeleteBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("DeletionDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid?>("ModificationBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("ModificationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<float>("Point")
+                        .HasColumnType("real");
+
+                    b.Property<Guid>("QuizTestIDId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("QuizTestIDId");
+
+                    b.ToTable("QuestionDetail");
                 });
 
             modelBuilder.Entity("Domain.Entities.Location", b =>
@@ -627,9 +634,6 @@ namespace Infrastructures.Migrations
                     b.Property<DateTime>("StartTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("TrainingProgramId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.HasKey("Id");
 
                     b.HasIndex("LocationID");
@@ -695,54 +699,6 @@ namespace Infrastructures.Migrations
                     b.ToTable("TrainingMaterials", (string)null);
                 });
 
-            modelBuilder.Entity("Domain.Entities.TrainingProgram", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasDefaultValueSql("NEWID()");
-
-                    b.Property<Guid?>("CreatedBy")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreationDate")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("getutcdate()");
-
-                    b.Property<Guid?>("DeleteBy")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime?>("DeletionDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<double>("Duration")
-                        .HasColumnType("float");
-
-                    b.Property<bool>("IsDeleted")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(false);
-
-                    b.Property<Guid?>("ModificationBy")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime?>("ModificationDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("ProgramName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("TrainingPrograms");
-                });
-
             modelBuilder.Entity("Domain.Entities.Unit", b =>
                 {
                     b.Property<Guid>("Id")
@@ -796,12 +752,6 @@ namespace Infrastructures.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier")
                         .HasDefaultValueSql("NEWID()");
-
-                    b.Property<int>("ApplicationId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("AttendanceId")
-                        .HasColumnType("int");
 
                     b.Property<string>("AvatarUrl")
                         .HasColumnType("nvarchar(max)");
@@ -930,25 +880,6 @@ namespace Infrastructures.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Domain.Entities.DetailTrainingProgramSyllabus", b =>
-                {
-                    b.HasOne("Domain.Entities.Syllabus", "Syllabus")
-                        .WithMany("DetailTrainingProgramSyllabus")
-                        .HasForeignKey("SyllabusId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Domain.Entities.TrainingProgram", "TrainingProgram")
-                        .WithMany("DetailTrainingProgramSyllabus")
-                        .HasForeignKey("TrainingProgramId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Syllabus");
-
-                    b.Navigation("TrainingProgram");
-                });
-
             modelBuilder.Entity("Domain.Entities.DetailUnitLecture", b =>
                 {
                     b.HasOne("Domain.Entities.Lecture", "Lecture")
@@ -966,6 +897,70 @@ namespace Infrastructures.Migrations
                     b.Navigation("Lecture");
 
                     b.Navigation("Unit");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Question", b =>
+                {
+                    b.HasOne("Domain.Entities.Bank", "BankID")
+                        .WithMany()
+                        .HasForeignKey("BankId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.QuestionDetail", null)
+                        .WithMany("Questions")
+                        .HasForeignKey("QuestionDetailId");
+
+                    b.HasOne("Domain.Entities.TypeQuestion", "TypeID")
+                        .WithMany()
+                        .HasForeignKey("TypeID1")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("BankID");
+
+                    b.Navigation("TypeID");
+                });
+
+            modelBuilder.Entity("Domain.Entities.QuestionDetail", b =>
+                {
+                    b.HasOne("Domain.Entities.QuizTest", "QuizTestID")
+                        .WithMany("QuestionDetails")
+                        .HasForeignKey("QuizTestIDId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("QuizTestID");
+                });
+
+            modelBuilder.Entity("Domain.Entities.QuizResult", b =>
+                {
+                    b.HasOne("Domain.Entities.QuizTest", "QuizTestId")
+                        .WithMany()
+                        .HasForeignKey("QuizTestIdId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.User", "UserID")
+                        .WithMany("QuizResults")
+                        .HasForeignKey("UserIDId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("QuizTestId");
+
+                    b.Navigation("UserID");
+                });
+
+            modelBuilder.Entity("Domain.Entities.QuizTest", b =>
+                {
+                    b.HasOne("Domain.Entities.Syllabus", "SyllabusID")
+                        .WithMany("QuizTests")
+                        .HasForeignKey("SyllabusIDId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("SyllabusID");
                 });
 
             modelBuilder.Entity("Domain.Entities.Feedback", b =>
@@ -1000,15 +995,7 @@ namespace Infrastructures.Migrations
                         .WithMany("TrainingClasses")
                         .HasForeignKey("LocationID");
 
-                    b.HasOne("Domain.Entities.TrainingProgram", "TrainingProgram")
-                        .WithMany("TrainingClasses")
-                        .HasForeignKey("TrainingProgramId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Location");
-
-                    b.Navigation("TrainingProgram");
                 });
 
             modelBuilder.Entity("Domain.Entities.TrainingMaterial", b =>
@@ -1063,7 +1050,7 @@ namespace Infrastructures.Migrations
 
             modelBuilder.Entity("Domain.Entities.Syllabus", b =>
                 {
-                    b.Navigation("DetailTrainingProgramSyllabus");
+                    b.Navigation("QuizTests");
 
                     b.Navigation("Units");
                 });
@@ -1075,13 +1062,6 @@ namespace Infrastructures.Migrations
                     b.Navigation("Feedbacks");
 
                     b.Navigation("TrainingClassParticipates");
-                });
-
-            modelBuilder.Entity("Domain.Entities.TrainingProgram", b =>
-                {
-                    b.Navigation("DetailTrainingProgramSyllabus");
-
-                    b.Navigation("TrainingClasses");
                 });
 
             modelBuilder.Entity("Domain.Entities.Unit", b =>

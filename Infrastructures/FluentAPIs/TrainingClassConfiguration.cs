@@ -19,10 +19,6 @@ namespace Infrastructures.FluentAPIs
             builder.Property(x => x.IsDeleted).HasDefaultValue("false");
             builder.HasOne(x => x.Location).WithMany(x=>x.TrainingClasses).HasForeignKey(x=>x.LocationID);
             builder.HasMany(x => x.Attendances).WithOne(x => x.TrainingClass).HasForeignKey(x => x.TrainingClassId);
-
-            builder.HasOne(c => c.TrainingProgram)
-            .WithMany(x => x.TrainingClasses)
-            .HasForeignKey(c => c.TrainingProgramId);
         }
     }
 }
