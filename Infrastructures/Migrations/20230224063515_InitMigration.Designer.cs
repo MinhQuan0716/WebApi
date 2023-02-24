@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructures.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20230221074258_AddFeedbackSchema")]
-    partial class AddFeedbackSchema
+    [Migration("20230224063515_InitMigration")]
+    partial class InitMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -157,11 +157,17 @@ namespace Infrastructures.Migrations
                         .HasColumnType("bit")
                         .HasDefaultValue(false);
 
+                    b.Property<Guid>("LocationId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<Guid?>("ModificationBy")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime?>("ModificationDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<int>("StatusClassDetail")
+                        .HasColumnType("int");
 
                     b.Property<Guid>("TrainingClassID")
                         .HasColumnType("uniqueidentifier");
@@ -171,11 +177,61 @@ namespace Infrastructures.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("LocationId");
+
                     b.HasIndex("TrainingClassID");
 
                     b.HasIndex("UserId");
 
                     b.ToTable("DetailTrainingClassParticipates");
+                });
+
+            modelBuilder.Entity("Domain.Entities.DetailTrainingProgramSyllabus", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("CreatedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("DeleteBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("DeletionDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
+                    b.Property<Guid?>("ModificationBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("ModificationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("SyllabusId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("TrainingProgramId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SyllabusId");
+
+                    b.HasIndex("TrainingProgramId");
+
+                    b.ToTable("detailTrainingProgramSyllabuses");
                 });
 
             modelBuilder.Entity("Domain.Entities.DetailUnitLecture", b =>
@@ -264,7 +320,7 @@ namespace Infrastructures.Migrations
 
                     b.HasIndex("TrainingCLassId");
 
-                    b.ToTable("Feedbakcks");
+                    b.ToTable("Feedbacks");
                 });
 
             modelBuilder.Entity("Domain.Entities.Lecture", b =>
@@ -487,12 +543,12 @@ namespace Infrastructures.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("userID")
+                    b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("userID");
+                    b.HasIndex("UserId");
 
                     b.ToTable("Syllabuses");
                 });
@@ -526,7 +582,7 @@ namespace Infrastructures.Migrations
                         .HasColumnType("bit")
                         .HasDefaultValue(false);
 
-                    b.Property<Guid>("LocationID")
+                    b.Property<Guid?>("LocationID")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid?>("ModificationBy")
@@ -542,9 +598,17 @@ namespace Infrastructures.Migrations
                     b.Property<DateTime>("StartTime")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("StatusClass")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("TrainingProgramId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
 
                     b.HasIndex("LocationID");
+
+                    b.HasIndex("TrainingProgramId");
 
                     b.ToTable("TrainingClasses");
                 });
@@ -605,6 +669,54 @@ namespace Infrastructures.Migrations
                     b.HasIndex("lectureID");
 
                     b.ToTable("TrainingMaterials");
+                });
+
+            modelBuilder.Entity("Domain.Entities.TrainingProgram", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("NEWID()");
+
+                    b.Property<Guid?>("CreatedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreationDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("getutcdate()");
+
+                    b.Property<Guid?>("DeleteBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("DeletionDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<double>("Duration")
+                        .HasColumnType("float");
+
+                    b.Property<bool>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
+                    b.Property<Guid?>("ModificationBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("ModificationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ProgramName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("TrainingPrograms");
                 });
 
             modelBuilder.Entity("Domain.Entities.Unit", b =>
@@ -771,6 +883,12 @@ namespace Infrastructures.Migrations
 
             modelBuilder.Entity("Domain.Entities.DetailTrainingClassParticipate", b =>
                 {
+                    b.HasOne("Domain.Entities.Location", "Location")
+                        .WithMany("DetailTrainingClassesParticipate")
+                        .HasForeignKey("LocationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Domain.Entities.TrainingClass", "TrainingClass")
                         .WithMany("TrainingClassParticipates")
                         .HasForeignKey("TrainingClassID")
@@ -783,9 +901,30 @@ namespace Infrastructures.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("Location");
+
                     b.Navigation("TrainingClass");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Domain.Entities.DetailTrainingProgramSyllabus", b =>
+                {
+                    b.HasOne("Domain.Entities.Syllabus", "Syllabus")
+                        .WithMany("DetailTrainingProgramSyllabus")
+                        .HasForeignKey("SyllabusId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.TrainingProgram", "TrainingProgram")
+                        .WithMany("DetailTrainingProgramSyllabus")
+                        .HasForeignKey("TrainingProgramId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Syllabus");
+
+                    b.Navigation("TrainingProgram");
                 });
 
             modelBuilder.Entity("Domain.Entities.DetailUnitLecture", b =>
@@ -826,7 +965,7 @@ namespace Infrastructures.Migrations
                 {
                     b.HasOne("Domain.Entities.User", "User")
                         .WithMany("Syllabuses")
-                        .HasForeignKey("userID")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -837,11 +976,17 @@ namespace Infrastructures.Migrations
                 {
                     b.HasOne("Domain.Entities.Location", "Location")
                         .WithMany("TrainingClasses")
-                        .HasForeignKey("LocationID")
+                        .HasForeignKey("LocationID");
+
+                    b.HasOne("Domain.Entities.TrainingProgram", "TrainingProgram")
+                        .WithMany("TrainingClasses")
+                        .HasForeignKey("TrainingProgramId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Location");
+
+                    b.Navigation("TrainingProgram");
                 });
 
             modelBuilder.Entity("Domain.Entities.TrainingMaterial", b =>
@@ -886,6 +1031,8 @@ namespace Infrastructures.Migrations
 
             modelBuilder.Entity("Domain.Entities.Location", b =>
                 {
+                    b.Navigation("DetailTrainingClassesParticipate");
+
                     b.Navigation("TrainingClasses");
                 });
 
@@ -896,6 +1043,8 @@ namespace Infrastructures.Migrations
 
             modelBuilder.Entity("Domain.Entities.Syllabus", b =>
                 {
+                    b.Navigation("DetailTrainingProgramSyllabus");
+
                     b.Navigation("Units");
                 });
 
@@ -906,6 +1055,13 @@ namespace Infrastructures.Migrations
                     b.Navigation("Feedbacks");
 
                     b.Navigation("TrainingClassParticipates");
+                });
+
+            modelBuilder.Entity("Domain.Entities.TrainingProgram", b =>
+                {
+                    b.Navigation("DetailTrainingProgramSyllabus");
+
+                    b.Navigation("TrainingClasses");
                 });
 
             modelBuilder.Entity("Domain.Entities.Unit", b =>

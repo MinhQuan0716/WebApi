@@ -29,7 +29,7 @@ namespace Infrastructures
         public DbSet<Attendance> Attendances { get; set; }
         public DbSet<Applications> Applications { get; set; }
               
-        public DbSet<Feedback> Feedbakcks { get; set; }
+        public DbSet<Feedback> Feedbacks { get; set; }
         public DbSet<TrainingProgram> TrainingPrograms { get; set; }
         public DbSet<DetailTrainingProgramSyllabus> detailTrainingProgramSyllabuses { get; set; }
         #endregion
