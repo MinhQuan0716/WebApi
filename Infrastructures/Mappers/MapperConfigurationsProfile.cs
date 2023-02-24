@@ -6,7 +6,10 @@ using Microsoft.AspNetCore.Mvc;
 using Application.ViewModels.SyllabusModels;
 using Application.ViewModels.SyllabusModels.UpdateSyllabusModels;
 using Microsoft.AspNetCore.Session;
+using Application.ViewModels.TrainingClassModels;
+using Application.ViewModels.Location;
 using Application.ViewModels.FeedbackModels;
+using Application.ViewModels.TrainingProgramModels;
 
 namespace Infrastructures.Mappers
 {
@@ -64,8 +67,8 @@ namespace Infrastructures.Mappers
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status))
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.LectureID))
                 .ReverseMap();
-        
-             
+
+
 
             CreateMap<UpdateUnitDTO, Unit>()
                 .ForMember(dest => dest.UnitName, opt => opt.MapFrom(src => src.UnitName))
@@ -97,7 +100,7 @@ namespace Infrastructures.Mappers
             CreateMap<UnitDTO, Unit>()
                     .ForMember(uu => uu.UnitName, uu => uu.MapFrom(src => src.UnitName))
                     .ForMember(uu => uu.TotalTime, uu => uu.MapFrom(src => src.TotalTime))
-                    .ForMember(uu => uu.Session,uu => uu.MapFrom(src => src.Session))
+                    .ForMember(uu => uu.Session, uu => uu.MapFrom(src => src.Session))
                     .ReverseMap();
 
 
@@ -106,16 +109,42 @@ namespace Infrastructures.Mappers
                     .ForMember(ll => ll.OutputStandards, ll => ll.MapFrom(src => src.OutputStandards))
                     .ForMember(ll => ll.Duration, ll => ll.MapFrom(src => src.Duration))
                     .ForMember(ll => ll.DeliveryType, ll => ll.MapFrom(src => src.DeliveryType))
-                    .ForMember(ll => ll.Status , ll => ll.MapFrom(src=> src.Status))
+                    .ForMember(ll => ll.Status, ll => ll.MapFrom(src => src.Status))
                     .ReverseMap();
-        
+
 
             CreateMap<User, LoginWithEmailDto>()
                 .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
                 .ReverseMap();
 
+            //map training class
+            CreateMap<CreateTrainingClassDTO, TrainingClass>();
+            CreateMap<TrainingClass, TrainingClassViewModel>()
+                .ForMember(x => x._Id, src => src.MapFrom(x => x.Id))
+                .ForMember(x=>x.LocationName, src =>src.MapFrom(x=>x.Location.LocationName));
+
+            //map location
+            CreateMap<CreateLocationDTO, Location>();
+            CreateMap<Location, LocationDTO>()
+                .ForMember(x => x._Id, src => src.MapFrom(x => x.Id));
+            CreateMap<TrainingProgram, TrainingProgramViewModel>()
+                .ForMember(dest => dest.TrainingProgramId, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.CreatedOn, opt => opt.MapFrom(src => src.CreationDate)).ReverseMap();
+
+  
+            CreateMap<CreateTrainingProgramDTO, TrainingProgram>().ReverseMap();
+            CreateMap<UpdateTrainingProgramDTO, TrainingProgram>().ReverseMap();
+
             CreateMap<Feedback, FeedbackModel>().ReverseMap();
             CreateMap<Feedback, FeedbackVM>().ReverseMap();
+
+            CreateMap<TrainingProgram, TrainingProgramViewModel>()
+                .ForMember(dest => dest.TrainingProgramId, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.CreatedOn, opt => opt.MapFrom(src => src.CreationDate)).ReverseMap();
+
+
+            CreateMap<CreateTrainingProgramDTO, TrainingProgram>().ReverseMap();
+            CreateMap<UpdateTrainingProgramDTO, TrainingProgram>().ReverseMap();
         }
     }
 }

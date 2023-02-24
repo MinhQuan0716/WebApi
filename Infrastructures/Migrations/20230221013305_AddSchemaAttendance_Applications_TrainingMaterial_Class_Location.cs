@@ -199,7 +199,7 @@ namespace Infrastructures.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Attendances_TrainingClassId",
                 table: "Attendances",
-                column: "TrainingClassId");
+                column: "TrainingClassID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Attendances_UserId",

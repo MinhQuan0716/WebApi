@@ -112,7 +112,7 @@ namespace Infrastructures.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("TrainingClassId")
+                    b.Property<Guid?>("TrainingClassID")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid?>("UserId")
@@ -124,7 +124,7 @@ namespace Infrastructures.Migrations
                         .IsUnique()
                         .HasFilter("[ApplicationId] IS NOT NULL");
 
-                    b.HasIndex("TrainingClassId");
+                    b.HasIndex("TrainingClassID");
 
                     b.HasIndex("UserId");
 
@@ -709,7 +709,7 @@ namespace Infrastructures.Migrations
 
                     b.HasOne("Domain.Entities.TrainingClass", "TrainingClass")
                         .WithMany()
-                        .HasForeignKey("TrainingClassId");
+                        .HasForeignKey("TrainingClassID");
 
                     b.HasOne("Domain.Entities.User", "User")
                         .WithMany()

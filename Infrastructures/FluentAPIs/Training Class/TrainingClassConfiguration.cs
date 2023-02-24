@@ -9,16 +9,20 @@ using System.Threading.Tasks;
 
 namespace Infrastructures.FluentAPIs
 {
-    public class DetailTrainingClassParticipateConfiguration : IEntityTypeConfiguration<DetailTrainingClassParticipate>
+    public class TrainingClassConfiguration : IEntityTypeConfiguration<TrainingClass>
     {
-        public void Configure(EntityTypeBuilder<DetailTrainingClassParticipate> builder)
+        public void Configure(EntityTypeBuilder<TrainingClass> builder)
         {
             builder.HasKey(x => x.Id);
             builder.Property(x => x.Id).HasDefaultValueSql("NEWID()");
             builder.Property(x => x.CreationDate).HasDefaultValueSql("getutcdate()");
             builder.Property(x => x.IsDeleted).HasDefaultValue("false");
-            builder.HasOne(x => x.TrainingClass).WithMany(x => x.TrainingClassParticipates).HasForeignKey(x => x.TrainingClassID);
-            builder.HasOne(x => x.User).WithMany(x=>x.DetailTrainingClassParticipate).HasForeignKey(x => x.UserId);
+            builder.HasOne(x => x.Location).WithMany(x => x.TrainingClasses).HasForeignKey(x => x.LocationID);
+            builder.HasMany(x => x.Attendances).WithOne(x => x.TrainingClass).HasForeignKey(x => x.TrainingClassId);
+
+            builder.HasOne(c => c.TrainingProgram)
+            .WithMany(x => x.TrainingClasses)
+            .HasForeignKey(c => c.TrainingProgramId);
         }
     }
 }

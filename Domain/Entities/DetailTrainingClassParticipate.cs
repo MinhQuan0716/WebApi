@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Domain.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,5 +13,8 @@ namespace Domain.Entities
         public virtual User User { get; set; }
         public Guid TrainingClassID { get; set; }
         public virtual TrainingClass TrainingClass { get; set; }
+        public Guid LocationId { get; set; }
+        public Location Location { get; set; }
+        public StatusClassDetail StatusClassDetail { get; set; }
     }
 }

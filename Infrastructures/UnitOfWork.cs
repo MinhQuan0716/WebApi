@@ -14,15 +14,15 @@ namespace Infrastructures
         private readonly IDetailUnitLectureRepository _detailUnitLectureRepository;
 
         private readonly ITrainingMaterialRepository _trainingMaterialRepository;
-
         private readonly ITrainingClassRepository _trainingClassRepository;
         public readonly ILocationRepository _locationRepository;
         private readonly IFeedbackRepository _feedbackRepository;
-
+        private readonly ITrainingProgramRepository _trainingProgramRepository;
+        private readonly IDetailTrainingProgramSyllabusRepository _detailTrainingProgramSyllabusRepository;
         public UnitOfWork(AppDbContext dbContext,
             IUserRepository userRepository, ITrainingMaterialRepository trainingMaterialRepository,
             ISyllabusRepository syllabusRepository, IUnitRepository unitRepository, ILectureRepository lectureRepository, IDetailUnitLectureRepository detailUnitLectureRepository, ITrainingClassRepository trainingClassRepository, ILocationRepository locationRepository,
-            IFeedbackRepository feedbackRepository)
+            IFeedbackRepository feedbackRepository, ITrainingProgramRepository trainingProgramRepository, IDetailTrainingProgramSyllabusRepository detailTrainingProgramSyllabusRepository)
 
         {
             _dbContext = dbContext;
@@ -36,7 +36,11 @@ namespace Infrastructures
 
             _trainingClassRepository = trainingClassRepository;
             _locationRepository = locationRepository;
+            _trainingProgramRepository = trainingProgramRepository;
+            _detailTrainingProgramSyllabusRepository = detailTrainingProgramSyllabusRepository;
             _feedbackRepository = feedbackRepository;
+            _trainingProgramRepository = trainingProgramRepository;
+            _detailTrainingProgramSyllabusRepository = detailTrainingProgramSyllabusRepository;
         }
         public IUserRepository UserRepository => _userRepository;
         public ISyllabusRepository SyllabusRepository => _syllabusRepository;
@@ -57,6 +61,8 @@ namespace Infrastructures
         public ITrainingClassRepository TrainingClassRepository => _trainingClassRepository;
         public ILocationRepository LocationRepository => _locationRepository;
 
+        public ITrainingProgramRepository TrainingProgramRepository => _trainingProgramRepository;
+        public IDetailTrainingProgramSyllabusRepository DetailTrainingProgramSyllabusRepository => _detailTrainingProgramSyllabusRepository;
         public IFeedbackRepository FeedbackRepository => _feedbackRepository;
 
         public async Task<int> SaveChangeAsync()

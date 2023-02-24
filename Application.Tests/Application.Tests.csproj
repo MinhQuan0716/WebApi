@@ -22,12 +22,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Application\Application.csproj" />
-    <ProjectReference Include="..\Domains.Test\Domains.Test.csproj" />
+    <Folder Include="Commons\" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Commons\" />
+    <ProjectReference Include="..\Application\Application.csproj" />
+    <ProjectReference Include="..\Domains.Test\Domains.Test.csproj" />
   </ItemGroup>
 
 </Project>

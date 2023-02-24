@@ -365,7 +365,7 @@ namespace Application.Tests.Services
         public async void GetAllAsync_ShouldReturnCorrectData()
         {
             //arrange
-            var mockUsers = _fixture.Build<User>().CreateMany(100).ToList();
+            var mockUsers = _fixture.Build<User>().CreateMany(10).ToList();
             var expected = _mapperConfig.Map<List<UserViewModel>>(mockUsers);
             _unitOfWorkMock.Setup(x => x.UserRepository.GetAllAsync()).ReturnsAsync(mockUsers);
 

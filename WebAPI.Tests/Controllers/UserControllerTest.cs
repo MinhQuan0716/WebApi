@@ -146,7 +146,7 @@ public class UserControllerTest : SetupTest
     public async Task GetAllUserAsync_ShouldReturnCorrectData()
     {
         //arrange
-        var mockUsers = _fixture.Build<UserViewModel>().CreateMany(50).ToList();
+        var mockUsers = _fixture.Build<UserViewModel>().CreateMany(10).ToList();
 
         _userServiceMock.Setup(x => x.GetAllAsync()).ReturnsAsync(mockUsers);
         //act

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Application.ViewModels.Location;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,5 +9,7 @@ namespace Application.Interfaces
 {
     public interface ILocationService
     {
+        public Task<LocationDTO> AddNewLocation(CreateLocationDTO  createLocationDTO);
+        public Task<List<LocationDTO>> GetAllLocation();
     }
 }

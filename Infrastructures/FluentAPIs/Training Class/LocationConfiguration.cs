@@ -1,4 +1,5 @@
 ﻿using Domain.Entities;
+using Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Infrastructures.FluentAPIs
 {
-    public class LocationConfiguration:IEntityTypeConfiguration<Location>
+    public class LocationConfiguration : IEntityTypeConfiguration<Location>
     {
 
         public void Configure(EntityTypeBuilder<Location> builder)

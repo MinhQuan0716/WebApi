@@ -4,6 +4,8 @@ using Application.Repositories;
 using Application.ViewModels.SyllabusModels;
 using AutoMapper;
 using Domain.Entities;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using static Microsoft.EntityFrameworkCore.EntityState;
 namespace Infrastructures.Repositories
 {
@@ -25,6 +27,7 @@ namespace Infrastructures.Repositories
                 IsDeleted = false
             };
             _mapper.Map(syllabusDTO, newSyllabus);
+            //Khó dị trời
             await AddAsync(newSyllabus);
             return newSyllabus;
         }
@@ -33,12 +36,25 @@ namespace Infrastructures.Repositories
             List<Syllabus> result = _dbContext.Syllabuses.Where(x => x.Duration > duration1 && x.Duration < duration2).ToList();
             return result;
         }
+
+
         public async Task<List<Syllabus>> SearchByName(string name)
         {
             var result = _dbContext.Syllabuses.Where(x => x.SyllabusName.ToUpper().Contains(name)).ToList();
             return result;
 
 
+        }
+
+        public async Task<IEnumerable<Syllabus>> GetSyllabusByTrainingProgramId(Guid trainingProgramId)
+        {
+            var syllabusList = from s in _dbContext.Syllabuses.Include(s => s.Units).ThenInclude(u => u.DetailUnitLectures).ThenInclude(d => d.Lecture)
+                               join d in _dbContext.detailTrainingProgramSyllabuses
+                               on s.Id equals d.SyllabusId
+                               where d.TrainingProgramId == trainingProgramId && d.IsDeleted == false
+                               select s;
+            if (!syllabusList.IsNullOrEmpty()) return await syllabusList.ToListAsync();
+            else return null;
         }
     }
 }

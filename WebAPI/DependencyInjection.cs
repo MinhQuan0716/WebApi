@@ -46,6 +46,9 @@ namespace WebAPI
             services.AddScoped<ITrainingClassService, TrainingClassService>();
             services.AddScoped<ILocationService, LocationService>();
             services.AddScoped<IFeedbackService, FeedbackService>();
+            services.AddScoped<ITrainingProgramRepository, TrainingProgramRepository>();
+            services.AddScoped<ITrainingProgramService, TrainingProgramService>();
+            services.AddScoped<IDetailTrainingProgramSyllabusRepository, DetailTrainingProgramSyllabusRepository>();
             services.AddHttpContextAccessor();
             services.AddFluentValidationAutoValidation();
             services.AddFluentValidationClientsideAdapters();

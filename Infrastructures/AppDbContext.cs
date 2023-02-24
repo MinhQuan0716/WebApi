@@ -21,14 +21,17 @@ namespace Infrastructures
         public DbSet<DetailUnitLecture> DetailUnitLecture { get; set; }
         public DbSet<Unit> Units { get; set; }
 
-        public DbSet<Lecture> Lectures { get;set; }
+        public DbSet<Lecture> Lectures { get; set; }
         public DbSet<TrainingMaterial> TrainingMaterials { get; set; }
         public DbSet<TrainingClass> TrainingClasses { get; set; }
         public DbSet<Location> Locations { get; set; }
         public DbSet<DetailTrainingClassParticipate> DetailTrainingClassParticipates { get; set; }
         public DbSet<Attendance> Attendances { get; set; }
-        public DbSet<Applications> Applications { get; set; }        
+        public DbSet<Applications> Applications { get; set; }
+              
         public DbSet<Feedback> Feedbakcks { get; set; }
+        public DbSet<TrainingProgram> TrainingPrograms { get; set; }
+        public DbSet<DetailTrainingProgramSyllabus> detailTrainingProgramSyllabuses { get; set; }
         #endregion
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -44,6 +47,8 @@ namespace Infrastructures
             new ApplicationsConfiguration().Configure(modelBuilder.Entity<Applications>());
             new AttendanceConfiguration().Configure(modelBuilder.Entity<Attendance>());
             new FeedbackConfiguration().Configure(modelBuilder.Entity<Feedback>());
+            new TrainingProgramConfiguration().Configure(modelBuilder.Entity<TrainingProgram>());
+            new DetailTrainingProgramSyllabusConfiguration().Configure(modelBuilder.Entity<DetailTrainingProgramSyllabus>());
         }
 
     }

@@ -21,12 +21,12 @@
   </ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\Application\Application.csproj" />
-		<ProjectReference Include="..\Infrastructures\Infrastructures.csproj" />
+		<Folder Include="Validations\" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<Folder Include="Validations\" />
+	  <ProjectReference Include="..\Application\Application.csproj" />
+	  <ProjectReference Include="..\Infrastructures\Infrastructures.csproj" />
 	</ItemGroup>
 
 </Project>

@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Domain.Entities;
+using Domain.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,6 +19,10 @@ namespace Domain.Entities
 
         public ICollection<DetailTrainingClassParticipate> TrainingClassParticipates { get; set; } = default!;
         public ICollection<Attendance> Attendances { get; set; } = default!;
+
         public ICollection<Feedback> Feedbacks { get; set; } = default!;
+        public StatusClass StatusClass { get; set; } = StatusClass.Planning;
+        public Guid TrainingProgramId { get; set; }
+        public TrainingProgram TrainingProgram { get; set; } = default!;
     }
 }

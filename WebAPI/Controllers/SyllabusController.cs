@@ -2,9 +2,7 @@
 using Application.Interfaces;
 using Domain.Entities;
 using Microsoft.AspNetCore.Http;
-using Domain.Entities;
 using Application.ViewModels.SyllabusModels;
-using Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Application.ViewModels.SyllabusModels.UpdateSyllabusModels;
 using Microsoft.AspNetCore.Authorization;

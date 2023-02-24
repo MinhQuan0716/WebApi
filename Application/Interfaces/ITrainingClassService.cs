@@ -1,4 +1,6 @@
-﻿using System;
+using Application.ViewModels.TrainingClassModels;
+using Domain.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,5 +10,6 @@ namespace Application.Interfaces
 {
     public interface ITrainingClassService
     {
+        public Task<TrainingClassViewModel?> CreateTrainingClassAsync(CreateTrainingClassDTO createTrainingClassDTO);
     }
 }
