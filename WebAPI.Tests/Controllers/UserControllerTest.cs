@@ -1,4 +1,5 @@
 ﻿using Application.Commons;
+using Application.Services;
 using Application.ViewModels.TokenModels;
 using Application.ViewModels.UserViewModels;
 using AutoFixture;
@@ -6,6 +7,7 @@ using Domain.Entities;
 using Domains.Test;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using System;
@@ -335,5 +337,27 @@ public class UserControllerTest : SetupTest
         var result = await _userController.Logout();
         //Assert
         result.Should().BeOfType<UnauthorizedResult>();
+    }
+
+    [Fact]
+    public async Task AddUserManually_ShouldReturnUser()
+    {
+        var userMockData= _fixture.Build<AddUserManually>().Create();
+        var user=_mapperConfig.Map<User>(userMockData);
+        _userServiceMock.Setup(x => x.AddUserManualAsync(userMockData)).ReturnsAsync(user);
+        var resulltController = _userController.AddUserManually(userMockData);
+        Assert.NotNull(resulltController);
+        //Assert.IsType<OkObjectResult>(resulltController);
+    }
+    [Fact]
+    public async Task AddUserManually_ShouldNoUserReturn()
+    {
+        var userMockData = _fixture.Build<AddUserManually>().Create();
+        var user = _mapperConfig.Map<User>(userMockData);
+        _userServiceMock.Setup(x => x.AddUserManualAsync(userMockData));
+        
+        var resultController = await _userController.AddUserManually(userMockData);
+        BadRequestObjectResult actual = resultController as BadRequestObjectResult;
+        Assert.NotNull(actual);
     }
 }
