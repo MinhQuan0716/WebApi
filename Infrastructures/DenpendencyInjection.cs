@@ -28,11 +28,13 @@ namespace Infrastructures
             services.AddScoped<ITrainingClassRepository, TraingClassRepository>();
             services.AddScoped<ILocationRepository, LocationRepository>();
             services.AddSingleton<ICurrentTime, CurrentTime>();
-  
+            services.AddScoped<IApplicationReapository, ApplicationReapository>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<ISyllabusService, SyllabusService>();
+            services.AddScoped<IAttendanceRepository, AttendanceRepository>();
+            services.AddScoped<IAttendanceService, AttendanceService>();
             services.AddSingleton<ExternalAuthUtils>();
-
+            services.AddScoped<IApplicationServices, ApplicationService>();
             services.AddScoped<ITrainingClassRepository, TraingClassRepository>();
             services.AddScoped<ILocationRepository, LocationRepository>();
             services.AddScoped<ITrainingProgramRepository, TrainingProgramRepository>();

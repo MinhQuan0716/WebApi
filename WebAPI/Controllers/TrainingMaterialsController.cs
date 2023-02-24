@@ -20,7 +20,7 @@ namespace WebAPI.Controllers
 
             byte[] content = ms.ToArray();
             string fileName = file.TMatName;
-            string type = file.TMatType;
+            string type = file.TMatType;                                                                                                            
 
             return File(content, _trainingMaterialService.GetMimeTypes()[type], fileName);
         }

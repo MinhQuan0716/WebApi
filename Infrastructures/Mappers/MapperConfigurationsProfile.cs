@@ -10,6 +10,7 @@ using Application.ViewModels.TrainingClassModels;
 using Application.ViewModels.Location;
 using Application.ViewModels.FeedbackModels;
 using Application.ViewModels.TrainingProgramModels;
+using Application.ViewModels.ApplicationViewModels;
 
 namespace Infrastructures.Mappers
 {
@@ -145,6 +146,12 @@ namespace Infrastructures.Mappers
 
             CreateMap<CreateTrainingProgramDTO, TrainingProgram>().ReverseMap();
             CreateMap<UpdateTrainingProgramDTO, TrainingProgram>().ReverseMap();
+
+            CreateMap<Applications, ApplicationDTO>()
+                .ForMember(dest => dest.UserID, opt => opt.MapFrom(src => src.UserId))
+                .ForMember(dest => dest.Reason, opt => opt.MapFrom(src => src.Reason))
+                .ForMember(dest => dest.Appoved, opt => opt.MapFrom(src => src.Approved))
+                .ForMember(dest => dest.AbsentDateRequested, opt => opt.MapFrom(src => src.AbsentDateRequested)).ReverseMap();
         }
     }
 }

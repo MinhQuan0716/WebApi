@@ -35,7 +35,8 @@ namespace Domains.Test
         protected readonly Mock<IClaimsService> _claimsServiceMock;
         protected readonly Mock<ICurrentTime> _currentTimeMock;
 
-
+        protected readonly Mock<IApplicationServices> _applicationServiceMock;
+        protected readonly Mock<IAttendanceService> _attendanceServiceMock;
 
         protected readonly Mock<ISyllabusRepository> _syllabusRepository;
 
@@ -48,6 +49,8 @@ namespace Domains.Test
                 
         protected readonly Mock<IFeedbackService> _feedbackServiceMock;
         protected readonly Mock<IFeedbackRepository> _feedbackRepositoryMock;
+
+
 
         protected readonly AppConfiguration configuration;
         protected readonly AppDbContext _dbContext;
@@ -84,6 +87,9 @@ namespace Domains.Test
             _claimsServiceMock = new Mock<IClaimsService>();
             _currentTimeMock = new Mock<ICurrentTime>();
             _sendMailMock = new Mock<ISendMailHelper>();
+
+            _applicationServiceMock = new Mock<IApplicationServices>();
+            _attendanceServiceMock = new Mock<IAttendanceService>();
 
 
             _syllabusRepositoryMock = new Mock<ISyllabusRepository>();

@@ -11,7 +11,8 @@ namespace Application
         public IDetailUnitLectureRepository DetailUnitLectureRepository { get; }
 
         public ITrainingMaterialRepository TrainingMaterialRepository { get; }
-
+        public IApplicationReapository ApplicationReapository { get; }
+        public IAttendanceRepository AttendanceRepository { get; }
         public ITrainingClassRepository TrainingClassRepository { get; }
         public ILocationRepository LocationRepository { get; }
         public IFeedbackRepository FeedbackRepository { get; }
