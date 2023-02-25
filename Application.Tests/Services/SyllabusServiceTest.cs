@@ -28,7 +28,7 @@ namespace Application.Tests.Services
             var updateSyllabusDTO = _fixture.Create<UpdateSyllabusDTO>();
             var syllabus = _mapperConfig.Map<Syllabus>(updateSyllabusDTO);
             syllabus.Id = Guid.NewGuid();
-            var lectures = _fixture.CreateMany<Lecture>(10);
+            var lectures = _fixture.Build<Lecture>().Without(x => x.TrainingMaterials).Without(x => x.AuditPlans).Without(x => x.DetailUnitLectures).CreateMany<Lecture>(10);
 
             _unitOfWorkMock.Setup(um => um.SyllabusRepository.GetByIdAsync(syllabus.Id)).ReturnsAsync(syllabus);
             _unitOfWorkMock.Setup(um => um.SaveChangeAsync()).ReturnsAsync(1);
@@ -68,7 +68,7 @@ namespace Application.Tests.Services
             var updateSyllabusDTO = _fixture.Create<UpdateSyllabusDTO>();
             var syllabus = _mapperConfig.Map<Syllabus>(updateSyllabusDTO);
             syllabus.Id = Guid.NewGuid();
-            var lectures = _fixture.CreateMany<Lecture>(10);
+            var lectures = _fixture.Build<Lecture>().Without(x => x.TrainingMaterials).Without(x => x.AuditPlans).Without(x => x.DetailUnitLectures).CreateMany<Lecture>(10);
 
             _unitOfWorkMock.Setup(um => um.SyllabusRepository.GetByIdAsync(syllabus.Id)).ReturnsAsync(syllabus);
             _unitOfWorkMock.Setup(um => um.SaveChangeAsync()).ReturnsAsync(0);
@@ -87,7 +87,7 @@ namespace Application.Tests.Services
             var updateSyllabusDTO = _fixture.Build<UpdateSyllabusDTO>().Create();
             updateSyllabusDTO.Units.ToList().First().UpdateLectureDTOs.First().LectureID = null;
             var syllabus = _mapperConfig.Map<Syllabus>(updateSyllabusDTO);
-            var lectures = _fixture.CreateMany<Lecture>(10);
+            var lectures = _fixture.Build<Lecture>().Without(x => x.TrainingMaterials).Without(x => x.AuditPlans).Without(x => x.DetailUnitLectures).CreateMany<Lecture>(10);
             _unitOfWorkMock.Setup(um => um.SyllabusRepository.GetByIdAsync(syllabus.Id)).ReturnsAsync(syllabus);
             _unitOfWorkMock.Setup(um => um.SaveChangeAsync()).ReturnsAsync(1);
             _unitOfWorkMock.Setup(um => um.DetailUnitLectureRepository.AddAsync(It.IsAny<DetailUnitLecture>())).Verifiable();
@@ -106,8 +106,8 @@ namespace Application.Tests.Services
         {
             var updateSyllabusDTO = _fixture.Build<UpdateSyllabusDTO>().Create();
             updateSyllabusDTO.Units.First().UnitID = null;
-            var syllabus = _fixture.Build<Syllabus>().Create();
-            var lectures = _fixture.CreateMany<Lecture>(10);
+            var syllabus = _fixture.Build<Syllabus>().Without(x => x.DetailTrainingProgramSyllabus).Create();
+            var lectures = _fixture.Build<Lecture>().Without(x => x.AuditPlans).Without(x => x.TrainingMaterials).Without(x => x.DetailUnitLectures).CreateMany<Lecture>(2);
             _unitOfWorkMock.Setup(um => um.SyllabusRepository.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(syllabus);
             _unitOfWorkMock.Setup(um => um.SaveChangeAsync()).ReturnsAsync(1);
             _unitOfWorkMock.Setup(um => um.DetailUnitLectureRepository.AddAsync(It.IsAny<DetailUnitLecture>())).Verifiable();

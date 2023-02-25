@@ -146,7 +146,7 @@ public class UserControllerTest : SetupTest
     public async Task GetAllUserAsync_ShouldReturnCorrectData()
     {
         //arrange
-        var mockUsers = _fixture.Build<UserViewModel>().CreateMany(10).ToList();
+        var mockUsers = _fixture.Build<UserViewModel>().Without(x => x.Syllabuses).Without(x => x.Role).CreateMany(2).ToList();
 
         _userServiceMock.Setup(x => x.GetAllAsync()).ReturnsAsync(mockUsers);
         //act
@@ -172,7 +172,7 @@ public class UserControllerTest : SetupTest
     public async Task GetUserPaginationAsync_ShouldReturnCorrectDataWithDefaultParameter()
     {
         //arrange
-        var mock = _fixture.Build<Pagination<UserViewModel>>().Create();
+        var mock = _fixture.Build<Pagination<UserViewModel>>().Without(x => x.Items).Create();
 
         _userServiceMock.Setup(
             x => x.GetUserPaginationAsync(It.IsAny<int>(), It.IsAny<int>())).ReturnsAsync(mock);
@@ -194,7 +194,7 @@ public class UserControllerTest : SetupTest
     public async Task GetUserPaginationAsync_ShouldReturnCorrectDataWithParameter()
     {
         //arrange
-        var mock = _fixture.Build<Pagination<UserViewModel>>().Create();
+        var mock = _fixture.Build<Pagination<UserViewModel>>().Without(x =>x.Items).Create();
 
         _userServiceMock.Setup(
             x => x.GetUserPaginationAsync(It.IsAny<int>(), It.IsAny<int>())).ReturnsAsync(mock);
@@ -217,7 +217,7 @@ public class UserControllerTest : SetupTest
     public async Task GetUserByIdAsync_ShouldReturnCorrectData()
     {
         //arrange
-        var mockUser = _fixture.Build<UserViewModel>().Create();
+        var mockUser = _fixture.Build<UserViewModel>().Without(x => x.Syllabuses).Without(x => x.Role).Create();
 
         _userServiceMock.Setup(
             x => x.GetUserByIdAsync(mockUser._Id)).ReturnsAsync(mockUser);
@@ -237,7 +237,7 @@ public class UserControllerTest : SetupTest
     public async Task GetUserByIdAsync_ShouldReturnNoContent_WhenPassNonExistId()
     {
         //arrange
-        var mockUser = _fixture.Build<UserViewModel>().Create();
+        var mockUser = _fixture.Build<UserViewModel>().Without(x => x.Syllabuses).Without(x => x.Role).Create();
 
         _userServiceMock.Setup(
             x => x.GetUserByIdAsync(mockUser._Id)).ReturnsAsync(mockUser);
@@ -255,7 +255,7 @@ public class UserControllerTest : SetupTest
     public async Task DisableUserById_ShouldReturnOk()
     {
         //arrange
-        var mock = _fixture.Build<UserViewModel>().Create();
+        var mock = _fixture.Build<UserViewModel>().Without(x => x.Syllabuses).Without(x => x.Role).Create();
 
         _userServiceMock.Setup(
             x => x.DisableUserById(mock._Id)).ReturnsAsync(true);
@@ -272,7 +272,7 @@ public class UserControllerTest : SetupTest
     public async Task DisableUserById_ShouldReturnBadRequest()
     {
         //arrange
-        var mock = _fixture.Build<UserViewModel>().Create();
+        var mock = _fixture.Build<UserViewModel>().Without(x => x.Syllabuses).Without(x => x.Role).Create();
 
         _userServiceMock.Setup(
             x => x.DisableUserById(It.IsAny<string>())).ReturnsAsync(false);
@@ -306,7 +306,7 @@ public class UserControllerTest : SetupTest
     [Fact]
     public async Task ChangeUserRole_ShouldReturnBadRequest_WhenSuperAdminChangeOwnRole()
     {
-        var admin = _fixture.Build<User>().Create();
+        var admin = _fixture.Build<User>().Without(x => x.Applications).Without(x => x.Syllabuses).Without(x => x.Feedbacks).Without(x => x.Attendances).Without(x => x.DetailTrainingClassParticipate).Create();
         admin.RoleId = 1;
 
         _claimsServiceMock.Setup(ad => ad.GetCurrentUserId).Returns(admin.Id);

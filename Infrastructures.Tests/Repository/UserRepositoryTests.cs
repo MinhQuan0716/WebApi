@@ -29,7 +29,7 @@ namespace Infrastructures.Tests.Repository
         [Fact]
         public async Task CheckEmailExistedAsync_ReturnTrue()
         {
-            var userMock = _fixture.Build<User>().Create();
+            var userMock = _fixture.Build<User>().Without(x => x.Applications).Without(x => x.Syllabuses).Without(x => x.Feedbacks).Without(x => x.Attendances).Without(x => x.DetailTrainingClassParticipate).Create();
             await _dbContext.Users.AddAsync( userMock );
             await _dbContext.SaveChangesAsync();
 
@@ -42,7 +42,7 @@ namespace Infrastructures.Tests.Repository
         [Fact]
         public async Task CheckEmailExistedAsync_ReturnFalse()
         {
-            var userMock = _fixture.Build<User>().Create();
+            var userMock = _fixture.Build<User>().Without(x => x.Applications).Without(x => x.Syllabuses).Without(x => x.Feedbacks).Without(x => x.Attendances).Without(x => x.DetailTrainingClassParticipate).Create();
             await _dbContext.Users.AddAsync(userMock);
             await _dbContext.SaveChangesAsync();
 
@@ -56,7 +56,7 @@ namespace Infrastructures.Tests.Repository
         [Fact]
         public async Task CheckUserNameExistedAsync_ReturnTrue()
         {
-            var userMock = _fixture.Build<User>().Create();
+            var userMock = _fixture.Build<User>().Without(x => x.Applications).Without(x => x.Syllabuses).Without(x => x.Feedbacks).Without(x => x.Attendances).Without(x => x.DetailTrainingClassParticipate).Create();
             await _dbContext.Users.AddAsync(userMock);
             await _dbContext.SaveChangesAsync();
 
@@ -69,7 +69,7 @@ namespace Infrastructures.Tests.Repository
         [Fact]
         public async Task CheckUserNameExistedAsync_ReturnFalse()
         {
-            var userMock = _fixture.Build<User>().Create();
+            var userMock = _fixture.Build<User>().Without(x => x.Applications).Without(x => x.Syllabuses).Without(x => x.Feedbacks).Without(x => x.Attendances).Without(x => x.DetailTrainingClassParticipate).Create();
             await _dbContext.Users.AddAsync(userMock);
             await _dbContext.SaveChangesAsync();
 
@@ -82,7 +82,7 @@ namespace Infrastructures.Tests.Repository
         public async Task GetUserByEmailAsync_ReturnCorrectData()
         {
             //Arrange
-            var userMock = _fixture.Build<User>().Create();
+            var userMock = _fixture.Build<User>().Without(x => x.Applications).Without(x => x.Syllabuses).Without(x => x.Feedbacks).Without(x => x.Attendances).Without(x => x.DetailTrainingClassParticipate).Create();
             await _dbContext.Users.AddAsync(userMock);
             await _dbContext.SaveChangesAsync();
             //Act
@@ -95,7 +95,7 @@ namespace Infrastructures.Tests.Repository
         public async Task GetUserByEmailAsync_ThrowExcpetion()
         {
             //Arrange
-            var userMock = _fixture.Build<User>().Create();
+            var userMock = _fixture.Build<User>().Without(x => x.Applications).Without(x => x.Syllabuses).Without(x => x.Feedbacks).Without(x => x.Attendances).Without(x => x.DetailTrainingClassParticipate).Create();
             await _dbContext.Users.AddAsync(userMock);
             await _dbContext.SaveChangesAsync();
             //Act
@@ -108,7 +108,7 @@ namespace Infrastructures.Tests.Repository
         public async Task ChangeUserPasswordAsync_ShouldReturnCorrectData()
         {
             //Arrange
-            var userMock = _fixture.Build<User>().Create();
+            var userMock = _fixture.Build<User>().Without(x => x.Applications).Without(x => x.Syllabuses).Without(x => x.Feedbacks).Without(x => x.Attendances).Without(x => x.DetailTrainingClassParticipate).Create();
             await _dbContext.Users.AddAsync(userMock);
             await _dbContext.SaveChangesAsync();
             string newPassword = "string1";
@@ -126,7 +126,7 @@ namespace Infrastructures.Tests.Repository
         public async Task GetUserByUserNameAsync_ReturnTrue()
         {
             //Arrange
-            var userMock = _fixture.Build<User>().Create();
+            var userMock = _fixture.Build<User>().Without(x => x.Applications).Without(x => x.Syllabuses).Without(x => x.Feedbacks).Without(x => x.Attendances).Without(x => x.DetailTrainingClassParticipate).Create();
             await _dbContext.Users.AddAsync(userMock);
             await _dbContext.SaveChangesAsync();
             //Act
@@ -140,7 +140,7 @@ namespace Infrastructures.Tests.Repository
         public async Task GetUserByUserNameAsync_ThrowExcpetion_WhenUserNull()
         {
             //Arrange
-            var userMock = _fixture.Build<User>().Create();
+            var userMock = _fixture.Build<User>().Without(x => x.Applications).Without(x => x.Syllabuses).Without(x => x.Feedbacks).Without(x => x.Attendances).Without(x => x.DetailTrainingClassParticipate).Create();
             await _dbContext.Users.AddAsync(userMock);
             await _dbContext.SaveChangesAsync();
             //Act

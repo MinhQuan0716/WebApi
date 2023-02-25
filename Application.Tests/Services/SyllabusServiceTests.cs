@@ -39,7 +39,7 @@ namespace Application.Tests.Services
         {
             // Setup
             var mockData = _fixture.Build<SyllabusGeneralDTO>().Create();
-            var mockUser = _fixture.Build<User>().Create();
+            var mockUser = _fixture.Build<User>().Without(x => x.Applications).Without(x => x.Syllabuses).Without(x => x.Feedbacks).Without(x => x.Attendances).Without(x => x.DetailTrainingClassParticipate).Create();
             var newSyllabus = new Syllabus();
             _mapperConfig.Map(mockData, newSyllabus);
             _claimsServiceMock.Setup(c => c.GetCurrentUserId).Returns(mockUser.Id);

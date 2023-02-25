@@ -25,8 +25,8 @@ namespace WebAPI.Tests.Controllers
         public async Task GetAttendanceByClassId_Should_ReturnData()
         {
             // Arange
-            var mockclass = _fixture.Build<TrainingClass>().Create();
-            var mockAttendence = _fixture.Build<Attendance>().With(x => x.TrainingClass, mockclass).CreateMany().ToList();
+            var mockclass = _fixture.Build<TrainingClass>().Without(x => x.TrainingClassParticipates).Without(x => x.Attendances).Without(x => x.Feedbacks).Create();
+            var mockAttendence = _fixture.Build<Attendance>().Without(x => x.Application).Without(x => x.TrainingClass).Without(x => x.User).With(x => x.TrainingClass, mockclass).CreateMany(1).ToList();
             _attendanceServiceMock.Setup(x => x.GetAttendancesByTraineeClassID(It.IsAny<Guid>())).ReturnsAsync(mockAttendence);
             // Act
             var result = await _attendancecontroller.GetAttendanceByClassId(mockclass.Id);
@@ -40,8 +40,8 @@ namespace WebAPI.Tests.Controllers
         [Fact]
         public async Task GetAttendanceByTraineeId_Sould_ReturnData()
         {
-            var mockclass = _fixture.Build<TrainingClass>().Create();
-            var mockAttendance = _fixture.Build<Attendance>().With(XmlAssertionExtensions => XmlAssertionExtensions.TrainingClass, mockclass).CreateMany().ToList();
+            var mockclass = _fixture.Build<TrainingClass>().Without(x => x.TrainingClassParticipates).Without(x => x.Attendances).Without(x => x.Feedbacks).Create();
+            var mockAttendance = _fixture.Build<Attendance>().With(x => x.TrainingClass, mockclass).Without(x => x.Application).Without(x => x.TrainingClass).Without(x => x.User).CreateMany(2).ToList();
             _attendanceServiceMock.Setup(x => x.GetAttendanceByTraineeID(It.IsAny<Guid>())).ReturnsAsync(mockAttendance);
 
             //act

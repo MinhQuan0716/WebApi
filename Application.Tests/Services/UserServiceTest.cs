@@ -33,7 +33,7 @@ namespace Application.Tests.Services
             _fixture.Behaviors.OfType<ThrowingRecursionBehavior>().ToList()
             .ForEach(b => _fixture.Behaviors.Remove(b));
             _fixture.Behaviors.Add(new OmitOnRecursionBehavior());
-            var mockUser = _fixture.Build<User>().Create();
+            var mockUser = _fixture.Build<User>().Without(x => x.Applications).Without(x => x.Syllabuses).Without(x => x.Feedbacks).Without(x => x.Attendances).Without(x => x.DetailTrainingClassParticipate).Create();
             _unitOfWorkMock.Setup(u => u.UserRepository.GetUserByEmailAsync(mockUser.Email)).ReturnsAsync(mockUser);
             _sendMailMock.Setup(sm => sm.SendMailAsync(mockUser.Email, "ResetPassword", It.IsAny<string>())).ReturnsAsync(true);
             Mock<IConfiguration> _mockConfig = new Mock<IConfiguration>();
@@ -54,7 +54,7 @@ namespace Application.Tests.Services
             _fixture.Behaviors.OfType<ThrowingRecursionBehavior>().ToList()
            .ForEach(b => _fixture.Behaviors.Remove(b));
             _fixture.Behaviors.Add(new OmitOnRecursionBehavior());
-            User mockUser = _fixture.Build<User>().Create();
+            User mockUser = _fixture.Build<User>().Without(x => x.Applications).Without(x => x.Syllabuses).Without(x => x.Feedbacks).Without(x => x.Attendances).Without(x => x.DetailTrainingClassParticipate).Create();
             _unitOfWorkMock.Setup(um => um.UserRepository.GetUserByEmailAsync(mockUser.Email)).ReturnsAsync(mockUser = null);
             Mock<IConfiguration> _mockConfig = new Mock<IConfiguration>();
             var cache = new MemoryCache(new MemoryCacheOptions());
@@ -98,7 +98,7 @@ namespace Application.Tests.Services
             _fixture.Behaviors.OfType<ThrowingRecursionBehavior>().ToList()
             .ForEach(b => _fixture.Behaviors.Remove(b));
             _fixture.Behaviors.Add(new OmitOnRecursionBehavior());
-            var mockUser = _fixture.Build<User>().Create();
+            var mockUser = _fixture.Build<User>().Without(x => x.Applications).Without(x => x.Syllabuses).Without(x => x.Feedbacks).Without(x => x.Attendances).Without(x => x.DetailTrainingClassParticipate).Create();
             _unitOfWorkMock.Setup(u => u.UserRepository.GetUserByEmailAsync(mockUser.Email)).ReturnsAsync(mockUser);
             _sendMailMock.Setup(sm => sm.SendMailAsync(mockUser.Email, "ResetPassword", It.IsAny<string>())).ReturnsAsync(false);
             Mock<IConfiguration> _mockConfig = new Mock<IConfiguration>();
@@ -121,7 +121,7 @@ namespace Application.Tests.Services
             // Setup
             var cache = new MemoryCache(new MemoryCacheOptions());
             var ResetPassDTO = _fixture.Build<ResetPasswordDTO>().Create();
-            var user = _fixture.Build<User>().Create();
+            var user = _fixture.Build<User>().Without(x => x.Applications).Without(x => x.Syllabuses).Without(x => x.Feedbacks).Without(x => x.Attendances).Without(x => x.DetailTrainingClassParticipate).Create();
             string email = "MockEMail@gmail.com";
             cache.Set(ResetPassDTO.Code, email);
             ResetPassDTO.ConfirmPassword = ResetPassDTO.NewPassword;
@@ -147,7 +147,7 @@ namespace Application.Tests.Services
             _fixture.Behaviors.Add(new OmitOnRecursionBehavior());
             var cache = new MemoryCache(new MemoryCacheOptions());
             var ResetPassDTO = _fixture.Build<ResetPasswordDTO>().Create();
-            var user = _fixture.Build<User>().Create();
+            var user = _fixture.Build<User>().Without(x => x.Applications).Without(x => x.Syllabuses).Without(x => x.Feedbacks).Without(x => x.Attendances).Without(x => x.DetailTrainingClassParticipate).Create();
             string email = "MockEMail@gmail.com";
             cache.Set("ABSDSE", email);
             Mock<IConfiguration> _mockConfig = new Mock<IConfiguration>();
@@ -238,7 +238,7 @@ namespace Application.Tests.Services
         public async Task LoginAsync_ReturnCorrectData()
         {
             //Arange
-            var mockUser = _fixture.Build<User>().Create();
+            var mockUser = _fixture.Build<User>().Without(x => x.Applications).Without(x => x.Syllabuses).Without(x => x.Feedbacks).Without(x => x.Attendances).Without(x => x.DetailTrainingClassParticipate).Create();
             var loginDTO = new LoginDTO { UserName = mockUser.UserName, Password = mockUser.PasswordHash };
             mockUser.PasswordHash = mockUser.PasswordHash.Hash();
             mockUser.ExpireTokenTime = DateTime.UtcNow.AddDays(1);
@@ -257,7 +257,7 @@ namespace Application.Tests.Services
         public async Task LoginAsync_ThrowException_WhenPasswordIncorrect()
         {
             //Arange
-            var mockUser = _fixture.Build<User>().Create();
+            var mockUser = _fixture.Build<User>().Without(x => x.Applications).Without(x => x.Syllabuses).Without(x => x.Feedbacks).Without(x => x.Attendances).Without(x => x.DetailTrainingClassParticipate).Create();
             var loginDTO = new LoginDTO { UserName = mockUser.UserName, Password = _fixture.Create<string>() };
             mockUser.PasswordHash = mockUser.PasswordHash.Hash();
             mockUser.ExpireTokenTime = DateTime.UtcNow.AddDays(1);
@@ -274,7 +274,7 @@ namespace Application.Tests.Services
         public async Task RefreshToken_ReturnCorrectData()
         {
             //Arange
-            var mockUser = _fixture.Build<User>().Create();
+            var mockUser = _fixture.Build<User>().Without(x => x.Applications).Without(x => x.Syllabuses).Without(x => x.Feedbacks).Without(x => x.Attendances).Without(x => x.DetailTrainingClassParticipate).Create();
             var loginDTO = new LoginDTO { UserName = mockUser.UserName, Password = mockUser.PasswordHash };
             mockUser.PasswordHash = mockUser.PasswordHash.Hash();
             mockUser.ExpireTokenTime = DateTime.UtcNow.AddDays(1);
@@ -321,7 +321,7 @@ namespace Application.Tests.Services
         {
             // Arange
             var tokenRefresh = _fixture.Create<string>();
-            var mockUser = _fixture.Build<User>().Create();
+            var mockUser = _fixture.Build<User>().Without(x => x.Applications).Without(x => x.Syllabuses).Without(x => x.Feedbacks).Without(x => x.Attendances).Without(x => x.DetailTrainingClassParticipate).Create();
             var loginDTO = new LoginDTO { UserName = mockUser.UserName, Password = mockUser.PasswordHash };
             mockUser.PasswordHash = mockUser.PasswordHash.Hash();
             mockUser.ExpireTokenTime = DateTime.UtcNow.AddDays(1);
@@ -344,7 +344,7 @@ namespace Application.Tests.Services
         {
             // Arange
             var tokenRefresh = _fixture.Create<string>();
-            var mockUser = _fixture.Build<User>().Create();
+            var mockUser = _fixture.Build<User>().Without(x => x.Applications).Without(x => x.Syllabuses).Without(x => x.Feedbacks).Without(x => x.Attendances).Without(x => x.DetailTrainingClassParticipate).Create();
             var loginDTO = new LoginDTO { UserName = mockUser.UserName, Password = mockUser.PasswordHash };
             mockUser.PasswordHash = mockUser.PasswordHash.Hash();
             mockUser.ExpireTokenTime = DateTime.Now;
@@ -365,7 +365,7 @@ namespace Application.Tests.Services
         public async void GetAllAsync_ShouldReturnCorrectData()
         {
             //arrange
-            var mockUsers = _fixture.Build<User>().CreateMany(10).ToList();
+            var mockUsers = _fixture.Build<User>().Without(x => x.Applications).Without(x => x.Syllabuses).Without(x => x.Feedbacks).Without(x => x.Attendances).Without(x => x.DetailTrainingClassParticipate).CreateMany(10).ToList();
             var expected = _mapperConfig.Map<List<UserViewModel>>(mockUsers);
             _unitOfWorkMock.Setup(x => x.UserRepository.GetAllAsync()).ReturnsAsync(mockUsers);
 
@@ -382,7 +382,7 @@ namespace Application.Tests.Services
             //arrange
             var mockData = new Pagination<User>
             {
-                Items = _fixture.Build<User>().CreateMany(100).ToList(),
+                Items = _fixture.Build<User>().Without(x => x.Applications).Without(x => x.Syllabuses).Without(x => x.Feedbacks).Without(x => x.Attendances).Without(x => x.DetailTrainingClassParticipate).CreateMany(10).ToList(),
                 PageIndex = 0,
                 PageSize = 100,
                 TotalItemsCount = 100,
@@ -402,7 +402,7 @@ namespace Application.Tests.Services
         public async void DisableUser_ShouldReturnTrue()
         {
             //arrange
-            var mockUser = _fixture.Build<User>().Create();
+            var mockUser = _fixture.Build<User>().Without(x => x.Applications).Without(x => x.Syllabuses).Without(x => x.Feedbacks).Without(x => x.Attendances).Without(x => x.DetailTrainingClassParticipate).Create();
             var userViewModel = _mapperConfig.Map<UserViewModel>(mockUser);
             var userId = userViewModel._Id;
             _unitOfWorkMock.Setup(x => x.UserRepository.GetByIdAsync(mockUser.Id)).ReturnsAsync(mockUser);
@@ -421,7 +421,7 @@ namespace Application.Tests.Services
         public async void DisableUser_ShouldReturnFalse_WhenSaveChangesFailed()
         {
             //arrange
-            var mockUser = _fixture.Build<User>().Create();
+            var mockUser = _fixture.Build<User>().Without(x => x.Applications).Without(x => x.Syllabuses).Without(x => x.Feedbacks).Without(x => x.Attendances).Without(x => x.DetailTrainingClassParticipate).Create();
             var userViewModel = _mapperConfig.Map<UserViewModel>(mockUser);
             var userId = userViewModel._Id;
             _unitOfWorkMock.Setup(x => x.UserRepository.GetByIdAsync(mockUser.Id)).ReturnsAsync(mockUser);
@@ -442,7 +442,7 @@ namespace Application.Tests.Services
         public async void DisableUser_ShouldThrowException_WhenUsingNonexistedId()
         {
             //arrange
-            var mockUser = _fixture.Build<User>().Create();
+            var mockUser = _fixture.Build<User>().Without(x => x.Applications).Without(x => x.Syllabuses).Without(x => x.Feedbacks).Without(x => x.Attendances).Without(x => x.DetailTrainingClassParticipate).Create();
             var userViewModel = _mapperConfig.Map<UserViewModel>(mockUser);
             var userId = "";
             _unitOfWorkMock.Setup(x => x.UserRepository.SoftRemove(It.IsAny<User>())).Verifiable();
@@ -459,7 +459,7 @@ namespace Application.Tests.Services
         public async void GetUserByIdAsync_ShouldReturnCorrectData()
         {
             //arrange
-            var mockUser = _fixture.Build<User>().Create();
+            var mockUser = _fixture.Build<User>().Without(x => x.Applications).Without(x => x.Syllabuses).Without(x => x.Feedbacks).Without(x => x.Attendances).Without(x => x.DetailTrainingClassParticipate).Create();
             var expected = _mapperConfig.Map<UserViewModel>(mockUser);
 
             _unitOfWorkMock.Setup(x => x.UserRepository.GetByIdAsync(mockUser.Id)).ReturnsAsync(mockUser);
@@ -475,7 +475,7 @@ namespace Application.Tests.Services
         [Fact]
         public async Task UserService_ChangePasswordAsync_ShouldReturnCorrectData()
         {
-            var mockData = _fixture.Build<User>().Without(u => u.Syllabuses).Without(u => u.Role).Create();
+            var mockData = _fixture.Build<User>().Without(x => x.Applications).Without(x => x.Syllabuses).Without(x => x.Feedbacks).Without(x => x.Attendances).Without(x => x.DetailTrainingClassParticipate).Create();
             mockData.PasswordHash = "string".Hash();
 
             var newPassword = "string1";
@@ -491,7 +491,7 @@ namespace Application.Tests.Services
         public async void GetUserByIdAsync_ShouldThrowException_WhenPassWrongFormat()
         {
             //arrange
-            var mockUser = _fixture.Build<User>().Create();
+            var mockUser = _fixture.Build<User>().Without(x => x.Applications).Without(x => x.Syllabuses).Without(x => x.Feedbacks).Without(x => x.Attendances).Without(x => x.DetailTrainingClassParticipate).Create();
             var incorrectFormatId = "abc123";
 
             _unitOfWorkMock.Setup(x => x.UserRepository.GetByIdAsync(mockUser.Id)).ReturnsAsync(mockUser);
@@ -507,7 +507,7 @@ namespace Application.Tests.Services
         [Fact]
         public async void LogoutAsync_ReturnTrue()
         {
-            var mockUser = _fixture.Build<User>().Create();
+            var mockUser = _fixture.Build<User>().Without(x => x.Applications).Without(x => x.Syllabuses).Without(x => x.Feedbacks).Without(x => x.Attendances).Without(x => x.DetailTrainingClassParticipate).Create();
             _unitOfWorkMock.Setup(u => u.UserRepository.GetAuthorizedUserAsync()).ReturnsAsync(mockUser);
 
             mockUser.RefreshToken = null;
@@ -535,7 +535,7 @@ namespace Application.Tests.Services
         [Fact]
         public async void LogoutAsync_ThrowExcpetion_WhenSaveChangeFalse()
         {
-            var mockUser = _fixture.Build<User>().Create();
+            var mockUser = _fixture.Build<User>().Without(x => x.Applications).Without(x => x.Syllabuses).Without(x => x.Feedbacks).Without(x => x.Attendances).Without(x => x.DetailTrainingClassParticipate).Create();
             _unitOfWorkMock.Setup(u => u.UserRepository.GetAuthorizedUserAsync()).ReturnsAsync(mockUser);
 
             mockUser.RefreshToken = null;

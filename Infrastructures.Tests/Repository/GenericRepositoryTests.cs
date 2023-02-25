@@ -28,7 +28,7 @@ namespace Infrastructures.Tests.Repository
         [Fact]
         public async Task GenericRepository_GetAllAsync_ShouldReturnCorrectData()
         {
-            var mockData = _fixture.Build<User>().Without(u => u.Syllabuses).Without(u => u.Role).CreateMany(10).ToList();
+            var mockData = _fixture.Build<User>().Without(x => x.Applications).Without(x => x.Syllabuses).Without(x => x.Feedbacks).Without(x => x.Attendances).Without(x => x.DetailTrainingClassParticipate).CreateMany(5).ToList();
             await _dbContext.Users.AddRangeAsync(mockData);
 
             await _dbContext.SaveChangesAsync();
@@ -106,20 +106,26 @@ namespace Infrastructures.Tests.Repository
                                                  .Without(u => u.Applications)
                                                  .Without(u => u.Attendances)
                                                  .Without(u => u.Feedbacks)
-                                                 .CreateMany(10).ToList();
+                                                 .CreateMany(2).ToList();
 
 
             await _genericRepository.AddRangeAsync(mockData);
             var result = await _dbContext.SaveChangesAsync();
 
-            result.Should().Be(10);
+            result.Should().Be(2);
         }
 
 
         [Fact]
         public async Task GenericRepository_SoftRemove_ShouldReturnCorrectData()
         {
-            var mockData = _fixture.Build<User>().Without(u => u.Syllabuses).Without(u => u.Role).Create();
+            var mockData = _fixture.Build<User>().Without(u => u.Syllabuses)
+                                                 .Without(u => u.Role)
+                                                 .Without(u => u.DetailTrainingClassParticipate)
+                                                 .Without(u => u.Applications)
+                                                 .Without(u => u.Attendances)
+                                                 .Without(u => u.Feedbacks)
+                                                 .Create();
             _dbContext.Users.Add(mockData);
             await _dbContext.SaveChangesAsync();
 
@@ -133,7 +139,12 @@ namespace Infrastructures.Tests.Repository
         [Fact]
         public async Task GenericRepository_Update_ShouldReturnCorrectData()
         {
-            var mockData = _fixture.Build<User>().Create();
+            var mockData = _fixture.Build<User>().Without(u => u.Syllabuses)
+                                                 .Without(u => u.Role)
+                                                 .Without(u => u.DetailTrainingClassParticipate)
+                                                 .Without(u => u.Applications)
+                                                 .Without(u => u.Attendances)
+                                                 .Without(u => u.Feedbacks).Create();
             _dbContext.Users.Add(mockData);
             await _dbContext.SaveChangesAsync();
 
@@ -147,7 +158,12 @@ namespace Infrastructures.Tests.Repository
         [Fact]
         public async Task GenericRepository_SoftRemoveRange_ShouldReturnCorrectData()
         {
-            var mockData = _fixture.Build<User>().CreateMany(10).ToList();
+            var mockData = _fixture.Build<User>().Without(u => u.Syllabuses)
+                                                 .Without(u => u.Role)
+                                                 .Without(u => u.DetailTrainingClassParticipate)
+                                                 .Without(u => u.Applications)
+                                                 .Without(u => u.Attendances)
+                                                 .Without(u => u.Feedbacks).CreateMany(2).ToList();
             await _dbContext.Users.AddRangeAsync(mockData);
             await _dbContext.SaveChangesAsync();
 
@@ -155,13 +171,18 @@ namespace Infrastructures.Tests.Repository
             _genericRepository.SoftRemoveRange(mockData);
             var result = await _dbContext.SaveChangesAsync();
 
-            result.Should().Be(10);
+            result.Should().Be(2);
         }
 
         [Fact]
         public async Task GenericRepository_UpdateRange_ShouldReturnCorrectData()
         {
-            var mockData = _fixture.Build<User>().CreateMany(10).ToList();
+            var mockData = _fixture.Build<User>().Without(u => u.Syllabuses)
+                                                 .Without(u => u.Role)
+                                                 .Without(u => u.DetailTrainingClassParticipate)
+                                                 .Without(u => u.Applications)
+                                                 .Without(u => u.Attendances)
+                                                 .Without(u => u.Feedbacks).CreateMany(2).ToList();
             await _dbContext.Users.AddRangeAsync(mockData);
             await _dbContext.SaveChangesAsync();
 
@@ -169,7 +190,7 @@ namespace Infrastructures.Tests.Repository
             _genericRepository.UpdateRange(mockData);
             var result = await _dbContext.SaveChangesAsync();
 
-            result.Should().Be(10);
+            result.Should().Be(2);
         }
     }
 }

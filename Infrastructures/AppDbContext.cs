@@ -32,6 +32,11 @@ namespace Infrastructures
         public DbSet<Feedback> Feedbacks { get; set; }
         public DbSet<TrainingProgram> TrainingPrograms { get; set; }
         public DbSet<DetailTrainingProgramSyllabus> detailTrainingProgramSyllabuses { get; set; }
+        public DbSet<AuditPlan> AuditPlans { get; set; }
+        public DbSet<AuditSubmission> AuditSubmissions { get; set; }
+        public DbSet<DetailAuditSubmission> DetailAuditSubmissions { get; set; }
+        public DbSet<AuditQuestion> AuditQuestions { get; set; }
+        public DbSet<DetailAuditQuestion> DetailAuditQuestions { get; set; }
         #endregion
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -49,6 +54,11 @@ namespace Infrastructures
             new FeedbackConfiguration().Configure(modelBuilder.Entity<Feedback>());
             new TrainingProgramConfiguration().Configure(modelBuilder.Entity<TrainingProgram>());
             new DetailTrainingProgramSyllabusConfiguration().Configure(modelBuilder.Entity<DetailTrainingProgramSyllabus>());
+            new AuditPlanConfiguration().Configure(modelBuilder.Entity<AuditPlan>());
+            new AuditQuestionConfiguration().Configure(modelBuilder.Entity<AuditQuestion>());
+            new AuditSubmissionConfiguration().Configure(modelBuilder.Entity<AuditSubmission>());
+            new DetailAuditQuestionConfiguration().Configure(modelBuilder.Entity<DetailAuditQuestion>());
+            new DetailAuditSubmissionConfiguration().Configure(modelBuilder.Entity<DetailAuditSubmission>());
         }
 
     }

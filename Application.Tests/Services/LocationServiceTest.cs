@@ -62,7 +62,7 @@ namespace Application.Tests.Services
         public async Task GetAllLocation_ShouldReturnCorrectData()
         {
             //arrange
-            var mockLocation = _fixture.Build<Location>().CreateMany().ToList();
+            var mockLocation = _fixture.Build<Location>().Without(x => x.DetailTrainingClassesParticipate).Without(x => x.TrainingClasses).CreateMany(2).ToList();
             var mockLocationDTO = _mapperConfig.Map<List<LocationDTO>>(mockLocation);
             _unitOfWorkMock.Setup(x => x.LocationRepository.GetAllAsync()).ReturnsAsync(mockLocation);
 

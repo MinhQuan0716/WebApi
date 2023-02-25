@@ -32,7 +32,7 @@ namespace WebAPI.Tests.Controllers
             //_fixture.Behaviors.OfType<ThrowingRecursionBehavior>().ToList()
             //   .ForEach(b => _fixture.Behaviors.Remove(b));
             //_fixture.Behaviors.Add(new OmitOnRecursionBehavior());
-            List<Syllabus> mockData_1 = _fixture.Build<Syllabus>().Without(u => u.Units).Without(u => u.User).CreateMany(10).ToList();
+            List<Syllabus> mockData_1 = _fixture.Build<Syllabus>().Without(x => x.DetailTrainingProgramSyllabus).Without(u => u.Units).Without(u => u.User).CreateMany(5).ToList();
             await _dbContext.AddRangeAsync(mockData_1);
             await _dbContext.SaveChangesAsync();
 

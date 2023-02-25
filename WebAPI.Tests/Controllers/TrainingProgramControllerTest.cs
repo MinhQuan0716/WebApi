@@ -27,7 +27,7 @@ namespace WebAPI.Tests.Controllers
         [Fact]
         public async Task GetDetailTrainingProgram_ShouldReturnOk()
         {
-            var trainingProgram = _fixture.Create<TrainingProgram>();
+            var trainingProgram = _fixture.Build<TrainingProgram>().Without(x => x.DetailTrainingProgramSyllabus).Without(x => x.TrainingClasses).Create<TrainingProgram>();
             var trainingProgramView = _mapperConfig.Map<TrainingProgramViewModel>(trainingProgram);
             var trainingProgramId = trainingProgram.Id;
             _trainingProgramServiceMock.Setup(tp => tp.GetTrainingProgramDetail(trainingProgramId)).ReturnsAsync(trainingProgramView);
@@ -41,7 +41,7 @@ namespace WebAPI.Tests.Controllers
         [Fact]
         public async Task GetDetailTrainingProgram_ShouldReturnBadRequest()
         {
-            var trainingProgram = _fixture.Create<TrainingProgram>();
+            var trainingProgram = _fixture.Build<TrainingProgram>().Without(x => x.DetailTrainingProgramSyllabus).Without(x => x.TrainingClasses).Create<TrainingProgram>();
             var trainingProgramId = trainingProgram.Id;
             var trainingProgramView = _mapperConfig.Map<TrainingProgramViewModel>(trainingProgram);
             _trainingProgramServiceMock.Setup(tp => tp.GetTrainingProgramDetail(trainingProgramId)).ReturnsAsync(trainingProgramView = null);
