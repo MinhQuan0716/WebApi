@@ -1,5 +1,4 @@
 ﻿using Application.Commons;
-using Application.Services;
 using Application.ViewModels.TokenModels;
 using Application.ViewModels.UserViewModels;
 using AutoFixture;
@@ -7,7 +6,6 @@ using Domain.Entities;
 using Domains.Test;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using System;
@@ -194,7 +192,7 @@ public class UserControllerTest : SetupTest
     public async Task GetUserPaginationAsync_ShouldReturnCorrectDataWithParameter()
     {
         //arrange
-        var mock = _fixture.Build<Pagination<UserViewModel>>().Without(x =>x.Items).Create();
+        var mock = _fixture.Build<Pagination<UserViewModel>>().Without(x => x.Items).Create();
 
         _userServiceMock.Setup(
             x => x.GetUserPaginationAsync(It.IsAny<int>(), It.IsAny<int>())).ReturnsAsync(mock);
@@ -338,12 +336,11 @@ public class UserControllerTest : SetupTest
         //Assert
         result.Should().BeOfType<UnauthorizedResult>();
     }
-
     [Fact]
     public async Task AddUserManually_ShouldReturnUser()
     {
-        var userMockData= _fixture.Build<AddUserManually>().Create();
-        var user=_mapperConfig.Map<User>(userMockData);
+        var userMockData = _fixture.Build<AddUserManually>().Create();
+        var user = _mapperConfig.Map<User>(userMockData);
         _userServiceMock.Setup(x => x.AddUserManualAsync(userMockData)).ReturnsAsync(user);
         var resulltController = _userController.AddUserManually(userMockData);
         Assert.NotNull(resulltController);
@@ -355,7 +352,7 @@ public class UserControllerTest : SetupTest
         var userMockData = _fixture.Build<AddUserManually>().Create();
         var user = _mapperConfig.Map<User>(userMockData);
         _userServiceMock.Setup(x => x.AddUserManualAsync(userMockData));
-        
+
         var resultController = await _userController.AddUserManually(userMockData);
         BadRequestObjectResult actual = resultController as BadRequestObjectResult;
         Assert.NotNull(actual);

@@ -12,6 +12,7 @@ using Moq;
 using WebAPI.Controllers;
 using Microsoft.Extensions.Configuration;
 using Application.Services;
+using Infrastructures.Repositories;
 
 namespace Domains.Test
 {
@@ -35,10 +36,12 @@ namespace Domains.Test
         protected readonly Mock<IClaimsService> _claimsServiceMock;
         protected readonly Mock<ICurrentTime> _currentTimeMock;
 
-        protected readonly Mock<IApplicationServices> _applicationServiceMock;
         protected readonly Mock<IAttendanceService> _attendanceServiceMock;
+        protected readonly Mock<IAttendanceRepository> _attendanceRepositoryMock; 
 
-        protected readonly Mock<ISyllabusRepository> _syllabusRepository;
+        protected readonly Mock<IApplicationRepository> _applicationRepositoryMock;
+        protected readonly Mock<IApplicationService> _applicationServiceMock;
+
 
         protected readonly Mock<IUserRepository> _userRepository;
 
@@ -59,9 +62,11 @@ namespace Domains.Test
         protected readonly Mock<IConfiguration> _config;
         protected readonly Mock<IMapper> _mapperMock;
 
+        protected readonly Mock<ITrainingProgramService> _trainingProgramServiceMock;
+
         protected readonly Mock<ILectureService> _lectureServiceMock;
 
-        protected readonly Mock<ITrainingProgramService> _trainingProgramServiceMock;
+
         public SetupTest()
         {
             var mappingConfig = new MapperConfiguration(mc =>
@@ -76,24 +81,24 @@ namespace Domains.Test
             _unitOfWorkMock = new Mock<IUnitOfWork>();
 
             _syllabusControllerMock = new Mock<SyllabusController>();
+            _syllabusServiceMock = new Mock<ISyllabusService>();
             _syllabusRepositoryMock = new Mock<ISyllabusRepository>();
-            _unitRepositoryMock = new Mock<IUnitRepository>();
 
+            _attendanceServiceMock = new Mock<IAttendanceService>();
+            _attendanceRepositoryMock = new Mock<IAttendanceRepository>();
+
+            _applicationRepositoryMock = new Mock<IApplicationRepository>();
+            _applicationServiceMock = new Mock<IApplicationService>();
+            _unitRepositoryMock = new Mock<IUnitRepository>();            
             _unitServiceMock = new Mock<IUnitService>();
             _lectureServiceMock = new Mock<ILectureService>();
-
-            _syllabusServiceMock = new Mock<ISyllabusService>();
+       
             _userServiceMock = new Mock<IUserService>();
             _claimsServiceMock = new Mock<IClaimsService>();
             _currentTimeMock = new Mock<ICurrentTime>();
             _sendMailMock = new Mock<ISendMailHelper>();
 
-            _applicationServiceMock = new Mock<IApplicationServices>();
-            _attendanceServiceMock = new Mock<IAttendanceService>();
-
-
-            _syllabusRepositoryMock = new Mock<ISyllabusRepository>();
-            _syllabusServiceMock = new Mock<ISyllabusService>();
+            _trainingClassRepositoryMock = new Mock<ITrainingClassRepository>();
 
             _trainingClassRepositoryMock = new Mock<ITrainingClassRepository>();
             _trainingClassServiceMock = new Mock<ITrainingClassService>();

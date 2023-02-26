@@ -37,6 +37,16 @@ namespace Infrastructures.Repositories
             return result;
         }
 
+        public async Task<IEnumerable<Syllabus>> GetSyllabusByTrainingProgramId(Guid trainingProgramId)
+        {
+            var syllabusList = from s in _dbContext.Syllabuses
+                               join d in _dbContext.DetailTrainingProgramSyllabuses
+                               on s.Id equals d.SyllabusId
+                               where d.TrainingProgramId == trainingProgramId && d.IsDeleted == false
+                               select s;
+            if (!syllabusList.IsNullOrEmpty()) return await syllabusList.ToListAsync();
+            else return null;
+        }
 
         public async Task<List<Syllabus>> SearchByName(string name)
         {
@@ -46,15 +56,5 @@ namespace Infrastructures.Repositories
 
         }
 
-        public async Task<IEnumerable<Syllabus>> GetSyllabusByTrainingProgramId(Guid trainingProgramId)
-        {
-            var syllabusList = from s in _dbContext.Syllabuses.Include(s => s.Units).ThenInclude(u => u.DetailUnitLectures).ThenInclude(d => d.Lecture)
-                               join d in _dbContext.detailTrainingProgramSyllabuses
-                               on s.Id equals d.SyllabusId
-                               where d.TrainingProgramId == trainingProgramId && d.IsDeleted == false
-                               select s;
-            if (!syllabusList.IsNullOrEmpty()) return await syllabusList.ToListAsync();
-            else return null;
-        }
     }
 }

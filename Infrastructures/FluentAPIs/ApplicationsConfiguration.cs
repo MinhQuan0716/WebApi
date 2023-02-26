@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 
 namespace Infrastructures.FluentAPIs
 {
-    public class ApplicationsConfiguration : IEntityTypeConfiguration<Applications>
+    public class ApplicationsConfiguration : IEntityTypeConfiguration<Domain.Entities.Applications>
     {
-        public void Configure(EntityTypeBuilder<Applications> builder)
+        public void Configure(EntityTypeBuilder<Domain.Entities.Applications> builder)
 
         {
             builder.HasKey(a => a.Id);

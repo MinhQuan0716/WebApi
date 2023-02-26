@@ -8,6 +8,7 @@ namespace Domain.Enums;
 
 public enum RoleEnums
 {
+    SuperAdmin,
     Admin,
     Trainer,
     Mentor,

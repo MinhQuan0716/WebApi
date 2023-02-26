@@ -16,6 +16,7 @@ namespace Application.Utils
     {
         SyllabusPermission,
         TrainingProgramPermission,
+        AttendancePermission,
         ClassPermission,
         LearningMaterial,
         UserPermission

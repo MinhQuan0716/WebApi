@@ -30,7 +30,7 @@ namespace Infrastructures.Repositories
                .Aggregate(_dbSet.AsQueryable(),
                    (entity, property) => entity.Include(property))
                .AsNoTracking()
-               .FirstOrDefaultAsync(x => x.Id == id);
+               .FirstOrDefaultAsync(x => x.Id.Equals(id));
         }
 
         public async Task AddAsync(TEntity entity)
@@ -53,7 +53,6 @@ namespace Infrastructures.Repositories
             entity.ModificationBy = _claimsService.GetCurrentUserId;
             _dbSet.Update(entity);
         }
-
         public async Task AddRangeAsync(List<TEntity> entities)
         {
             foreach (var entity in entities)
@@ -83,7 +82,7 @@ namespace Infrastructures.Repositories
                                     .Take(pageSize)
                                     .AsNoTracking()
                                     .ToListAsync();
-            
+
             var result = new Pagination<TEntity>()
             {
                 PageIndex = pageIndex,
@@ -106,5 +105,7 @@ namespace Infrastructures.Repositories
         }
 
         public async Task<List<TEntity>> FindAsync(Expression<Func<TEntity, bool>> expression) => await _dbSet.Where(expression).ToListAsync();
+
+
     }
 }

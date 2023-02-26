@@ -27,8 +27,7 @@ namespace Infrastructures
         public DbSet<Location> Locations { get; set; }
         public DbSet<DetailTrainingClassParticipate> DetailTrainingClassParticipates { get; set; }
         public DbSet<Attendance> Attendances { get; set; }
-        public DbSet<Applications> Applications { get; set; }
-              
+        public DbSet<Applications> Applications { get; set; }        
         public DbSet<Feedback> Feedbacks { get; set; }
         public DbSet<TrainingProgram> TrainingPrograms { get; set; }
         public DbSet<DetailTrainingProgramSyllabus> detailTrainingProgramSyllabuses { get; set; }
@@ -37,6 +36,8 @@ namespace Infrastructures
         public DbSet<DetailAuditSubmission> DetailAuditSubmissions { get; set; }
         public DbSet<AuditQuestion> AuditQuestions { get; set; }
         public DbSet<DetailAuditQuestion> DetailAuditQuestions { get; set; }
+        public DbSet<DetailTrainingProgramSyllabus> DetailTrainingProgramSyllabuses { get; set; }
+              
         #endregion
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -49,11 +50,11 @@ namespace Infrastructures
             new TrainingClassConfiguration().Configure(modelBuilder.Entity<TrainingClass>());
             new LocationConfiguration().Configure(modelBuilder.Entity<Location>());
             new DetailTrainingClassParticipateConfiguration().Configure(modelBuilder.Entity<DetailTrainingClassParticipate>());
-            new ApplicationsConfiguration().Configure(modelBuilder.Entity<Applications>());
+            new ApplicationsConfiguration().Configure(modelBuilder.Entity<Domain.Entities.Applications>());
             new AttendanceConfiguration().Configure(modelBuilder.Entity<Attendance>());
-            new FeedbackConfiguration().Configure(modelBuilder.Entity<Feedback>());
             new TrainingProgramConfiguration().Configure(modelBuilder.Entity<TrainingProgram>());
             new DetailTrainingProgramSyllabusConfiguration().Configure(modelBuilder.Entity<DetailTrainingProgramSyllabus>());
+            new FeedbackConfiguration().Configure(modelBuilder.Entity<Feedback>());
             new AuditPlanConfiguration().Configure(modelBuilder.Entity<AuditPlan>());
             new AuditQuestionConfiguration().Configure(modelBuilder.Entity<AuditQuestion>());
             new AuditSubmissionConfiguration().Configure(modelBuilder.Entity<AuditSubmission>());

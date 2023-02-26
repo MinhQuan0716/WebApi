@@ -1,17 +1,20 @@
 ﻿using Application.Repositories;
+using Infrastructures.Repositories;
 
 namespace Application
 {
     public interface IUnitOfWork
     {
         public ISyllabusRepository SyllabusRepository { get; }
+
+        public IApplicationRepository ApplicationRepository{ get; }
+
         public IUserRepository UserRepository { get; }
         public IUnitRepository UnitRepository { get; }
         public ILectureRepository LectureRepository { get; }
         public IDetailUnitLectureRepository DetailUnitLectureRepository { get; }
 
         public ITrainingMaterialRepository TrainingMaterialRepository { get; }
-        public IApplicationReapository ApplicationReapository { get; }
         public IAttendanceRepository AttendanceRepository { get; }
         public ITrainingClassRepository TrainingClassRepository { get; }
         public ILocationRepository LocationRepository { get; }

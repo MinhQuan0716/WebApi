@@ -17,10 +17,10 @@ namespace Infrastructures.FluentAPIs
             builder.HasData(new Role
             {
                 RoleId = 1,
-                RoleName = "SuperAdmin",
+                RoleName = nameof(RoleEnums.SuperAdmin),
                 ClassPermission = nameof(PermissionEnum.FullAccess),
-                TrainingProgramPermission = nameof(PermissionEnum.FullAccess)
-            ,
+                TrainingProgramPermission = nameof(PermissionEnum.FullAccess),
+                AttendancePermission = nameof(PermissionEnum.FullAccess),
                 LearningMaterial = nameof(PermissionEnum.FullAccess),
                 SyllabusPermission = nameof(PermissionEnum.FullAccess),
                 UserPermission = nameof(PermissionEnum.FullAccess)
@@ -28,10 +28,10 @@ namespace Infrastructures.FluentAPIs
             new Role
             {
                 RoleId = 2,
-                RoleName = "ClassAdmin",
+                RoleName = nameof(RoleEnums.Admin),
                 ClassPermission = nameof(PermissionEnum.FullAccess),
-                TrainingProgramPermission = nameof(PermissionEnum.FullAccess)
-            ,
+                TrainingProgramPermission = nameof(PermissionEnum.FullAccess),
+                AttendancePermission = nameof(PermissionEnum.FullAccess),
                 LearningMaterial = nameof(PermissionEnum.FullAccess),
                 SyllabusPermission = nameof(PermissionEnum.FullAccess),
                 UserPermission = nameof(PermissionEnum.FullAccess)
@@ -39,10 +39,10 @@ namespace Infrastructures.FluentAPIs
             new Role
             {
                 RoleId = 3,
-                RoleName = "Trainer",
+                RoleName = nameof(RoleEnums.Trainer),
                 ClassPermission = nameof(PermissionEnum.FullAccess),
-                TrainingProgramPermission = nameof(PermissionEnum.FullAccess)
-            ,
+                TrainingProgramPermission = nameof(PermissionEnum.FullAccess),
+                AttendancePermission = nameof(PermissionEnum.FullAccess),
                 LearningMaterial = nameof(PermissionEnum.FullAccess),
                 SyllabusPermission = nameof(PermissionEnum.FullAccess),
                 UserPermission = nameof(PermissionEnum.FullAccess)
@@ -50,10 +50,10 @@ namespace Infrastructures.FluentAPIs
             new Role
             {
                 RoleId = 4,
-                RoleName = "Student",
+                RoleName = nameof(RoleEnums.Trainee),
                 ClassPermission = nameof(PermissionEnum.View),
-                TrainingProgramPermission = nameof(PermissionEnum.View)
-            ,
+                TrainingProgramPermission = nameof(PermissionEnum.View),
+                AttendancePermission = nameof(PermissionEnum.FullAccess),
                 LearningMaterial = nameof(PermissionEnum.View),
                 SyllabusPermission = nameof(PermissionEnum.View),
                 UserPermission = nameof(PermissionEnum.AccessDenied)

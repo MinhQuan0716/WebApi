@@ -20,6 +20,9 @@ namespace Infrastructures.FluentAPIs
             builder.HasOne(u => u.Role).WithMany(r => r.Users).HasForeignKey(u => u.RoleId);
             builder.HasIndex(u => u.Email).IsUnique();
             builder.HasIndex(u => u.UserName).IsUnique();
+            builder.HasMany(u => u.Applications).WithOne(r => r.User).HasForeignKey(u => u.UserId);
+            builder.HasMany(u => u.Syllabuses).WithOne(r => r.User).HasForeignKey(u => u.UserId);
+            builder.HasMany(u => u.Attendances).WithOne(r => r.User).HasForeignKey(u => u.UserId);
         }
     }
 }

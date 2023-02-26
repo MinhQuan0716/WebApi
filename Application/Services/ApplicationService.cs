@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 namespace Application.Services
 {
 
-    public class ApplicationService : IApplicationServices
+    public class ApplicationService : IApplicationService
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
@@ -25,11 +25,11 @@ namespace Application.Services
         }
         public async Task<bool> UpdateStatus(Guid id,bool status)
         {
-           var Tset=await _unitOfWork.ApplicationReapository.GetByIdAsync(id);
+           var Tset=await _unitOfWork.ApplicationRepository.GetByIdAsync(id);
             if (Tset != null)
             {
                 Tset.Approved = status;
-                 _unitOfWork.ApplicationReapository.Update(Tset);
+                 _unitOfWork.ApplicationRepository.Update(Tset);
                 await _unitOfWork.SaveChangeAsync();
                 return true;
 
@@ -41,7 +41,7 @@ namespace Application.Services
         {
            
             var Test = _mapper.Map<Applications>(applicationDTO);
-           await _unitOfWork.ApplicationReapository.AddAsync(Test);
+           await _unitOfWork.ApplicationRepository.AddAsync(Test);
             await _unitOfWork.SaveChangeAsync();
             
         }

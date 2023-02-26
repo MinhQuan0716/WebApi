@@ -163,7 +163,7 @@ public class UserService : IUserService
 
         var newUser = new User
         {
-            UserName = userDto.Email,
+            UserName = userDto.UserName,
             PasswordHash = userDto.Password.Hash(),
             Email = userDto.Email, // lay email lam username luon
         };

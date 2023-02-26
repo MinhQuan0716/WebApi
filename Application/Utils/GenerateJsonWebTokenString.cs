@@ -19,6 +19,7 @@ namespace Application.Utils
                 new Claim("TrainingProgramPermission",user.Role.TrainingProgramPermission),
                 new Claim("ClassPermission",user.Role.ClassPermission),
                 new Claim("LearningMaterial",user.Role.LearningMaterial),
+                new Claim("AttendancePermission",user.Role.AttendancePermission),
                 new Claim("UserPermission",user.Role.UserPermission),
                 new Claim(ClaimTypes.NameIdentifier ,user.UserName),
                 new Claim(ClaimTypes.Role, user.Role.RoleName),

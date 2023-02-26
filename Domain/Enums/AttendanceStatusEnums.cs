@@ -6,12 +6,10 @@ using System.Threading.Tasks;
 
 namespace Domain.Enums;
 
-enum AttendanceStatusEnums
+public enum AttendanceStatusEnums
 {
     None,
     Absent,
     AbsentPermit,
     Present,
-    Late,
-    Early,
 }

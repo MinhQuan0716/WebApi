@@ -24,5 +24,6 @@ namespace Domain.Entities
         public StatusClass StatusClass { get; set; } = StatusClass.Planning;
         public Guid TrainingProgramId { get; set; }
         public TrainingProgram TrainingProgram { get; set; } = default!;
+        public ICollection<Applications> Applications { get; set; }
     }
 }

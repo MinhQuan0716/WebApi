@@ -15,6 +15,7 @@ namespace Domain.Entities
         public string ClassPermission { get; set; }
         public string LearningMaterial { get; set; }
         public string UserPermission { get; set; }
+        public string AttendancePermission { get; set; }
 
         public ICollection<User> Users { get; set; } 
     }

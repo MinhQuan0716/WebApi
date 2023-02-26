@@ -38,7 +38,7 @@ namespace WebAPI.Tests.Controllers
         }
 
         [Fact]
-        public async Task GetAttendanceByTraineeId_Sould_ReturnData()
+        public async Task GetAttendanceByTraineeId_Should_ReturnData()
         {
             var mockclass = _fixture.Build<TrainingClass>().Without(x => x.TrainingClassParticipates).Without(x => x.Attendances).Without(x => x.Feedbacks).Create();
             var mockAttendance = _fixture.Build<Attendance>().With(x => x.TrainingClass, mockclass).Without(x => x.Application).Without(x => x.TrainingClass).Without(x => x.User).CreateMany(2).ToList();

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Application.Interfaces
 {
-    public interface IApplicationServices
+    public interface IApplicationService
     {
         public Task CreateApplication(ApplicationDTO applicationDTO);
 

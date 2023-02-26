@@ -20,21 +20,23 @@ namespace Infrastructures
             services.AddScoped<ISendMailHelper, SendMailHelper>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IUnitRepository, UnitRepository>();
+            services.AddScoped<IAttendanceRepository, AttendanceRepository>();
             services.AddScoped<ISyllabusRepository, SyllabusRepository>();
             services.AddScoped<ILectureRepository, LectureRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
-            services.AddScoped<IUserService, UserService>();
             services.AddScoped<IDetailUnitLectureRepository, DetailUnitLectureRepository>();
             services.AddScoped<ITrainingClassRepository, TraingClassRepository>();
             services.AddScoped<ILocationRepository, LocationRepository>();
             services.AddSingleton<ICurrentTime, CurrentTime>();
-            services.AddScoped<IApplicationReapository, ApplicationReapository>();
+
+            services.AddScoped<IUnitService, UnitService>();
+            services.AddScoped<IAttendanceService, AttendanceService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<ISyllabusService, SyllabusService>();
             services.AddScoped<IAttendanceRepository, AttendanceRepository>();
             services.AddScoped<IAttendanceService, AttendanceService>();
             services.AddSingleton<ExternalAuthUtils>();
-            services.AddScoped<IApplicationServices, ApplicationService>();
+            services.AddScoped<IApplicationService, ApplicationService>();
             services.AddScoped<ITrainingClassRepository, TraingClassRepository>();
             services.AddScoped<ILocationRepository, LocationRepository>();
             services.AddScoped<ITrainingProgramRepository, TrainingProgramRepository>();

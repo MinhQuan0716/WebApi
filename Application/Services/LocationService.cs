@@ -27,7 +27,7 @@ namespace Application.Services
 
             await _unitOfWork.LocationRepository.AddAsync(location);
 
-            return (await _unitOfWork.SaveChangeAsync()>0)?_mapper.Map<LocationDTO>(location):null;
+            return (await _unitOfWork.SaveChangeAsync() > 0) ? _mapper.Map<LocationDTO>(location) : null;
         }
         public async Task<List<LocationDTO>> GetAllLocation()
         {
@@ -35,5 +35,6 @@ namespace Application.Services
             var result = _mapper.Map<List<LocationDTO>>(location);
             return result;
         }
+
     }
 }

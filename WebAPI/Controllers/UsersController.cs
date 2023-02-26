@@ -11,7 +11,6 @@ using Domain.Enums;
 using System.Security.Claims;
 using Domain.Entities;
 using AutoMapper;
-using Microsoft.AspNetCore.Authorization.Infrastructure;
 
 namespace WebAPI.Controllers
 {
@@ -212,14 +211,13 @@ namespace WebAPI.Controllers
             var token = await _userService.LoginWithEmail(_mapper.Map<LoginWithEmailDto>(newUser));
             return Ok(token);
         }
-    
         [Authorize]
         [HttpPost]
         [ClaimRequirement(nameof(PermissionItem.UserPermission), nameof(PermissionEnum.FullAccess))]
         public async Task<IActionResult> AddUserManually(AddUserManually addUserManually)
         {
-            var resultAddUserManual=await _userService.AddUserManualAsync(addUserManually);
-            if(resultAddUserManual is not null)
+            var resultAddUserManual = await _userService.AddUserManualAsync(addUserManually);
+            if (resultAddUserManual is not null)
             {
                 return Ok(resultAddUserManual);
 
@@ -237,8 +235,5 @@ namespace WebAPI.Controllers
             }
             return BadRequest();
         }
-
     }
 }
-
-       

@@ -1,9 +1,6 @@
-﻿using Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Application.ViewModels.AtttendanceModels;
+using Domain.Entities;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Application.Interfaces
 {
@@ -11,5 +8,10 @@ namespace Application.Interfaces
     {
         public Task<List<Attendance>> GetAttendancesByTraineeClassID(Guid id); 
         public Task<List<Attendance>> GetAttendanceByTraineeID(Guid id);
+
+        Task<List<Attendance>> UploadAttendanceFormAsync(List<AttendanceDTO> attendanceDtos,
+                                                         Guid ClassId,
+                                                         string httpMethod);
+        Task<Attendance> UpdateAttendanceAsync(AttendanceDTO attendanceDto, Guid classId);
     }
 }

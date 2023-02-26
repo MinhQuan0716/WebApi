@@ -11,6 +11,9 @@ using Application.ViewModels.Location;
 using Application.ViewModels.FeedbackModels;
 using Application.ViewModels.TrainingProgramModels;
 using Application.ViewModels.ApplicationViewModels;
+using Application.ViewModels.TrainingProgramModels;
+using Application.ViewModels.AtttendanceModels;
+using Domain.Enums;
 
 namespace Infrastructures.Mappers
 {
@@ -45,6 +48,13 @@ namespace Infrastructures.Mappers
               .ForMember(destinationMember => destinationMember.DateOfBirth, options => options.MapFrom(src => src.DateOfBirth))
               .ForMember(destinationMember => destinationMember.Gender, options => options.MapFrom(src => src.Gender))
               .ForMember(destinationMember => destinationMember.RoleId, options => options.MapFrom(src => src.RoleId)).ReverseMap();
+            
+            CreateMap<AttendanceDTO, Attendance>()
+                .ForMember(a => a.Status, options => options.MapFrom(dto => dto.Status? nameof(AttendanceStatusEnums.Present): nameof(AttendanceStatusEnums.Absent)))
+                .ForMember(a => a.UserId, options => options.MapFrom(dto => dto.UserId.Value))
+                .ForMember(a => a.Id, options => options.MapFrom(dto => dto.AttendanceId))
+                .ForMember(a => a.Date, options => options.MapFrom(dto => dto.Date))
+                .ReverseMap();
 
             CreateMap<ResetPasswordDTO, User>()
                 .ForMember(rp => rp.PasswordHash, opt => opt.MapFrom(src => src.NewPassword)).ReverseMap();

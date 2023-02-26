@@ -1,4 +1,5 @@
-﻿using Domain.Entities;
+﻿using Application.ViewModels.AtttendanceModels;
+using Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,10 +8,11 @@ using System.Threading.Tasks;
 
 namespace Application.Repositories
 {
-    public interface IAttendanceRepository:IGenericRepository<Attendance>
+    public interface IAttendanceRepository : IGenericRepository<Attendance>
     {
-        public List<Attendance> GetAttendancesByTraineeClassID(Guid id);
-        public List<Attendance> GetAttendancesByTraineeID(Guid id);
+        Task<Attendance> GetAttendanceByUserAndClass(AttendanceDTO attendanceDto, Guid? classID);
+        List<Attendance> GetAttendancesByTraineeClassID(Guid id);
+        List<Attendance> GetAttendancesByTraineeID(Guid id);
     }
     
 }
