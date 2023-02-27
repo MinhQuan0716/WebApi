@@ -1,5 +1,6 @@
 ﻿using Application.ViewModels.TrainingClassModels;
 using AutoFixture;
+using AutoMapper;
 using Domains.Test;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
@@ -77,6 +78,71 @@ namespace WebAPI.Tests.Controllers
             _trainingClassServiceMock.Verify(x => x.CreateTrainingClassAsync(It.Is<CreateTrainingClassDTO>(x => x.Equals(mock))), Times.Once);
             Assert.IsType<BadRequestObjectResult>(result);
             (result as BadRequestObjectResult)!.Value.Should().Be("Create training class fail: " + exceptionMessage);
+        }
+
+        [Fact]
+        public async Task UpdateTrainingClass_ShouldReturnOK_WhenUpdateResultIsTrue()
+        {
+            //arrange
+            var mockId = Guid.NewGuid();
+            var mockUpdate = _fixture.Build<UpdateTrainingCLassDTO>().Create();
+            _trainingClassServiceMock
+                .Setup(x => x.UpdateTrainingClass(It.IsAny<string>(), It.IsAny<UpdateTrainingCLassDTO>()))
+                .ReturnsAsync(true);
+
+            //act
+            var result = await _trainingClassController.UpdateTrainingClass(mockId.ToString(), mockUpdate);
+
+            //assert
+            _trainingClassServiceMock.Verify(x => x.UpdateTrainingClass(
+                It.Is<string>(x => x.Equals(mockId.ToString())),
+                It.Is<UpdateTrainingCLassDTO>(x => x.Equals(mockUpdate))
+                ), Times.Once);
+            Assert.IsType<OkObjectResult>(result);
+            (result as OkObjectResult)!.Value.Should().Be("Update class successfully");
+        }
+
+        [Fact]
+        public async Task UpdateTrainingClass_ShouldReturnBadRequest_WhenUpdateResultIsFalse()
+        {
+            //arrange
+            var mockId = Guid.NewGuid();
+            var mockUpdate = _fixture.Build<UpdateTrainingCLassDTO>().Create();
+            _trainingClassServiceMock
+                .Setup(x => x.UpdateTrainingClass(It.IsAny<string>(), It.IsAny<UpdateTrainingCLassDTO>()))
+                .ReturnsAsync(false);
+
+            //act
+            var result = await _trainingClassController.UpdateTrainingClass(mockId.ToString(), mockUpdate);
+
+            //assert
+            _trainingClassServiceMock.Verify(x => x.UpdateTrainingClass(
+                It.Is<string>(x => x.Equals(mockId.ToString())),
+                It.Is<UpdateTrainingCLassDTO>(x => x.Equals(mockUpdate))
+                ), Times.Once);
+            Assert.IsType<BadRequestObjectResult>(result);
+            (result as BadRequestObjectResult)!.Value.Should().Be("Update class fail: Saving fail");
+        }
+        [Fact]
+        public async Task UpdateTrainingClass_ShouldReturnBadRequest_WhenGetAutoMappingException()
+        {
+            //arrange
+            var mockId = Guid.NewGuid();
+            var mockUpdate = _fixture.Build<UpdateTrainingCLassDTO>().Create();
+            var exceptionMessage = "test message";
+            _trainingClassServiceMock
+                .Setup(x => x.UpdateTrainingClass(It.IsAny<string>(), It.IsAny<UpdateTrainingCLassDTO>()))
+                .ThrowsAsync(new Exception(exceptionMessage));
+            //act
+            var result = await _trainingClassController.UpdateTrainingClass(mockId.ToString(), mockUpdate);
+
+            //assert
+            _trainingClassServiceMock.Verify(x => x.UpdateTrainingClass(
+                It.IsAny<string>(),
+                It.IsAny<UpdateTrainingCLassDTO>()
+                ), Times.Once);
+            Assert.IsType<BadRequestObjectResult>(result);
+            (result as BadRequestObjectResult)!.Value.Should().Be("Update class fail: "+ exceptionMessage);
         }
     }
 }

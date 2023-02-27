@@ -131,6 +131,7 @@ namespace Infrastructures.Mappers
 
             //map training class
             CreateMap<CreateTrainingClassDTO, TrainingClass>();
+            CreateMap<UpdateTrainingCLassDTO, TrainingClass>();
             CreateMap<TrainingClass, TrainingClassViewModel>()
                 .ForMember(x => x._Id, src => src.MapFrom(x => x.Id))
                 .ForMember(x=>x.LocationName, src =>src.MapFrom(x=>x.Location.LocationName));

@@ -10,6 +10,8 @@ namespace Application.Interfaces
 {
     public interface ITrainingClassService
     {
+        public Task<bool> UpdateTrainingClass(string trainingClassId, UpdateTrainingCLassDTO updateTrainingCLassDTO);
+        public Task<TrainingClass> GetTrainingClassByIdAsync(string trainingClassId);
         public Task<TrainingClassViewModel?> CreateTrainingClassAsync(CreateTrainingClassDTO createTrainingClassDTO);
     }
 }

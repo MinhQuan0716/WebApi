@@ -365,7 +365,7 @@ namespace Application.Tests.Services
         public async void GetAllAsync_ShouldReturnCorrectData()
         {
             //arrange
-            var mockUsers = _fixture.Build<User>().Without(x => x.Applications).Without(x => x.Syllabuses).Without(x => x.Feedbacks).Without(x => x.Attendances).Without(x => x.DetailTrainingClassParticipate).CreateMany(10).ToList();
+            var mockUsers = _fixture.Build<User>().Without(x => x.Applications).Without(x => x.Syllabuses).Without(x => x.Feedbacks).Without(x => x.Attendances).Without(x => x.DetailTrainingClassParticipate).CreateMany().ToList();
             var expected = _mapperConfig.Map<List<UserViewModel>>(mockUsers);
             _unitOfWorkMock.Setup(x => x.UserRepository.GetAllAsync()).ReturnsAsync(mockUsers);
 
@@ -382,7 +382,7 @@ namespace Application.Tests.Services
             //arrange
             var mockData = new Pagination<User>
             {
-                Items = _fixture.Build<User>().Without(x => x.Applications).Without(x => x.Syllabuses).Without(x => x.Feedbacks).Without(x => x.Attendances).Without(x => x.DetailTrainingClassParticipate).CreateMany(10).ToList(),
+                Items = _fixture.Build<User>().Without(x => x.Applications).Without(x => x.Syllabuses).Without(x => x.Feedbacks).Without(x => x.Attendances).Without(x => x.DetailTrainingClassParticipate).CreateMany().ToList(),
                 PageIndex = 0,
                 PageSize = 100,
                 TotalItemsCount = 100,

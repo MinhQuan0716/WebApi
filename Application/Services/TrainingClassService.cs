@@ -41,5 +41,47 @@ namespace Application.Services
                 throw new Exception(ex.Message);
             }
         }
+        /// <summary>
+        /// This method uses _classId to find and update that class
+        /// </summary>
+        /// <param name="_classId"></param>
+        /// <param name="updateTrainingCLassDTO"></param>
+        /// <returns></returns>
+        public async Task<bool> UpdateTrainingClass(string trainingClassId, UpdateTrainingCLassDTO updateTrainingCLassDTO)
+        {
+            var trainingClassObj= await GetTrainingClassByIdAsync(trainingClassId);
+            _mapper.Map<UpdateTrainingCLassDTO, TrainingClass>(updateTrainingCLassDTO, trainingClassObj);
+            //set location
+            trainingClassObj.Location = await _unitOfWork.LocationRepository.GetByIdAsync(updateTrainingCLassDTO.LocationID) ?? throw new NullReferenceException("Invalid location Id");
+
+            //set training program
+            trainingClassObj.TrainingProgram = await _unitOfWork.TrainingProgramRepository.GetByIdAsync(updateTrainingCLassDTO.TrainingProgramId) ?? throw new NullReferenceException("Invalid training program Id");
+
+            _unitOfWork.TrainingClassRepository.Update(trainingClassObj);
+            return (await _unitOfWork.SaveChangeAsync() > 0);
+        }
+        /// <summary>
+        /// This method find, return Training class and throw exception if can't find or get a mapping exception
+        /// </summary>
+        /// <param name="trainingClassId"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
+        public async Task<TrainingClass> GetTrainingClassByIdAsync(string trainingClassId)
+        {
+            try
+            {
+                var _classId = _mapper.Map<Guid>(trainingClassId);
+                var trainingClassObj = await _unitOfWork.TrainingClassRepository.GetByIdAsync(_classId);
+                if (trainingClassObj == null)
+                {
+                    throw new NullReferenceException("Incorrect Id");
+                }
+                return trainingClassObj;
+            }
+            catch (AutoMapperMappingException)
+            {
+                throw new AutoMapperMappingException("Id is not a guid");
+            }
+        }
     }
 }

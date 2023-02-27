@@ -21,9 +21,29 @@ namespace WebAPI.Controllers
             _mapper = mapper;
         }
 
+        [Authorize(Roles = "Trainer")]
+        [HttpPut]
+        public async Task<IActionResult> UpdateTrainingClass(string trainingClassId, UpdateTrainingCLassDTO updateTrainingCLassDTO)
+        {
+            try
+            {
+                if (await _trainingClassService.UpdateTrainingClass(trainingClassId, updateTrainingCLassDTO))
+                {
+                    return Ok("Update class successfully");
+                }
+                else
+                {
+                    throw new Exception("Saving fail");
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("Update class fail: " + ex.Message);
+            }
+        }
         [HttpPost]
-        //[Authorize(Roles = "Trainer")]
-        public async Task<IActionResult> CreateTrainingClass(CreateTrainingClassDTO classDTO) 
+        [Authorize(Roles = "Trainer")]
+        public async Task<IActionResult> CreateTrainingClass(CreateTrainingClassDTO classDTO)
         {
             try
             {
@@ -34,9 +54,9 @@ namespace WebAPI.Controllers
                 }
                 return Ok(result);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                return BadRequest("Create training class fail: "+ex.Message);
+                return BadRequest("Create training class fail: " + ex.Message);
             }
 
         }
