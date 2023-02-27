@@ -45,6 +45,8 @@ namespace Infrastructures
 
 
             services.AddScoped<IFeedbackRepository, FeedbackRepository>();
+            services.AddScoped<IGradingService, GradingService>();
+            services.AddScoped<IGradingRepository, GradingRepository>();            
 
             // ATTENTION: if you do migration please check file README.md
             services.AddDbContext<AppDbContext>(option => option.UseSqlServer(databaseConnection).EnableSensitiveDataLogging());

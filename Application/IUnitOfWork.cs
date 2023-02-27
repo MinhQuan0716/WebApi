@@ -7,7 +7,7 @@ namespace Application
     {
         public ISyllabusRepository SyllabusRepository { get; }
 
-        public IApplicationRepository ApplicationRepository{ get; }
+        public IApplicationRepository ApplicationRepository { get; }
 
         public IUserRepository UserRepository { get; }
         public IUnitRepository UnitRepository { get; }
@@ -21,6 +21,7 @@ namespace Application
         public IFeedbackRepository FeedbackRepository { get; }
         public IDetailTrainingProgramSyllabusRepository DetailTrainingProgramSyllabusRepository { get; }
         public ITrainingProgramRepository TrainingProgramRepository { get; }
+        public IGradingRepository GradingRepository { get; }
         public Task<int> SaveChangeAsync();
     }
 }

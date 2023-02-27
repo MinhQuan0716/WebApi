@@ -61,19 +61,14 @@ namespace Infrastructures.Migrations
                     b.Property<string>("Reason")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("TrainingClassId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<Guid?>("UserId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("TrainingClassId");
-
                     b.HasIndex("UserId");
 
-                    b.ToTable("Applications");
+                    b.ToTable("Applications", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.Attendance", b =>
@@ -130,241 +125,7 @@ namespace Infrastructures.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Attendances");
-                });
-
-            modelBuilder.Entity("Domain.Entities.AuditPlan", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasDefaultValueSql("NEWID()");
-
-                    b.Property<DateTime>("AuditDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("AuditLocation")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("AuditPlanName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid?>("CreatedBy")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreationDate")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("getutcdate()");
-
-                    b.Property<Guid?>("DeleteBy")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime?>("DeletionDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<Guid>("LectureId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("ModificationBy")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime?>("ModificationDate")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("LectureId");
-
-                    b.ToTable("AuditPlans");
-                });
-
-            modelBuilder.Entity("Domain.Entities.AuditQuestion", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasDefaultValueSql("NEWID()");
-
-                    b.Property<Guid?>("CreatedBy")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreationDate")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("getutcdate()");
-
-                    b.Property<Guid?>("DeleteBy")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime?>("DeletionDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<Guid?>("ModificationBy")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime?>("ModificationDate")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("AuditQuestions");
-                });
-
-            modelBuilder.Entity("Domain.Entities.AuditSubmission", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasDefaultValueSql("NEWID()");
-
-                    b.Property<Guid>("AuditPlanId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("CreatedBy")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreationDate")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("getutcdate()");
-
-                    b.Property<Guid?>("DeleteBy")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime?>("DeletionDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Message")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid?>("ModificationBy")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime?>("ModificationDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("SubmissionDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<double>("TotalGrade")
-                        .HasColumnType("float");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AuditPlanId");
-
-                    b.ToTable("AuditSubmissions");
-                });
-
-            modelBuilder.Entity("Domain.Entities.DetailAuditQuestion", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasDefaultValueSql("NEWID()");
-
-                    b.Property<Guid>("AuditPlanId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("AuditQuestionId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("CreatedBy")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreationDate")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("getutcdate()");
-
-                    b.Property<Guid?>("DeleteBy")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime?>("DeletionDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<Guid?>("ModificationBy")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime?>("ModificationDate")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AuditPlanId");
-
-                    b.HasIndex("AuditQuestionId");
-
-                    b.ToTable("DetailAuditQuestions");
-                });
-
-            modelBuilder.Entity("Domain.Entities.DetailAuditSubmission", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasDefaultValueSql("NEWID()");
-
-                    b.Property<string>("Answer")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("AuditSubmissionId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("CreatedBy")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreationDate")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("getutcdate()");
-
-                    b.Property<Guid?>("DeleteBy")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime?>("DeletionDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("DetailAuditQuestionId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<Guid?>("ModificationBy")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime?>("ModificationDate")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AuditSubmissionId");
-
-                    b.HasIndex("DetailAuditQuestionId");
-
-                    b.ToTable("DetailAuditSubmissions");
+                    b.ToTable("Attendances", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.DetailTrainingClassParticipate", b =>
@@ -419,7 +180,7 @@ namespace Infrastructures.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("DetailTrainingClassParticipates");
+                    b.ToTable("DetailTrainingClassParticipates", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.DetailTrainingProgramSyllabus", b =>
@@ -467,7 +228,7 @@ namespace Infrastructures.Migrations
 
                     b.HasIndex("TrainingProgramId");
 
-                    b.ToTable("DetailTrainingProgramSyllabus");
+                    b.ToTable("detailTrainingProgramSyllabuses", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.DetailUnitLecture", b =>
@@ -509,7 +270,7 @@ namespace Infrastructures.Migrations
 
                     b.HasIndex("UnitId");
 
-                    b.ToTable("DetailUnitLecture");
+                    b.ToTable("DetailUnitLecture", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.Feedback", b =>
@@ -556,7 +317,7 @@ namespace Infrastructures.Migrations
 
                     b.HasIndex("TrainingCLassId");
 
-                    b.ToTable("Feedbacks");
+                    b.ToTable("Feedbacks", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.Lecture", b =>
@@ -607,7 +368,7 @@ namespace Infrastructures.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Lectures");
+                    b.ToTable("Lectures", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.Location", b =>
@@ -648,7 +409,7 @@ namespace Infrastructures.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Locations");
+                    b.ToTable("Locations", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.Role", b =>
@@ -658,10 +419,6 @@ namespace Infrastructures.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RoleId"));
-
-                    b.Property<string>("AttendancePermission")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ClassPermission")
                         .IsRequired()
@@ -689,13 +446,12 @@ namespace Infrastructures.Migrations
 
                     b.HasKey("RoleId");
 
-                    b.ToTable("Roles");
+                    b.ToTable("Roles", (string)null);
 
                     b.HasData(
                         new
                         {
                             RoleId = 1,
-                            AttendancePermission = "FullAccess",
                             ClassPermission = "FullAccess",
                             LearningMaterial = "FullAccess",
                             RoleName = "SuperAdmin",
@@ -706,10 +462,9 @@ namespace Infrastructures.Migrations
                         new
                         {
                             RoleId = 2,
-                            AttendancePermission = "FullAccess",
                             ClassPermission = "FullAccess",
                             LearningMaterial = "FullAccess",
-                            RoleName = "Admin",
+                            RoleName = "ClassAdmin",
                             SyllabusPermission = "FullAccess",
                             TrainingProgramPermission = "FullAccess",
                             UserPermission = "FullAccess"
@@ -717,7 +472,6 @@ namespace Infrastructures.Migrations
                         new
                         {
                             RoleId = 3,
-                            AttendancePermission = "FullAccess",
                             ClassPermission = "FullAccess",
                             LearningMaterial = "FullAccess",
                             RoleName = "Trainer",
@@ -728,10 +482,9 @@ namespace Infrastructures.Migrations
                         new
                         {
                             RoleId = 4,
-                            AttendancePermission = "FullAccess",
                             ClassPermission = "View",
                             LearningMaterial = "View",
-                            RoleName = "Trainee",
+                            RoleName = "Student",
                             SyllabusPermission = "View",
                             TrainingProgramPermission = "View",
                             UserPermission = "AccessDenied"
@@ -794,7 +547,7 @@ namespace Infrastructures.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Syllabuses");
+                    b.ToTable("Syllabuses", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.TrainingClass", b =>
@@ -854,7 +607,7 @@ namespace Infrastructures.Migrations
 
                     b.HasIndex("TrainingProgramId");
 
-                    b.ToTable("TrainingClasses");
+                    b.ToTable("TrainingClasses", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.TrainingMaterial", b =>
@@ -912,7 +665,7 @@ namespace Infrastructures.Migrations
 
                     b.HasIndex("lectureID");
 
-                    b.ToTable("TrainingMaterials");
+                    b.ToTable("TrainingMaterials", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.TrainingProgram", b =>
@@ -960,7 +713,7 @@ namespace Infrastructures.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("TrainingPrograms");
+                    b.ToTable("TrainingPrograms", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.Unit", b =>
@@ -1007,7 +760,7 @@ namespace Infrastructures.Migrations
 
                     b.HasIndex("SyllabusID");
 
-                    b.ToTable("Units");
+                    b.ToTable("Units", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.User", b =>
@@ -1092,20 +845,14 @@ namespace Infrastructures.Migrations
                     b.HasIndex("UserName")
                         .IsUnique();
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.Applications", b =>
                 {
-                    b.HasOne("Domain.Entities.TrainingClass", "TrainingClass")
-                        .WithMany("Applications")
-                        .HasForeignKey("TrainingClassId");
-
                     b.HasOne("Domain.Entities.User", "User")
                         .WithMany("Applications")
                         .HasForeignKey("UserId");
-
-                    b.Navigation("TrainingClass");
 
                     b.Navigation("User");
                 });
@@ -1129,66 +876,6 @@ namespace Infrastructures.Migrations
                     b.Navigation("TrainingClass");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Domain.Entities.AuditPlan", b =>
-                {
-                    b.HasOne("Domain.Entities.Lecture", "Lecture")
-                        .WithMany("AuditPlans")
-                        .HasForeignKey("LectureId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Lecture");
-                });
-
-            modelBuilder.Entity("Domain.Entities.AuditSubmission", b =>
-                {
-                    b.HasOne("Domain.Entities.AuditPlan", "AuditPlan")
-                        .WithMany("AuditSubmissions")
-                        .HasForeignKey("AuditPlanId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("AuditPlan");
-                });
-
-            modelBuilder.Entity("Domain.Entities.DetailAuditQuestion", b =>
-                {
-                    b.HasOne("Domain.Entities.AuditPlan", "AuditPlan")
-                        .WithMany("DetailAuditQuestions")
-                        .HasForeignKey("AuditPlanId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Domain.Entities.AuditQuestion", "AuditQuestion")
-                        .WithMany()
-                        .HasForeignKey("AuditQuestionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("AuditPlan");
-
-                    b.Navigation("AuditQuestion");
-                });
-
-            modelBuilder.Entity("Domain.Entities.DetailAuditSubmission", b =>
-                {
-                    b.HasOne("Domain.Entities.AuditSubmission", "AuditSubmission")
-                        .WithMany("DetailAuditSubmissions")
-                        .HasForeignKey("AuditSubmissionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Domain.Entities.DetailAuditQuestion", "DetailAuditQuestion")
-                        .WithMany("DetailAuditSubmissions")
-                        .HasForeignKey("DetailAuditQuestionId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("AuditSubmission");
-
-                    b.Navigation("DetailAuditQuestion");
                 });
 
             modelBuilder.Entity("Domain.Entities.DetailTrainingClassParticipate", b =>
@@ -1332,27 +1019,8 @@ namespace Infrastructures.Migrations
                     b.Navigation("Role");
                 });
 
-            modelBuilder.Entity("Domain.Entities.AuditPlan", b =>
-                {
-                    b.Navigation("AuditSubmissions");
-
-                    b.Navigation("DetailAuditQuestions");
-                });
-
-            modelBuilder.Entity("Domain.Entities.AuditSubmission", b =>
-                {
-                    b.Navigation("DetailAuditSubmissions");
-                });
-
-            modelBuilder.Entity("Domain.Entities.DetailAuditQuestion", b =>
-                {
-                    b.Navigation("DetailAuditSubmissions");
-                });
-
             modelBuilder.Entity("Domain.Entities.Lecture", b =>
                 {
-                    b.Navigation("AuditPlans");
-
                     b.Navigation("DetailUnitLectures");
 
                     b.Navigation("TrainingMaterials");
@@ -1379,8 +1047,6 @@ namespace Infrastructures.Migrations
 
             modelBuilder.Entity("Domain.Entities.TrainingClass", b =>
                 {
-                    b.Navigation("Applications");
-
                     b.Navigation("Attendances");
 
                     b.Navigation("Feedbacks");

@@ -66,6 +66,8 @@ namespace Domains.Test
 
         protected readonly Mock<ILectureService> _lectureServiceMock;
 
+        protected readonly Mock<IGradingService> _gradingServiceMock;
+
 
         public SetupTest()
         {
@@ -126,6 +128,8 @@ namespace Domains.Test
 
             _locationRepositoryMock= new Mock<ILocationRepository>();
             _locationServiceMock = new Mock<ILocationService>();
+
+            _gradingServiceMock = new Mock<IGradingService>();
         }
 
         public void Dispose()

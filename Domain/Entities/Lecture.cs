@@ -16,6 +16,7 @@ namespace Domain.Entities
 
          public ICollection<DetailUnitLecture> DetailUnitLectures { get; set; }
         public ICollection<TrainingMaterial> TrainingMaterials { get; set;}
+        public ICollection<Grading> Gradings { get; set; }
 
         public ICollection<AuditPlan> AuditPlans { get; set; } = default!;
 

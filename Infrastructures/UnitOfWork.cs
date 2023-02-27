@@ -24,11 +24,13 @@ namespace Infrastructures
 
         private readonly ITrainingProgramRepository _trainingProgramRepository;
         private readonly IDetailTrainingProgramSyllabusRepository _detailTrainingProgramSyllabusRepository;
-    
+        private readonly IGradingRepository _gradingRepository;
+
         public UnitOfWork(AppDbContext dbContext,
             IUserRepository userRepository, ITrainingMaterialRepository trainingMaterialRepository,
             ISyllabusRepository syllabusRepository, IUnitRepository unitRepository, ILectureRepository lectureRepository, IDetailUnitLectureRepository detailUnitLectureRepository, ITrainingClassRepository trainingClassRepository, ILocationRepository locationRepository,
-            IFeedbackRepository feedbackRepository, ITrainingProgramRepository trainingProgramRepository, IDetailTrainingProgramSyllabusRepository detailTrainingProgramSyllabusRepository, IAttendanceRepository attendanceRepository, IApplicationRepository applicationReapository)
+            IFeedbackRepository feedbackRepository, ITrainingProgramRepository trainingProgramRepository, IDetailTrainingProgramSyllabusRepository detailTrainingProgramSyllabusRepository, IAttendanceRepository attendanceRepository, IApplicationRepository applicationReapository,
+            IGradingRepository gradingRepository)
 
         {
             _dbContext = dbContext;
@@ -49,6 +51,7 @@ namespace Infrastructures
             _applicationRepository = applicationReapository;
             _trainingProgramRepository = trainingProgramRepository;
             _detailTrainingProgramSyllabusRepository = detailTrainingProgramSyllabusRepository;
+            _gradingRepository = gradingRepository;
         }
         public IUserRepository UserRepository => _userRepository;
         public ISyllabusRepository SyllabusRepository => _syllabusRepository;
@@ -76,6 +79,9 @@ namespace Infrastructures
         public IAttendanceRepository AttendanceRepository => _attendanceRepository;
 
         public IApplicationRepository ApplicationRepository => _applicationRepository;
+
+        public IGradingRepository GradingRepository => _gradingRepository;
+
 
 
         public async Task<int> SaveChangeAsync()

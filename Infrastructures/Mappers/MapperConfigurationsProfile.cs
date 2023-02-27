@@ -14,6 +14,7 @@ using Application.ViewModels.ApplicationViewModels;
 using Application.ViewModels.TrainingProgramModels;
 using Application.ViewModels.AtttendanceModels;
 using Domain.Enums;
+using Application.ViewModels.GradingModels;
 
 namespace Infrastructures.Mappers
 {
@@ -162,6 +163,8 @@ namespace Infrastructures.Mappers
                 .ForMember(dest => dest.Reason, opt => opt.MapFrom(src => src.Reason))
                 .ForMember(dest => dest.Appoved, opt => opt.MapFrom(src => src.Approved))
                 .ForMember(dest => dest.AbsentDateRequested, opt => opt.MapFrom(src => src.AbsentDateRequested)).ReverseMap();
+
+            CreateMap<Grading, GradingModel>().ReverseMap();
         }
     }
 }

@@ -36,8 +36,8 @@ namespace Infrastructures
         public DbSet<DetailAuditSubmission> DetailAuditSubmissions { get; set; }
         public DbSet<AuditQuestion> AuditQuestions { get; set; }
         public DbSet<DetailAuditQuestion> DetailAuditQuestions { get; set; }
-        public DbSet<DetailTrainingProgramSyllabus> DetailTrainingProgramSyllabuses { get; set; }
-              
+        public DbSet<DetailTrainingProgramSyllabus> DetailTrainingProgramSyllabuses { get; set; }              
+        public DbSet<Grading> Gradings { get; set; }
         #endregion
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -60,6 +60,8 @@ namespace Infrastructures
             new AuditSubmissionConfiguration().Configure(modelBuilder.Entity<AuditSubmission>());
             new DetailAuditQuestionConfiguration().Configure(modelBuilder.Entity<DetailAuditQuestion>());
             new DetailAuditSubmissionConfiguration().Configure(modelBuilder.Entity<DetailAuditSubmission>());
+            new GradingConfiguration().Configure(modelBuilder.Entity<Grading>());
+            new LectureConfiguration().Configure(modelBuilder.Entity<Lecture>());
         }
 
     }
