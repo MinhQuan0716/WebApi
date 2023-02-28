@@ -52,6 +52,11 @@ namespace WebAPI
             services.AddScoped<ITrainingProgramRepository, TrainingProgramRepository>();
             services.AddScoped<ITrainingProgramService, TrainingProgramService>();
             services.AddScoped<IDetailTrainingProgramSyllabusRepository, DetailTrainingProgramSyllabusRepository>();
+            services.AddScoped<IQuestionService, QuestionService>();
+            services.AddScoped<IQuestionRepository, QuestionRepository>();
+            services.AddScoped<IQuizRepository, QuizRepository>();
+            services.AddScoped<IDetailQuizQuestionRepository, DetailQuizQuestionRepository>();
+            services.AddScoped<ITopicRepository, TopicRepository>();
             services.AddScoped<IGradingService, GradingService>();
             services.AddScoped<IGradingRepository, GradingRepository>();
             services.AddHttpContextAccessor();

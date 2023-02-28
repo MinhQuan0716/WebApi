@@ -36,7 +36,17 @@ namespace Infrastructures
         public DbSet<DetailAuditSubmission> DetailAuditSubmissions { get; set; }
         public DbSet<AuditQuestion> AuditQuestions { get; set; }
         public DbSet<DetailAuditQuestion> DetailAuditQuestions { get; set; }
-        public DbSet<DetailTrainingProgramSyllabus> DetailTrainingProgramSyllabuses { get; set; }              
+        public DbSet<DetailTrainingProgramSyllabus> DetailTrainingProgramSyllabuses { get; set; }
+
+        public DbSet<Topic> Topic { get; set; } 
+
+        public DbSet<DetailQuizQuestion> DetailQuizQuestions { get; set; }
+
+        public DbSet<Question> Questions { get; set; }
+
+        public DbSet<Quiz> Quizzes { get; set; }
+              
+        //public DbSet<DetailTrainingProgramSyllabus> DetailTrainingProgramSyllabuses { get; set; }              
         public DbSet<Grading> Gradings { get; set; }
         #endregion
 
@@ -60,8 +70,14 @@ namespace Infrastructures
             new AuditSubmissionConfiguration().Configure(modelBuilder.Entity<AuditSubmission>());
             new DetailAuditQuestionConfiguration().Configure(modelBuilder.Entity<DetailAuditQuestion>());
             new DetailAuditSubmissionConfiguration().Configure(modelBuilder.Entity<DetailAuditSubmission>());
+            new QuizConfiguration().Configure(modelBuilder.Entity<Quiz>());
+            new QuestionConfiguration().Configure(modelBuilder.Entity<Question>());
+            new DetailQuizQuestionConfiguration().Configure(modelBuilder.Entity<DetailQuizQuestion>());
+            new SubmitQuizConfiguration().Configure(modelBuilder.Entity<SubmitQuiz>());
+            new TopicConfiguration().Configure(modelBuilder.Entity<Topic>());
+            new LectureConfiguration().Configure(modelBuilder.Entity<Lecture>());   
             new GradingConfiguration().Configure(modelBuilder.Entity<Grading>());
-            new LectureConfiguration().Configure(modelBuilder.Entity<Lecture>());
+            //new LectureConfiguration().Configure(modelBuilder.Entity<Lecture>());
         }
 
     }

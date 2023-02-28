@@ -20,5 +20,9 @@ namespace Domain.Entities
 
         public ICollection<AuditPlan> AuditPlans { get; set; } = default!;
 
+
+        public Quiz? Quiz { get; set; }
+        public Guid? QuizID { get; set; }
+
     }
 }

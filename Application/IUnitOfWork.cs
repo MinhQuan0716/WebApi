@@ -21,6 +21,12 @@ namespace Application
         public IFeedbackRepository FeedbackRepository { get; }
         public IDetailTrainingProgramSyllabusRepository DetailTrainingProgramSyllabusRepository { get; }
         public ITrainingProgramRepository TrainingProgramRepository { get; }
+
+        public IQuestionRepository QuestionRepository { get; }
+        public IQuizRepository QuizRepository { get; }
+        public IDetailQuizQuestionRepository DetailQuizQuestionRepository { get; }
+        public ITopicRepository TopicRepository { get; }
+
         public IGradingRepository GradingRepository { get; }
         public Task<int> SaveChangeAsync();
     }

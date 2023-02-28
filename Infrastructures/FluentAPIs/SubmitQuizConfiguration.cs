@@ -1,6 +1,6 @@
 ﻿using Domain.Entities;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,14 +9,15 @@ using System.Threading.Tasks;
 
 namespace Infrastructures.FluentAPIs
 {
-    public class LectureConfiguration : IEntityTypeConfiguration<Lecture>
+    public class SubmitQuizConfiguration : IEntityTypeConfiguration<SubmitQuiz>
     {
-        public void Configure(EntityTypeBuilder<Lecture> builder)
+        public void Configure(EntityTypeBuilder<SubmitQuiz> builder)
         {
             builder.HasKey(s => s.Id);
             builder.Property(s => s.Id).HasDefaultValueSql("NEWID()");
             builder.Property(s => s.CreationDate).HasDefaultValueSql("getutcdate()");
-            builder.HasOne<Quiz>(x => x.Quiz).WithOne(x => x.Lecture).HasForeignKey<Quiz>(x => x.LectureID);
+            //builder.HasOne(x => x.User).WithMany(x => x.SubmitQuizzes).HasForeignKey(x => x.UserID);
         }
+
     }
 }

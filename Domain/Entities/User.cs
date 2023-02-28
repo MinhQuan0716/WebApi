@@ -33,5 +33,7 @@ namespace Domain.Entities
         public ICollection<Syllabus> Syllabuses { get; set; }
         public ICollection<DetailTrainingClassParticipate> DetailTrainingClassParticipate { get; set; }
         public ICollection<Feedback> Feedbacks { get; set; } = default!;
+
+        public ICollection<SubmitQuiz> SubmitQuizzes { get; set; }
     }
 }

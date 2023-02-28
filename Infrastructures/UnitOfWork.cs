@@ -24,14 +24,20 @@ namespace Infrastructures
 
         private readonly ITrainingProgramRepository _trainingProgramRepository;
         private readonly IDetailTrainingProgramSyllabusRepository _detailTrainingProgramSyllabusRepository;
+
+        private readonly IQuestionRepository _questionRepository;
+        private readonly IQuizRepository _quizRepository;
+        private readonly IDetailQuizQuestionRepository _detailQuizQuestionRepository;
+        private readonly ITopicRepository _topicRepository;
+
         private readonly IGradingRepository _gradingRepository;
 
         public UnitOfWork(AppDbContext dbContext,
             IUserRepository userRepository, ITrainingMaterialRepository trainingMaterialRepository,
             ISyllabusRepository syllabusRepository, IUnitRepository unitRepository, ILectureRepository lectureRepository, IDetailUnitLectureRepository detailUnitLectureRepository, ITrainingClassRepository trainingClassRepository, ILocationRepository locationRepository,
             IFeedbackRepository feedbackRepository, ITrainingProgramRepository trainingProgramRepository, IDetailTrainingProgramSyllabusRepository detailTrainingProgramSyllabusRepository, IAttendanceRepository attendanceRepository, IApplicationRepository applicationReapository,
+            IQuizRepository quizRepository, IDetailQuizQuestionRepository detailQuizQuestionRepository, ITopicRepository topicRepository, IQuestionRepository questionRepository,
             IGradingRepository gradingRepository)
-
         {
             _dbContext = dbContext;
             _userRepository = userRepository;
@@ -51,6 +57,11 @@ namespace Infrastructures
             _applicationRepository = applicationReapository;
             _trainingProgramRepository = trainingProgramRepository;
             _detailTrainingProgramSyllabusRepository = detailTrainingProgramSyllabusRepository;
+
+            _quizRepository = quizRepository;
+            _detailQuizQuestionRepository = detailQuizQuestionRepository;
+            _topicRepository = topicRepository;
+            _questionRepository = questionRepository;
             _gradingRepository = gradingRepository;
         }
         public IUserRepository UserRepository => _userRepository;
@@ -79,6 +90,14 @@ namespace Infrastructures
         public IAttendanceRepository AttendanceRepository => _attendanceRepository;
 
         public IApplicationRepository ApplicationRepository => _applicationRepository;
+
+        public IQuestionRepository QuestionRepository => _questionRepository;
+
+        public IQuizRepository QuizRepository => _quizRepository;
+
+        public IDetailQuizQuestionRepository DetailQuizQuestionRepository => _detailQuizQuestionRepository;
+
+        public ITopicRepository TopicRepository => _topicRepository;
 
         public IGradingRepository GradingRepository => _gradingRepository;
 

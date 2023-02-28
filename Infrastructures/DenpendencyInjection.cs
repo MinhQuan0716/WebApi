@@ -48,6 +48,13 @@ namespace Infrastructures
             services.AddScoped<IGradingService, GradingService>();
             services.AddScoped<IGradingRepository, GradingRepository>();            
 
+            services.AddScoped<IQuestionService, QuestionService>();
+            services.AddScoped<IQuestionRepository, QuestionRepository>();
+            services.AddScoped<IQuizRepository, QuizRepository>();
+            services.AddScoped<IDetailQuizQuestionRepository, DetailQuizQuestionRepository>();
+            services.AddScoped<ITopicRepository, TopicRepository>();
+            services.AddScoped<IFeedbackRepository, FeedbackRepository>();
+
             // ATTENTION: if you do migration please check file README.md
             services.AddDbContext<AppDbContext>(option => option.UseSqlServer(databaseConnection).EnableSensitiveDataLogging());
 
