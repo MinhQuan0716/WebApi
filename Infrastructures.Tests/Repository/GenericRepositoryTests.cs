@@ -127,7 +127,7 @@ namespace Infrastructures.Tests.Repository
                                                  .Without(u => u.DetailTrainingClassParticipate)
                                                  .Without(u => u.Applications)
                                                  .Without(u => u.Attendances)
-                                                 .Without(u => u.Feedbacks)
+                                                 .Without(u => u.Feedbacks).Without(x => x.SubmitQuizzes)
                                                  .Create();
             _dbContext.Users.Add(mockData);
             await _dbContext.SaveChangesAsync();
@@ -147,7 +147,7 @@ namespace Infrastructures.Tests.Repository
                                                  .Without(u => u.DetailTrainingClassParticipate)
                                                  .Without(u => u.Applications)
                                                  .Without(u => u.Attendances)
-                                                 .Without(u => u.Feedbacks).Create();
+                                                 .Without(u => u.Feedbacks).Without(x => x.SubmitQuizzes).Create();
             _dbContext.Users.Add(mockData);
             await _dbContext.SaveChangesAsync();
 
@@ -166,7 +166,7 @@ namespace Infrastructures.Tests.Repository
                                                  .Without(u => u.DetailTrainingClassParticipate)
                                                  .Without(u => u.Applications)
                                                  .Without(u => u.Attendances)
-                                                 .Without(u => u.Feedbacks).CreateMany(2).ToList();
+                                                 .Without(u => u.Feedbacks).Without(x => x.SubmitQuizzes).CreateMany(2).ToList();
             await _dbContext.Users.AddRangeAsync(mockData);
             await _dbContext.SaveChangesAsync();
 
@@ -185,7 +185,7 @@ namespace Infrastructures.Tests.Repository
                                                  .Without(u => u.DetailTrainingClassParticipate)
                                                  .Without(u => u.Applications)
                                                  .Without(u => u.Attendances)
-                                                 .Without(u => u.Feedbacks).CreateMany(2).ToList();
+                                                 .Without(u => u.Feedbacks).Without (x => x.SubmitQuizzes).CreateMany(2).ToList();
             await _dbContext.Users.AddRangeAsync(mockData);
             await _dbContext.SaveChangesAsync();
 

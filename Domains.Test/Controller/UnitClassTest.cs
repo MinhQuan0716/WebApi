@@ -24,7 +24,7 @@ namespace Domains.Test.Controller
             _fixture.Behaviors.OfType<ThrowingRecursionBehavior>().ToList()
                  .ForEach(b => _fixture.Behaviors.Remove(b));
             _fixture.Behaviors.Add(new OmitOnRecursionBehavior());
-            var mockData = _fixture.Create<Unit>();
+            var mockData = _fixture.Build<Unit>().Without(x => x.Syllabus).Without(x => x.DetailUnitLectures).Create<Unit>();
             _unitServiceMock.Setup(x => x.GetSyllabusDetail(mockData.Id));
             var result = await _unitController.GetUnitBSyllabusID(mockData.Id);
 

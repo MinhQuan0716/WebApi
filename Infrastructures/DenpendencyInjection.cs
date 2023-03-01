@@ -42,6 +42,10 @@ namespace Infrastructures
             services.AddScoped<ITrainingProgramRepository, TrainingProgramRepository>();
             services.AddScoped<ITrainingProgramService, TrainingProgramService>();
             services.AddScoped<IDetailTrainingProgramSyllabusRepository, DetailTrainingProgramSyllabusRepository>();
+            services.AddScoped<IAuditPlanRepository, AuditPlanRepository>();
+            services.AddScoped<IAuditQuestionRepository, AuditQuestionRepository>();
+            services.AddScoped<IDetailAuditQuestionRepository, DetailAuditQuestionRepository>();
+            services.AddScoped<IAuditPlanService, AuditPlanService>();
 
 
             services.AddScoped<IFeedbackRepository, FeedbackRepository>();

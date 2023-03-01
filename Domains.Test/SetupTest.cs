@@ -65,6 +65,8 @@ namespace Domains.Test
         protected readonly Mock<ITrainingProgramService> _trainingProgramServiceMock;
 
         protected readonly Mock<ILectureService> _lectureServiceMock;
+        protected readonly Mock<IAuditPlanService> _auditPlanServiceMock;
+
 
         protected readonly Mock<IGradingService> _gradingServiceMock;
 
@@ -111,7 +113,7 @@ namespace Domains.Test
             _syllabusServiceMock = new Mock<ISyllabusService>();
             _feedbackServiceMock = new Mock<IFeedbackService>();
             _feedbackRepositoryMock = new Mock<IFeedbackRepository>();
-            _trainingProgramServiceMock = new Mock<ITrainingProgramService>();
+         
             var options = new DbContextOptionsBuilder<AppDbContext>()
                 .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
                 .Options;
@@ -128,6 +130,7 @@ namespace Domains.Test
 
             _locationRepositoryMock= new Mock<ILocationRepository>();
             _locationServiceMock = new Mock<ILocationService>();
+            _auditPlanServiceMock = new Mock<IAuditPlanService>();
 
             _gradingServiceMock = new Mock<IGradingService>();
         }

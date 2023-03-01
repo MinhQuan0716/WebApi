@@ -24,6 +24,10 @@ namespace Infrastructures
 
         private readonly ITrainingProgramRepository _trainingProgramRepository;
         private readonly IDetailTrainingProgramSyllabusRepository _detailTrainingProgramSyllabusRepository;
+        private readonly IAuditPlanRepository _auditPlanRepository;
+        private readonly IAuditQuestionRepository _auditQuestionRepository;
+        private readonly IDetailAuditQuestionRepository _detailAuditQuestionRepository;
+
 
         private readonly IQuestionRepository _questionRepository;
         private readonly IQuizRepository _quizRepository;
@@ -37,7 +41,9 @@ namespace Infrastructures
             ISyllabusRepository syllabusRepository, IUnitRepository unitRepository, ILectureRepository lectureRepository, IDetailUnitLectureRepository detailUnitLectureRepository, ITrainingClassRepository trainingClassRepository, ILocationRepository locationRepository,
             IFeedbackRepository feedbackRepository, ITrainingProgramRepository trainingProgramRepository, IDetailTrainingProgramSyllabusRepository detailTrainingProgramSyllabusRepository, IAttendanceRepository attendanceRepository, IApplicationRepository applicationReapository,
             IQuizRepository quizRepository, IDetailQuizQuestionRepository detailQuizQuestionRepository, ITopicRepository topicRepository, IQuestionRepository questionRepository,
-            IGradingRepository gradingRepository)
+            IGradingRepository gradingRepository,
+            IAuditPlanRepository auditPlanRepository, IAuditQuestionRepository auditQuestionRepository, IDetailAuditQuestionRepository detailAuditQuestionRepository)
+
         {
             _dbContext = dbContext;
             _userRepository = userRepository;
@@ -63,6 +69,9 @@ namespace Infrastructures
             _topicRepository = topicRepository;
             _questionRepository = questionRepository;
             _gradingRepository = gradingRepository;
+            _auditPlanRepository = auditPlanRepository;
+            _auditQuestionRepository = auditQuestionRepository;
+            _detailAuditQuestionRepository = detailAuditQuestionRepository;
         }
         public IUserRepository UserRepository => _userRepository;
         public ISyllabusRepository SyllabusRepository => _syllabusRepository;
@@ -100,6 +109,10 @@ namespace Infrastructures
         public ITopicRepository TopicRepository => _topicRepository;
 
         public IGradingRepository GradingRepository => _gradingRepository;
+        public IApplicationRepository ApplicationReapository => _applicationRepository;
+        public IAuditPlanRepository AuditPlanRepository => _auditPlanRepository;
+        public IAuditQuestionRepository AuditQuestionRepository => _auditQuestionRepository;
+        public IDetailAuditQuestionRepository DetailAuditQuestionRepository => _detailAuditQuestionRepository;
 
 
 

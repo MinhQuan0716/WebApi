@@ -99,9 +99,9 @@ namespace WebAPI.Tests.Controllers
             var lectures = mockData.Units.First().Lectures = _fixture.Build<LectureDTO>()
                                                                     .CreateMany(1)
                                                                     .ToList();
-            var syllabus = _fixture.Build<Syllabus>().Without(s=>s.Units).Create();
+            var syllabus = _fixture.Build<Syllabus>().Without(s=>s.Units).Without(x => x.DetailTrainingProgramSyllabus).Without(x => x.User).Create();
             var detailUnitLectures = _fixture.Build<DetailUnitLecture>()
-                                             .With(u => u.Unit).With(u => u.Lecture)
+                                             .Without(u => u.Unit).Without(u => u.Lecture)
                                              .Create();
             _syllabusServiceMock.Setup(s => s.AddSyllabusAsync(mockData.SyllabusBase))
                                 .ReturnsAsync(syllabus);

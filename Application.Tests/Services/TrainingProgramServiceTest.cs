@@ -28,7 +28,7 @@ namespace Application.Tests.Services
         {
             var trainingProgram = _fixture.Build<TrainingProgram>().Without(x => x.TrainingClasses).Without(x => x.DetailTrainingProgramSyllabus).Create<TrainingProgram>();
             trainingProgram.IsDeleted = false;
-            var syllabuses = (ICollection<Syllabus>) _fixture.Build<Syllabus>().Without(x => x.DetailTrainingProgramSyllabus).Without(x => x.Units).CreateMany<Syllabus>(2).ToList();
+            var syllabuses = (ICollection<Syllabus>) _fixture.Build<Syllabus>().Without(x => x.DetailTrainingProgramSyllabus).Without(x => x.Units).Without(x => x.User).CreateMany<Syllabus>(2).ToList();
             var trainingProgramView = _mapperConfig.Map<TrainingProgramViewModel>(trainingProgram);
             trainingProgramView.Syllabuses = syllabuses;
 
@@ -55,7 +55,7 @@ namespace Application.Tests.Services
         {
             var createTrainingProgramDTO = _fixture.Build<UpdateTrainingProgramDTO>().Without(ct => ct.SyllabusesId).Create();
             createTrainingProgramDTO.SyllabusesId = new List<Guid>();
-            var syllabuses = _fixture.Build<Syllabus>().Without(x => x.Units).Without(x => x.DetailTrainingProgramSyllabus).CreateMany<Syllabus>(2);
+            var syllabuses = _fixture.Build<Syllabus>().Without(x => x.Units).Without(x => x.DetailTrainingProgramSyllabus).Without(x => x.User).CreateMany<Syllabus>(2);
             foreach (var item in syllabuses) createTrainingProgramDTO.SyllabusesId.Add(item.Id);
             foreach (var item in syllabuses) _unitOfWorkMock.Setup(um => um.SyllabusRepository.GetByIdAsync(item.Id)).ReturnsAsync(item);
             _unitOfWorkMock.Setup(um => um.DetailTrainingProgramSyllabusRepository.AddAsync(It.IsAny<DetailTrainingProgramSyllabus>())).Verifiable();
@@ -84,7 +84,7 @@ namespace Application.Tests.Services
             var detailProgramSyllabuses = _fixture.Build<DetailTrainingProgramSyllabus>().Without(x => x.Syllabus).Without(x => x.TrainingProgram).CreateMany<DetailTrainingProgramSyllabus>(1);
             var updateProgram = _mapperConfig.Map<TrainingProgram>(updateDTO);
             _unitOfWorkMock.Setup(m => m.TrainingProgramRepository.Update(updateProgram)).Verifiable();
-            var syllabuses = _fixture.Build<Syllabus>().Without(x => x.DetailTrainingProgramSyllabus).Without(x => x.Units).CreateMany<Syllabus>(2);
+            var syllabuses = _fixture.Build<Syllabus>().Without(x => x.DetailTrainingProgramSyllabus).Without(x => x.Units).Without(x => x.User).CreateMany<Syllabus>(2);
             foreach (var item in syllabuses) updateDTO.SyllabusesId.Add(item.Id);
             foreach (var item in syllabuses) _unitOfWorkMock.Setup(um => um.SyllabusRepository.GetByIdAsync(item.Id)).ReturnsAsync(item);
             _unitOfWorkMock.Setup(m => m.TrainingProgramRepository.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(updateProgram);

@@ -25,7 +25,14 @@ namespace WebAPI.Tests.Controllers
         public async Task GetAttendanceByClassId_Should_ReturnData()
         {
             // Arange
-            var mockclass = _fixture.Build<TrainingClass>().Without(x => x.TrainingClassParticipates).Without(x => x.Attendances).Without(x => x.Feedbacks).Create();
+
+            var mockclass = _fixture.Build<TrainingClass>()
+                .Without(x => x.TrainingClassParticipates)
+                .Without(x => x.Attendances)
+                .Without(x => x.Feedbacks)
+                .Without(x => x.TrainingProgram)
+                .Without(x => x.Location)
+                .Without(x => x.Applications).Create();
             var mockAttendence = _fixture.Build<Attendance>().Without(x => x.Application).Without(x => x.TrainingClass).Without(x => x.User).With(x => x.TrainingClass, mockclass).CreateMany(1).ToList();
             _attendanceServiceMock.Setup(x => x.GetAttendancesByTraineeClassID(It.IsAny<Guid>())).ReturnsAsync(mockAttendence);
             // Act
@@ -40,7 +47,13 @@ namespace WebAPI.Tests.Controllers
         [Fact]
         public async Task GetAttendanceByTraineeId_Should_ReturnData()
         {
-            var mockclass = _fixture.Build<TrainingClass>().Without(x => x.TrainingClassParticipates).Without(x => x.Attendances).Without(x => x.Feedbacks).Create();
+            var mockclass = _fixture.Build<TrainingClass>()
+                .Without(x => x.TrainingClassParticipates)
+                .Without(x => x.Attendances)
+                .Without(x => x.Feedbacks)
+                .Without(x => x.TrainingProgram)
+                .Without(x => x.Location)
+                .Without(x => x.Applications).Create();
             var mockAttendance = _fixture.Build<Attendance>().With(x => x.TrainingClass, mockclass).Without(x => x.Application).Without(x => x.TrainingClass).Without(x => x.User).CreateMany(2).ToList();
             _attendanceServiceMock.Setup(x => x.GetAttendanceByTraineeID(It.IsAny<Guid>())).ReturnsAsync(mockAttendance);
 

@@ -21,6 +21,10 @@ namespace Application
         public IFeedbackRepository FeedbackRepository { get; }
         public IDetailTrainingProgramSyllabusRepository DetailTrainingProgramSyllabusRepository { get; }
         public ITrainingProgramRepository TrainingProgramRepository { get; }
+        public IAuditPlanRepository AuditPlanRepository { get; }
+        public IAuditQuestionRepository AuditQuestionRepository { get; }
+        public IDetailAuditQuestionRepository DetailAuditQuestionRepository { get; }
+
 
         public IQuestionRepository QuestionRepository { get; }
         public IQuizRepository QuizRepository { get; }

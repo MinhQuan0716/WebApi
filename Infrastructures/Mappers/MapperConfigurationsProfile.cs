@@ -11,6 +11,8 @@ using Application.ViewModels.Location;
 using Application.ViewModels.FeedbackModels;
 using Application.ViewModels.TrainingProgramModels;
 using Application.ViewModels.ApplicationViewModels;
+using Application.ViewModels.AuditModels;
+using Application.ViewModels.AuditModels.ViewModels;
 using Application.ViewModels.TrainingProgramModels;
 using Application.ViewModels.AtttendanceModels;
 using Domain.Enums;
@@ -164,6 +166,12 @@ namespace Infrastructures.Mappers
                 .ForMember(dest => dest.Reason, opt => opt.MapFrom(src => src.Reason))
                 .ForMember(dest => dest.Appoved, opt => opt.MapFrom(src => src.Approved))
                 .ForMember(dest => dest.AbsentDateRequested, opt => opt.MapFrom(src => src.AbsentDateRequested)).ReverseMap();
+
+            CreateMap<AuditPlan, CreateAuditDTO>().ReverseMap();
+            CreateMap<AuditQuestion, CreateAuditQuestionDTO>().ReverseMap();
+            CreateMap<AuditPlanViewModel, AuditPlan>()
+                .ReverseMap();
+            CreateMap<AuditQuestion, AuditQuestionViewModel>().ReverseMap();
 
             CreateMap<Grading, GradingModel>().ReverseMap();
         }
