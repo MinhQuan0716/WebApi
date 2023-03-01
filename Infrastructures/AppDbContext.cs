@@ -77,7 +77,7 @@ namespace Infrastructures
             new TopicConfiguration().Configure(modelBuilder.Entity<Topic>());
             new LectureConfiguration().Configure(modelBuilder.Entity<Lecture>());   
             new GradingConfiguration().Configure(modelBuilder.Entity<Grading>());
-            //new LectureConfiguration().Configure(modelBuilder.Entity<Lecture>());
+            new LectureConfiguration().Configure(modelBuilder.Entity<Lecture>());
         }
 
     }

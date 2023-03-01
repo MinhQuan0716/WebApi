@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Domain.Enums
 {
-    public enum StatusClass
+    public enum TraineeParticipationStatus
     {
-        Active,
-        Inactive,       
+        Training,
+        NotJoined,
     }
 }

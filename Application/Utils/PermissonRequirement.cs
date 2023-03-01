@@ -19,7 +19,8 @@ namespace Application.Utils
         AttendancePermission,
         ClassPermission,
         LearningMaterial,
-        UserPermission
+        UserPermission,
+        TrainingMaterialPermission,
     }
 
     public class ClaimRequirementAttribute : TypeFilterAttribute

@@ -225,7 +225,10 @@ namespace WebAPI.Controllers
             return BadRequest("Error at AddUserManually at Controller");
 
         }
+
         [HttpPost]
+        [Authorize]
+        [ClaimRequirement(nameof(PermissionItem.UserPermission), nameof(PermissionEnum.Create))]
         public async Task<IActionResult> ImportExcel(IFormFile file)
         {
             var import = await _userService.ImportExcel(file);

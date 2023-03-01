@@ -15,6 +15,7 @@ namespace Domain.Entities
         public virtual TrainingClass TrainingClass { get; set; }
         public Guid LocationId { get; set; }
         public Location Location { get; set; }
-        public StatusClassDetail StatusClassDetail { get; set; }
+        //public StatusClassDetail StatusClassDetail { get; set; }
+        public TraineeParticipationStatus TraineeParticipationStatus { get; set; } = TraineeParticipationStatus.NotJoined;
     }
 }

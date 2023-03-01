@@ -23,7 +23,8 @@ namespace Infrastructures.FluentAPIs
                 AttendancePermission = nameof(PermissionEnum.FullAccess),
                 LearningMaterial = nameof(PermissionEnum.FullAccess),
                 SyllabusPermission = nameof(PermissionEnum.FullAccess),
-                UserPermission = nameof(PermissionEnum.FullAccess)
+                UserPermission = nameof(PermissionEnum.FullAccess),
+                TrainingMaterialPermission = nameof(PermissionEnum.FullAccess),
             },
             new Role
             {
@@ -34,7 +35,8 @@ namespace Infrastructures.FluentAPIs
                 AttendancePermission = nameof(PermissionEnum.FullAccess),
                 LearningMaterial = nameof(PermissionEnum.FullAccess),
                 SyllabusPermission = nameof(PermissionEnum.FullAccess),
-                UserPermission = nameof(PermissionEnum.FullAccess)
+                UserPermission = nameof(PermissionEnum.FullAccess),
+                TrainingMaterialPermission = nameof(PermissionEnum.FullAccess),
             },
             new Role
             {
@@ -45,7 +47,8 @@ namespace Infrastructures.FluentAPIs
                 AttendancePermission = nameof(PermissionEnum.FullAccess),
                 LearningMaterial = nameof(PermissionEnum.FullAccess),
                 SyllabusPermission = nameof(PermissionEnum.FullAccess),
-                UserPermission = nameof(PermissionEnum.FullAccess)
+                UserPermission = nameof(PermissionEnum.FullAccess),
+                TrainingMaterialPermission = nameof(PermissionEnum.FullAccess),
             },
             new Role
             {
@@ -56,7 +59,8 @@ namespace Infrastructures.FluentAPIs
                 AttendancePermission = nameof(PermissionEnum.FullAccess),
                 LearningMaterial = nameof(PermissionEnum.View),
                 SyllabusPermission = nameof(PermissionEnum.View),
-                UserPermission = nameof(PermissionEnum.AccessDenied)
+                UserPermission = nameof(PermissionEnum.AccessDenied),
+                TrainingMaterialPermission = nameof(PermissionEnum.View),
             }
 
 

@@ -17,6 +17,7 @@ namespace Application.Utils
                 new Claim("UserId", user.Id.ToString()),
                 new Claim("SyllabusPermission",user.Role.SyllabusPermission),
                 new Claim("TrainingProgramPermission",user.Role.TrainingProgramPermission),
+                new Claim("TrainingMaterialPermission",user.Role.TrainingMaterialPermission),
                 new Claim("ClassPermission",user.Role.ClassPermission),
                 new Claim("LearningMaterial",user.Role.LearningMaterial),
                 new Claim("AttendancePermission",user.Role.AttendancePermission),

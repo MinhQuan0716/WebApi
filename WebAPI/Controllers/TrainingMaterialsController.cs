@@ -1,4 +1,7 @@
 ﻿using Application.Interfaces;
+using Application.Utils;
+using Domain.Enums;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Controllers
@@ -12,7 +15,7 @@ namespace WebAPI.Controllers
             _trainingMaterialService = trainingMaterialService;
         }
 
-        [HttpGet("Download File")]
+        [HttpGet("DownloadFile")]
         public async Task<IActionResult> Download(Guid id)
         {
             var file = await _trainingMaterialService.GetFile(id);
@@ -25,7 +28,9 @@ namespace WebAPI.Controllers
             return File(content, _trainingMaterialService.GetMimeTypes()[type], fileName);
         }
 
-        [HttpPost("Upload File")]
+        [HttpPost("UploadFile")]
+        [Authorize]
+        [ClaimRequirement(nameof(PermissionItem.TrainingMaterialPermission), nameof(PermissionEnum.Create))]
         public async Task<IActionResult> Upload(IFormFile file, string name)
         {
             await _trainingMaterialService.Upload(file, name);
@@ -36,7 +41,9 @@ namespace WebAPI.Controllers
             return Ok();
         }
 
-        [HttpDelete("Delete file")]
+        [HttpDelete("DeleteFile")]
+        [Authorize]
+        [ClaimRequirement(nameof(PermissionItem.TrainingMaterialPermission), nameof(PermissionEnum.Modifed))]
         public async Task<IActionResult> DeleteTrainingMaterial(Guid id)
         {
             bool deleteTraingMaterial = await _trainingMaterialService.DeleteTrainingMaterial(id);
@@ -48,6 +55,8 @@ namespace WebAPI.Controllers
         }
 
         [HttpPut("Edit file")]
+        [Authorize]
+        [ClaimRequirement(nameof(PermissionItem.TrainingMaterialPermission), nameof(PermissionEnum.Modifed))]
         public async Task<IActionResult> UpdateTrainingMaterial(IFormFile file, Guid id)
         {
             bool updateTrainingMaterial = await _trainingMaterialService.UpdateTrainingMaterial(file, id);

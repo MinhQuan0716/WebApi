@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructures.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20230227072605_UpdateQuizDomain")]
-    partial class UpdateQuizDomain
+    [Migration("20230301024925_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -453,7 +453,7 @@ namespace Infrastructures.Migrations
                     b.Property<DateTime?>("ModificationDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("StatusClassDetail")
+                    b.Property<int>("TraineeParticipationStatus")
                         .HasColumnType("int");
 
                     b.Property<Guid>("TrainingClassID")
@@ -610,6 +610,59 @@ namespace Infrastructures.Migrations
                     b.ToTable("Feedbacks");
                 });
 
+            modelBuilder.Entity("Domain.Entities.Grading", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("NEWID()");
+
+                    b.Property<Guid?>("CreatedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreationDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("getutcdate()");
+
+                    b.Property<Guid?>("DeleteBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("DeletionDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("DetailTrainingClassParticipateId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
+                    b.Property<Guid>("LectureId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("LetterGrade")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("ModificationBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("ModificationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("NumericGrade")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DetailTrainingClassParticipateId");
+
+                    b.HasIndex("LectureId");
+
+                    b.ToTable("Gradings");
+                });
+
             modelBuilder.Entity("Domain.Entities.Lecture", b =>
                 {
                     b.Property<Guid>("Id")
@@ -655,7 +708,7 @@ namespace Infrastructures.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("QuizID")
+                    b.Property<Guid?>("QuizID")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Status")
@@ -866,6 +919,10 @@ namespace Infrastructures.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("TrainingMaterialPermission")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("TrainingProgramPermission")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -887,6 +944,7 @@ namespace Infrastructures.Migrations
                             LearningMaterial = "FullAccess",
                             RoleName = "SuperAdmin",
                             SyllabusPermission = "FullAccess",
+                            TrainingMaterialPermission = "FullAccess",
                             TrainingProgramPermission = "FullAccess",
                             UserPermission = "FullAccess"
                         },
@@ -898,6 +956,7 @@ namespace Infrastructures.Migrations
                             LearningMaterial = "FullAccess",
                             RoleName = "Admin",
                             SyllabusPermission = "FullAccess",
+                            TrainingMaterialPermission = "FullAccess",
                             TrainingProgramPermission = "FullAccess",
                             UserPermission = "FullAccess"
                         },
@@ -909,6 +968,7 @@ namespace Infrastructures.Migrations
                             LearningMaterial = "FullAccess",
                             RoleName = "Trainer",
                             SyllabusPermission = "FullAccess",
+                            TrainingMaterialPermission = "FullAccess",
                             TrainingProgramPermission = "FullAccess",
                             UserPermission = "FullAccess"
                         },
@@ -920,6 +980,7 @@ namespace Infrastructures.Migrations
                             LearningMaterial = "View",
                             RoleName = "Trainee",
                             SyllabusPermission = "View",
+                            TrainingMaterialPermission = "View",
                             TrainingProgramPermission = "View",
                             UserPermission = "AccessDenied"
                         });
@@ -1121,7 +1182,7 @@ namespace Infrastructures.Migrations
                     b.Property<DateTime>("StartTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("StatusClass")
+                    b.Property<int>("StatusClassDetail")
                         .HasColumnType("int");
 
                     b.Property<Guid>("TrainingProgramId")
@@ -1569,6 +1630,25 @@ namespace Infrastructures.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Domain.Entities.Grading", b =>
+                {
+                    b.HasOne("Domain.Entities.DetailTrainingClassParticipate", "DetailTrainingClassParticipate")
+                        .WithMany()
+                        .HasForeignKey("DetailTrainingClassParticipateId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.Lecture", "Lecture")
+                        .WithMany("Gradings")
+                        .HasForeignKey("LectureId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("DetailTrainingClassParticipate");
+
+                    b.Navigation("Lecture");
+                });
+
             modelBuilder.Entity("Domain.Entities.Question", b =>
                 {
                     b.HasOne("Domain.Entities.QuizType", "QuizType")
@@ -1708,8 +1788,9 @@ namespace Infrastructures.Migrations
 
                     b.Navigation("DetailUnitLectures");
 
-                    b.Navigation("Quiz")
-                        .IsRequired();
+                    b.Navigation("Gradings");
+
+                    b.Navigation("Quiz");
 
                     b.Navigation("TrainingMaterials");
                 });

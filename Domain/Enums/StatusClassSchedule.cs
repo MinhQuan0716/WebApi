@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 
 namespace Domain.Enums
 {
-    public enum StatusClass
+    public enum StatusClassSchedule
     {
-        Active,
-        Inactive,       
+        Planning,
+        Ongoing,
+        Finished,
     }
 }
