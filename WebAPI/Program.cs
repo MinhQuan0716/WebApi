@@ -1,6 +1,7 @@
 using Application.Commons;
 using Application.Utils;
 using Infrastructures;
+using Microsoft.OpenApi.Models;
 using System.Text.Json.Serialization;
 using WebAPI;
 using WebAPI.Middlewares;
@@ -17,16 +18,40 @@ builder.Services.AddWebAPIService(configuration!.JWTSecretKey);
     now we can use dependency injection for AppConfiguration
 */
 builder.Services.AddSingleton(configuration);
+builder.Services.AddSwaggerGen(opt =>
+{
+    opt.SwaggerDoc("v1", new OpenApiInfo { Title = "MyAPI", Version = "v1" });
+    opt.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        In = ParameterLocation.Header,
+        Description = "Please enter token",
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        BearerFormat = "JWT",
+        Scheme = "bearer"
+    });
 
+    opt.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type=ReferenceType.SecurityScheme,
+                    Id="Bearer"
+                }
+            },
+            new string[]{}
+        }
+    });
+});
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+app.UseSwagger();
+app.UseSwaggerUI();
 
 // add custom middlewares
 app.UseMiddleware<GlobalExceptionMiddleware>();
