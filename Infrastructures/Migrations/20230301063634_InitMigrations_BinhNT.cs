@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Infrastructures.Migrations
 {
     /// <inheritdoc />
-    public partial class Init : Migration
+    public partial class InitMigrations_BinhNT : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -101,7 +101,8 @@ namespace Infrastructures.Migrations
                     LearningMaterial = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UserPermission = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     AttendancePermission = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    TrainingMaterialPermission = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    TrainingMaterialPermission = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ApplicationPermission = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -468,7 +469,7 @@ namespace Infrastructures.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "NEWID()"),
                     AbsentDateRequested = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Reason = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Reason = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Approved = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     TrainingClassId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
@@ -799,13 +800,13 @@ namespace Infrastructures.Migrations
 
             migrationBuilder.InsertData(
                 table: "Roles",
-                columns: new[] { "RoleId", "AttendancePermission", "ClassPermission", "LearningMaterial", "RoleName", "SyllabusPermission", "TrainingMaterialPermission", "TrainingProgramPermission", "UserPermission" },
+                columns: new[] { "RoleId", "ApplicationPermission", "AttendancePermission", "ClassPermission", "LearningMaterial", "RoleName", "SyllabusPermission", "TrainingMaterialPermission", "TrainingProgramPermission", "UserPermission" },
                 values: new object[,]
                 {
-                    { 1, "FullAccess", "FullAccess", "FullAccess", "SuperAdmin", "FullAccess", "FullAccess", "FullAccess", "FullAccess" },
-                    { 2, "FullAccess", "FullAccess", "FullAccess", "Admin", "FullAccess", "FullAccess", "FullAccess", "FullAccess" },
-                    { 3, "FullAccess", "FullAccess", "FullAccess", "Trainer", "FullAccess", "FullAccess", "FullAccess", "FullAccess" },
-                    { 4, "FullAccess", "View", "View", "Trainee", "View", "View", "View", "AccessDenied" }
+                    { 1, "FullAccess", "FullAccess", "FullAccess", "FullAccess", "SuperAdmin", "FullAccess", "FullAccess", "FullAccess", "FullAccess" },
+                    { 2, "FullAccess", "FullAccess", "FullAccess", "FullAccess", "Admin", "FullAccess", "FullAccess", "FullAccess", "FullAccess" },
+                    { 3, "AccessDenied", "FullAccess", "FullAccess", "FullAccess", "Trainer", "FullAccess", "FullAccess", "FullAccess", "FullAccess" },
+                    { 4, "AccessDenied", "FullAccess", "View", "View", "Trainee", "View", "View", "View", "AccessDenied" }
                 });
 
             migrationBuilder.CreateIndex(

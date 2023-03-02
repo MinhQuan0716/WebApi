@@ -58,6 +58,21 @@ namespace Infrastructures.Mappers
                 .ForMember(a => a.Id, options => options.MapFrom(dto => dto.AttendanceId))
                 .ForMember(a => a.Date, options => options.MapFrom(dto => dto.Date))
                 .ReverseMap();
+            CreateMap<Pagination<Attendance>, Pagination<AttendanceViewDTO>>()
+                .ReverseMap();
+            CreateMap<Attendance, AttendanceViewDTO>()
+                .ForMember(x => x.Id, options => options.MapFrom(dto => dto.Id))
+                .ForMember(x => x.Date, options => options.MapFrom(dto => dto.Date))
+                .ForMember(x => x.Status, options => options.MapFrom(dto => dto.Status))
+                .ForMember(x => x.UserId, options => options.MapFrom(dto => dto.UserId))
+                .ForMember(x => x.UserName, options => options.MapFrom(dto => dto.User.UserName))
+                .ForMember(x => x.FullName, options => options.MapFrom(dto => dto.User.FullName))
+                .ForMember(x => x.Email, options => options.MapFrom(dto => dto.User.Email))
+                .ForMember(x => x.AvatarUrl, options => options.MapFrom(dto => dto.User.AvatarUrl))
+                .ForMember(x => x.DateOfBirth, options => options.MapFrom(dto => dto.User.DateOfBirth))
+                .ForMember(x => x.ApplicationId, options => options.MapFrom(dto => dto.ApplicationId))
+                .ForMember(x => x.ApplicationReason, options => options.MapFrom(dto => dto.Application.Reason))
+                .ReverseMap();
 
             CreateMap<ResetPasswordDTO, User>()
                 .ForMember(rp => rp.PasswordHash, opt => opt.MapFrom(src => src.NewPassword)).ReverseMap();

@@ -8,6 +8,9 @@ using Domain.Entities;
 using Application.Utils;
 using Domain.Enums;
 using Microsoft.AspNetCore.Authorization;
+using System.Collections.Generic;
+using AutoFixture;
+using Infrastructures;
 
 namespace WebAPI.Controllers
 {
@@ -41,6 +44,26 @@ namespace WebAPI.Controllers
             return BadRequest();
         }
 
+        [HttpGet("{id:maxlength(50):guid?}")]
+        //[ClaimRequirement(nameof(PermissionItem.AttendancePermission), nameof(PermissionEnum.View))]
+
+        public async Task<IActionResult> GetAllAttendanceReports([FromRoute(Name = "id")] Guid classId = default,
+                                                                 [FromQuery(Name = "from")] DateTime? toDate = null,
+                                                                 [FromQuery(Name = "to")] DateTime? fromDate = null,
+                                                                 [FromQuery(Name = "s")] string search = "",
+                                                                 [FromQuery(Name = "by")] string by = nameof(AttendanceStatusEnums.None),
+                                                                 [FromQuery(Name = "apli")] bool? containApplication = null,
+                                                                 [FromQuery(Name = "p")] int pageIndex = 0,
+                                                                 [FromQuery(Name = "ps")] int pageSize = 40)
+        {
+            fromDate ??= DateTime.UtcNow.Date;
+            toDate ??= fromDate+DateTime.MaxValue.TimeOfDay;
+            var result = await _attendanceService.GetAllAttendanceWithFilter(
+                         classId, search,
+                         by, containApplication,fromDate,toDate,
+                         pageIndex, pageSize);
+            return result is null ? NoContent() : Ok(result);
+        }
         [HttpPost, HttpPatch]
         [Authorize]
         [ClaimRequirement(nameof(PermissionItem.AttendancePermission), nameof(PermissionEnum.Create))]
@@ -56,13 +79,14 @@ namespace WebAPI.Controllers
 
         [HttpPatch]
         [Authorize]
-        [ClaimRequirement(nameof(PermissionItem.AttendancePermission), nameof(PermissionEnum.Create))]
         [ClaimRequirement(nameof(PermissionItem.AttendancePermission), nameof(PermissionEnum.Modifed))]
 
-        public async Task<IActionResult> EditAttendance( Guid classId, [FromBody] AttendanceDTO attendanceDto)
+        public async Task<IActionResult> EditAttendance(Guid classId, [FromBody] AttendanceDTO attendanceDto)
         {
             var attendance = await _attendanceService.UpdateAttendanceAsync(attendanceDto, classId);
             return attendance is null ? BadRequest() : Ok(attendance);
         }
+
+
     }
 }

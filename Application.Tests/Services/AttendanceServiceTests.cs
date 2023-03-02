@@ -1,4 +1,5 @@
-﻿using Application.Interfaces;
+﻿using Application.Commons;
+using Application.Interfaces;
 using Application.Repositories;
 using Application.Services;
 using Application.ViewModels.AtttendanceModels;
@@ -13,7 +14,10 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Moq;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Drawing.Printing;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using WebAPI.Controllers;
@@ -83,7 +87,7 @@ namespace Application.Tests.Services
             _trainingClassRepositoryMock.Setup(x => x.GetByIdAsync(@class.Id)).ReturnsAsync(@class);
             _applicationRepositoryMock.Setup(x => x.GetApplicationByUserAndClassId(attendanceDtoMock, @class.Id));
             // Act
-            var result = await _attendanceService.UpdateAttendanceAsync(attendanceDtoMock, @class.Id); 
+            var result = await _attendanceService.UpdateAttendanceAsync(attendanceDtoMock, @class.Id);
             // Assert 
             result.Should().BeOfType<Attendance>();
             result.Status.Should().Be("Present");
@@ -96,7 +100,7 @@ namespace Application.Tests.Services
             var attendanceDtoMock = _fixture.Build<AttendanceDTO>().Create();
             var attendanceDtoMock_empty = _fixture.Build<AttendanceDTO>().Create();
             attendanceDtoMock.Status = false;
-            Applications application = new ();
+            Applications application = new();
             Applications application_empty = null;
             _trainingClassRepositoryMock.Setup(x => x.GetByIdAsync(@class.Id)).ReturnsAsync(@class);
             _applicationRepositoryMock.Setup(x => x.GetApplicationByUserAndClassId(attendanceDtoMock, @class.Id)).ReturnsAsync(application);
@@ -107,9 +111,46 @@ namespace Application.Tests.Services
             // Assert 
             result.Should().BeOfType<Attendance>();
             result.Status.Should().Be(AttendanceStatusEnums.AbsentPermit.ToString());
-            
+
             result_empty.Should().BeOfType<Attendance>();
             result_empty.Status.Should().Be(AttendanceStatusEnums.Absent.ToString());
+        }
+        [Fact]
+        public async void GetAllAttendanceWithFilter_ShouldReturnCorrectValue()
+        {
+            // Setup
+            Guid classId = Guid.Empty;
+            Guid classId_empty = Guid.NewGuid();
+            bool? containApplication = null;
+            string search = null;
+            string by = "Present";// prevent throwing exception
+            int pageIndex = 0;
+            int pageSize = 40;
+
+            var mockData = _fixture.Build<Pagination<Attendance>>().Without(x => x.Items).Create();
+            var mockData_Item = new List<Attendance>();
+            mockData.Items = mockData_Item;
+            Pagination<Attendance> mockData_empty = null;
+
+            // Setup & Act
+            _attendanceRepositoryMock.Setup(x => x.GetAllAttendanceWithFilter(It.IsAny<Expression<Func<Attendance, bool>>>(), It.IsAny<int>(), It.IsAny<int>())).ReturnsAsync(mockData);
+            DateTime dateTime = new DateTime();
+            var result_dto = await _attendanceService.GetAllAttendanceWithFilter(classId, search, by, containApplication, dateTime, dateTime, pageIndex, pageSize);
+            _attendanceRepositoryMock.Setup(x => x.GetAllAttendanceWithFilter(It.IsAny<Expression<Func<Attendance, bool>>>(), It.IsAny<int>(), It.IsAny<int>())).ReturnsAsync(mockData_empty);
+            var result_empty = await _attendanceService.GetAllAttendanceWithFilter(classId, search, by, containApplication, dateTime, dateTime, pageIndex, pageSize);
+            // Assert
+            var result = _mapperConfig.Map<Pagination<Attendance>>(result_dto);
+            Assert.Equal(mockData_Item, result.Items);
+            Assert.Null(result_empty);
+        }
+
+        [Fact]
+        public async void GetAllAttendanceWithFilter_ShouldThrowEnumException()
+        {
+            // Act
+            var result_throw = () => _attendanceService.GetAllAttendanceWithFilter(Guid.Empty, default, "this should throw", null, null, null, default);
+            // Assert
+            result_throw.Should().ThrowAsync<InvalidEnumArgumentException>();
         }
     }
 }

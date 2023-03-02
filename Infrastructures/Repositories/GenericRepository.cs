@@ -4,6 +4,8 @@ using Application.Commons;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
+using Microsoft.EntityFrameworkCore.Query;
+using System.Linq;
 
 namespace Infrastructures.Repositories
 {
@@ -76,8 +78,33 @@ namespace Infrastructures.Repositories
 
         public async Task<Pagination<TEntity>> ToPagination(int pageIndex = 0, int pageSize = 10)
         {
-            var itemCount = await _dbSet.CountAsync();
-            var items = await _dbSet.OrderByDescending(x => x.CreationDate)
+            return await ToPagination(x => true,pageIndex,pageSize) ;
+        }
+        public async Task<Pagination<TEntity>> ToPagination(Expression<Func<TEntity, bool>> expression, int pageIndex = 0, int pageSize = 10)
+        {
+            var itemCount = await _dbSet.Where(expression).CountAsync();
+            var items = await _dbSet.Where(expression)
+                                    .OrderByDescending(x => x.CreationDate)
+                                    .Skip(pageIndex * pageSize)
+                                    .Take(pageSize)
+                                    .AsNoTracking()
+                                    .ToListAsync();           
+
+            var result = new Pagination<TEntity>()
+            {
+                PageIndex = pageIndex,
+                PageSize = pageSize,
+                TotalItemsCount = itemCount,
+                Items = items,
+            };
+
+            return result;
+        }
+        public async Task<Pagination<TEntity>> ToPagination<TProperty>(IIncludableQueryable<TEntity, TProperty?> value, Expression<Func<TEntity, bool>> expression,  int pageIndex, int pageSize)
+        {
+            var itemCount = await _dbSet.Where(expression).CountAsync();
+            var items = await value.Where(expression)
+                                    .OrderByDescending(x => x.CreationDate)
                                     .Skip(pageIndex * pageSize)
                                     .Take(pageSize)
                                     .AsNoTracking()
@@ -93,7 +120,6 @@ namespace Infrastructures.Repositories
 
             return result;
         }
-
         public void UpdateRange(List<TEntity> entities)
         {
             foreach (var entity in entities)
@@ -106,6 +132,6 @@ namespace Infrastructures.Repositories
 
         public async Task<List<TEntity>> FindAsync(Expression<Func<TEntity, bool>> expression) => await _dbSet.Where(expression).ToListAsync();
 
-
+   
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Application.Commons;
 using Application.Interfaces;
+using Application.Utils;
 using Application.ViewModels.AtttendanceModels;
 using AutoMapper;
 using Domain.Entities;
@@ -7,6 +8,8 @@ using Domain.Enums;
 using Google.Apis.Logging;
 using Google.Apis.Util;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel;
+using System.Linq.Expressions;
 using static Domain.Enums.AttendanceStatusEnums;
 
 namespace Application.Services
@@ -34,7 +37,7 @@ namespace Application.Services
             var findResult = _unitOfWork.AttendanceRepository.GetAttendancesByTraineeClassID(id);
             return findResult;
         }
-        public async Task<Attendance> UpdateAttendanceAsync(AttendanceDTO attendanceDto,Guid classId)
+        public async Task<Attendance> UpdateAttendanceAsync(AttendanceDTO attendanceDto, Guid classId)
         {
             await GetAndCheckClassExist(classId);
 
@@ -47,10 +50,10 @@ namespace Application.Services
             //Guid ClassId = Guid.Parse(Id);
             List<Attendance> allList = new();
             await GetAndCheckClassExist(classId);
-
             foreach (var attendanceDto in attendanceDtos)
             {
                 Attendance attendance;
+
                 if (attendanceDto.AttendanceId != Guid.Empty && httpMethod == "PATCH")
                 {
                     attendance = await _unitOfWork.AttendanceRepository.GetByIdAsync(attendanceDto.AttendanceId.Value);
@@ -66,8 +69,33 @@ namespace Application.Services
                 _unitOfWork.AttendanceRepository.UpdateRange(allList);
             return await _unitOfWork.SaveChangeAsync() > 0 ? allList : null;
         }
+
+        public async Task<Pagination<AttendanceViewDTO>> GetAllAttendanceWithFilter(Guid classId, string search, string by, bool? containApplication, DateTime? fromDate, DateTime? toDate, int pageIndex = 0, int pageSize = 40)
+        {
+            if (by.isNotValidEnum(typeof(AttendanceStatusEnums)))
+                throw new InvalidEnumArgumentException("Not valid Enum");
+
+            Expression<Func<Attendance, bool>> expression = x => 
+                (classId == Guid.Empty || classId == x.TrainingClassId)    // by classId
+                && (x.User != null && x.User.FullName.Contains(search))                                    // by Username
+                && (containApplication == null || (x.Application != null) == containApplication) // by application                                     // by Username
+                && (fromDate <= x.Date && x.Date <= toDate)  // by datetime 
+                && (by == nameof(None) || by != nameof(None) && by == x.Status);       // by Status
+
+            Pagination<Attendance> pagination = await _unitOfWork.AttendanceRepository.GetAllAttendanceWithFilter(expression, pageIndex, pageSize);
+
+            if (pagination == null)
+                return null;
+            Pagination<AttendanceViewDTO> paginationValue = _mapper.Map<Pagination<AttendanceViewDTO>>(pagination);
+
+            return paginationValue;
+        }
+
+        #region Private Method
         private async Task<Attendance> MapAttendance(Guid classId, AttendanceDTO attendanceDto)
         {
+            if (attendanceDto.Date == default) attendanceDto.Date = _currentTime.GetCurrentTime();
+
             var application = await _unitOfWork.ApplicationRepository.GetApplicationByUserAndClassId(attendanceDto, classId);
             Attendance attendance = _mapper.Map<Attendance>(attendanceDto);
             if (application is not null)
@@ -85,5 +113,6 @@ namespace Application.Services
             trainingClass.ThrowIfNull("Training Class Missing");
             return trainingClass;
         }
+        #endregion
     }
 }

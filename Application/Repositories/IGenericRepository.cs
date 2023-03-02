@@ -19,5 +19,7 @@ namespace Application.Repositories
         Task<Pagination<TEntity>> ToPagination(int pageNumber = 0, int pageSize = 10);
 
         Task<List<TEntity>> FindAsync(Expression<Func<TEntity, bool>> expression);
+        Task<Pagination<TEntity>> ToPagination(Expression<Func<TEntity, bool>> expression, int pageIndex = 0, int pageSize = 10);
+        Task<Pagination<TEntity>> ToPagination<TProperty>(Microsoft.EntityFrameworkCore.Query.IIncludableQueryable<TEntity, TProperty?> value, Expression<Func<TEntity, bool>> expression, int pageIndex, int pageSize);
     }
 }

@@ -1,4 +1,5 @@
-﻿using Application.ViewModels.AtttendanceModels;
+﻿using Application.Commons;
+using Application.ViewModels.AtttendanceModels;
 using Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,5 +14,6 @@ namespace Application.Interfaces
                                                          Guid ClassId,
                                                          string httpMethod);
         Task<Attendance> UpdateAttendanceAsync(AttendanceDTO attendanceDto, Guid classId);
+        Task<Pagination<AttendanceViewDTO>> GetAllAttendanceWithFilter(Guid classId, string search, string by, bool? containApplication, DateTime? fromDate, DateTime? toDate, int pageIndex = 0, int pageSize = 40);
     }
 }

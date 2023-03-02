@@ -1,4 +1,7 @@
-﻿namespace Application.Utils
+﻿using Domain.Enums;
+using System.ComponentModel;
+
+namespace Application.Utils
 {
     public static class StringUtils
     {
@@ -15,6 +18,14 @@
                 .Select(s => s[random.Next(s.Length)]).ToArray());
         }
 
-
+        public static bool isNotValidEnum(this string myenum, Type type)
+        {
+            bool check = false;
+            foreach (string @enum in Enum.GetNames(type))
+            {
+                if (myenum.Equals(@enum, StringComparison.OrdinalIgnoreCase)) { check = true; break; }
+            }
+            return !check;
+        }
     }
 }
