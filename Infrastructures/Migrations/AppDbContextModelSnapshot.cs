@@ -59,7 +59,6 @@ namespace Infrastructures.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Reason")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid?>("TrainingClassId")
@@ -897,10 +896,6 @@ namespace Infrastructures.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RoleId"));
 
-                    b.Property<string>("ApplicationPermission")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("AttendancePermission")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -941,7 +936,6 @@ namespace Infrastructures.Migrations
                         new
                         {
                             RoleId = 1,
-                            ApplicationPermission = "FullAccess",
                             AttendancePermission = "FullAccess",
                             ClassPermission = "FullAccess",
                             LearningMaterial = "FullAccess",
@@ -954,7 +948,6 @@ namespace Infrastructures.Migrations
                         new
                         {
                             RoleId = 2,
-                            ApplicationPermission = "FullAccess",
                             AttendancePermission = "FullAccess",
                             ClassPermission = "FullAccess",
                             LearningMaterial = "FullAccess",
@@ -967,7 +960,6 @@ namespace Infrastructures.Migrations
                         new
                         {
                             RoleId = 3,
-                            ApplicationPermission = "AccessDenied",
                             AttendancePermission = "FullAccess",
                             ClassPermission = "FullAccess",
                             LearningMaterial = "FullAccess",
@@ -980,7 +972,6 @@ namespace Infrastructures.Migrations
                         new
                         {
                             RoleId = 4,
-                            ApplicationPermission = "AccessDenied",
                             AttendancePermission = "FullAccess",
                             ClassPermission = "View",
                             LearningMaterial = "View",

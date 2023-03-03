@@ -91,6 +91,32 @@ namespace Application.Services
             return paginationValue;
         }
 
+        public Task<List<Attendance>> GetAllAttendancesAsync()
+        {
+            var findResult = _unitOfWork.AttendanceRepository.GetAllAsync();
+            return findResult;
+        }
+
+        public int CountAbsentedDate(Guid traineeId, Guid classId)
+        {
+            try
+            {
+                var dates = _unitOfWork.AttendanceRepository.CountAbsentedDate(traineeId, classId);
+                return dates;
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<List<AttendanceMailDto>> GetAllAbsentInfoAsync()
+        {
+            var attendances = await _unitOfWork.AttendanceRepository.GetAbsentAttendanceOfDay(_currentTime.GetCurrentTime());
+            return attendances;
+        }
+
         #region Private Method
         private async Task<Attendance> MapAttendance(Guid classId, AttendanceDTO attendanceDto)
         {

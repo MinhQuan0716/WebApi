@@ -144,7 +144,7 @@ namespace Infrastructures.Tests.Repository
             result_application_false.TotalItemsCount.Should().Be(5);
             result_application_true.TotalItemsCount.Should().Be(10);
             result_search.TotalItemsCount.Should().Be(5);
-            if (result_dateTime != null )
+            if (result_dateTime != null)
                 result_dateTime.TotalItemsCount.Should().NotBe(5);
         }
     }

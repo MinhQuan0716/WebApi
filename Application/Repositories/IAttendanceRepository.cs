@@ -15,6 +15,8 @@ namespace Application.Repositories
         Task<Pagination<Attendance>> GetAllAttendanceWithFilter(Expression<Func<Attendance, bool>> expression, int pageIndex, int pageSize);
         List<Attendance> GetAttendancesByTraineeClassID(Guid id);
         List<Attendance> GetAttendancesByTraineeID(Guid id);
+        int CountAbsentedDate(Guid traineeId, Guid classId);
+        Task<List<AttendanceMailDto>> GetAbsentAttendanceOfDay (DateTime date);
     }
     
 }

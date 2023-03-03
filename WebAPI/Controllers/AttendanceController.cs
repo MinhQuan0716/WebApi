@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 using System.Collections.Generic;
 using AutoFixture;
 using Infrastructures;
+using Application.Commons;
 
 namespace WebAPI.Controllers
 {
@@ -18,6 +19,7 @@ namespace WebAPI.Controllers
     public class AttendanceController : BaseController
     {
         private readonly IAttendanceService _attendanceService;
+
         public AttendanceController(IAttendanceService attendanceService)
         {
             _attendanceService = attendanceService;
@@ -87,6 +89,19 @@ namespace WebAPI.Controllers
             return attendance is null ? BadRequest() : Ok(attendance);
         }
 
+        //[HttpGet]
+        //public async Task<IActionResult> TestCronJob()
+        //{
+        //    try
+        //    {
+        //        ApplicationCronJob cronjob = new ApplicationCronJob(_config,_attendanceService,_mailHelper, _currentTime);
+        //        await cronjob.CheckAttendancesEveryDay();
+        //        return Ok();
+        //    } catch (Exception ex)
+        //    {
+        //        return BadRequest(ex.Message);
+        //    }
+        //}
 
     }
 }

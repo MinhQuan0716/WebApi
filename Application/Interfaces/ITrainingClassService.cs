@@ -14,5 +14,6 @@ namespace Application.Interfaces
         public Task<bool> UpdateTrainingClass(string trainingClassId, UpdateTrainingCLassDTO updateTrainingCLassDTO);
         public Task<TrainingClass> GetTrainingClassByIdAsync(string trainingClassId);
         public Task<TrainingClassViewModel?> CreateTrainingClassAsync(CreateTrainingClassDTO createTrainingClassDTO);
+        public Task<List<TrainingClass>> GetAllTrainingClassesAsync();
     }
 }

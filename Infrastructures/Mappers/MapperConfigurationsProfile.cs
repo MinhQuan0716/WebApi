@@ -71,7 +71,9 @@ namespace Infrastructures.Mappers
                 .ForMember(x => x.AvatarUrl, options => options.MapFrom(dto => dto.User.AvatarUrl))
                 .ForMember(x => x.DateOfBirth, options => options.MapFrom(dto => dto.User.DateOfBirth))
                 .ForMember(x => x.ApplicationId, options => options.MapFrom(dto => dto.ApplicationId))
-                .ForMember(x => x.ApplicationReason, options => options.MapFrom(dto => dto.Application.Reason))
+                .ForMember(x => x.ApplicationReason, options => options.MapFrom(dto => dto.Application.Reason))                
+                .ForMember(x => x.TrainingClassId, options => options.MapFrom(dto => dto.TrainingClass.Id))
+                .ForMember(x => x.ClassName, options => options.MapFrom(dto => dto.TrainingClass.Name))                
                 .ReverseMap();
 
             CreateMap<ResetPasswordDTO, User>()
@@ -189,6 +191,12 @@ namespace Infrastructures.Mappers
             CreateMap<AuditQuestion, AuditQuestionViewModel>().ReverseMap();
 
             CreateMap<Grading, GradingModel>().ReverseMap();
+            CreateMap<AttendanceViewDTO, AttendanceMailDto>().ReverseMap();
+            CreateMap<Attendance, AttendanceMailDto>()
+                .ForMember(x => x.ClassName, options => options.MapFrom(dto => dto.TrainingClass.Name))
+                .ForMember(x => x.Email, options => options.MapFrom(dto => dto.User.Email))
+                .ForMember(x => x.FullName, options => options.MapFrom(dto => dto.User.FullName))
+                .ReverseMap();
         }
     }
 }

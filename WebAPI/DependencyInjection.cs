@@ -18,6 +18,7 @@ using WebAPI.Middlewares;
 using WebAPI.Services;
 using WebAPI.Controllers;
 using Infrastructures;
+using Application.Commons;
 
 namespace WebAPI
 {
@@ -59,6 +60,7 @@ namespace WebAPI
             services.AddScoped<ITopicRepository, TopicRepository>();
             services.AddScoped<IGradingService, GradingService>();
             services.AddScoped<IGradingRepository, GradingRepository>();
+            services.AddScoped<ApplicationCronJob, ApplicationCronJob>();
             services.AddHttpContextAccessor();
             services.AddFluentValidationAutoValidation();
             services.AddFluentValidationClientsideAdapters();

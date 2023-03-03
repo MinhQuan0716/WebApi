@@ -1,5 +1,6 @@
 using Application.Commons;
 using Application.Utils;
+using Hangfire;
 using Infrastructures;
 using Microsoft.OpenApi.Models;
 using System.Text.Json.Serialization;
@@ -47,6 +48,13 @@ builder.Services.AddSwaggerGen(opt =>
     });
 });
 
+// Dang ki hangfire de thuc hien cron job
+builder.Services.AddHangfire(config => config
+        .UseSimpleAssemblyNameTypeSerializer()
+        .UseRecommendedSerializerSettings()
+        .UseInMemoryStorage());
+builder.Services.AddHangfireServer();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -65,5 +73,14 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+// hangfire host dashboard at "/"
+app.MapHangfireDashboard("");
+
+// call hangfire
+await app.StartAsync();
+RecurringJob.AddOrUpdate<ApplicationCronJob>(util => util.CheckAttendancesEveryDay(),
+    "0 0 22 ? * *", TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time"));
+await app.WaitForShutdownAsync();
 
 app.Run();

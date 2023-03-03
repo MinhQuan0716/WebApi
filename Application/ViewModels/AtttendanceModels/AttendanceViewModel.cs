@@ -1,5 +1,6 @@
 ﻿using Application.ViewModels.ApplicationViewModels;
 using Application.ViewModels.UserViewModels;
+using Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,6 +23,8 @@ namespace Application.ViewModels.AtttendanceModels
         public string DateOfBirth { get; set; }
         public Guid? ApplicationId { get; set; }
         public string ApplicationReason { get; set; }
+        public Guid? TrainingClassId { get; set; }
+        public string ClassName { get; set; }
 
     }
 }

@@ -96,5 +96,17 @@ namespace Application.Services
                 throw new AutoMapperMappingException("Id is not a guid");
             }
         }
+
+        public async Task<List<TrainingClass>> GetAllTrainingClassesAsync()
+        {
+            try
+            {
+                var classes = await _unitOfWork.TrainingClassRepository.GetAllAsync();
+                return classes;
+            } catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
     }
 }
