@@ -1,5 +1,6 @@
 ﻿using AutoFixture;
 using Domain.Entities;
+using Domain.Enums;
 using Domains.Test;
 using FluentAssertions;
 using Infrastructures.Repositories;
@@ -20,7 +21,7 @@ namespace Infrastructures.Tests.Repository
 
         public AttendanceRepositoryTests()
         {
-            _attendanceRepository = new AttendanceRepository(_dbContext, _currentTimeMock.Object, _claimsServiceMock.Object);
+            _attendanceRepository = new AttendanceRepository(_dbContext, _currentTimeMock.Object, _claimsServiceMock.Object, _mapperConfig);
 
 
         }
@@ -147,5 +148,85 @@ namespace Infrastructures.Tests.Repository
             if (result_dateTime != null)
                 result_dateTime.TotalItemsCount.Should().NotBe(5);
         }
+
+        [Fact]
+        public async Task GetAbsentAttendanceOfDay_ShouldReturnCorrectData()
+        {
+            // Arrange
+            var date = DateTime.Now;            
+            var userMock = new User
+            {
+                Id = Guid.NewGuid(),
+                UserName = "Test1",
+                FullName = "ABC",
+                Email = "johndoe@example.com"
+            };
+            var classMock = new TrainingClass
+            {
+                Id = Guid.NewGuid(),
+                Name = "Test Class"
+            };
+            var attendanceMocks = new List<Attendance>
+        {
+            new Attendance
+            {
+                Id = Guid.NewGuid(),
+                UserId = userMock.Id,
+                User = userMock,
+                TrainingClassId = classMock.Id,
+                TrainingClass = classMock,
+                Status = AttendanceStatusEnums.Absent.ToString(),
+                Date = date.AddDays(-1),
+                IsDeleted = false
+            },
+            new Attendance
+            {
+                Id = Guid.NewGuid(),
+                UserId = userMock.Id,
+                User = userMock,
+                TrainingClassId = classMock.Id,
+                TrainingClass = classMock,                
+                Status = AttendanceStatusEnums.Absent.ToString(),
+                Date = date,
+                IsDeleted = false
+            },
+            new Attendance
+            {
+                Id = Guid.NewGuid(),
+                UserId = userMock.Id,
+                User = userMock,
+                TrainingClassId = classMock.Id,
+                TrainingClass = classMock,
+                Status = AttendanceStatusEnums.Present.ToString(),
+                Date = date,
+                IsDeleted = false
+            },
+            new Attendance
+            {
+                Id = Guid.NewGuid(),
+                UserId = userMock.Id,
+                User = userMock,
+                TrainingClassId = classMock.Id,
+                TrainingClass = classMock,
+                Status = AttendanceStatusEnums.Absent.ToString(),
+                Date = date.AddDays(1),
+                IsDeleted = false
+            }
+        };
+            await _dbContext.Attendances.AddRangeAsync(attendanceMocks);
+            await _dbContext.SaveChangesAsync();
+
+            // Act
+            var result = await _attendanceRepository.GetAbsentAttendanceOfDay(date);
+
+            // Assert
+            result.Should().HaveCount(1);
+            result.First().UserId.Should().Be(userMock.Id);
+            result.First().TrainingClassId.Should().Be(classMock.Id);
+            result.First().Status.Should().Be(AttendanceStatusEnums.Absent.ToString());
+            result.First().Date.Should().Be(date);
+            result.First().NumOfAbsented.Should().Be(3);
+        }
+
     }
 }
