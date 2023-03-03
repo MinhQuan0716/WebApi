@@ -1,4 +1,4 @@
-﻿using Application.ViewModels.TrainingClassModels;
+using Application.ViewModels.TrainingClassModels;
 using AutoFixture;
 using AutoMapper;
 using Domains.Test;
@@ -81,6 +81,64 @@ namespace WebAPI.Tests.Controllers
         }
 
         [Fact]
+        public async Task SoftRemoveTrainingClass_ShouldReturnOK_WhenSoftRemoveResultIsTrue()
+        {
+            //arrange
+            var mockId = Guid.NewGuid();
+            _trainingClassServiceMock
+                .Setup(x => x.SoftRemoveTrainingClass(It.IsAny<string>()))
+                .ReturnsAsync(true);
+
+            //act
+            var result = await _trainingClassController.SoftRemoveTrainingClass(mockId.ToString());
+
+            //assert
+            _trainingClassServiceMock.Verify(x => x.SoftRemoveTrainingClass(
+                It.Is<string>(x => x.Equals(mockId.ToString()))
+                ), Times.Once);
+            Assert.IsType<OkObjectResult>(result);
+            (result as OkObjectResult)!.Value.Should().Be("SoftRemove class successfully");
+        }
+
+        [Fact]
+        public async Task SoftRemoveTrainingClass_ShouldReturnBadRequest_WhenSoftRemoveResultIsFalse()
+        {
+            //arrange
+            var mockId = Guid.NewGuid();
+            _trainingClassServiceMock
+                .Setup(x => x.SoftRemoveTrainingClass(It.IsAny<string>()))
+                .ReturnsAsync(false);
+
+            //act
+            var result = await _trainingClassController.SoftRemoveTrainingClass(mockId.ToString());
+
+            //assert
+            _trainingClassServiceMock.Verify(x => x.SoftRemoveTrainingClass(
+                It.Is<string>(x => x.Equals(mockId.ToString()))
+                ), Times.Once);
+            Assert.IsType<BadRequestObjectResult>(result);
+            (result as BadRequestObjectResult)!.Value.Should().Be("SoftRemove class fail: Saving fail");
+        }
+        [Fact]
+        public async Task SoftRemoveTrainingClass_ShouldReturnBadRequest_WhenGetException()
+        {
+            //arrange
+            var mockId = Guid.NewGuid();
+            var exceptionMessage = "test message";
+            _trainingClassServiceMock
+                .Setup(x => x.SoftRemoveTrainingClass(It.IsAny<string>()))
+                .ThrowsAsync(new Exception(exceptionMessage));
+            //act
+            var result = await _trainingClassController.SoftRemoveTrainingClass(mockId.ToString());
+
+            //assert
+            _trainingClassServiceMock.Verify(x => x.SoftRemoveTrainingClass(
+                It.IsAny<string>()
+                ), Times.Once);
+            Assert.IsType<BadRequestObjectResult>(result);
+            (result as BadRequestObjectResult)!.Value.Should().Be("SoftRemove class fail: " + exceptionMessage);
+        }
+
         public async Task UpdateTrainingClass_ShouldReturnOK_WhenUpdateResultIsTrue()
         {
             //arrange

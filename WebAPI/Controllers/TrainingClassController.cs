@@ -60,5 +60,26 @@ namespace WebAPI.Controllers
             }
 
         }
+        [Authorize(Roles = "Trainer")]
+        [HttpPut]
+        public async Task<IActionResult> SoftRemoveTrainingClass(string trainingClassId)
+        {
+            try
+            {
+                if (await _trainingClassService.SoftRemoveTrainingClass(trainingClassId))
+                {
+                    return Ok("SoftRemove class successfully");
+                }
+                else
+                {
+                    throw new Exception("Saving fail");
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("SoftRemove class fail: " + ex.Message);
+            }
+        }
+
     }
 }

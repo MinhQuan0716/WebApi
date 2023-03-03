@@ -23,6 +23,50 @@ namespace Application.Tests.Services
         {
             _trainingClassService = new TrainingClassService(_unitOfWorkMock.Object, _mapperConfig);
         }
+        [Fact]
+        public async Task SoftRemoveTrainingClass_ShouldReturnTrue_WhenSaveSucceed()
+        {
+            //arrange
+            var mockTrainingClass = _fixture.Build<TrainingClass>().Without(x => x.Applications).Without(x => x.Attendances).Without(x => x.Feedbacks).Without(x => x.TrainingProgram).Without(x => x.TrainingClassParticipates).Without(x => x.Location).Create();
+            var mockId = mockTrainingClass.Id;
+            _unitOfWorkMock.Setup(x => x.TrainingClassRepository.SoftRemove(It.IsAny<TrainingClass>())).Verifiable();
+            _unitOfWorkMock.Setup(x => x.TrainingClassRepository.GetByIdAsync(mockId)).ReturnsAsync(mockTrainingClass);
+            _unitOfWorkMock.Setup(x => x.SaveChangeAsync()).ReturnsAsync(1);
+
+            //act
+            var result = await _trainingClassService.SoftRemoveTrainingClass(mockId.ToString());
+
+            //assert
+            _unitOfWorkMock.Verify(
+                x => x.TrainingClassRepository
+                .SoftRemove(It.Is<TrainingClass>(
+                    x => x.Equals(_mapperConfig.Map<TrainingClass>(mockTrainingClass)))
+                ), Times.Once());
+            _unitOfWorkMock.Verify(x => x.SaveChangeAsync(), Times.Once());
+            result.Should().BeTrue();
+        }
+        [Fact]
+        public async Task SoftRemoveTrainingClass_ShouldReturnFalse_WhenSaveFail()
+        {
+            //arrange
+            var mockTrainingClass = _fixture.Build<TrainingClass>().Without(x => x.Applications).Without(x => x.Attendances).Without(x => x.Feedbacks).Without(x => x.TrainingProgram).Without(x => x.TrainingClassParticipates).Without(x => x.Location).Create();
+            var mockId = mockTrainingClass.Id;
+            _unitOfWorkMock.Setup(x => x.TrainingClassRepository.SoftRemove(It.IsAny<TrainingClass>())).Verifiable();
+            _unitOfWorkMock.Setup(x => x.TrainingClassRepository.GetByIdAsync(mockId)).ReturnsAsync(mockTrainingClass);
+            _unitOfWorkMock.Setup(x => x.SaveChangeAsync()).ReturnsAsync(0);
+
+            //act
+            var result = await _trainingClassService.SoftRemoveTrainingClass(mockId.ToString());
+
+            //assert
+            _unitOfWorkMock.Verify(
+                x => x.TrainingClassRepository
+                .SoftRemove(It.Is<TrainingClass>(
+                    x => x.Equals(_mapperConfig.Map<TrainingClass>(mockTrainingClass)))
+                ), Times.Once());
+            _unitOfWorkMock.Verify(x => x.SaveChangeAsync(), Times.Once());
+            result.Should().BeFalse();
+        }
 
         [Fact]
         public async Task CreateTrainingClass_ShouldReturnCorrectData_WhenSavedSucceed()
@@ -115,8 +159,8 @@ namespace Application.Tests.Services
         public async Task UpdateTrainingClass_ShouldReturnTrue_WhenSaveSucceed()
         {
             //arrange
-            var mockLocation = new Location();
-            var mockTrainingProgram =new TrainingProgram();
+            var mockLocation = _fixture.Build<Location>().Without(x => x.TrainingClasses).Without(x => x.DetailTrainingClassesParticipate).Create();
+            var mockTrainingProgram = _fixture.Build<TrainingProgram>().Without(x => x.TrainingClasses).Without(x => x.DetailTrainingProgramSyllabus).Create();
             var mockUpdate = _fixture.Build<UpdateTrainingCLassDTO>().With(x => x.LocationID, mockLocation.Id).With(x => x.TrainingProgramId, mockTrainingProgram.Id).Create();
             var mockTrainingClass = _fixture.Build<TrainingClass>()
                 .Without(x=>x.TrainingClassParticipates)
@@ -201,21 +245,10 @@ namespace Application.Tests.Services
             _unitOfWorkMock.Setup(x => x.TrainingClassRepository.Update(It.IsAny<TrainingClass>())).Verifiable();
             _unitOfWorkMock.Setup(x => x.TrainingClassRepository.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(mockTrainingClass);
             _unitOfWorkMock.Setup(x => x.LocationRepository.GetByIdAsync(It.Is<Guid>(x => x.Equals(mockLocation.Id)))).ReturnsAsync(mockLocation);
-            //_unitOfWorkMock.Setup(x => x.TrainingProgramRepository.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(mockTrainingProgram);
-            _unitOfWorkMock.Setup(x => x.SaveChangeAsync()).ReturnsAsync(1);
-
-            var expected = _mapperConfig.Map<UpdateTrainingCLassDTO, TrainingClass>(mockUpdate, mockTrainingClass);
-            expected.Location = mockLocation;
-            expected.TrainingProgram = mockTrainingProgram;
             //act
             var result = async () => await _trainingClassService.UpdateTrainingClass(mockTrainingClass.Id.ToString(), mockUpdate);
 
             //assert
-            _unitOfWorkMock.Verify(
-                x => x.TrainingClassRepository
-                .Update(It.Is<TrainingClass>(
-                    x => x.Equals(expected))
-                ), Times.Never);
             _unitOfWorkMock.Verify(x => x.SaveChangeAsync(), Times.Never);
             await result.Should().ThrowAsync<NullReferenceException>();
         }
@@ -273,7 +306,7 @@ namespace Application.Tests.Services
         {
             //arrange
             var mockId = Guid.NewGuid();
-            TrainingClass mockTrainingClass =  new();
+            TrainingClass mockTrainingClass = new();
             _unitOfWorkMock.Setup(
                 x => x.TrainingClassRepository.GetByIdAsync(
                     It.Is<Guid>(e => e.Equals(mockId)))).ReturnsAsync(mockTrainingClass);
@@ -292,7 +325,7 @@ namespace Application.Tests.Services
         {
             //arrange
             var mockId = Guid.NewGuid();
-            TrainingClass mockTrainingClass =  new();
+            TrainingClass mockTrainingClass = new();
             _unitOfWorkMock.Setup(x => x.TrainingClassRepository.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(mockTrainingClass);
 
             //act

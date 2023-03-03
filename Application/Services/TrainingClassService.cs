@@ -20,6 +20,19 @@ namespace Application.Services
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
+        /// <summary>
+        /// This method set the isDeleted value of object to true
+        /// </summary>
+        /// <param name="trainingClassId"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public async Task<bool> SoftRemoveTrainingClass(string trainingClassId)
+        {
+            var trainingClassObj = await GetTrainingClassByIdAsync(trainingClassId);
+
+            _unitOfWork.TrainingClassRepository.SoftRemove(trainingClassObj);
+            return (await _unitOfWork.SaveChangeAsync() > 0);
+        }
 
         public async Task<TrainingClassViewModel?> CreateTrainingClassAsync(CreateTrainingClassDTO createTrainingClassDTO)
         {
