@@ -16,10 +16,10 @@ the reviewer need to approve the code & leave the note that he checked in the PR
 ### Reviewer1 check list (peer-review)
 - [ ] I have tested this feature
 - [ ] 100% new code are tested
-### Reviewer2 check list (Own leader)
+### Reviewer2 check list (Leader 1)
 - [ ] I have tested this feature
 - [ ] 100% new code are tested
-### Reviewer3 check list (Other leader)
+### Reviewer3 check list (Leader 2)
 - [ ] I have tested this feature
 - [ ] 100% new code are tested
 - [ ] after merged code to master it' working as expected
