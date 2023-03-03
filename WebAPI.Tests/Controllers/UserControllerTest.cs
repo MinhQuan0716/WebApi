@@ -304,7 +304,7 @@ public class UserControllerTest : SetupTest
     [Fact]
     public async Task ChangeUserRole_ShouldReturnBadRequest_WhenSuperAdminChangeOwnRole()
     {
-        var admin = _fixture.Build<User>().Without(x => x.Applications).Without(x => x.Syllabuses).Without(x => x.Feedbacks).Without(x => x.Attendances).Without(x => x.DetailTrainingClassParticipate).Create();
+        var admin = _fixture.Build<User>().Without(x => x.Applications).Without(x => x.Syllabuses).Without(x => x.Feedbacks).Without(x => x.Attendances).Without(x => x.DetailTrainingClassParticipate).Without(x => x.SubmitQuizzes).Create();
         admin.RoleId = 1;
 
         _claimsServiceMock.Setup(ad => ad.GetCurrentUserId).Returns(admin.Id);
@@ -356,5 +356,39 @@ public class UserControllerTest : SetupTest
         var resultController = await _userController.AddUserManually(userMockData);
         BadRequestObjectResult actual = resultController as BadRequestObjectResult;
         Assert.NotNull(actual);
+    }
+    [Fact]
+    public async Task SearchUserWithFilter_ShouldReturnCorrectData()
+    {
+        //arrange
+        var mockUsers = _fixture.Build<UserViewModel>().Without(u => u._Id)
+                                                       .Without(u => u.UserName)
+                                                       .Without(u => u.Email)
+                                                       .Without(u => u.DateOfBirth)
+                                                       .Without(u => u.RoleName)
+                                                       .Without(u => u.Role)
+                                                       .Without(u => u.LoginDate)
+                                                       .Without(u => u.Syllabuses)
+                                                       .CreateMany(3).ToList();
+        _userServiceMock.Setup(x => x.SearchUsersWithFilter(mockUsers[1].FullName, mockUsers[1].Gender, mockUsers[1].RoleId)).ReturnsAsync(mockUsers);
+        //act
+        var result = await _userController.SearchUserWithFilter(mockUsers[1].FullName, mockUsers[1].Gender, mockUsers[1].RoleId) as OkObjectResult;
+        //assert
+        _userServiceMock.Verify(x => x.SearchUsersWithFilter(mockUsers[1].FullName, mockUsers[1].Gender, mockUsers[1].RoleId), Times.Once);
+        Assert.NotNull(result);
+        Assert.IsType<List<UserViewModel>>(result.Value);
+        Assert.Equal(StatusCodes.Status200OK, result.StatusCode);
+        Assert.Equal(mockUsers, result.Value);
+    }
+
+    [Fact]
+    public async Task SearchUserWithFilter_ShouldReturnNoContent_WhenIsNullOrEmpty()
+    {
+        //act
+        var result = await _userController.SearchUserWithFilter("", "", 69) as NoContentResult;
+        //assert
+        _userServiceMock.Verify(x => x.SearchUsersWithFilter("", "", 69), Times.Once);
+        Assert.NotNull(result);
+        Assert.Equal(StatusCodes.Status204NoContent, result.StatusCode);
     }
 }

@@ -29,7 +29,7 @@ namespace Infrastructures.Tests.Repository
         [Fact]
         public async Task CheckEmailExistedAsync_ReturnTrue()
         {
-            var userMock = _fixture.Build<User>().Without(x => x.Applications).Without(x => x.Syllabuses).Without(x => x.Feedbacks).Without(x => x.Attendances).Without(x => x.DetailTrainingClassParticipate).Create();
+            var userMock = _fixture.Build<User>().Without(x => x.Applications).Without(x => x.Syllabuses).Without(x => x.Feedbacks).Without(x => x.Attendances).Without(x => x.DetailTrainingClassParticipate).Without(x => x.SubmitQuizzes).Create();
             await _dbContext.Users.AddAsync( userMock );
             await _dbContext.SaveChangesAsync();
 
@@ -42,7 +42,7 @@ namespace Infrastructures.Tests.Repository
         [Fact]
         public async Task CheckEmailExistedAsync_ReturnFalse()
         {
-            var userMock = _fixture.Build<User>().Without(x => x.Applications).Without(x => x.Syllabuses).Without(x => x.Feedbacks).Without(x => x.Attendances).Without(x => x.DetailTrainingClassParticipate).Create();
+            var userMock = _fixture.Build<User>().Without(x => x.Applications).Without(x => x.Syllabuses).Without(x => x.Feedbacks).Without(x => x.Attendances).Without(x => x.DetailTrainingClassParticipate).Without(x => x.SubmitQuizzes).Create();
             await _dbContext.Users.AddAsync(userMock);
             await _dbContext.SaveChangesAsync();
 

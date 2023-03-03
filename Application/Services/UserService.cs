@@ -1,11 +1,16 @@
 ﻿using Application.Commons;
+using Application.Filter;
+using Application.Filter.UserFilter;
 using Application.Interfaces;
 using Application.Utils;
 using Application.ViewModels.TokenModels;
+using Application.ViewModels.TrainingProgramModels;
 using Application.ViewModels.UserViewModels;
 using AutoMapper;
 using Domain.Entities;
+using Domain.Enums;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
@@ -408,4 +413,38 @@ public class UserService : IUserService
         }
     }
 
+    public async Task<List<UserViewModel>> SearchUsersWithFilter(string? searchString, string? gender, int? role)// ,string level, string status)
+    {
+        //init filter
+        ICriterias<User> genderCriteria = new GenderCriteria(gender);
+        ICriterias<User> roleCriteria = new RoleCriteria(role);
+        ICriterias<User> andCriteria = new AndUserCriteria(genderCriteria, roleCriteria);
+        //search user with filter
+        if (searchString != null)
+        {
+            var listUser = await _unitOfWork.UserRepository.FindAsync(u => u.FullName.Contains(searchString));
+            var result = _mapper.Map<List<UserViewModel>>(andCriteria.MeetCriteria(listUser));
+            foreach (var user in result)
+                user.RoleName = ((RoleEnums)user.RoleId).ToString();
+            return result;
+        }
+        //using filter only (filter from all users)
+        else if (gender != null || role != null)
+        {
+            var listUser = await _unitOfWork.UserRepository.GetAllAsync();
+            var result = _mapper.Map<List<UserViewModel>>(andCriteria.MeetCriteria(listUser));
+            foreach (var user in result)
+                user.RoleName = ((RoleEnums)user.RoleId).ToString();
+            return result;
+        }
+        //return all user if all input are null
+        else
+        {
+            var listUser = await _unitOfWork.UserRepository.GetAllAsync();
+            var result = _mapper.Map<List<UserViewModel>>(listUser);
+            foreach (var user in result)
+                user.RoleName = ((RoleEnums)user.RoleId).ToString();
+            return result;
+        }
+    }
 }

@@ -238,5 +238,15 @@ namespace WebAPI.Controllers
             }
             return BadRequest();
         }
+
+        [Authorize]
+        [HttpGet]
+        public async Task<IActionResult> SearchUserWithFilter(string? searchString, string? gender, int? role)
+        {
+            IEnumerable<UserViewModel> obj = await _userService.SearchUsersWithFilter(searchString, gender, role);
+            if (obj != null && obj.Any())
+                return Ok(obj);
+            return NoContent();
+        }
     }
 }

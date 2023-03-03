@@ -1,4 +1,5 @@
 ﻿using Domain.Entities;
+using Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -18,6 +19,7 @@ namespace Application.ViewModels.UserViewModels
         public DateTime? DateOfBirth { get; set; }
         public string? Gender { get; set; }
         public int RoleId { get; set; }
+        public string RoleName { get; set; }
         public Role Role { get; set; }
         public DateTime LoginDate { get; set; }
 

@@ -28,7 +28,7 @@ namespace Infrastructures.Tests.Repository
         [Fact]
         public async Task GenericRepository_GetAllAsync_ShouldReturnCorrectData()
         {
-            var mockData = _fixture.Build<User>().Without(x => x.Applications).Without(x => x.Syllabuses).Without(x => x.Feedbacks).Without(x => x.Attendances).Without(x => x.DetailTrainingClassParticipate).CreateMany(5).ToList();
+            var mockData = _fixture.Build<User>().Without(x => x.Applications).Without(x => x.Syllabuses).Without(x => x.Feedbacks).Without(x => x.Attendances).Without(x => x.DetailTrainingClassParticipate).Without(x => x.SubmitQuizzes).CreateMany(5).ToList();
             await _dbContext.Users.AddRangeAsync(mockData);
 
             await _dbContext.SaveChangesAsync();
