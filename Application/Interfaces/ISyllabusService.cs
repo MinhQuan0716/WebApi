@@ -15,7 +15,7 @@ namespace Application.Interfaces
      
         public Task<Syllabus> AddSyllabusAsync(SyllabusGeneralDTO syllabus);
         public Task<List<Syllabus>> FilterSyllabus(double duration1, double duration2);
-        public Task<List<Syllabus>> GetAllSyllabus();
+        public Task<List<SyllabusViewAllDTO>> GetAllSyllabus();
         public Task<bool> DeleteSyllabussAsync(string syllabusID);
         public Task<List<Syllabus>> GetByName(string name);
         public Task<bool> UpdateSyllabus(Guid syllabusId, UpdateSyllabusDTO updateItem);

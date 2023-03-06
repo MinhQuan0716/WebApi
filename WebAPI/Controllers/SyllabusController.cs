@@ -28,11 +28,7 @@ namespace WebAPI.Controllers
             var getSyllabusList = _syllabusService.GetAllSyllabus();
             if (getSyllabusList != null)
             {
-                return Ok(new
-                {
-                    Success = true,
-                    Data = getSyllabusList
-                });
+               return Ok(getSyllabusList);
             }
             else
             {
@@ -45,11 +41,7 @@ namespace WebAPI.Controllers
             List<Syllabus> filterSyllabusList = await _syllabusService.FilterSyllabus(firstDuration, secondDuration);
             if (filterSyllabusList.Count() > 0)
             {
-                return Ok(new
-                {
-                    Success = true,
-                    Data = filterSyllabusList
-                });
+                return Ok(filterSyllabusList);
             }
             else
             {

@@ -164,11 +164,7 @@ namespace Application.Services
             }
             return result;
         }
-        public Task<List<Syllabus>> GetAllSyllabus()
-        {
-            var syllabusList = _unitOfWork.SyllabusRepository.GetAllAsync();
-            return syllabusList;
-        }
+      
         public Task<List<Syllabus>> GetByName(string name)
         {
 
@@ -182,6 +178,12 @@ namespace Application.Services
 
             throw new NotImplementedException();
         
+        }
+
+     public    Task<List<SyllabusViewAllDTO>> GetAllSyllabus()
+        {
+            var syllabusList = _unitOfWork.SyllabusRepository.GetAllAsync();
+            return syllabusList;
         }
     }
 }

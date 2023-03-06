@@ -56,5 +56,23 @@ namespace Infrastructures.Repositories
 
         }
 
+        public async Task<List<SyllabusViewAllDTO>> GetAllAsync()
+        {
+            var syllabusList = _dbContext.Syllabuses.Join(_dbContext.Users, s => s.UserId, u => u.Id, (s, u) => new { s, u })
+                                                    .Join(_dbContext.Units, sy => sy.s.Id, un => un.SyllabusID, (sy, un) => new { sy, un })
+                                                     .Join(_dbContext.DetailUnitLecture, unit => unit.un.Id, deunit => deunit.UnitId, (unit, deunit) => new { unit, deunit })
+                                                     .Join(_dbContext.Lectures, deunits => deunits.deunit.LectureID, le => le.Id, (deunits, le) => new { deunits, le })
+                                                   .Select(n => new SyllabusViewAllDTO
+                                                   {
+                                                       SyllabusID = n.deunits.unit.un.SyllabusID,
+                                                       Code = n.deunits.unit.sy.s.Code,
+                                                       CreatedOn=n.deunits.unit.sy.s.CreationDate,
+                                                       CreatedBy = n.deunits.unit.sy.u.FullName,
+                                                       Duration = n.deunits.unit.sy.s.Duration,
+                                                       OutputStandard = n.le.OutputStandards
+
+                                                   }).ToList();
+            return syllabusList;
+        }
     }
 }

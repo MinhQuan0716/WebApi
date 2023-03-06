@@ -13,7 +13,6 @@ namespace Domain.Entities
         public string CourseObjective { get;set; }
         public string TechRequirements { get; set; }
         public double Duration { get; set; }
-
         public Guid UserId { get; set; }
         public User User { get; set; }
 
