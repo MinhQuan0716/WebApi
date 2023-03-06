@@ -43,9 +43,9 @@ deploy:
   stage: deploy
   image: ubuntu
   script:
-    -sudo apt-get update
-    -sudo apt-get install -y lftp
-    - lftp -e "open -u $AZURE_WA_USERNAME,$AZURE_WA_PASSWORD $AZURE_WA_FTP_URL; mirror -R ./build_output /site/wwwroot" -p 21
+    sudo apt-get update
+    sudo apt-get install -y lftp
+    lftp -e "open -u $AZURE_WA_USERNAME,$AZURE_WA_PASSWORD $AZURE_WA_FTP_URL; mirror -R ./build_output /site/wwwroot" -p 21
   environment:
     name: production
   only:
