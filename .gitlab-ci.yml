@@ -36,9 +36,8 @@ build-and-test-job:       # This job runs in the build stage, which runs first.
 deploy:
   stage: deploy
   script:
-     - apt-get install -y lftp
-     - apt-get update -y
-    - lftp -c "set ftps:initial-prot ''; \
+     - apt-get install -y lftp && - apt-get update -y
+     - lftp -c "set ftps:initial-prot ''; \
                 set ftp:ssl-protect-data true; \
                 open -u $FTP_USER,$FTP_PASSWORD $FTP_HOST; \
                 mirror -R --parallel=10 --no-empty-dirs --exclude-glob .git* $CI_PROJECT_DIR/ /site/wwwroot/"
