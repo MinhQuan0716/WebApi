@@ -10,14 +10,14 @@ stages:          # List of stages for jobs, and their order of execution
 
 variables:
   AZURE_WA_NAME: "cicd-gitlab-backend-fa-training-system"
-  AZURE_WA_USERNAME: "$cicd-gitlab-backend-fa-training-system\$cicd-gitlab-backend-fa-training-system"
-  AZURE_WA_PASSWORD: "$xLB7BJdAG2wYyACJJYX6aoGSE1B2hPKGPK5cfum717MaZ4L5u4AcBrfEm4bh"
+  AZURE_WA_USERNAME: "cicd-gitlab-backend-fa-training-system \ cicd-gitlab-backend-fa-training-system"
+  AZURE_WA_PASSWORD: "xLB7BJdAG2wYyACJJYX6aoGSE1B2hPKGPK5cfum717MaZ4L5u4AcBrfEm4bh"
   AZURE_WA_FTP_URL: "ftps://waws-prod-sg1-079.ftp.azurewebsites.windows.net/site/wwwroot"
 
 build-and-test-job:       # This job runs in the build stage, which runs first.
   stage: build-n-test
   script:
-    - echo "Compiling the code..."
+    - echo "Compiling the code..." 
     - dotnet build --no-restore
     # - cd Apis
     # - dotnet run --project webapi
