@@ -1,5 +1,8 @@
 ﻿using Application.Interfaces;
+using Application.Utils;
 using Application.ViewModels.ApplicationViewModels;
+using Domain.Enums;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -22,6 +25,8 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet]
+        [Authorize]
+        [ClaimRequirement(nameof(PermissionItem.AttendancePermission), nameof(PermissionEnum.FullAccess))]
         public async Task<bool> UpdateStatus(Guid id, bool status)
         {
             var result = await _service.UpdateStatus(id, status);
