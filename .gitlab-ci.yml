@@ -6,7 +6,7 @@ before_script:
 stages:          # List of stages for jobs, and their order of execution
   - build-n-test
   # - test
-  # - deploy
+  - deploy
 
 build-and-test-job:       # This job runs in the build stage, which runs first.
   stage: build-n-test
@@ -32,3 +32,17 @@ build-and-test-job:       # This job runs in the build stage, which runs first.
     #   script:
     #     - echo "Deploying application..."
     #     - echo "Application successfully deployed."
+
+deploy:
+  stage: deploy
+  script:
+    - apt-get update -y
+    - apt-get install -y lftp
+    - lftp -c "set ftps:initial-prot ''; \
+                set ftp:ssl-protect-data true; \
+                open -u $ptnghia3502,$Nghia3/5 $https://cicd-gitlab-backend-fa-training-system.azurewebsites.net; \
+                mirror -R --parallel=10 --no-empty-dirs --exclude-glob .git* $CI_PROJECT_DIR/ /site/wwwroot/"
+  environment:
+    name: production
+  only:
+    - master
