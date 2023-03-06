@@ -40,7 +40,7 @@ deploy:
     - apt-get install -y lftp
     - lftp -c "set ftps:initial-prot ''; \
                 set ftp:ssl-protect-data true; \
-                open -u $ptnghia3502,$Nghia3/5 $https://cicd-gitlab-backend-fa-training-system.azurewebsites.net; \
+                open -u $FTP_USER,$FTP_PASSWORD $FTP_HOST; \
                 mirror -R --parallel=10 --no-empty-dirs --exclude-glob .git* $CI_PROJECT_DIR/ /site/wwwroot/"
   environment:
     name: production
