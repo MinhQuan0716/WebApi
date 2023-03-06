@@ -88,6 +88,22 @@ namespace WebAPI.Tests.Controllers
             actualResult.Should().BeAssignableTo<BadRequestResult>();
         }
 
+        [Fact]
+        public async Task GetAllTrainingProgram_ShouldReturnOk()
+        {
+            var listTrainingProgram = _fixture.Build<List<ViewAllTrainingProgramDTO>>().Create();
+            _trainingProgramServiceMock.Setup(x => x.viewAllTrainingProgramDTOs()).ReturnsAsync(listTrainingProgram);
+            var actualResult=await trainingProgramController.GetAllTrainingProgram();
+            actualResult.Should().BeAssignableTo<OkObjectResult>();
+        }
 
+        [Fact]
+        public async Task GetAllTrainingProgram_ShouldReturnBadRequest()
+        {
+            var listTrainingProgram = _fixture.Build<List<ViewAllTrainingProgramDTO>>().Create();
+            _trainingProgramServiceMock.Setup(x => x.viewAllTrainingProgramDTOs()).ReturnsAsync(listTrainingProgram=null);
+            var actualResult = await trainingProgramController.GetAllTrainingProgram();
+            actualResult.Should().BeAssignableTo<BadRequestObjectResult>();
+        }
     }
 }

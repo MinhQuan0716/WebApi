@@ -110,5 +110,33 @@ namespace Application.Services
             }
             return false;
         }
+
+       
+
+        public async Task<IEnumerable<ViewAllTrainingProgramDTO>> viewAllTrainingProgramDTOs()
+        {
+            var allTrainingProgram=await _unitOfWork.TrainingProgramRepository.GetAllAsync();                                      
+            var mapViewTrainingProgram = _mapper.Map<List<ViewAllTrainingProgramDTO>>(allTrainingProgram);
+            var listAll = from a in mapViewTrainingProgram
+                          select new
+                          {
+                              Id = a.Id,
+                          };
+            IList<ViewAllTrainingProgramDTO>viewAllTraining=new List<ViewAllTrainingProgramDTO>();  
+            foreach (var a in listAll)
+            {
+                var result = await _unitOfWork.TrainingProgramRepository.GetByIdAsync(a.Id);
+                if (result is not null && result.IsDeleted == false)
+                {
+                    //viet ham lay syllabusid by trainingprogramid
+                    var trainingProgramView = _mapper.Map<ViewAllTrainingProgramDTO>(result);
+                        trainingProgramView.Syllabuses = (ICollection<Syllabus>?)await _unitOfWork.SyllabusRepository.GetSyllabusByTrainingProgramId(trainingProgramView.Id);
+                    viewAllTraining.Add(trainingProgramView);
+                }
+            }
+            return viewAllTraining;
+
+
+        }
     }
 }

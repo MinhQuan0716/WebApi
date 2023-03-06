@@ -134,5 +134,33 @@ namespace Application.Tests.Services
             actualResult.Should().BeFalse();
         }
 
+        [Fact]
+        public async Task ViewAllTrainingProgram_ShouldBeReturnList()
+        {
+            var listViewTrainingProgram = _fixture.Build<List<ViewAllTrainingProgramDTO>>().Create();
+            var listTrainingProgram = _mapperConfig.Map<List<TrainingProgram>>(listViewTrainingProgram);
+            _unitOfWorkMock.Setup(a=>a.TrainingProgramRepository.GetAllAsync()).ReturnsAsync(listTrainingProgram);
+            var listLoadAllProgramId = from a in listViewTrainingProgram
+                                             select new
+                                             {
+                                                 Id = a.Id
+                                             };
+            IList<ViewAllTrainingProgramDTO> resultOutputList=new List<ViewAllTrainingProgramDTO>();
+            var trainingProgram = _fixture.Build<TrainingProgram>().Create();
+            var mapperView = _mapperConfig.Map<ViewAllTrainingProgramDTO>(trainingProgram);
+            var syllabusMock = _fixture.Build<Syllabus>().Create();
+            foreach (var a in listLoadAllProgramId)
+            {
+                _unitOfWorkMock.Setup(x => x.TrainingProgramRepository.GetByIdAsync(a.Id)).ReturnsAsync(trainingProgram);
+                if(trainingProgram is not null && trainingProgram.IsDeleted==false)
+                {
+                    var listGetSyllabusByProgramId = _mapperConfig.Map<ViewAllTrainingProgramDTO>(trainingProgram);
+                    listGetSyllabusByProgramId.Syllabuses = (ICollection<Syllabus>?)_unitOfWorkMock.Setup(x => x.SyllabusRepository.GetSyllabusByTrainingProgramId(listGetSyllabusByProgramId.Id));
+                    resultOutputList.Add(listGetSyllabusByProgramId);
+                }
+            }
+            
+            resultOutputList.Should().BeOfType<List<ViewAllTrainingProgramDTO>>();
+        }
     }
 }

@@ -16,6 +16,9 @@ namespace Application.Interfaces
 
         Task<bool> UpdateTrainingProgram(UpdateTrainingProgramDTO updateProgramDTO);
         Task<bool> DeleteTrainingProgram(Guid trainingProgramId);
+        Task<IEnumerable<ViewAllTrainingProgramDTO>> viewAllTrainingProgramDTOs();
+        
+
 
     }
 }

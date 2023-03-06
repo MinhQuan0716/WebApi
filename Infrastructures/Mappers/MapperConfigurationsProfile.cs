@@ -184,6 +184,15 @@ namespace Infrastructures.Mappers
                 .ForMember(dest => dest.Approved, opt => opt.MapFrom(src => src.Approved))
                 .ForMember(dest => dest.AbsentDateRequested, opt => opt.MapFrom(src => src.AbsentDateRequested)).ReverseMap();
 
+            CreateMap<TrainingProgram, ViewAllTrainingProgramDTO>()
+                .ForMember(destinationMember=>destinationMember.Id,options=>options.MapFrom(src=>src.Id))
+                .ForMember(destinationMember=>destinationMember.ProgramName,options=>options.MapFrom(src=>src.ProgramName))
+                .ForMember(destinationMember=>destinationMember.CreationDate,options=>options.MapFrom(src=>src.CreationDate))
+                .ForMember(destinationMember=>destinationMember.CreatedBy,options=>options.MapFrom(src=>src.CreatedBy))
+                .ForMember(destinationMember=>destinationMember.Duration, options=>options.MapFrom(src=>src.Duration))
+                .ForMember(destinationMember=>destinationMember.Status,options=>options.MapFrom(src=>src.Status))
+                .ReverseMap();
+
             CreateMap<AuditPlan, CreateAuditDTO>().ReverseMap();
             CreateMap<AuditQuestion, CreateAuditQuestionDTO>().ReverseMap();
             CreateMap<AuditPlanViewModel, AuditPlan>()

@@ -1,4 +1,5 @@
 ﻿using Application.Interfaces;
+using Application.Services;
 using Application.Utils;
 using Application.ViewModels.TrainingProgramModels;
 using Domain.Enums;
@@ -55,6 +56,15 @@ namespace WebAPI.Controllers
             var result = await _trainingProgramService.DeleteTrainingProgram(trainingProgramId);
             if(result) return NoContent();
             return BadRequest("Delete Failed");
+        }
+
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> GetAllTrainingProgram()
+        {
+            var result= await _trainingProgramService.viewAllTrainingProgramDTOs();
+            if (result is not null) return Ok(result);
+            else return BadRequest("Missing required fields");
         }
     }
 }
