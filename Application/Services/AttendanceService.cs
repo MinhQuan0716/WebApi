@@ -78,7 +78,7 @@ namespace Application.Services
             Expression<Func<Attendance, bool>> expression = x => 
                 (classId == Guid.Empty || classId == x.TrainingClassId)    // by classId
                 && (x.User != null && x.User.FullName.Contains(search))                                    // by Username
-                && (containApplication == null || (x.Application != null) == containApplication) // by application                                     // by Username
+                && (containApplication == null || (x.Application != null) == containApplication) // by application                                  
                 && (fromDate <= x.Date && x.Date <= toDate)  // by datetime 
                 && (by == nameof(None) || by != nameof(None) && by == x.Status);       // by Status
 

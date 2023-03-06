@@ -181,7 +181,7 @@ namespace Infrastructures.Mappers
             CreateMap<Applications, ApplicationDTO>()
                 .ForMember(dest => dest.UserID, opt => opt.MapFrom(src => src.UserId))
                 .ForMember(dest => dest.Reason, opt => opt.MapFrom(src => src.Reason))
-                .ForMember(dest => dest.Appoved, opt => opt.MapFrom(src => src.Approved))
+                .ForMember(dest => dest.Approved, opt => opt.MapFrom(src => src.Approved))
                 .ForMember(dest => dest.AbsentDateRequested, opt => opt.MapFrom(src => src.AbsentDateRequested)).ReverseMap();
 
             CreateMap<AuditPlan, CreateAuditDTO>().ReverseMap();

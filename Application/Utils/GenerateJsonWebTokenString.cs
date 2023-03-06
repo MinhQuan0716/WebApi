@@ -22,6 +22,7 @@ namespace Application.Utils
                 new Claim("LearningMaterial",user.Role.LearningMaterial),
                 new Claim("AttendancePermission",user.Role.AttendancePermission),
                 new Claim("UserPermission",user.Role.UserPermission),
+                new Claim("ApplicationPermission",user.Role.ApplicationPermission),
                 new Claim(ClaimTypes.NameIdentifier ,user.UserName),
                 new Claim(ClaimTypes.Role, user.Role.RoleName),
             };

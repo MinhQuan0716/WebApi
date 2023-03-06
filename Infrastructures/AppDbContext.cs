@@ -48,7 +48,6 @@ namespace Infrastructures
 
         public DbSet<SubmitQuiz> SubmitQuiz { get; set; }
               
-        //public DbSet<DetailTrainingProgramSyllabus> DetailTrainingProgramSyllabuses { get; set; }              
         public DbSet<Grading> Gradings { get; set; }
         #endregion
 

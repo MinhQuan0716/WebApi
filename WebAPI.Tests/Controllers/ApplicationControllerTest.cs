@@ -1,8 +1,12 @@
-﻿using Application.ViewModels.ApplicationViewModels;
+﻿using Application.Commons;
+using Application.ViewModels;
+using Application.ViewModels.ApplicationViewModels;
 using AutoFixture;
 using Domain.Entities;
+using Domain.Enums.Application;
 using Domains.Test;
 using FluentAssertions;
+using FluentAssertions.Common;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using System;
@@ -33,6 +37,25 @@ namespace WebAPI.Tests.Controllers
             // Assert
             result.Should().BeOfType<NoContentResult>();
 
+        }
+        [Fact]
+        public async Task ViewAllApplication_ShouldReturnCorrectValue()
+        {
+            //Setup
+            ApplicationDateTimeFilterDTO condition = _fixture.Build<ApplicationDateTimeFilterDTO>().Create();
+            string searchString = null;
+            string by = null;
+            Guid? classId = Guid.Empty;
+            int pageNumber = 0;
+            int pageSize = 0;
+            var mockData = _fixture.Build<Pagination<Applications>>().Without(x=>x.Items).Create();
+
+            _applicationServiceMock.Setup(x => x.GetAllApplication(classId.Value,condition, searchString, by, pageNumber, pageSize)).ReturnsAsync(mockData);
+            // Act
+            var result = await _applicationController.ViewAllApplication(classId,condition, searchString, by, pageNumber, pageSize);
+            // Assert
+            result.Should().BeOfType<OkObjectResult>();
+            result.As<OkObjectResult>().Value.Should().Be(mockData);
         }
     }
 }

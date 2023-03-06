@@ -8,18 +8,8 @@ using AutoMapper;
 using Domain.Entities;
 using Domain.Enums;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Query;
-using Microsoft.EntityFrameworkCore.Query.Internal;
 using Microsoft.IdentityModel.Tokens;
-using OfficeOpenXml.FormulaParsing.ExpressionGraph;
-using System;
-using System.Collections.Generic;
-using System.Drawing.Printing;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
-using static Domain.Enums.AttendanceStatusEnums;
 
 namespace Infrastructures.Repositories
 {

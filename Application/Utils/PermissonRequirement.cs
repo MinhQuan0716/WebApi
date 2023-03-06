@@ -21,6 +21,7 @@ namespace Application.Utils
         LearningMaterial,
         UserPermission,
         TrainingMaterialPermission,
+        ApplicationPermission
     }
 
     public class ClaimRequirementAttribute : TypeFilterAttribute

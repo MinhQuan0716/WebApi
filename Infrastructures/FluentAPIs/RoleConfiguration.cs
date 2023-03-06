@@ -21,6 +21,7 @@ namespace Infrastructures.FluentAPIs
                 ClassPermission = nameof(PermissionEnum.FullAccess),
                 TrainingProgramPermission = nameof(PermissionEnum.FullAccess),
                 AttendancePermission = nameof(PermissionEnum.FullAccess),
+                ApplicationPermission = nameof(PermissionEnum.FullAccess),
                 LearningMaterial = nameof(PermissionEnum.FullAccess),
                 SyllabusPermission = nameof(PermissionEnum.FullAccess),
                 UserPermission = nameof(PermissionEnum.FullAccess),
@@ -37,6 +38,8 @@ namespace Infrastructures.FluentAPIs
                 SyllabusPermission = nameof(PermissionEnum.FullAccess),
                 UserPermission = nameof(PermissionEnum.FullAccess),
                 TrainingMaterialPermission = nameof(PermissionEnum.FullAccess),
+                ApplicationPermission = nameof(PermissionEnum.FullAccess),
+
             },
             new Role
             {
@@ -49,6 +52,8 @@ namespace Infrastructures.FluentAPIs
                 SyllabusPermission = nameof(PermissionEnum.FullAccess),
                 UserPermission = nameof(PermissionEnum.FullAccess),
                 TrainingMaterialPermission = nameof(PermissionEnum.FullAccess),
+                ApplicationPermission = nameof(PermissionEnum.AccessDenied),
+
             },
             new Role
             {
@@ -61,6 +66,8 @@ namespace Infrastructures.FluentAPIs
                 SyllabusPermission = nameof(PermissionEnum.View),
                 UserPermission = nameof(PermissionEnum.AccessDenied),
                 TrainingMaterialPermission = nameof(PermissionEnum.View),
+                ApplicationPermission = nameof(PermissionEnum.AccessDenied),
+
             }
 
 

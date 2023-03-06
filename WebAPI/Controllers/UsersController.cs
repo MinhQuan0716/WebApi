@@ -41,7 +41,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> LoginAsync([FromForm]LoginDTO loginObject)
+        public async Task<IActionResult> LoginAsync(LoginDTO loginObject)
         {
             var token= await _userService.LoginAsync(loginObject);
             if (token == null)
@@ -53,9 +53,9 @@ namespace WebAPI.Controllers
 
         [HttpPut]
         [Authorize]
-        public async Task<IActionResult> ChangePasswordAsync([FromForm] string oldPassword, [FromForm] string newPassword)
+        public async Task<IActionResult> ChangePasswordAsync( ChangePasswordDTO changePasswordDTO)
         {
-            var checkChanged = await _userService.ChangePasswordAsync(oldPassword,newPassword);
+            var checkChanged = await _userService.ChangePasswordAsync(changePasswordDTO.OldPassword,changePasswordDTO.NewPassword);
            
             if (!checkChanged.Contains("Success"))
                 return BadRequest(checkChanged);

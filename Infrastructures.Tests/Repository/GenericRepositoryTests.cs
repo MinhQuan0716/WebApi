@@ -195,5 +195,23 @@ namespace Infrastructures.Tests.Repository
 
             result.Should().Be(2);
         }
+        [Fact]
+        public async Task ToPagination_ShouldReturnCorrectValue()
+        {
+            var mockData = _fixture.Build<User>().Without(u => u.Syllabuses)
+                                                 .Without(u => u.Role)
+                                                 .Without(u => u.DetailTrainingClassParticipate)
+                                                 .Without(u => u.Applications)
+                                                 .Without(u => u.Attendances)
+                                                 .Without(u => u.Feedbacks).CreateMany(2).ToList();
+            await _dbContext.Users.AddRangeAsync(mockData);
+            await _dbContext.SaveChangesAsync();
+
+
+            _genericRepository.UpdateRange(mockData);
+            var result = await _dbContext.SaveChangesAsync();
+
+            result.Should().Be(2);
+        }
     }
 }

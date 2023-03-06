@@ -23,22 +23,16 @@ namespace Domains.Test.Controller
         [Fact]
         public async Task GetAllSyllabus_ShouldReturnContains()
         {
-            _fixture.Behaviors.OfType<ThrowingRecursionBehavior>().ToList()
-    .ForEach(b => _fixture.Behaviors.Remove(b));
-            _fixture.Behaviors.Add(new OmitOnRecursionBehavior());
             var mockData = _fixture.Build<Syllabus>().Without(x => x.DetailTrainingProgramSyllabus).Without(x => x.User).Without(x => x.Units).Create<Syllabus>();
             _syllabusServiceMock.Setup(u => u.DeleteSyllabussAsync(mockData.Id.ToString())).ReturnsAsync(true);
             var result = await _syllabusController.DeleteSyllabus(mockData.Id.ToString());
-
+           
             Assert.IsType<NoContentResult>(result);
         }
 
         [Fact]
-        public async Task DeleteWrongUser_ShouldReturnBadRequest()
+        public async Task DeleteWrongUser_ShouldReturnBadRquest()
         {
-            _fixture.Behaviors.OfType<ThrowingRecursionBehavior>().ToList()
-                .ForEach(b => _fixture.Behaviors.Remove(b));
-            _fixture.Behaviors.Add(new OmitOnRecursionBehavior());
             var mockData = _fixture.Build<Syllabus>().Without(x => x.DetailTrainingProgramSyllabus).Without(x => x.User).Without(x => x.Units).Create<Syllabus>();
             _syllabusServiceMock.Setup(u => u.DeleteSyllabussAsync("wrongdate")).ReturnsAsync(false);
             var result = await _syllabusController.DeleteSyllabus("wrongdate");

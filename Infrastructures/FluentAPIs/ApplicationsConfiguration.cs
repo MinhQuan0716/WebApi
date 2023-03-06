@@ -17,6 +17,7 @@ namespace Infrastructures.FluentAPIs
             builder.HasKey(a => a.Id);
             builder.Property(a => a.Id).HasDefaultValueSql("NEWID()");
             builder.Property(a => a.Approved).HasDefaultValue(false);
+            builder.Property(a => a.Reason).IsRequired();
         }
     }
 }
