@@ -11,6 +11,12 @@ var builder = WebApplication.CreateBuilder(args);
 
 // parse the configuration in appsettings
 var configuration = builder.Configuration.Get<AppConfiguration>();
+
+// Them CORS cho tat ca moi nguoi deu xai duoc apis
+builder.Services.AddCors(options
+    => options.AddDefaultPolicy(policy
+        => policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod()));
+
 builder.Services.AddInfrastructuresService(configuration!.DatabaseConnection);
 builder.Services.AddWebAPIService(configuration!.JWTSecretKey);
 
@@ -57,6 +63,9 @@ builder.Services.AddHangfireServer();
 
 var app = builder.Build();
 
+// Bat Cors
+app.UseCors();
+
 // Configure the HTTP request pipeline.
 app.UseSwagger();
 app.UseSwaggerUI();
@@ -74,8 +83,8 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-// hangfire host dashboard at "/"
-app.MapHangfireDashboard("");
+// hangfire host dashboard at "/dashboard"
+app.MapHangfireDashboard("/dashboard");
 
 // call hangfire
 await app.StartAsync();
