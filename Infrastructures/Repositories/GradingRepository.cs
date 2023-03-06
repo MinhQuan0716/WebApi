@@ -1,6 +1,7 @@
 ﻿using Application.Interfaces;
 using Application.Repositories;
 using Application.ViewModels.GradingModels;
+using Application.ViewModels.QuizModels;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -19,6 +20,8 @@ public class GradingRepository : GenericRepository<Grading>, IGradingRepository
     {
         _context = context;
     }
+
+
 
     public List<MarkReportDto> GetMarkReportOfClass(Guid classID)
     {
@@ -68,4 +71,24 @@ public class GradingRepository : GenericRepository<Grading>, IGradingRepository
                      };
         return result.ToList();
     }
+    public List<ViewQuizAndMarkBelowDTO> GetAllMarkOfTrainee(Guid traineeId)
+    {
+        List<ViewQuizAndMarkBelowDTO> listMark = new List<ViewQuizAndMarkBelowDTO>();
+
+        var result = from detailtraining in _context.DetailTrainingClassParticipates
+                     join grading in _context.Gradings on detailtraining.Id equals grading.DetailTrainingClassParticipateId
+                     join lecture in _context.Lectures on grading.LectureId equals lecture.Id
+                     join quiz in _context.Quizzes on lecture.QuizID equals quiz.Id
+                     where detailtraining.UserId == traineeId
+                     select new ViewQuizAndMarkBelowDTO() {
+                         QuizMark = (int)grading.NumericGrade,
+                         QuizName = quiz.QuizName
+                     
+                     };
+       foreach( var item in result ) {
+            listMark.Add(item);
+        }
+    return listMark;
+    }
+
 }

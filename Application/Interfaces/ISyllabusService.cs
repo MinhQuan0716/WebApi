@@ -1,5 +1,6 @@
 ﻿﻿using Application.ViewModels.SyllabusModels;
 using Application.ViewModels.SyllabusModels.UpdateSyllabusModels;
+using Application.ViewModels.SyllabusModels.ViewDetail;
 using Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -19,8 +20,10 @@ namespace Application.Interfaces
         public Task<bool> DeleteSyllabussAsync(string syllabusID);
         public Task<List<Syllabus>> GetByName(string name);
         public Task<bool> UpdateSyllabus(Guid syllabusId, UpdateSyllabusDTO updateItem);
-    
-        
+
+        public Task<SyllabusShowDetailDTO> ViewDetailSyllabus(Guid SyllabusID);
+
+
     }
 }
 

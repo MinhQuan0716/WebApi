@@ -18,5 +18,17 @@ namespace Infrastructures.Repositories
             _dbContext = context;
         }
 
+        //To take detailTrainingProgram
+       public Guid TakeDetailTrainingID(Guid user_id, Guid training_class_id)
+        {
+            Guid guid = new Guid();
+            var ketqua = from trainingclass in _dbContext.TrainingClasses
+                         join detailtrainingclass  in _dbContext.DetailTrainingClassParticipates on trainingclass.Id equals detailtrainingclass.TrainingClassID
+                         where trainingclass.Id == training_class_id && detailtrainingclass.UserId == user_id 
+                         //&& detailtrainingclass.StatusClassDetail.Equals("Active")
+                         select new { guid = detailtrainingclass.Id };
+
+            return guid;
+        }
     }
 }

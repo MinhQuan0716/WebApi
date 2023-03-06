@@ -17,8 +17,14 @@ namespace Domain.Entities
         public Guid QuestionID { get; set; }
         public Question Question { get; set; }
 
-        public SubmitQuiz SubmitQuiz { get; set; }
+        //public SubmitQuiz SubmitQuiz { get; set; }
 
-        public Guid SubmitQuizID { get; set; }
+        //public Guid SubmitQuizID { get; set; }
+
+
+        public ICollection<SubmitQuiz> submitQuiz { get; set; }
+
+        //public Guid SubmitQuizID { get; set; }
+
     }
 }

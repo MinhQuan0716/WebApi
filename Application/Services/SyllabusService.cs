@@ -11,6 +11,9 @@ using Microsoft.AspNetCore.Connections.Features;
 using Microsoft.Extensions.Configuration;
 using System.Xml.Linq;
 using Application.Repositories;
+using Application.ViewModels.QuizModels;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Application.ViewModels.SyllabusModels.ViewDetail;
 
 namespace Application.Services
 {
@@ -184,6 +187,43 @@ namespace Application.Services
         {
             var syllabusList = _unitOfWork.SyllabusRepository.GetAllAsync();
             return syllabusList;
+        }
+
+        public async Task<SyllabusShowDetailDTO> ViewDetailSyllabus(Guid SyllabusID)
+        {
+            SyllabusShowDetailDTO viewDTO = new SyllabusShowDetailDTO();
+
+            var syllabusDetail = await _unitOfWork.SyllabusRepository.GetByIdAsync(SyllabusID);
+            viewDTO.SyllabusBase.SyllabusName = syllabusDetail.SyllabusName;
+            viewDTO.SyllabusBase.Code = syllabusDetail.Code;
+            viewDTO.SyllabusBase.CourseObject = syllabusDetail.CourseObjective;
+            viewDTO.SyllabusBase.TechRequirements = syllabusDetail.TechRequirements;
+            viewDTO.SyllabusBase.Duration = syllabusDetail.Duration;
+            var unitList = await _unitOfWork.UnitRepository.FindAsync(x => x.SyllabusID == SyllabusID);
+           
+            foreach (var unit in unitList)
+            {
+
+                List<LectureDTO> lectures = new List<LectureDTO>();
+                var lectureList = _unitOfWork.DetailUnitLectureRepository.GetByUnitID(unit.Id);
+                foreach (var lecture in lectureList)
+                {
+                    lectures.Add(lecture);
+                }
+                var unitAdd = new UnitDetailDTO()
+                {
+                    UnitName = unit.UnitName,
+                    Session = unit.Session,
+                    TotalTime = (float)unit.TotalTime,
+                    Lectures = lectures
+                };
+
+                viewDTO.Units.Add(unitAdd);
+              
+               
+               
+            }
+            return viewDTO;
         }
     }
 }

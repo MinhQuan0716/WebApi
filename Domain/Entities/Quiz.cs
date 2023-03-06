@@ -21,6 +21,7 @@ namespace Domain.Entities
         public Guid LectureID { get; set; }
         public int NumberOfQuiz { get; set; }
 
+        public string? QuizName { get; set; }
         //public ICollection<CompareQuiz> CompareQuizzes { get; set; }
         //public ICollection<QuizBank> QuizBanks { get; set; }
 

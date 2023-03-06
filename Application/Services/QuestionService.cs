@@ -4,32 +4,26 @@ using Application.Repositories;
 using Application.ViewModels.QuizModels;
 using AutoMapper;
 using Domain.Entities;
+using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Http.HttpResults;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Application.Services
 {
-    public class QuestionService : IQuestionService
+    public   class  QuestionService : IQuestionService
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly IClaimsService _claimsservice;
         private readonly AppConfiguration _configuration;
-        //public QuestionService(IUnitOfWork unitOfWork, IMapper mapper)
-        //{
-        //    _unitOfWork = unitOfWork;
-        //    _mapper = mapper;
-        //}
-        //public QuestionService(IUnitOfWork unitOfWork, IClaimsService claimsService)
-        //{
-        //    _unitOfWork = unitOfWork;
-        //    _claimsservice = claimsService;
-        //}
-        public QuestionService(IUnitOfWork unitofwork, IClaimsService claimsservice, IUnitOfWork unitOfWork, IMapper mapper, AppConfiguration configuration)
+
+
+        public QuestionService(IClaimsService claimsservice, IUnitOfWork unitOfWork, IMapper mapper, AppConfiguration configuration)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
@@ -113,7 +107,7 @@ namespace Application.Services
                 CorrectAnswer = quizDto.CorrectAnswer,
                 TopicID = quizDto.TopicID,
                 QuizTypeID = quizDto.TypeID,
-                // CreationDate = DateTime.Now.Date,
+                 //CreationDate = DateTime.Now.Date,
                 //CreatedBy = _claimsservice.GetCurrentUserId
             };
             await _unitOfWork.QuestionRepository.AddAsync(newQuestion);
@@ -122,14 +116,7 @@ namespace Application.Services
 
         public async Task<bool> CreateEmptyQuizTest(CreateEmptyQuizDTO quizDto)
         {
-            // check lecture exist
-            /*var checkLecture = await _unitOfWork.LectureRepository.GetByIdAsync(quizDto.LectureID);
-            if (checkLecture == null)
-            {
-                return false;
-            }*/
-
-            // create quiz test
+          
             var newQuiz = new Quiz
             {
                 NumberOfQuiz = 0,
@@ -145,7 +132,7 @@ namespace Application.Services
             {
                 QuizID = quizDto.QuizId,
                 QuestionID = quizDto.QuestionId,
-                SubmitQuizID = Guid.NewGuid(),  // tam thoi fix cung, quizDto.SubmitQuiz, 
+                //SubmitQuizID = Guid.NewGuid(),  // tam thoi fix cung, quizDto.SubmitQuiz, 
             };
             // count +1 numberOfQuiz when 1 question add to quiz
             var getQuizTest = await _unitOfWork.QuizRepository.GetByIdAsync(quizDto.QuizId);
@@ -170,7 +157,7 @@ namespace Application.Services
             var allQuestionOfQuiz = await _unitOfWork.QuizRepository.GetAllQuestionByQuizTestId(quizTestId);
             bool check = false;
             foreach (var item in allQuestionOfQuiz)
-            {           
+            {
                 //update
                 if (item.QuestionID == quizDto.IdQuestionWantToUpdate)
                 {
@@ -193,8 +180,143 @@ namespace Application.Services
                 return false;
             }
             _unitOfWork.QuizRepository.SoftRemove(checkQuizTestExist);
-
-            return await _unitOfWork.SaveChangeAsync() > 0;
+            await _unitOfWork.SaveChangeAsync();
+            return true;
         }
+
+        public async Task<DoingQuizDTO> ViewDoingQuiz(Guid QuizID)
+        {
+
+            //throw new NotImplementedException();
+            var listQuestionForTrainer = _unitOfWork.QuestionRepository.GetQuizForTrainer(QuizID);
+            var listQuestionForTrainee = _unitOfWork.QuestionRepository.GetQuizForTrainee(QuizID);
+            var number = await _unitOfWork.QuizRepository.GetByIdAsync(QuizID);
+            DoingQuizDTO lastquiz = new DoingQuizDTO();
+
+            User user = await _unitOfWork.UserRepository.GetByIdAsync(_claimsservice.GetCurrentUserId);
+            if (user.RoleId == 3)
+            {
+                DoingQuizDTO doingQuizDTOTrainer = new DoingQuizDTO()
+                {
+
+                    NumberOfQuestion = number.NumberOfQuiz,
+                    QuizQuestionDTOs = listQuestionForTrainer,
+                };
+                lastquiz = doingQuizDTOTrainer;
+            }
+            else if (user.RoleId == 4)
+            {
+                DoingQuizDTO doingQuizDTOTrainee = new DoingQuizDTO()
+                {
+                    NumberOfQuestion = number.NumberOfQuiz,
+                    AnswerQuizQuestionDTOs = listQuestionForTrainee
+                };
+                lastquiz = doingQuizDTOTrainee;
+            }
+
+            return lastquiz;
+
+        }
+
+
+        public async Task<bool> DoingQuizService(ICollection<AnswerQuizQuestionDTO> answerQuizQuestionDTO)
+        {
+            /*  Những thứ cần lấy : AnswerSubmit ,IsCorect ,DetailQuizID,UserID , IsDeleted 
+              AnswerSubmit = answerQuizQuestionDTO.id 
+              IsCorrect when the  answersubmit ==  correct by QuestionID
+              DetailQuizID lấy bằng  
+              đăng nhập bằng ID của người dùng 
+              IsDeleted bằng k
+             để xác định answer có đúng hay không ta phải dựa vào câu trả lời của 
+             */
+
+            foreach (AnswerQuizQuestionDTO answer in answerQuizQuestionDTO)
+            {
+                var detailQuizQuestion = await _unitOfWork.DetailQuizQuestionRepository.GetByIdAsync(answer.DetailQuizQuestionID);
+
+                if (detailQuizQuestion is not null)
+                {
+                    var question = await _unitOfWork.QuestionRepository.GetByIdAsync(detailQuizQuestion.QuestionID);
+                    bool check = (question is not null && question.CorrectAnswer == answer.UserAnswer );
+                    var submitFromUser = new SubmitQuiz()
+                    {
+                        CreationDate = DateTime.Now,
+                        Id = new Guid(),
+                        AnswerSubmit = answer.UserAnswer,
+                        IsCorrect = check,
+                        DetailQuizQuestionID = answer.DetailQuizQuestionID,
+                        UserID = _claimsservice.GetCurrentUserId,
+                        IsDeleted = false
+                    };
+                    if (await _unitOfWork.SubmitQuizRepository.FindAsync(x => x.UserID == submitFromUser.UserID && x.DetailQuizQuestionID == submitFromUser.DetailQuizQuestionID) is null)
+                    {
+                        await _unitOfWork.SubmitQuizRepository.AddAsync(submitFromUser);
+                        await _unitOfWork.SaveChangeAsync();
+                    }
+                }
+            }
+            return true;
+        }
+
+
+
+        public async Task<List<ViewDetailResultDTO>> ViewMarkDetail(Guid SubmitQuizID)
+        {
+            return _unitOfWork.SubmitQuizRepository.GetViewDetail(SubmitQuizID);
+        }
+        public async Task<bool> ViewGrading(Guid user_id, Guid class_id)
+        {
+            Guid GradingID = _unitOfWork.DetailTrainingProgramSyllabusRepository.TakeDetailTrainingID(user_id, class_id);
+            await _unitOfWork.SaveChangeAsync();
+            if (GradingID == Guid.Empty)
+            {
+                return false;
+            }
+            return true;
+
+        }
+
+        public async Task<double> MarkQuiz(Guid QuizID, Guid DetailTrainingDetailTrainingClassParticipateId)
+        {
+            User? user = await _unitOfWork.UserRepository.GetByIdAsync(_claimsservice.GetCurrentUserId);
+            int correct_answer = _unitOfWork.SubmitQuizRepository.CheckTrueAnswer(user.Id, QuizID);
+            var quiz = await _unitOfWork.QuizRepository.GetByIdAsync(QuizID);
+            int number_of_question = quiz.NumberOfQuiz;
+            int result = (correct_answer / number_of_question) * 10;
+
+            await AddGrading(quiz.LectureID, DetailTrainingDetailTrainingClassParticipateId, result);
+            return result;
+        }
+
+
+        public async Task<bool> AddGrading(Guid LectureID, Guid DetailTrainingClassParticipateId, int TotalMark)
+        {
+            Grading new_grading = new Grading()
+            {
+
+                LectureId = LectureID,
+                DetailTrainingClassParticipateId = DetailTrainingClassParticipateId,
+                NumericGrade = TotalMark
+            };
+
+            await _unitOfWork.GradingRepository.AddAsync(new_grading);
+            await _unitOfWork.SaveChangeAsync();
+            return true;
+        }
+
+        public async Task<AnswerQuizDetailTraineeDTO> ViewDetaildoneQuiz(Guid QuizID)
+        {
+        
+            AnswerQuizDetailTraineeDTO object_answer = new AnswerQuizDetailTraineeDTO();
+            var User = await _unitOfWork.UserRepository.GetByIdAsync(_claimsservice.GetCurrentUserId);
+            var Quiz = await _unitOfWork.QuizRepository.GetByIdAsync(QuizID);
+            object_answer.QuizName = Quiz.QuizName;
+            object_answer.NumberOfQuiz = Quiz.NumberOfQuiz;
+            object_answer.DoneQuiz =  _unitOfWork.QuizRepository.ViewAnswer(QuizID, User.Id);
+         
+            return object_answer;   
+        }
+
+
     }
 }

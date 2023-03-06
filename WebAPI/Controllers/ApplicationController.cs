@@ -1,6 +1,7 @@
 ﻿using Application.Interfaces;
 using Application.Utils;
 using Application.ViewModels.ApplicationViewModels;
+using Domain.Entities;
 using Domain.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -8,7 +9,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Controllers
 {
-  
+
+    [Authorize]
     public class ApplicationController : BaseController
     {
        private readonly IApplicationService _service;
@@ -30,11 +32,7 @@ namespace WebAPI.Controllers
         public async Task<bool> UpdateStatus(Guid id, bool status)
         {
             var result = await _service.UpdateStatus(id, status);
-            if (result)
-            {
-                return true;
-            }
-            return false;
+            return result;
         }
     }
 }

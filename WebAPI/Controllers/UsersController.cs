@@ -51,7 +51,6 @@ namespace WebAPI.Controllers
             return Ok(token);
         }
 
-        //Innovation! We can pass 2 parameter with FromFrom but not FromBody
         [HttpPut]
         [Authorize]
         public async Task<IActionResult> ChangePasswordAsync([FromForm] string oldPassword, [FromForm] string newPassword)

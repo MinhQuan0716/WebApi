@@ -1,5 +1,6 @@
 ﻿using Application.Interfaces;
 using Application.ViewModels.QuizModels;
+using Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Controllers
@@ -85,5 +86,46 @@ namespace WebAPI.Controllers
             }
             return BadRequest("Not Found");
         }
+
+        [HttpGet]
+        public async Task<IActionResult> ViewQuiz(Guid QuizID)
+        {
+            var QuizView = await _quizService.ViewDoingQuiz(QuizID);
+            if (QuizView is not null)
+            {
+                return Ok(QuizView);
+            }
+            return BadRequest();
+
+        }
+
+        [HttpPost]
+        public  async Task<IActionResult> DoingQuiz(ICollection<AnswerQuizQuestionDTO> doingQuizDTOs,Guid TrainingClassParticipateID)
+        {
+            bool success = await _quizService.DoingQuizService(doingQuizDTOs);
+            if (success)
+            {
+               
+                return Ok(await _quizService.MarkQuiz(doingQuizDTOs.First().QuizID, TrainingClassParticipateID));
+            }
+            return BadRequest();
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ViewDetailResult(Guid QuizID)
+        {
+            List<ViewDetailResultDTO> markDetails = await _quizService.ViewMarkDetail(QuizID);
+            return Ok(markDetails);
+        }
+
+
+        [HttpGet]
+        public async Task<IActionResult> ViewDetailResultTrainee(Guid QuizID)
+        {
+            AnswerQuizDetailTraineeDTO answerQuizDetailTraineeDTO = await _quizService.ViewDetaildoneQuiz(QuizID);
+            return Ok(answerQuizDetailTraineeDTO);
+        }
+       
+
     }
 }

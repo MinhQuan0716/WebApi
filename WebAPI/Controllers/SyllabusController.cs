@@ -115,5 +115,15 @@ namespace WebAPI.Controllers
             else return BadRequest("Update Failed");
         }
 
+        [HttpPost]
+        public async Task<IActionResult> ViewDetail(Guid SyllabusId)
+        {
+            var result = await _syllabusService.ViewDetailSyllabus(SyllabusId);
+            if (result != null)
+            {
+                return Ok(result);
+            }
+            return BadRequest();
+        }
     }
 }

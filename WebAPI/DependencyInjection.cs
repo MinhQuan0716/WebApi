@@ -59,6 +59,7 @@ namespace WebAPI
             services.AddScoped<IDetailQuizQuestionRepository, DetailQuizQuestionRepository>();
             services.AddScoped<ITopicRepository, TopicRepository>();
             services.AddScoped<IGradingService, GradingService>();
+            services.AddScoped<ISubmitQuizRepository, SubmitQuizRepository>();
             services.AddScoped<IGradingRepository, GradingRepository>();
             services.AddScoped<ApplicationCronJob, ApplicationCronJob>();
             services.AddHttpContextAccessor();

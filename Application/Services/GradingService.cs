@@ -1,6 +1,7 @@
 ﻿using Application.Commons;
 using Application.Interfaces;
 using Application.ViewModels.GradingModels;
+using Application.ViewModels.QuizModels;
 using AutoMapper;
 using Domain.Entities;
 using Microsoft.Extensions.Configuration;
@@ -18,13 +19,15 @@ public class GradingService : IGradingService
     private readonly IMapper _mapper;
     private readonly ICurrentTime _currentTime;
     private readonly AppConfiguration _configuration;
+    private readonly IClaimsService _claimsService;
 
-    public GradingService(IUnitOfWork unitOfWork, IMapper mapper, ICurrentTime currentTime, AppConfiguration configuration)
+    public GradingService(IUnitOfWork unitOfWork, IMapper mapper, ICurrentTime currentTime, AppConfiguration configuration,IClaimsService claimsService)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
         _currentTime = currentTime;
         _configuration = configuration;
+        _claimsService = claimsService;
     }
     public async Task CreateGradingAsync(GradingModel model)
     {
@@ -84,4 +87,17 @@ public class GradingService : IGradingService
         await _unitOfWork.SaveChangeAsync();
         return true;
     }
+
+   public async Task<int> ViewMarkQuizByQuizID(Guid LectureID)
+    {
+         var grading_find = await _unitOfWork.GradingRepository.GetAllAsync();
+          return (int)grading_find.Find(x => x.LectureId ==LectureID).NumericGrade;
+    }
+    public async Task<List<ViewQuizAndMarkBelowDTO>> ViewAllQuizMark()
+    {
+        var user = await _unitOfWork.UserRepository.GetByIdAsync(_claimsService.GetCurrentUserId);
+        return _unitOfWork.GradingRepository.GetAllMarkOfTrainee(user.Id);
+    }
+
+    
 }

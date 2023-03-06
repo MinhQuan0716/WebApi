@@ -25,6 +25,7 @@ namespace Application.Services
         {
             Lecture NewLecture = new Lecture()
             {
+                Id = new Guid(),
                 LectureName = lecture.LectureName,
                 OutputStandards = lecture.OutputStandards,
                 Duration = lecture.Duration,
@@ -32,7 +33,7 @@ namespace Application.Services
                 Status = lecture.Status,
             };
             await _UnitOfWork.LectureRepository.AddAsync(NewLecture);
-            //await _UnitOfWork.SaveChangeAsync();
+            await _UnitOfWork.SaveChangeAsync();
             return NewLecture;
         }
 
@@ -51,5 +52,8 @@ namespace Application.Services
 
 
         }
+
     }
-}
+       
+    }
+

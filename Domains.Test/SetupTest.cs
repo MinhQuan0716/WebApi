@@ -42,6 +42,9 @@ namespace Domains.Test
         protected readonly Mock<IApplicationRepository> _applicationRepositoryMock;
         protected readonly Mock<IApplicationService> _applicationServiceMock;
 
+        protected readonly Mock<IQuestionRepository> _questionRepositoryMock;
+        protected readonly Mock<IQuestionService> _questionServiceMock;
+
 
         protected readonly Mock<IUserRepository> _userRepository;
 
@@ -70,6 +73,9 @@ namespace Domains.Test
 
         protected readonly Mock<IGradingService> _gradingServiceMock;
 
+        protected Mock<IQuestionService> QuestionServiceMock => _questionServiceMock;
+
+        protected Mock<IQuestionRepository> QuestionRepositoryMock => _questionRepositoryMock;
 
         public SetupTest()
         {
@@ -97,6 +103,10 @@ namespace Domains.Test
             _unitServiceMock = new Mock<IUnitService>();
             _lectureServiceMock = new Mock<ILectureService>();
        
+            _questionServiceMock = new Mock<IQuestionService>();
+            _questionRepositoryMock = new Mock<IQuestionRepository>();
+
+
             _userServiceMock = new Mock<IUserService>();
             _claimsServiceMock = new Mock<IClaimsService>();
             _currentTimeMock = new Mock<ICurrentTime>();

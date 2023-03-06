@@ -8,10 +8,10 @@ using System.Threading.Tasks;
 
 namespace Application.Repositories
 {
-    public interface IQuizRepository : IGenericRepository<Quiz>
+    public interface ISubmitQuizRepository :IGenericRepository<SubmitQuiz>
     {
-        public Task<List<DetailQuizQuestion>> GetAllQuestionByQuizTestId(Guid id);
+        List<ViewDetailResultDTO> GetViewDetail(Guid ViewID);
 
-        public List<ViewDoneQuizDTO> ViewAnswer(Guid QuizID, Guid UserID);
+        int CheckTrueAnswer(Guid userID, Guid QuizID);
     }
 }

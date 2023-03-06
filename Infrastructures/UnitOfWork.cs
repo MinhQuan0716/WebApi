@@ -28,6 +28,7 @@ namespace Infrastructures
         private readonly IAuditQuestionRepository _auditQuestionRepository;
         private readonly IDetailAuditQuestionRepository _detailAuditQuestionRepository;
 
+        private readonly ISubmitQuizRepository _submitQuizRepository;
 
         private readonly IQuestionRepository _questionRepository;
         private readonly IQuizRepository _quizRepository;
@@ -41,9 +42,7 @@ namespace Infrastructures
             ISyllabusRepository syllabusRepository, IUnitRepository unitRepository, ILectureRepository lectureRepository, IDetailUnitLectureRepository detailUnitLectureRepository, ITrainingClassRepository trainingClassRepository, ILocationRepository locationRepository,
             IFeedbackRepository feedbackRepository, ITrainingProgramRepository trainingProgramRepository, IDetailTrainingProgramSyllabusRepository detailTrainingProgramSyllabusRepository, IAttendanceRepository attendanceRepository, IApplicationRepository applicationReapository,
             IQuizRepository quizRepository, IDetailQuizQuestionRepository detailQuizQuestionRepository, ITopicRepository topicRepository, IQuestionRepository questionRepository,
-            IGradingRepository gradingRepository,
-            IAuditPlanRepository auditPlanRepository, IAuditQuestionRepository auditQuestionRepository, IDetailAuditQuestionRepository detailAuditQuestionRepository)
-
+            IGradingRepository gradingRepository,IAuditQuestionRepository auditQuestionRepository,IDetailAuditQuestionRepository detailAuditQuestionRepository,ISubmitQuizRepository submitQuizRepository)
         {
             _dbContext = dbContext;
             _userRepository = userRepository;
@@ -69,11 +68,13 @@ namespace Infrastructures
             _topicRepository = topicRepository;
             _questionRepository = questionRepository;
             _gradingRepository = gradingRepository;
-            _auditPlanRepository = auditPlanRepository;
+
             _auditQuestionRepository = auditQuestionRepository;
             _detailAuditQuestionRepository = detailAuditQuestionRepository;
+
+            _submitQuizRepository = submitQuizRepository;
         }
-        public IUserRepository UserRepository => _userRepository;
+            public IUserRepository UserRepository => _userRepository;
         public ISyllabusRepository SyllabusRepository => _syllabusRepository;
 
 
@@ -114,6 +115,7 @@ namespace Infrastructures
         public IAuditQuestionRepository AuditQuestionRepository => _auditQuestionRepository;
         public IDetailAuditQuestionRepository DetailAuditQuestionRepository => _detailAuditQuestionRepository;
 
+        public ISubmitQuizRepository SubmitQuizRepository => _submitQuizRepository;
 
 
         public async Task<int> SaveChangeAsync()

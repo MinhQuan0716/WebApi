@@ -18,7 +18,7 @@ namespace Infrastructures.FluentAPIs
             builder.Property(s => s.Id).HasDefaultValueSql("NEWID()");
             builder.Property(s => s.CreationDate).HasDefaultValueSql("getutcdate()");
             builder.HasOne(x => x.Question).WithMany(x => x.DetailQuizQuestion).HasForeignKey(x => x.QuestionID);
-            builder.HasOne<SubmitQuiz>(x => x.SubmitQuiz).WithOne(x => x.DetailQuizQuestion).HasForeignKey<SubmitQuiz>(x => x.DetailQuizQuestionID);
+           
         }
     }
 }

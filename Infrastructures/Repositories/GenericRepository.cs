@@ -25,9 +25,10 @@ namespace Infrastructures.Repositories
 
         public async Task<TEntity?> GetByIdAsync(Guid id, params Expression<Func<TEntity, object>>[] includes)
         {
-            //    var result = await _dbSet.FirstOrDefaultAsync(x => x.Id == id);
-            //    // todo should throw exception when not found
-            //    return result;
+            //var result = await _dbSet.FirstOrDefaultAsync(x => x.Id == id);
+            // todo should throw exception when not found
+           
+            //return result;
             return await includes
                .Aggregate(_dbSet.AsQueryable(),
                    (entity, property) => entity.Include(property))

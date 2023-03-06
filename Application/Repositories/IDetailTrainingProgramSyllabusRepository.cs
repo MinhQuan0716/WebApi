@@ -9,6 +9,6 @@ namespace Application.Repositories
 {
     public interface IDetailTrainingProgramSyllabusRepository : IGenericRepository<DetailTrainingProgramSyllabus>
     {
-
+        public Guid TakeDetailTrainingID(Guid user_id, Guid training_class_id);
     }
 }

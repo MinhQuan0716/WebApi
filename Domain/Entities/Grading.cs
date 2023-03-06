@@ -14,4 +14,6 @@ public class Grading : BaseEntity
     public virtual DetailTrainingClassParticipate DetailTrainingClassParticipate { get; set; }
     public Guid LectureId { get; set; }
     public virtual Lecture Lecture { get;set; }
+
+    //public ICollection<SubmitQuiz> Quiz { get; set; }
 }

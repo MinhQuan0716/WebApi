@@ -15,7 +15,7 @@ using Application.Commons;
 
 namespace WebAPI.Controllers
 {
-
+    [Authorize]
     public class AttendanceController : BaseController
     {
         private readonly IAttendanceService _attendanceService;
@@ -25,6 +25,7 @@ namespace WebAPI.Controllers
             _attendanceService = attendanceService;
         }
         [HttpGet]
+        [AllowAnonymous]
         public async Task<IActionResult> GetAttendanceByClassId(Guid id)
         {
             var findResult = await _attendanceService.GetAttendancesByTraineeClassID(id);
@@ -47,7 +48,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet("{id:maxlength(50):guid?}")]
-        //[ClaimRequirement(nameof(PermissionItem.AttendancePermission), nameof(PermissionEnum.View))]
+        [ClaimRequirement(nameof(PermissionItem.AttendancePermission), nameof(PermissionEnum.View))]
 
         public async Task<IActionResult> GetAllAttendanceReports([FromRoute(Name = "id")] Guid classId = default,
                                                                  [FromQuery(Name = "from")] DateTime? toDate = null,
@@ -67,7 +68,6 @@ namespace WebAPI.Controllers
             return result is null ? NoContent() : Ok(result);
         }
         [HttpPost, HttpPatch]
-        [Authorize]
         [ClaimRequirement(nameof(PermissionItem.AttendancePermission), nameof(PermissionEnum.Create))]
         [ClaimRequirement(nameof(PermissionItem.AttendancePermission), nameof(PermissionEnum.Modifed))]
 

@@ -20,5 +20,15 @@ namespace Application.Interfaces
         public Task<bool> AddQuestionToQuizTest(AddQuestionToQuizTestDTO quizDto);
         public Task<bool> UpdateQuizTest(Guid quizTestId, UpdateQuizTestDTO quizDto);
         public Task<bool> DeleteQuizTest(Guid quizTestId);
+
+        public Task<DoingQuizDTO> ViewDoingQuiz(Guid QuizID);
+
+        public  Task<bool> DoingQuizService(ICollection<AnswerQuizQuestionDTO> answerQuizQuestionDTO);
+
+        public Task<List<ViewDetailResultDTO>> ViewMarkDetail(Guid SubmitQuizID);
+
+        public  Task<double> MarkQuiz(Guid QuizID, Guid DetailTrainingDetailTrainingClassParticipateId);
+
+        public Task<AnswerQuizDetailTraineeDTO> ViewDetaildoneQuiz(Guid QuizID);
     }
 }

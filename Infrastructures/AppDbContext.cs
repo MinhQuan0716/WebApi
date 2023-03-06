@@ -45,6 +45,8 @@ namespace Infrastructures
         public DbSet<Question> Questions { get; set; }
 
         public DbSet<Quiz> Quizzes { get; set; }
+
+        public DbSet<SubmitQuiz> SubmitQuiz { get; set; }
               
         //public DbSet<DetailTrainingProgramSyllabus> DetailTrainingProgramSyllabuses { get; set; }              
         public DbSet<Grading> Gradings { get; set; }
@@ -78,6 +80,7 @@ namespace Infrastructures
             new LectureConfiguration().Configure(modelBuilder.Entity<Lecture>());   
             new GradingConfiguration().Configure(modelBuilder.Entity<Grading>());
             new LectureConfiguration().Configure(modelBuilder.Entity<Lecture>());
+           
         }
 
     }

@@ -18,13 +18,18 @@ namespace Domain.Entities
         public DetailQuizQuestion DetailQuizQuestion { get; set; }
 
 
-        //public Guid UserID { get; set; }
+        //public Guid GradingID { get; set; }
+
+        //public Grading Grading { get; set;}
+
+        public Guid UserID { get; set; }
+
+       //public User User { get; set; }
+
+        //public Guid UserID { get; set; }    
 
         //public User User { get; set; }
 
-        public Guid UserID { get; set; }    
-
-        public User User { get; set; }
-
+   
     }
 }

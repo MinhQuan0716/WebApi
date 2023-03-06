@@ -48,11 +48,11 @@ public class UserService : IUserService
     {
         addUserManually.Pass = addUserManually.Pass.Hash();
         var mapUserwithAddUserManual = _mapper.Map<User>(addUserManually);
-    
+
 
         await _unitOfWork.UserRepository.AddAsync(mapUserwithAddUserManual);
-        
-        
+
+
         if (await _unitOfWork.SaveChangeAsync() > 0)
         {
             return await _unitOfWork.UserRepository.GetUserByEmailAsync(addUserManually.Email);
@@ -83,7 +83,7 @@ public class UserService : IUserService
             return true;
         }
         return false;
-        
+
     }
 
     public async Task<string> ChangePasswordAsync(string oldPassword, string newPassword)
@@ -95,7 +95,7 @@ public class UserService : IUserService
         if (oldPassword.CheckPassword(user.PasswordHash) == false)
             throw new Exception("Old password are wrong");
 
-        var result = await _unitOfWork.UserRepository.ChangeUserPasswordAsync(user,newPassword);
+        var result = await _unitOfWork.UserRepository.ChangeUserPasswordAsync(user, newPassword);
         if (result)
             return "Update Success!";
         return "Update Failed";
@@ -291,7 +291,7 @@ public class UserService : IUserService
     {
         var result = false;
         var user = await _unitOfWork.UserRepository.GetByIdAsync(_mapper.Map<Guid>(userId));
-        if(user!= null)
+        if (user != null)
         {
             _unitOfWork.UserRepository.SoftRemove(user);
             var success = await _unitOfWork.SaveChangeAsync();
@@ -306,7 +306,7 @@ public class UserService : IUserService
     public async Task<bool> LogoutAsync()
     {
         var user = await _unitOfWork.UserRepository.GetAuthorizedUserAsync();
-        if (user== null)
+        if (user == null)
         {
             return false;
         }
@@ -314,7 +314,7 @@ public class UserService : IUserService
         user.ExpireTokenTime = null;
         _unitOfWork.UserRepository.Update(user);
         var result = await _unitOfWork.SaveChangeAsync() > 0;
-        if (result==false) 
+        if (result == false)
         {
             throw new Exception("SaveChange Fail!");
         }
