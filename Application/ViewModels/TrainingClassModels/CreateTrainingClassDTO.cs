@@ -14,5 +14,10 @@ namespace Application.ViewModels.TrainingClassModels
         public DateTime EndTime { get; set; }
         public Guid LocationID { get; set; }
         public Guid TrainingProgramId { get; set; }
+        public string StatusClassDetail { get; set; }
+        public string Attendee { get; set; }
+        public string Branch { get; set; }
+
+        public ICollection<Guid>? UserId { get; set; }
     }
 }

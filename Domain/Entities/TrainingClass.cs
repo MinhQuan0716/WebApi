@@ -21,9 +21,12 @@ namespace Domain.Entities
         public ICollection<Attendance> Attendances { get; set; } = default!;
 
         public ICollection<Feedback> Feedbacks { get; set; } = default!;
-        public StatusClassDetail StatusClassDetail { get; set; } = StatusClassDetail.Inactive;
+        public string StatusClassDetail { get; set; } = default!;
         public Guid TrainingProgramId { get; set; }
         public TrainingProgram TrainingProgram { get; set; } = default!;
         public ICollection<Applications> Applications { get; set; }
+        public ICollection<ClassSchedule> ClassSchedules { get; set; }
+        public string Attendee { get; set; }
+        public string Branch { get; set; }
     }
 }

@@ -9,7 +9,6 @@ using Application.Utils;
 using Domain.Enums;
 using Microsoft.AspNetCore.Authorization;
 using System.Collections.Generic;
-using AutoFixture;
 using Infrastructures;
 using Application.Commons;
 

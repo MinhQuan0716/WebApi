@@ -8,8 +8,7 @@ namespace Domain.Enums
 {
     public enum StatusClassSchedule
     {
-        Planning,
-        Ongoing,
-        Finished,
+        Active,
+        Inactive,       
     }
 }

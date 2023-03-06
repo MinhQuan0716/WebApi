@@ -31,9 +31,9 @@ namespace WebAPI.Controllers
         [HttpPost("UploadFile")]
         [Authorize]
         [ClaimRequirement(nameof(PermissionItem.TrainingMaterialPermission), nameof(PermissionEnum.Create))]
-        public async Task<IActionResult> Upload(IFormFile file, string name)
+        public async Task<IActionResult> Upload(IFormFile file, Guid lectureId)
         {
-            await _trainingMaterialService.Upload(file, name);
+            await _trainingMaterialService.Upload(file, lectureId);
             if (file == null)
             {
                 return NotFound();
@@ -54,7 +54,7 @@ namespace WebAPI.Controllers
             return BadRequest();
         }
 
-        [HttpPut("Edit file")]
+        [HttpPut("EditFile")]
         [Authorize]
         [ClaimRequirement(nameof(PermissionItem.TrainingMaterialPermission), nameof(PermissionEnum.Modifed))]
         public async Task<IActionResult> UpdateTrainingMaterial(IFormFile file, Guid id)

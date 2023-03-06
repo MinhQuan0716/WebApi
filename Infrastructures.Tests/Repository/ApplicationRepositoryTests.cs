@@ -40,6 +40,9 @@ namespace Infrastructures.Tests.Repository
             var trainingClassMock = _fixture.Build<TrainingClass>()
                 .OmitAutoProperties()
                 .With(x => x.Name)
+                .With(x=>x.Attendee)
+                .With(x=>x.StatusClassDetail)
+                .With(x=>x.Branch)
                 .Create();
             _dbContext.Add(trainingClassMock);
             _dbContext.SaveChanges();

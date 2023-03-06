@@ -49,7 +49,16 @@ namespace Application.Tests.Services
         public async Task SoftRemoveTrainingClass_ShouldReturnFalse_WhenSaveFail()
         {
             //arrange
-            var mockTrainingClass = _fixture.Build<TrainingClass>().Without(x => x.Applications).Without(x => x.Attendances).Without(x => x.Feedbacks).Without(x => x.TrainingProgram).Without(x => x.TrainingClassParticipates).Without(x => x.Location).Create();
+            var mockTrainingClass = _fixture.Build<TrainingClass>().
+                Without(x => x.Applications).
+                Without(x => x.Attendances).Without(x => x.Feedbacks).
+                Without(x => x.TrainingProgram).
+                Without(x => x.TrainingClassParticipates).
+                Without(x => x.Location)
+                .With(x=>x.StatusClassDetail)
+                .With(x=>x.Branch)
+                .With(x=>x.Attendee)
+                .Create();
             var mockId = mockTrainingClass.Id;
             _unitOfWorkMock.Setup(x => x.TrainingClassRepository.SoftRemove(It.IsAny<TrainingClass>())).Verifiable();
             _unitOfWorkMock.Setup(x => x.TrainingClassRepository.GetByIdAsync(mockId)).ReturnsAsync(mockTrainingClass);
@@ -72,10 +81,18 @@ namespace Application.Tests.Services
         public async Task CreateTrainingClass_ShouldReturnCorrectData_WhenSavedSucceed()
         {
             //arrange
-            var mockLocation = _fixture.Build<Location>().Without(x => x.TrainingClasses).Without(x => x.DetailTrainingClassesParticipate).Create();
+            var mockLocation = _fixture.Build<Location>().
+                Without(x => x.TrainingClasses).
+                Without(x => x.DetailTrainingClassesParticipate)
+                .Create();
             var mockTrainingProgram = _fixture.Build<TrainingProgram>().Without(x => x.TrainingClasses).Without(x => x.DetailTrainingProgramSyllabus).Create();
-            var mockCreate = _fixture.Build<CreateTrainingClassDTO>().With(x => x.LocationID, mockLocation.Id).With(x => x.TrainingProgramId, mockTrainingProgram.Id).Create();
-
+            var mockCreate = _fixture.Build<CreateTrainingClassDTO>().With(x => x.LocationID, mockLocation.Id).
+                With(x => x.TrainingProgramId, mockTrainingProgram.Id)
+                .With(x=>x.Attendee)
+                .With(x=>x.Branch)
+                .With(x=>x.StatusClassDetail)
+                .Create();
+                
             _unitOfWorkMock.Setup(x => x.TrainingClassRepository.AddAsync(It.IsAny<TrainingClass>())).Returns(Task.CompletedTask);
             _unitOfWorkMock.Setup(x => x.LocationRepository.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(mockLocation);
             _unitOfWorkMock.Setup(x => x.TrainingProgramRepository.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(mockTrainingProgram);
@@ -99,7 +116,10 @@ namespace Application.Tests.Services
         public async Task CreateTrainingClass_ShouldReturnNull_WhenSavedFail()
         {
             //arrange
-            var mockLocation = _fixture.Build<Location>().Without(x => x.TrainingClasses).Without(x => x.DetailTrainingClassesParticipate).Create();
+            var mockLocation = _fixture.Build<Location>().
+                Without(x => x.TrainingClasses).
+                Without(x => x.DetailTrainingClassesParticipate)
+                .Create();
             var mockTrainingProgram = _fixture.Build<TrainingProgram>().Without(x => x.TrainingClasses).Without(x => x.DetailTrainingProgramSyllabus).Create();
             var mockCreate = _fixture.Build<CreateTrainingClassDTO>().With(x => x.LocationID, mockLocation.Id).With(x => x.TrainingProgramId, mockTrainingProgram.Id).Create();
 

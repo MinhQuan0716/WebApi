@@ -32,7 +32,7 @@ namespace Application.Services
             return file;
         }
 
-        public async Task<TrainingMaterial> Upload(IFormFile file, string lectureName)
+        public async Task<TrainingMaterial> Upload(IFormFile file, Guid lectureId)
         {
             using (var memoryStream = new MemoryStream())
             {
@@ -45,7 +45,8 @@ namespace Application.Services
                         TMatName = file.FileName,
                         TMatType = System.IO.Path.GetExtension(file.FileName),
                         TMatContent = memoryStream.ToArray(),
-                        lectureID = _unitOfWork.LectureRepository.GetLectureIdByName(lectureName),
+                        lectureID = lectureId,
+                        //lectureID = _unitOfWork.LectureRepository.GetLectureIdByName(lectureName),
                     };
 
                     await _unitOfWork.TrainingMaterialRepository.AddAsync(material);

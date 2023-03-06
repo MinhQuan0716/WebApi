@@ -3,7 +3,6 @@ using Application.Interfaces;
 using Application.Repositories;
 using Application.ViewModels.AtttendanceModels;
 using Application.ViewModels.SyllabusModels.UpdateSyllabusModels;
-using AutoFixture;
 using AutoMapper;
 using Domain.Entities;
 using Domain.Enums;

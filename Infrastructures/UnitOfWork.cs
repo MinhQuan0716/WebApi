@@ -34,6 +34,7 @@ namespace Infrastructures
         private readonly IQuizRepository _quizRepository;
         private readonly IDetailQuizQuestionRepository _detailQuizQuestionRepository;
         private readonly ITopicRepository _topicRepository;
+        private readonly IDetailTrainingClassParticipateRepository _detailTrainingClassParticipateRepository;
 
         private readonly IGradingRepository _gradingRepository;
 
@@ -42,7 +43,10 @@ namespace Infrastructures
             ISyllabusRepository syllabusRepository, IUnitRepository unitRepository, ILectureRepository lectureRepository, IDetailUnitLectureRepository detailUnitLectureRepository, ITrainingClassRepository trainingClassRepository, ILocationRepository locationRepository,
             IFeedbackRepository feedbackRepository, ITrainingProgramRepository trainingProgramRepository, IDetailTrainingProgramSyllabusRepository detailTrainingProgramSyllabusRepository, IAttendanceRepository attendanceRepository, IApplicationRepository applicationReapository,
             IQuizRepository quizRepository, IDetailQuizQuestionRepository detailQuizQuestionRepository, ITopicRepository topicRepository, IQuestionRepository questionRepository,
-            IGradingRepository gradingRepository,IAuditQuestionRepository auditQuestionRepository,IDetailAuditQuestionRepository detailAuditQuestionRepository,ISubmitQuizRepository submitQuizRepository)
+            IGradingRepository gradingRepository,
+            IAuditPlanRepository auditPlanRepository, IAuditQuestionRepository auditQuestionRepository, IDetailAuditQuestionRepository detailAuditQuestionRepository,
+            IDetailTrainingClassParticipateRepository detailTrainingClassParticipateRepository, ISubmitQuizRepository submitQuizRepository)
+
         {
             _dbContext = dbContext;
             _userRepository = userRepository;
@@ -73,6 +77,7 @@ namespace Infrastructures
             _detailAuditQuestionRepository = detailAuditQuestionRepository;
 
             _submitQuizRepository = submitQuizRepository;
+            _detailTrainingClassParticipateRepository = detailTrainingClassParticipateRepository;
         }
             public IUserRepository UserRepository => _userRepository;
         public ISyllabusRepository SyllabusRepository => _syllabusRepository;
@@ -114,6 +119,7 @@ namespace Infrastructures
         public IAuditPlanRepository AuditPlanRepository => _auditPlanRepository;
         public IAuditQuestionRepository AuditQuestionRepository => _auditQuestionRepository;
         public IDetailAuditQuestionRepository DetailAuditQuestionRepository => _detailAuditQuestionRepository;
+        public IDetailTrainingClassParticipateRepository DetailTrainingClassParticipateRepository => _detailTrainingClassParticipateRepository;
 
         public ISubmitQuizRepository SubmitQuizRepository => _submitQuizRepository;
 

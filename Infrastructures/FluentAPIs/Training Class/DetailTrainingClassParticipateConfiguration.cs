@@ -17,9 +17,10 @@ namespace Infrastructures.FluentAPIs
             builder.Property(x => x.Id).HasDefaultValueSql("NEWID()");
             builder.Property(x => x.CreationDate).HasDefaultValueSql("getutcdate()");
             builder.Property(x => x.IsDeleted).HasDefaultValue("false");
+            builder.Property(x => x.TraineeParticipationStatus).HasDefaultValue("null");
             builder.HasOne(x => x.TrainingClass).WithMany(x => x.TrainingClassParticipates).HasForeignKey(x => x.TrainingClassID);
             builder.HasOne(x => x.User).WithMany(x => x.DetailTrainingClassParticipate).HasForeignKey(x => x.UserId);
-            builder.HasOne(x => x.Location).WithMany(x => x.DetailTrainingClassesParticipate).HasForeignKey(x => x.LocationId);
+            
         }
     }
 }

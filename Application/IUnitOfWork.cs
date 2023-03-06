@@ -36,5 +36,6 @@ namespace Application
 
         public IGradingRepository GradingRepository { get; }
         public Task<int> SaveChangeAsync();
+        public IDetailTrainingClassParticipateRepository DetailTrainingClassParticipateRepository { get; }
     }
 }
