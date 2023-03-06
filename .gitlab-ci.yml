@@ -8,6 +8,12 @@ stages:          # List of stages for jobs, and their order of execution
   # - test
   - deploy
 
+variables:
+  AZURE_WA_NAME: "cicd-gitlab-backend-fa-training-system"
+  AZURE_WA_USERNAME: "$cicd-gitlab-backend-fa-training-system\$cicd-gitlab-backend-fa-training-system"
+  AZURE_WA_PASSWORD: "$xLB7BJdAG2wYyACJJYX6aoGSE1B2hPKGPK5cfum717MaZ4L5u4AcBrfEm4bh"
+  AZURE_WA_FTP_URL: "ftps://waws-prod-sg1-079.ftp.azurewebsites.windows.net/site/wwwroot"
+
 build-and-test-job:       # This job runs in the build stage, which runs first.
   stage: build-n-test
   script:
@@ -28,19 +34,18 @@ build-and-test-job:       # This job runs in the build stage, which runs first.
     #     - echo "Code coverage is 90%"
 
     # deploy-job:      # This job runs in the deploy stage.
-    #   stage: deploy  # It only runs when *both* jobs in the test stage complete successfully.
+    #   stage: deploy  # It only runs when both jobs in the test stage complete successfully.
     #   script:
     #     - echo "Deploying application..."
     #     - echo "Application successfully deployed."
 
 deploy:
   stage: deploy
+  image: ubuntu
   script:
-     - sudo apt-get update -y && apt-get install -y lftp
-     - lftp -c "set ftps:initial-prot ''; \
-                set ftp:ssl-protect-data true; \
-                open -u $FTP_USER,$FTP_PASSWORD $FTP_HOST; \
-                mirror -R --parallel=10 --no-empty-dirs --exclude-glob .git* $CI_PROJECT_DIR/ /site/wwwroot/"
+    - apt-get update
+    - apt-get install -y lftp
+    - lftp -e "open -u $AZURE_WA_USERNAME,$AZURE_WA_PASSWORD $AZURE_WA_FTP_URL; mirror -R ./build_output /site/wwwroot" -p 21
   environment:
     name: production
   only:
