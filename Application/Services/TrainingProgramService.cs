@@ -1,4 +1,5 @@
-﻿using Application.Interfaces;
+﻿using Application.Filter.TrainingProgramFilter;
+using Application.Interfaces;
 using Application.ViewModels.TrainingProgramModels;
 using AutoMapper;
 using Domain.Entities;
@@ -137,6 +138,43 @@ namespace Application.Services
             return viewAllTraining;
 
 
+        }
+        public async Task<List<TrainingProgramViewModel>> SearchTrainingProgramWithFilter(string? searchString, string? status, string? createBy)
+        {
+            //init filter
+            var listTP = await _unitOfWork.TrainingProgramRepository.GetAllAsync();
+            var listUsers = await _unitOfWork.UserRepository.GetAllAsync();
+            var userId = Guid.Empty;
+            if (createBy != null)
+                userId = listUsers.Where(u => u.FullName.ToLower().Contains(createBy.ToLower())).First().Id;
+            ICriterias<TrainingProgram> statusCriteria = new StatusCriteria(status);
+            ICriterias<TrainingProgram> createByCriteria = new CreateByCriteria(userId);
+            ICriterias<TrainingProgram> andCriteria = new AndTrainingProgramCriteria(statusCriteria, createByCriteria);
+            //search training program with filter
+            if (searchString != null)
+            {
+                listTP = listTP.Where(tp => tp.ProgramName.ToLower().Contains(searchString.ToLower())).ToList();
+                var result = _mapper.Map<List<TrainingProgramViewModel>>(andCriteria.MeetCriteria(listTP));
+                foreach (var tp in result)
+                    tp.CreateByUserName = listUsers.Where(u => u.Id.Equals(tp.CreatedBy)).First().FullName;
+                return result;
+            }
+            //using filter only (filter from all Training Program)
+            else if (status != null || createBy != null)
+            {
+                var result = _mapper.Map<List<TrainingProgramViewModel>>(andCriteria.MeetCriteria(listTP));
+                foreach (var tp in result)
+                    tp.CreateByUserName = listUsers.Where(u => u.Id.Equals(tp.CreatedBy)).First().FullName;
+                return result;
+            }
+            //not inputting search or filter
+            else
+            {
+                var result = _mapper.Map<List<TrainingProgramViewModel>>(listTP);
+                foreach (var tp in result)
+                    tp.CreateByUserName = listUsers.FindAll(u => u.Id == tp.CreatedBy).First().FullName;
+                return result;
+            }
         }
     }
 }

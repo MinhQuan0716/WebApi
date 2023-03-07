@@ -58,6 +58,8 @@ namespace Infrastructures
             services.AddScoped<IDetailQuizQuestionRepository, DetailQuizQuestionRepository>();
             services.AddScoped<ITopicRepository, TopicRepository>();
             services.AddScoped<IFeedbackRepository, FeedbackRepository>();
+            services.AddScoped<IGradingService, GradingService>();
+            services.AddScoped<IGradingRepository, GradingRepository>();            
             services.AddScoped<IDetailTrainingClassParticipateRepository, DetailTrainingClassParticipateRepository>();
 
             // ATTENTION: if you do migration please check file README.md

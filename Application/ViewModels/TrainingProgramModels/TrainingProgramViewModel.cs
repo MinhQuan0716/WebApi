@@ -12,6 +12,8 @@ namespace Application.ViewModels.TrainingProgramModels
         public Guid? TrainingProgramId { get; set; }
         public string ProgramName { get; set; }
         public DateTime CreatedOn { get; set; }
+        public Guid CreatedBy { get; set; }
+        public string CreateByUserName { get; set; }
         public double Duration { get; set; }
         public string Status { get; set; }
         public ICollection<Syllabus>? Syllabuses { get; set; }

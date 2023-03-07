@@ -66,5 +66,14 @@ namespace WebAPI.Controllers
             if (result is not null) return Ok(result);
             else return BadRequest("Missing required fields");
         }
+        [Authorize]
+        [HttpGet]
+        public async Task<IActionResult> Search(string? searchString, string? status, string? createBy)
+        {
+            IEnumerable<TrainingProgramViewModel> obj = await _trainingProgramService.SearchTrainingProgramWithFilter(searchString, status, createBy);
+            if (obj != null && obj.Any())
+                return Ok(obj);
+            return NoContent();
+        }
     }
 }

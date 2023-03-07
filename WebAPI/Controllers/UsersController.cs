@@ -240,7 +240,7 @@ namespace WebAPI.Controllers
 
         [Authorize]
         [HttpGet]
-        public async Task<IActionResult> SearchUserWithFilter(string? searchString, string? gender, int? role)
+        public async Task<IActionResult> Search(string? searchString, string? gender, int? role)
         {
             IEnumerable<UserViewModel> obj = await _userService.SearchUsersWithFilter(searchString, gender, role);
             if (obj != null && obj.Any())
