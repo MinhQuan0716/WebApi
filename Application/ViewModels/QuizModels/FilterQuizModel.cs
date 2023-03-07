@@ -8,8 +8,8 @@ namespace Application.ViewModels.QuizModels
 {
     public class FilterQuizModel
     {
-        public ICollection<int> comsuon { get; set; }
+        public ICollection<int> QuizType { get; set; }
 
-        public ICollection<Guid> bun { get; set; }
+        public ICollection<Guid> QuizTopic { get; set; }
     }
 }

@@ -48,7 +48,7 @@ namespace WebAPI.Controllers
                 return NotFound();
             }
         }
-        [HttpGet("{id:maxlength(50):Guid}")]
+        [HttpDelete("{id:maxlength(50):Guid}")]
         public async Task<IActionResult> DeleteSyllabus(string id)
         {
             var checkSyllabus = await _syllabusService.DeleteSyllabussAsync(id);

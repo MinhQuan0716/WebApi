@@ -10,6 +10,6 @@ namespace Application.ViewModels.QuizModels
     {
         public Guid QuizId { get; set; }
         public Guid QuestionId { get; set; }
-        public Guid SubmitQuiz { get; set; }
+        //public Guid SubmitQuiz { get; set; }
     }
 }

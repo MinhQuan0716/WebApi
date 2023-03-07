@@ -167,7 +167,7 @@ namespace Application.Services
             }
             return result;
         }
-      
+
         public Task<List<Syllabus>> GetByName(string name)
         {
 
@@ -177,13 +177,13 @@ namespace Application.Services
 
         public async Task<Syllabus> GetSyllabusByID(Guid id)
         {
-        
+
 
             throw new NotImplementedException();
-        
+
         }
 
-     public    Task<List<SyllabusViewAllDTO>> GetAllSyllabus()
+        public Task<List<SyllabusViewAllDTO>> GetAllSyllabus()
         {
             var syllabusList = _unitOfWork.SyllabusRepository.GetAllAsync();
             return syllabusList;
@@ -193,14 +193,27 @@ namespace Application.Services
         {
             SyllabusShowDetailDTO viewDTO = new SyllabusShowDetailDTO();
 
-            var syllabusDetail = await _unitOfWork.SyllabusRepository.GetByIdAsync(SyllabusID);
-            viewDTO.SyllabusBase.SyllabusName = syllabusDetail.SyllabusName;
-            viewDTO.SyllabusBase.Code = syllabusDetail.Code;
-            viewDTO.SyllabusBase.CourseObject = syllabusDetail.CourseObjective;
-            viewDTO.SyllabusBase.TechRequirements = syllabusDetail.TechRequirements;
-            viewDTO.SyllabusBase.Duration = syllabusDetail.Duration;
+            Syllabus syllabusDetail = await _unitOfWork.SyllabusRepository.GetByIdAsync(SyllabusID);
+
+            SyllabusGeneralDTO syllabusGeneralDTO = new SyllabusGeneralDTO()
+            {
+
+                Code = syllabusDetail.Code,
+                CourseObject = syllabusDetail.CourseObjective,
+                Duration = syllabusDetail.Duration,
+                SyllabusName = syllabusDetail.SyllabusName,
+                TechRequirements = syllabusDetail.TechRequirements
+            };
+
+
+            viewDTO.SyllabusBase = syllabusGeneralDTO;
+            //viewDTO.SyllabusBase.SyllabusName = syllabusDetail.SyllabusName;
+            //viewDTO.SyllabusBase.Code = syllabusDetail.Code;
+            //viewDTO.SyllabusBase.CourseObject = syllabusDetail.CourseObjective;
+            //viewDTO.SyllabusBase.TechRequirements = syllabusDetail.TechRequirements;
+            //viewDTO.SyllabusBase.Duration = syllabusDetail.Duration;
             var unitList = await _unitOfWork.UnitRepository.FindAsync(x => x.SyllabusID == SyllabusID);
-           
+
             foreach (var unit in unitList)
             {
 
@@ -217,11 +230,12 @@ namespace Application.Services
                     TotalTime = (float)unit.TotalTime,
                     Lectures = lectures
                 };
+                List<UnitDetailDTO> units = new List<UnitDetailDTO>();
+                units.Add(unitAdd);
+                viewDTO.Units = units;
 
-                viewDTO.Units.Add(unitAdd);
-              
-               
-               
+
+
             }
             return viewDTO;
         }

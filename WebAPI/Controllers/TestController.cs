@@ -5,10 +5,10 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Controllers
 {
-    public class QuestionController : BaseController
+    public class TestController : BaseController
     {
         private readonly IQuestionService _quizService;
-        public QuestionController(IQuestionService quizService) => _quizService = quizService;
+        public TestController(IQuestionService quizService) => _quizService = quizService;
 
         [HttpPost]
         public async Task<IActionResult> AddQuestionIntoBank(CreateQuizIntoBankDTO quizObject)
@@ -63,7 +63,7 @@ namespace WebAPI.Controllers
                 return Ok("Delete quiz test successfully!");
             }
             return BadRequest("Fail to delete quiz test!");
-        }
+        }   
 
         [HttpGet]
         public async Task<IActionResult> SearchByName(string ContentName)
@@ -79,7 +79,7 @@ namespace WebAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> FilterQuizBank(FilterQuizModel name)
         {
-            var listName = await _quizService.Filter(name.bun, name.comsuon);
+            var listName = await _quizService.Filter(name.QuizTopic, name.QuizType);
             if (listName is not null)
             {
                 return Ok(listName);

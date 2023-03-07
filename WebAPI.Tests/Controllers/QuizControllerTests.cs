@@ -13,12 +13,12 @@ using WebAPI.Controllers;
 
 namespace WebAPI.Tests.Controllers
 {
-    public class QuestionControllerTests : SetupTest
+    public class QuizControllerTests : SetupTest
     {
-        public readonly QuestionController _questionController;
-        public QuestionControllerTests()
+        public readonly TestController _questionController;
+        public QuizControllerTests()
         {
-            _questionController = new QuestionController(_questionServiceMock.Object);
+            _questionController = new TestController(_questionServiceMock.Object);
         }
         [Fact]
         public async Task AddQuestionIntoBank_ShouldReturnCorrectValue()
@@ -108,16 +108,16 @@ namespace WebAPI.Tests.Controllers
             // Setup
             FilterQuizModel filter = new FilterQuizModel()
             {
-                bun = new List<Guid>(),
-                comsuon = new List<int>()
+                QuizTopic = new List<Guid>(),
+                QuizType = new List<int>()
             };
             FilterQuizModel filter_badrequest = new FilterQuizModel()
             {
-                bun = null,
-                comsuon = null
+               QuizType = null,
+                QuizTopic = null
             };
             var listName = new List<Question?>();
-            _questionServiceMock.Setup(x => x.Filter(filter.bun, filter.comsuon)).ReturnsAsync(listName);
+            _questionServiceMock.Setup(x => x.Filter(filter.QuizTopic, filter.QuizType)).ReturnsAsync(listName);
             _questionServiceMock.Setup(x => x.Filter(It.Is<List<Guid>>(x => x == null), It.Is<List<int>>(x => x == null))).ReturnsAsync(null as List<Question?>);
 
             // Act
