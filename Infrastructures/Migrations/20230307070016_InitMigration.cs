@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Infrastructures.Migrations
 {
     /// <inheritdoc />
-    public partial class Update : Migration
+    public partial class InitMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -316,11 +316,11 @@ namespace Infrastructures.Migrations
                     EndTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Code = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Duration = table.Column<double>(type: "float", nullable: false),
+                    Attendee = table.Column<string>(type: "nvarchar(max)", nullable: false, defaultValue: "null"),
+                    Branch = table.Column<string>(type: "nvarchar(max)", nullable: false, defaultValue: "null"),
                     LocationID = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     StatusClassDetail = table.Column<string>(type: "nvarchar(max)", nullable: false, defaultValue: "null"),
                     TrainingProgramId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Attendee = table.Column<string>(type: "nvarchar(max)", nullable: false, defaultValue: "null"),
-                    Branch = table.Column<string>(type: "nvarchar(max)", nullable: false, defaultValue: "null"),
                     CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "getutcdate()"),
                     CreatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     ModificationDate = table.Column<DateTime>(type: "datetime2", nullable: true),
