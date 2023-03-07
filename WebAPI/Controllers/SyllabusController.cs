@@ -48,7 +48,7 @@ namespace WebAPI.Controllers
                 return NotFound();
             }
         }
-        [HttpDelete("{id:maxlength(50):Guid}")]
+        [HttpGet]
         public async Task<IActionResult> DeleteSyllabus(string id)
         {
             var checkSyllabus = await _syllabusService.DeleteSyllabussAsync(id);
@@ -115,7 +115,7 @@ namespace WebAPI.Controllers
             else return BadRequest("Update Failed");
         }
 
-        [HttpPost]
+        [HttpGet]
         public async Task<IActionResult> ViewDetail(Guid SyllabusId)
         {
             var result = await _syllabusService.ViewDetailSyllabus(SyllabusId);

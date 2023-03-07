@@ -6,6 +6,7 @@ using AutoMapper;
 using Domain.Entities;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -248,7 +249,9 @@ namespace Application.Services
                         UserID = _claimsservice.GetCurrentUserId,
                         IsDeleted = false
                     };
-                    if (await _unitOfWork.SubmitQuizRepository.FindAsync(x => x.UserID == submitFromUser.UserID && x.DetailQuizQuestionID == submitFromUser.DetailQuizQuestionID) is null)
+                    var checkcout = await _unitOfWork.SubmitQuizRepository.FindAsync(x => x.UserID == submitFromUser.UserID && x.DetailQuizQuestionID == submitFromUser.DetailQuizQuestionID);
+                    
+                    if (!checkcout.IsNullOrEmpty())
                     {
                         await _unitOfWork.SubmitQuizRepository.AddAsync(submitFromUser);
                         await _unitOfWork.SaveChangeAsync();
