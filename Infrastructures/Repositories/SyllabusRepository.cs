@@ -65,6 +65,7 @@ namespace Infrastructures.Repositories
                                                    .Select(n => new SyllabusViewAllDTO
                                                    {
                                                        SyllabusID = n.deunits.unit.un.SyllabusID,
+                                                       Name=n.deunits.unit.sy.s.SyllabusName,
                                                        Code = n.deunits.unit.sy.s.Code,
                                                        CreatedOn=n.deunits.unit.sy.s.CreationDate,
                                                        CreatedBy = n.deunits.unit.sy.u.FullName,

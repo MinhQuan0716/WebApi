@@ -8,7 +8,8 @@ namespace Application.ViewModels.SyllabusModels
 {
     public  class SyllabusViewAllDTO
     {
-        public Guid SyllabusID { get; set; } 
+        public Guid SyllabusID { get; set; }
+        public string Name { get; set; }
         public string Code { get; set; }
         public DateTime CreatedOn { get; set; }
         public double Duration { get; set; }
