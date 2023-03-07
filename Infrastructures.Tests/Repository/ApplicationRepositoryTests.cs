@@ -43,6 +43,7 @@ namespace Infrastructures.Tests.Repository
                 .With(x=>x.Attendee)
                 .With(x=>x.StatusClassDetail)
                 .With(x=>x.Branch)
+                .With(x=>x.Code)
                 .Create();
             _dbContext.Add(trainingClassMock);
             _dbContext.SaveChanges();

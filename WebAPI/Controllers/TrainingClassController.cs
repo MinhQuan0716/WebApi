@@ -4,21 +4,46 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 
 namespace WebAPI.Controllers
 {
-    [Authorize]
+   // [Authorize]
     public class TrainingClassController : BaseController
     {
         private readonly ITrainingClassService _trainingClassService;
         private readonly IClaimsService _claimsService;
         private readonly IMapper _mapper;
+        private ITrainingClassService @object;
 
         public TrainingClassController(ITrainingClassService trainingClassService, IClaimsService claimsService, IMapper mapper)
         {
             _trainingClassService = trainingClassService;
             _claimsService = claimsService;
             _mapper = mapper;
+        }
+
+       
+
+        [HttpGet]
+        public async Task<IActionResult> SearchClassByName(string name)
+        {
+            var result = await _trainingClassService.SearchClassByName(name);
+            if (result != null)
+            {
+                return Ok(result);
+            }
+            return BadRequest();
+        }
+        [HttpGet]
+        public async Task<IActionResult> DuplicateClass(Guid id)
+        {
+            var result = await _trainingClassService.DuplicateClass(id);
+            if (result)
+            {
+                return Ok(result);
+            }
+            return BadRequest();
         }
 
         [Authorize(Roles = "Trainer")]
@@ -59,6 +84,26 @@ namespace WebAPI.Controllers
                 return BadRequest("Create training class fail: " + ex.Message);
             }
 
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetAllTraningClass()
+        {
+            var listResult = _trainingClassService.GetAllTrainingClassesAsync();
+            if (listResult != null)
+            {
+                return Ok(listResult);
+            }
+            return BadRequest();
+        }
+        [HttpPost]
+        public async Task<IActionResult> FilterResult(string[]? locationName, DateTime? date1, DateTime? date2)
+        {
+            var fiterResult = await _trainingClassService.FilterLocation(locationName, date1, date2);
+            if (fiterResult.IsNullOrEmpty())
+            {
+                return NotFound();
+            }
+            return Ok(fiterResult);
         }
         [Authorize(Roles = "Trainer")]
         [HttpPut]

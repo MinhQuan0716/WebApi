@@ -1,4 +1,5 @@
-﻿using Domain.Entities;
+﻿using Application.ViewModels.TrainingClassModels;
+using Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,5 +10,7 @@ namespace Application.Repositories
 {
     public interface ITrainingClassRepository:IGenericRepository<TrainingClass>
     {
+        public List<TrainingClass> SearchClassByName(string name);
+        public List<TrainingClassDTO> GetTrainingClasses();
     }
 }

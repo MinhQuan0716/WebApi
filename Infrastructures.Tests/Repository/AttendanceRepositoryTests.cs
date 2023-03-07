@@ -50,6 +50,7 @@ namespace Infrastructures.Tests.Repository
                 .With(x=>x.StatusClassDetail)
                 .With(x=>x.Branch)
                 .With(x=>x.Attendee)
+                .With(x=>x.Code)
                 .CreateMany(2).ToArray();
             await _dbContext.AddRangeAsync(trainingClasses);
             _dbContext.SaveChanges();
@@ -168,8 +169,9 @@ namespace Infrastructures.Tests.Repository
             {
                 Id = Guid.NewGuid(),
                 Name = "Test Class",
-                Attendee="Intern",
-                Branch="FSU",
+                Attendee = "Intern",
+                Branch = "FSU",
+                Code = "Senier",
                 StatusClassDetail=nameof(StatusClassDetail.Active)
             };
             var attendanceMocks = new List<Attendance>

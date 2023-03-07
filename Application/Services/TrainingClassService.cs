@@ -1,4 +1,5 @@
-﻿using Application.Interfaces;
+﻿using Application.Filter.ClassFilter;
+using Application.Interfaces;
 using Application.ViewModels.TrainingClassModels;
 using AutoMapper;
 using Domain.Entities;
@@ -33,7 +34,40 @@ namespace Application.Services
             _unitOfWork.TrainingClassRepository.SoftRemove(trainingClassObj);
             return (await _unitOfWork.SaveChangeAsync() > 0);
         }
+        public async Task<List<TrainingClass>> SearchClassByName(string name)
+        {
+            var listClass = _unitOfWork.TrainingClassRepository.SearchClassByName(name);
+            return listClass;
+        }
+        public async Task<bool> DuplicateClass(Guid id)
+        {
+            var result = await _unitOfWork.TrainingClassRepository.GetByIdAsync(id);
+            if (result != null)
+            {
+                TrainingClass trainingClass = new TrainingClass()
+                {
+                    Name = result.Name,
+                    StartTime = result.StartTime,
+                    EndTime = result.EndTime,
+                    CreatedBy = result.CreatedBy,
+                    Code=result.Code,
+                    Attendee=result.Attendee,   
+                    Branch=result.Branch,
+                    CreationDate = result.CreationDate,
+                    LocationID = result.LocationID,
+                    DeleteBy = result.DeleteBy,
+                    DeletionDate = result.DeletionDate,
+                    IsDeleted = result.IsDeleted,
+                    TrainingProgramId = result.TrainingProgramId,
+                    StatusClassDetail = result.StatusClassDetail,
 
+                };
+                await _unitOfWork.TrainingClassRepository.AddAsync(trainingClass);
+                await _unitOfWork.SaveChangeAsync();
+                return true;
+            }
+            return false;
+        }
         public async Task<TrainingClassViewModel?> CreateTrainingClassAsync(CreateTrainingClassDTO createTrainingClassDTO)
         {
             try
@@ -97,16 +131,23 @@ namespace Application.Services
             }
         }
 
-        public async Task<List<TrainingClass>> GetAllTrainingClassesAsync()
+        public async Task<List<TrainingClassDTO>> GetAllTrainingClassesAsync()
         {
-            try
-            {
-                var classes = await _unitOfWork.TrainingClassRepository.GetAllAsync();
-                return classes;
-            } catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
+            var trainingClasses = _unitOfWork.TrainingClassRepository.GetTrainingClasses();
+            return trainingClasses;
         }
+
+
+        public async Task<List<TrainingClassDTO>> FilterLocation(string[]? locationName, DateTime? date1, DateTime? date2)
+        {
+            ICriterias<TrainingClassDTO> locationCriteria = new LocationCriteria(locationName);
+            ICriterias<TrainingClassDTO> dateCriteria = new DateCriteria(date1, date2);
+            ICriterias<TrainingClassDTO> andCirteria = new AndClassFilter(dateCriteria, locationCriteria);
+            var getAll = _unitOfWork.TrainingClassRepository.GetTrainingClasses();
+            var filterResult = andCirteria.MeetCriteria(getAll);
+            return filterResult;
+        }
+
+    
     }
 }

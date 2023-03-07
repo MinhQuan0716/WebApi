@@ -13,10 +13,13 @@ namespace Domain.Entities
         public string Name { get; set; } = null!;
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
-
+        public string Code { get; set; }
+        public double Duration { get; set; }
+        
+        public string Attendee { get; set; }
+        public string Branch { get; set; }
         public Guid? LocationID { get; set; }
         public Location? Location { get; set; }
-
         public ICollection<DetailTrainingClassParticipate> TrainingClassParticipates { get; set; } = default!;
         public ICollection<Attendance> Attendances { get; set; } = default!;
 
@@ -26,7 +29,6 @@ namespace Domain.Entities
         public TrainingProgram TrainingProgram { get; set; } = default!;
         public ICollection<Applications> Applications { get; set; }
         public ICollection<ClassSchedule> ClassSchedules { get; set; }
-        public string Attendee { get; set; }
-        public string Branch { get; set; }
+       
     }
 }
