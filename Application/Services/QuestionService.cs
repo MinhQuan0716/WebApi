@@ -249,9 +249,9 @@ namespace Application.Services
                         UserID = _claimsservice.GetCurrentUserId,
                         IsDeleted = false
                     };
-                    var checkcout = await _unitOfWork.SubmitQuizRepository.FindAsync(x => x.UserID == submitFromUser.UserID && x.DetailQuizQuestionID == submitFromUser.DetailQuizQuestionID);
+                    var checkDuplicate = await _unitOfWork.SubmitQuizRepository.FindAsync(x => x.UserID == submitFromUser.UserID && x.DetailQuizQuestionID == submitFromUser.DetailQuizQuestionID);
                     
-                    if (!checkcout.IsNullOrEmpty())
+                    if (checkDuplicate.Count == 0)
                     {
                         await _unitOfWork.SubmitQuizRepository.AddAsync(submitFromUser);
                         await _unitOfWork.SaveChangeAsync();
