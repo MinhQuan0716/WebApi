@@ -15,6 +15,7 @@ namespace Application.ViewModels.TrainingClassModels
         public Guid LocationID { get; set; }
         public Guid TrainingProgramId { get; set; }
         public string StatusClassDetail { get; set; }
+        public string Code { get; set; }
         public string Attendee { get; set; }
         public string Branch { get; set; }
 
