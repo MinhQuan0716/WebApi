@@ -51,5 +51,8 @@ https://docs.microsoft.com/en-us/dotnet/core/testing/unit-testing-code-coverage?
 3. Start test
 https://learning.postman.com/docs/writing-scripts/script-references/test-examples/#testing-status-codes
 
+## Azure Server
+Link: https://deploy-fa-training.azurewebsites.net/swagger/index.html
+
 &copy; 2023 FA Internship - Group456
 
