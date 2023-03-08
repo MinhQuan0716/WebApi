@@ -68,9 +68,7 @@ namespace Application.Services
             var syllabusFind = await _unitOfWork.SyllabusRepository.GetByIdAsync(Guid.Parse(syllabusID));
             if (syllabusFind is not null && syllabusFind.IsDeleted == false)
             {
-                syllabusFind.DeletionDate = DateTime.Now;
-                syllabusFind.DeleteBy = _claimsservice.GetCurrentUserId;
-                syllabusFind.IsDeleted = true;
+                _unitOfWork.SyllabusRepository.SoftRemove(syllabusFind);
                 check = true;
             }
             await _unitOfWork.SaveChangeAsync();
