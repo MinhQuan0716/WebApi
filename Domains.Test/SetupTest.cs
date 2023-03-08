@@ -70,6 +70,7 @@ namespace Domains.Test
         protected readonly Mock<ILectureService> _lectureServiceMock;
         protected readonly Mock<IAuditPlanService> _auditPlanServiceMock;
 
+        protected readonly Mock<IAuditSubmissionService> _auditSubmissionServiceMock;
 
         protected readonly Mock<IGradingService> _gradingServiceMock;
 
@@ -118,7 +119,6 @@ namespace Domains.Test
             _trainingClassServiceMock = new Mock<ITrainingClassService>();
             _locationRepositoryMock = new Mock<ILocationRepository>();
             _locationServiceMock = new Mock<ILocationService>();
-            _trainingProgramServiceMock = new Mock<ITrainingProgramService>();
             _unitServiceMock = new Mock<IUnitService>();
             _syllabusServiceMock = new Mock<ISyllabusService>();
             _feedbackServiceMock = new Mock<IFeedbackService>();
@@ -134,7 +134,7 @@ namespace Domains.Test
             _appConfigurationMock = new Mock<AppConfiguration>();
             _config = new Mock<IConfiguration>();
             _mapperMock = new Mock<IMapper>();
-
+            _trainingProgramServiceMock = new Mock<ITrainingProgramService>();
             _trainingClassRepositoryMock = new Mock<ITrainingClassRepository>();
             _trainingClassServiceMock = new Mock<ITrainingClassService>();
 
@@ -143,6 +143,8 @@ namespace Domains.Test
             _auditPlanServiceMock = new Mock<IAuditPlanService>();
 
             _gradingServiceMock = new Mock<IGradingService>();
+            _auditPlanServiceMock = new Mock<IAuditPlanService>();
+            _auditSubmissionServiceMock = new Mock<IAuditSubmissionService>();
         }
 
         public void Dispose()

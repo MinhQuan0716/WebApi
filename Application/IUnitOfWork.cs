@@ -35,6 +35,8 @@ namespace Application
         public ITopicRepository TopicRepository { get; }
 
         public IGradingRepository GradingRepository { get; }
+        public IAuditSubmissionRepository AuditSubmissionRepository { get; }
+        public IDetailAuditSubmissionRepository DetailAuditSubmissionRepository { get; }
         public Task<int> SaveChangeAsync();
         public IDetailTrainingClassParticipateRepository DetailTrainingClassParticipateRepository { get; }
     }

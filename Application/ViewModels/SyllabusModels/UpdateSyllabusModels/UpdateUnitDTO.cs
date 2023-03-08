@@ -12,6 +12,7 @@ namespace Application.ViewModels.SyllabusModels.UpdateSyllabusModels
         public Guid? UnitID { get; set; }
         public string UnitName { get; set; }
         public float TotalTime { get; set; }
+        public int Session { get; set; }
         public Guid? syllabusId { get; set; }
         public ICollection<UpdateLectureDTO>? UpdateLectureDTOs { get; set; }    
     }

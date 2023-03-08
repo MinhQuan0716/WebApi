@@ -1,6 +1,8 @@
 ﻿using Application.Interfaces;
 using Application.Repositories;
+using Application.ViewModels.AuditModels.ViewModels;
 using Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,6 +22,21 @@ namespace Infrastructures.Repositories
               claimsService)
         {
             _dbContext = dbContext;
+        }
+
+        public async Task<IEnumerable<AuditQuestionViewModel>> GetAuditQuestionsByAuditId(Guid auditId)
+        {
+            var auditQuestionsList = from s in _dbContext.AuditQuestions
+                                     join d in _dbContext.DetailAuditQuestions
+                                     on s.Id equals d.AuditQuestionId
+                                     where d.AuditPlanId == auditId
+                                     select new AuditQuestionViewModel
+                                     {
+                                         Id = d.Id,
+                                         Description = s.Description
+                                     };
+
+            return await auditQuestionsList.ToListAsync();
         }
     }
 }

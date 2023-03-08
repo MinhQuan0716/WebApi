@@ -8,6 +8,7 @@ namespace Application.ViewModels.AuditModels.ViewModels
 {
     public class AuditQuestionViewModel
     {
+        public Guid Id { get; set; }
         public string Description { get; set; } = default!;
     }
 }

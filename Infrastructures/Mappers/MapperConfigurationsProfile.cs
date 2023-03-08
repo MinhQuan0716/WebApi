@@ -17,6 +17,11 @@ using Application.ViewModels.TrainingProgramModels;
 using Application.ViewModels.AtttendanceModels;
 using Domain.Enums;
 using Application.ViewModels.GradingModels;
+using Application.ViewModels.AuditModels;
+using Application.ViewModels.AuditModels.ViewModels;
+using Application.ViewModels.AuditModels.AuditSubmissionModels.CreateModels;
+using Application.ViewModels.AuditModels.AuditSubmissionModels.ViewModels;
+using Application.ViewModels.AuditModels.AuditSubmissionModels.UpdateModels;
 
 namespace Infrastructures.Mappers
 {
@@ -206,6 +211,10 @@ namespace Infrastructures.Mappers
                 .ForMember(x => x.Email, options => options.MapFrom(dto => dto.User.Email))
                 .ForMember(x => x.FullName, options => options.MapFrom(dto => dto.User.FullName))
                 .ReverseMap();
+
+            CreateMap<CreateAuditSubmissionDTO, AuditSubmission>().ReverseMap();
+            CreateMap<AuditSubmission, AuditSubmissionViewModel>().ReverseMap();
+            CreateMap<AuditSubmission, UpdateSubmissionDTO>().ReverseMap();
         }
     }
 }

@@ -19,8 +19,8 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet]
-       /* [Authorize]
-        [ClaimRequirement(nameof(PermissionItem.TrainingProgramPermission), nameof(PermissionEnum.View))]*/
+        [Authorize]
+        [ClaimRequirement(nameof(PermissionItem.TrainingProgramPermission), nameof(PermissionEnum.View))]
         public async Task<IActionResult> GetDetail(Guid trainingProgramId)
         {
             var trainingProgram = await _trainingProgramService.GetTrainingProgramDetail(trainingProgramId);
@@ -29,8 +29,8 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost]
-       /* [Authorize]
-        [ClaimRequirement(nameof(PermissionItem.TrainingProgramPermission), nameof(PermissionEnum.Create))]*/
+        [Authorize]
+        [ClaimRequirement(nameof(PermissionItem.TrainingProgramPermission), nameof(PermissionEnum.Create))]
         public async Task<IActionResult> Create(CreateTrainingProgramDTO createTrainingProgramDTO)
         {
             var result = await _trainingProgramService.CreateTrainingProgram(createTrainingProgramDTO);
@@ -39,8 +39,8 @@ namespace WebAPI.Controllers
         }
 
         [HttpPut]
-       /* [Authorize]
-        [ClaimRequirement(nameof(PermissionItem.TrainingProgramPermission), nameof(PermissionEnum.Modifed))]*/
+        [Authorize]
+        [ClaimRequirement(nameof(PermissionItem.TrainingProgramPermission), nameof(PermissionEnum.Modifed))]
         public async Task<IActionResult> Update(UpdateTrainingProgramDTO updateProgramDTO) 
         {
             var result = await _trainingProgramService.UpdateTrainingProgram(updateProgramDTO);
@@ -49,8 +49,8 @@ namespace WebAPI.Controllers
         }
 
         [HttpDelete]
-      /*  [Authorize]
-        [ClaimRequirement(nameof(PermissionItem.TrainingProgramPermission), nameof(PermissionEnum.Modifed))]*/
+        [Authorize]
+        [ClaimRequirement(nameof(PermissionItem.TrainingProgramPermission), nameof(PermissionEnum.Modifed))]
         public async Task<IActionResult> Delete(Guid trainingProgramId)
         {
             var result = await _trainingProgramService.DeleteTrainingProgram(trainingProgramId);

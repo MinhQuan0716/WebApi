@@ -16,5 +16,6 @@ namespace Application.Interfaces
         public Task<AuditPlanViewModel?> ViewDetailAuditPlan(Guid auditId);
         public Task<bool> UpdateAuditPlan(UpdateAuditDTO updateAuditDTO);
         public Task<bool> DeleteAuditPlan(Guid auditPlanId);
+        Task<AuditPlan> GetAuditPlanById(Guid auditId);
     }
 }

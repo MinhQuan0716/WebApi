@@ -73,11 +73,11 @@ namespace Application.Tests.Services
                                                        .Without(x => x.AuditSubmissions)
                                                        .Without(x => x.DetailAuditQuestions)
                                                        .Create();
-            var questions = _fixture.Build<AuditQuestion>().CreateMany(2);
+            var questions = _fixture.Build<AuditQuestionViewModel>().CreateMany(2);
             var auditView = _mapperConfig.Map<AuditPlanViewModel>(auditPlan);
             _unitOfWorkMock.Setup(x => x.AuditPlanRepository.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(auditPlan);
-            _unitOfWorkMock.Setup(x => x.AuditQuestionRepository.GetAuditQuestionsByAuditPlanId(It.IsAny<Guid>())).ReturnsAsync(questions);
-
+            
+            _unitOfWorkMock.Setup(x => x.DetailAuditQuestionRepository.GetAuditQuestionsByAuditId(It.IsAny<Guid>())).ReturnsAsync(questions);
 
             var result = await auditPlanService.ViewDetailAuditPlan(auditPlan.Id);
             result.Should().BeAssignableTo<AuditPlanViewModel>();

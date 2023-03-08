@@ -17,7 +17,8 @@ namespace Infrastructures
         private readonly IApplicationRepository _applicationRepository;
         private readonly ITrainingMaterialRepository _trainingMaterialRepository;
 
-
+        private readonly IAuditSubmissionRepository _auditSubmissionRepository;
+        private readonly IDetailAuditSubmissionRepository _detailAuditSubmissionRepository;
         private readonly ITrainingClassRepository _trainingClassRepository;
         public readonly ILocationRepository _locationRepository;
         private readonly IFeedbackRepository _feedbackRepository;
@@ -45,7 +46,8 @@ namespace Infrastructures
             IQuizRepository quizRepository, IDetailQuizQuestionRepository detailQuizQuestionRepository, ITopicRepository topicRepository, IQuestionRepository questionRepository,
             IGradingRepository gradingRepository,
             IAuditPlanRepository auditPlanRepository, IAuditQuestionRepository auditQuestionRepository, IDetailAuditQuestionRepository detailAuditQuestionRepository,
-            IDetailTrainingClassParticipateRepository detailTrainingClassParticipateRepository, ISubmitQuizRepository submitQuizRepository)
+            IDetailTrainingClassParticipateRepository detailTrainingClassParticipateRepository, ISubmitQuizRepository submitQuizRepository,
+            IAuditSubmissionRepository auditSubmissionRepository, IDetailAuditSubmissionRepository detailAuditSubmissionRepository)
 
         {
             _dbContext = dbContext;
@@ -78,6 +80,8 @@ namespace Infrastructures
 
             _submitQuizRepository = submitQuizRepository;
             _detailTrainingClassParticipateRepository = detailTrainingClassParticipateRepository;
+            _auditSubmissionRepository = auditSubmissionRepository;
+            _detailAuditSubmissionRepository = detailAuditSubmissionRepository;
         }
             public IUserRepository UserRepository => _userRepository;
         public ISyllabusRepository SyllabusRepository => _syllabusRepository;
@@ -123,6 +127,8 @@ namespace Infrastructures
 
         public ISubmitQuizRepository SubmitQuizRepository => _submitQuizRepository;
 
+        public IAuditSubmissionRepository AuditSubmissionRepository => _auditSubmissionRepository;
+        public IDetailAuditSubmissionRepository DetailAuditSubmissionRepository => _detailAuditSubmissionRepository;
 
         public async Task<int> SaveChangeAsync()
         {

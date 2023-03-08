@@ -428,11 +428,11 @@ namespace Application.Tests.Services
             var listTrainingProgram = _mapperConfig.Map<List<TrainingProgram>>(listViewTrainingProgram);
             _unitOfWorkMock.Setup(a => a.TrainingProgramRepository.GetAllAsync()).ReturnsAsync(listTrainingProgram);
             var listLoadAllProgramId = from a in listViewTrainingProgram
-                                       select new
-                                       {
-                                           Id = a.Id
-                                       };
-            IList<ViewAllTrainingProgramDTO> resultOutputList = new List<ViewAllTrainingProgramDTO>();
+                                             select new
+                                             {
+                                                 Id = a.Id
+                                             };
+            IList<ViewAllTrainingProgramDTO> resultOutputList=new List<ViewAllTrainingProgramDTO>();
             var trainingProgram = _fixture.Build<TrainingProgram>().Without(x => x.TrainingClasses).Without(x => x.DetailTrainingProgramSyllabus).Create();
             var mapperView = _mapperConfig.Map<ViewAllTrainingProgramDTO>(trainingProgram);
             var syllabusMock = _fixture.Build<Syllabus>()

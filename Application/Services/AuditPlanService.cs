@@ -71,6 +71,12 @@ namespace Application.Services
             return false;
         }
 
+        public async Task<AuditPlan> GetAuditPlanById(Guid auditId)
+        {
+            var result = await _unitOfWork.AuditPlanRepository.GetByIdAsync(auditId);
+            if (result is not null) return result;
+            else throw new Exception("Not found");
+        }
 
         public async Task<bool> UpdateAuditPlan(UpdateAuditDTO updateAuditDTO)
         {
@@ -116,8 +122,8 @@ namespace Application.Services
             if (auditPlan is not null)
             {
                 var auditView = _mapper.Map<AuditPlanViewModel>(auditPlan);
-                var questions = await _unitOfWork.AuditQuestionRepository.GetAuditQuestionsByAuditPlanId(auditId);
-                var questionsView = _mapper.Map<IEnumerable<AuditQuestionViewModel>>(questions);
+                
+                var questionsView = await _unitOfWork.DetailAuditQuestionRepository.GetAuditQuestionsByAuditId(auditId);
                 auditView.AuditQuestions = questionsView;
                 return auditView;
             }
