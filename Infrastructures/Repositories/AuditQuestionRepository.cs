@@ -26,16 +26,22 @@ namespace Infrastructures.Repositories
 
         public async Task<IEnumerable<AuditQuestion>> GetAuditQuestionsByAuditPlanId(Guid auditPlanId)
         {
-            var questions = from a in _dbContext.AuditQuestions
-                            join d in _dbContext.DetailAuditQuestions
-                            on a.Id equals d.AuditQuestionId
-                            where a.IsDeleted == false && d.IsDeleted == false && d.AuditPlanId == auditPlanId
-                            select new AuditQuestion
-                            {
-                                Id = a.Id,
-                                Description = a.Description
-                            };
-            if (questions is not null) return await questions.ToListAsync();
+            // Old Query
+            /*            var questions = from a in _dbContext.AuditQuestions
+                                        join d in _dbContext.DetailAuditQuestions
+                                        on a.Id equals d.AuditQuestionId
+                                        where a.IsDeleted == false && d.IsDeleted == false && d.AuditPlanId == auditPlanId
+                                        select new AuditQuestion
+                                        {
+                                            Id = a.Id,
+                                            Description = a.Description
+                                        };*/
+
+            // Newer Query
+            var questions = _dbContext.DetailAuditQuestions.Include(x => x.AuditQuestion)
+                            .Where(x => x.IsDeleted == false && x.AuditPlanId == auditPlanId)
+                            .Select(x => new AuditQuestion {Id = x.AuditQuestionId, Description = x.AuditQuestion.Description } );
+            if (questions is not null) return await questions.ToListAsync()                                                                                                                                                                                                                                                                                                                                                      ;
             else throw new Exception("Can not find any AuditQuestion");
             
         }

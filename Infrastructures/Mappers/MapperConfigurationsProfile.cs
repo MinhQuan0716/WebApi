@@ -22,6 +22,7 @@ using Application.ViewModels.AuditModels.ViewModels;
 using Application.ViewModels.AuditModels.AuditSubmissionModels.CreateModels;
 using Application.ViewModels.AuditModels.AuditSubmissionModels.ViewModels;
 using Application.ViewModels.AuditModels.AuditSubmissionModels.UpdateModels;
+using Application.ViewModels.TrainingProgramModels.TrainingProgramView;
 
 namespace Infrastructures.Mappers
 {
@@ -164,9 +165,7 @@ namespace Infrastructures.Mappers
             CreateMap<CreateLocationDTO, Location>();
             CreateMap<Location, LocationDTO>()
                 .ForMember(x => x._Id, src => src.MapFrom(x => x.Id));
-            CreateMap<TrainingProgram, TrainingProgramViewModel>()
-                .ForMember(dest => dest.TrainingProgramId, opt => opt.MapFrom(src => src.Id))
-                .ForMember(dest => dest.CreatedOn, opt => opt.MapFrom(src => src.CreationDate)).ReverseMap();
+
 
   
             CreateMap<CreateTrainingProgramDTO, TrainingProgram>().ReverseMap();
@@ -175,9 +174,21 @@ namespace Infrastructures.Mappers
             CreateMap<Feedback, FeedbackModel>().ReverseMap();
             CreateMap<Feedback, FeedbackVM>().ReverseMap();
 
-            CreateMap<TrainingProgram, TrainingProgramViewModel>()
-                .ForMember(dest => dest.TrainingProgramId, opt => opt.MapFrom(src => src.Id))
-                .ForMember(dest => dest.CreatedOn, opt => opt.MapFrom(src => src.CreationDate)).ReverseMap();
+            CreateMap<TrainingProgramViewModel, TrainingProgram>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.TrainingProgramId))
+                .ForMember(dest => dest.ProgramName, opt => opt.MapFrom(src => src.TrainingTitle))
+                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.TrainingStatus))
+                .ForMember(dest => dest.Duration, opt => opt.MapFrom(src => src.TrainingDuration.TotalHours))
+                .ForMember(dest => dest.CreatedBy, opt => opt.MapFrom(src => src.Modified.author))
+                .ForMember(dest => dest.CreationDate, opt => opt.MapFrom(src => src.Modified.Date))
+                .ReverseMap();
+
+            CreateMap<SyllabusTrainingProgramViewModel, Syllabus>()
+                .ForMember(dest => dest.SyllabusName, opt => opt.MapFrom(src => src.SyllabusName))
+                .ForMember(dest => dest.CreatedBy, opt => opt.MapFrom(src => src.Modified.author))
+                .ForMember(dest => dest.CreationDate, opt => opt.MapFrom(src => src.Modified.Date))
+                .ForMember(dest => dest.Duration, opt => opt.MapFrom(src => src.SyllabusDuration.TotalHours))
+                .ReverseMap();
 
 
             CreateMap<CreateTrainingProgramDTO, TrainingProgram>().ReverseMap();
@@ -191,7 +202,7 @@ namespace Infrastructures.Mappers
 
             CreateMap<TrainingProgram, ViewAllTrainingProgramDTO>()
                 .ForMember(destinationMember=>destinationMember.Id,options=>options.MapFrom(src=>src.Id))
-                .ForMember(destinationMember=>destinationMember.ProgramName,options=>options.MapFrom(src=>src.ProgramName))
+                .ForMember(destinationMember=>destinationMember.TrainingTitle,options=>options.MapFrom(src=>src.ProgramName))
                 .ForMember(destinationMember=>destinationMember.CreationDate,options=>options.MapFrom(src=>src.CreationDate))
                 .ForMember(destinationMember=>destinationMember.CreatedBy,options=>options.MapFrom(src=>src.CreatedBy))
                 .ForMember(destinationMember=>destinationMember.Duration, options=>options.MapFrom(src=>src.Duration))

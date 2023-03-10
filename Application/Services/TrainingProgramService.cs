@@ -1,6 +1,7 @@
 ﻿using Application.Filter.TrainingProgramFilter;
 using Application.Interfaces;
 using Application.ViewModels.TrainingProgramModels;
+using Application.ViewModels.TrainingProgramModels.TrainingProgramView;
 using AutoMapper;
 using Domain.Entities;
 using System;
@@ -32,7 +33,8 @@ namespace Application.Services
            {
                 var trainingProgramView = _mapper.Map<TrainingProgramViewModel>(result);
                 if(trainingProgramView.TrainingProgramId is not null)
-                trainingProgramView.Syllabuses = (ICollection<Syllabus>?)await _unitOfWork.SyllabusRepository.GetSyllabusByTrainingProgramId(trainingProgramView.TrainingProgramId.Value);
+                trainingProgramView.Contents = _mapper.Map<ICollection<SyllabusTrainingProgramViewModel>>((ICollection<Syllabus>?)await _unitOfWork.SyllabusRepository.GetSyllabusByTrainingProgramId(trainingProgramView.TrainingProgramId.Value));
+                
                 return trainingProgramView;
            }
             return null;
@@ -131,7 +133,7 @@ namespace Application.Services
                 {
                     //viet ham lay syllabusid by trainingprogramid
                     var trainingProgramView = _mapper.Map<ViewAllTrainingProgramDTO>(result);
-                        trainingProgramView.Syllabuses = (ICollection<Syllabus>?)await _unitOfWork.SyllabusRepository.GetSyllabusByTrainingProgramId(trainingProgramView.Id);
+                        trainingProgramView.Content = (ICollection<Syllabus>?)await _unitOfWork.SyllabusRepository.GetSyllabusByTrainingProgramId(trainingProgramView.Id);
                     viewAllTraining.Add(trainingProgramView);
                 }
             }

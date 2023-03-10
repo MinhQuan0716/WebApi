@@ -10,11 +10,6 @@ namespace Application.ViewModels.SyllabusModels
     public class SyllabusViewDTO
     {
         public SyllabusGeneralDTO SyllabusBase { get; set; }
-
-       
-
-      
-
         public ICollection<UnitDTO> Units { get; set; }
     }
 }

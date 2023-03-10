@@ -1,11 +1,20 @@
-﻿using System.Net;
+﻿using Application.Utils;
+using System.Net;
 
 namespace WebAPI.Middlewares
 {
     public class GlobalExceptionMiddleware : IMiddleware
     {
+
+        private readonly ISendMailHelper _sendmailHelper;
+        public GlobalExceptionMiddleware(ISendMailHelper sendmailHelper)
+        {
+            _sendmailHelper = sendmailHelper;
+        }
+
         public async Task InvokeAsync(HttpContext context, RequestDelegate next)
         {
+
             try
             {
                 await next(context);

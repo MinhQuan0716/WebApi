@@ -219,25 +219,20 @@ public class UserService : IUserService
         var user = await _unitOfWork.UserRepository.GetUserByEmailAsync(email);
         if (user != null)
         {
-
             var key = StringUtils.RandomString(6);
             var result = await _sendMailHelper.SendMailAsync(email, "ResetPassword", key);
             if (result)
             {
-                _memoryCache.Set(key, email);
+                _memoryCache.Set(key, email, DateTimeOffset.Now.AddMinutes(10));
                 return key;
             }
 
-            return "";
+            return string.Empty;
         }
         else
         {
-
             throw new Exception("User not available");
-
         }
-
-
     }
 
     public async Task<bool> UpdateUserInformation(UpdateDTO updateUser)

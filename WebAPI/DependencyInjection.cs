@@ -87,7 +87,7 @@ namespace WebAPI
                     };
                 });
 
-            // As always, handlers must be provided for the requirements of the authorization policies
+            // As always, handlers must be provided for the requirements of the authorization   
             //services.AddAuthorization(options =>
             //{
             //    options

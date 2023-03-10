@@ -17,7 +17,7 @@ namespace Infrastructures
     {
         public static IServiceCollection AddInfrastructuresService(this IServiceCollection services, string databaseConnection)
         {
-            services.AddScoped<ISendMailHelper, SendMailHelper>();
+            services.AddTransient<ISendMailHelper, SendMailHelper>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IUnitRepository, UnitRepository>();
             services.AddScoped<IAttendanceRepository, AttendanceRepository>();
