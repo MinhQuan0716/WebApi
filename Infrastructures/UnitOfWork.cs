@@ -74,7 +74,7 @@ namespace Infrastructures
             _topicRepository = topicRepository;
             _questionRepository = questionRepository;
             _gradingRepository = gradingRepository;
-
+            _auditPlanRepository = auditPlanRepository;
             _auditQuestionRepository = auditQuestionRepository;
             _detailAuditQuestionRepository = detailAuditQuestionRepository;
 
