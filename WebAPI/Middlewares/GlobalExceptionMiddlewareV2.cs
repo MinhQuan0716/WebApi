@@ -21,12 +21,12 @@ namespace WebAPI.Middlewares
             }
             catch (Exception ex)
             {
-                var emailService = context.RequestServices.GetService<ISendMailHelper>();
+                // var emailService = context.RequestServices.GetService<ISendMailHelper>();
                 
-                if (emailService is not null)
-                {
-                    await emailService.SendMailAsync("quangtmse161987@fpt.edu.vn", "Exception", ex.ToString()); 
-                }
+                // if (emailService is not null)
+                // {
+                //     await emailService.SendMailAsync("quangtmse161987@fpt.edu.vn", "Exception", ex.ToString()); 
+                // }
                 
                 context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
                 context.Response.ContentType = "text/plain";
