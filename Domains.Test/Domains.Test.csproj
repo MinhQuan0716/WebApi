@@ -31,7 +31,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Application\Application.csproj" />
-    <ProjectReference Include="..\Infrastructures\Infrastructures.csproj" />
+    <ProjectReference Include="..\Domain\Domain.csproj" />
     <ProjectReference Include="..\WebAPI\WebAPI.csproj" />
   </ItemGroup>
 

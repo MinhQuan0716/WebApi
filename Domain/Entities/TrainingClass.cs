@@ -29,6 +29,5 @@ namespace Domain.Entities
         public TrainingProgram TrainingProgram { get; set; } = default!;
         public ICollection<Applications> Applications { get; set; }
         public ICollection<ClassSchedule> ClassSchedules { get; set; }
-       
     }
 }

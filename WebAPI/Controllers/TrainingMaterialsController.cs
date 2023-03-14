@@ -3,6 +3,8 @@ using Application.Utils;
 using Domain.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.FileProviders;
+using System.Net.Http.Headers;
 
 namespace WebAPI.Controllers
 {
@@ -10,9 +12,12 @@ namespace WebAPI.Controllers
     {
         private readonly ITrainingMaterialService _trainingMaterialService;
 
-        public TrainingMaterialsController(ITrainingMaterialService trainingMaterialService)
+        private IFileProvider _fileProvider;
+
+        public TrainingMaterialsController(ITrainingMaterialService trainingMaterialService, IFileProvider fileProvider)
         {
             _trainingMaterialService = trainingMaterialService;
+            _fileProvider = fileProvider;
         }
 
         [HttpGet("DownloadFile")]
@@ -28,7 +33,7 @@ namespace WebAPI.Controllers
             return File(content, _trainingMaterialService.GetMimeTypes()[type], fileName);
         }
 
-        [HttpPost("UploadFile")]
+        [HttpPost("UploadFileToDatabase")]
         [Authorize]
         [ClaimRequirement(nameof(PermissionItem.TrainingMaterialPermission), nameof(PermissionEnum.Create))]
         public async Task<IActionResult> Upload(IFormFile file, Guid lectureId)
@@ -39,6 +44,39 @@ namespace WebAPI.Controllers
                 return NotFound();
             }
             return Ok();
+        }
+
+        [HttpPost("UploadStaticFile")]
+        public IActionResult UploadStaticFile(IFormFile file)
+        {
+            try
+            {
+                //var file = Request.Form.Files[0];
+
+                var folderName = Path.Combine("wwwroot");
+                var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
+                if (file.Length > 0)
+                {
+                    var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
+                    var fullPath = Path.Combine(pathToSave, fileName);
+                    var dbPath = Path.Combine(folderName, fileName);
+
+                    DateTimeOffset lastModifiedDate = _fileProvider.GetFileInfo(dbPath).LastModified;
+                    using (var stream = new FileStream(fullPath, FileMode.Create))
+                    {
+                        file.CopyTo(stream);
+                    }
+                    return Ok(new { dbPath });
+                }
+                else
+                {
+                    return BadRequest();
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex}");
+            }
         }
 
         [HttpDelete("DeleteFile")]

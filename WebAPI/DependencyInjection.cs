@@ -19,6 +19,7 @@ using WebAPI.Services;
 using WebAPI.Controllers;
 using Infrastructures;
 using Application.Commons;
+using Microsoft.Extensions.FileProviders;
 
 namespace WebAPI
 {
@@ -33,7 +34,7 @@ namespace WebAPI
             services.AddSingleton<GlobalExceptionMiddleware>();
             services.AddSingleton<PerformanceMiddleware>();
             services.AddSingleton<Stopwatch>();
-         services.AddScoped<ILectureService, LectureService>();
+            services.AddScoped<ILectureService, LectureService>();
             
             services.AddScoped<IClaimsService, ClaimsService>();
             services.AddScoped<IAttendanceService, AttendanceService>();
