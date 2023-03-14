@@ -2,11 +2,7 @@
 using Application.Interfaces;
 using AutoMapper;
 using Domain.Entities;
-using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Microsoft.Net.Http.Headers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -50,6 +46,7 @@ namespace Application.Services
                         TMatType = System.IO.Path.GetExtension(file.FileName),
                         TMatContent = memoryStream.ToArray(),
                         lectureID = lectureId,
+                        //lectureID = _unitOfWork.LectureRepository.GetLectureIdByName(lectureName),
                     };
 
                     await _unitOfWork.TrainingMaterialRepository.AddAsync(material);
@@ -62,7 +59,6 @@ namespace Application.Services
                 return material;
             }
         }
-
         // get type of the upload file
         public Dictionary<string, string> GetMimeTypes()
         {
@@ -127,15 +123,5 @@ namespace Application.Services
             }
             return isUpdated;
         }
-
-       /* public static HtmlString Script<T>(IFormFile file)
-        {
-            
-            DateTime lastModified = File.GetLastWriteTime(file);
-
-            TagBuilder builder = new TagBuilder("script");
-            builder.Attributes["src"] = path + "?modified=" + lastModified.ToString("yyyyMMddhhmmss");
-            return new HtmlString(builder.ToString());
-        }*/
     }
 }

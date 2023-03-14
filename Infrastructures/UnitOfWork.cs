@@ -83,7 +83,7 @@ namespace Infrastructures
             _auditSubmissionRepository = auditSubmissionRepository;
             _detailAuditSubmissionRepository = detailAuditSubmissionRepository;
         }
-        public IUserRepository UserRepository => _userRepository;
+            public IUserRepository UserRepository => _userRepository;
         public ISyllabusRepository SyllabusRepository => _syllabusRepository;
 
 
