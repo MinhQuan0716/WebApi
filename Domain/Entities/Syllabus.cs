@@ -9,7 +9,11 @@ namespace Domain.Entities
     public class Syllabus : BaseEntity
     {
         public string SyllabusName { get; set; }
+      
         public string Code { get; set; }
+      
+        public string Status { get; set; }
+        public string Level { get; set; }
         public string CourseObjective { get;set; }
         public string TechRequirements { get; set; }
         public double Duration { get; set; }

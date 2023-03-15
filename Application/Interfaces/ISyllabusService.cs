@@ -1,4 +1,5 @@
 ﻿﻿using Application.ViewModels.SyllabusModels;
+using Application.ViewModels.SyllabusModels.FixViewSyllabus;
 using Application.ViewModels.SyllabusModels.UpdateSyllabusModels;
 using Application.ViewModels.SyllabusModels.ViewDetail;
 using Domain.Entities;
@@ -22,6 +23,9 @@ namespace Application.Interfaces
         public Task<bool> UpdateSyllabus(Guid syllabusId, UpdateSyllabusDTO updateItem);
 
         public Task<SyllabusShowDetailDTO> ViewDetailSyllabus(Guid SyllabusID);
+
+        public Task<FinalViewSyllabusDTO> FinalViewSyllabusDTO(Guid SyllabusID);
+
 
 
     }

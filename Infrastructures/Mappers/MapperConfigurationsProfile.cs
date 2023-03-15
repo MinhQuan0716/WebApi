@@ -23,6 +23,7 @@ using Application.ViewModels.AuditModels.AuditSubmissionModels.CreateModels;
 using Application.ViewModels.AuditModels.AuditSubmissionModels.ViewModels;
 using Application.ViewModels.AuditModels.AuditSubmissionModels.UpdateModels;
 using Application.ViewModels.TrainingProgramModels.TrainingProgramView;
+using Application.ViewModels.SyllabusModels.FixViewSyllabus;
 
 namespace Infrastructures.Mappers
 {
@@ -122,11 +123,27 @@ namespace Infrastructures.Mappers
                 .ForMember(dest => dest.Duration, opt => opt.MapFrom(src => src.Duration))
                 .ForMember(dest => dest.Units, opt => opt.MapFrom(src => src.Units.Select(x => new Unit
                 {
-                    Id = x.UnitID.Value,
+                    Id = x.UnitID!.Value,
                     UnitName = x.UnitName,
                     TotalTime = x.TotalTime,
-                    SyllabusID = x.syllabusId.Value
+                    SyllabusID = x.syllabusId!.Value
                 })))
+                .ReverseMap();
+
+
+            // Mapper khung dien 
+            CreateMap<Syllabus, GeneralInformationDTO>()
+                .ForMember(x => x.Id, s => s.MapFrom(src => src.Id))
+                .ForMember(x => x.CreatedOn, s => s.MapFrom(src => src.CreationDate))
+                .ForMember(x => x.ProgramName, s => s.MapFrom(src => src.SyllabusName))
+                .ForMember(x => x.CreatedBy, s => s.MapFrom(src => src.CreatedBy))
+               .ForPath(x => x.Duration.TotalHours, g => g.MapFrom(x => x.Duration))
+                .ReverseMap();
+            CreateMap<Syllabus, ShowDetailSyllabusNewDTO>()
+                .ForMember(x => x.Status, src => src.MapFrom(x => x.Status))
+                .ForMember(x => x.Level, src => src.MapFrom(x => x.Level))
+                .ForMember(x => x.CourseObjectives, src => src.MapFrom(x => x.CourseObjective))
+                .ForMember(x => x.TechnicalRequirements, src => src.MapFrom(x => x.TechRequirements))
                 .ReverseMap();
 
             CreateMap<UpdateUnitLectureDTO, DetailUnitLecture>()

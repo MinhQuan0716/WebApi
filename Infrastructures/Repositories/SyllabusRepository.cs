@@ -2,9 +2,11 @@
 using Application.Interfaces;
 using Application.Repositories;
 using Application.ViewModels.SyllabusModels;
+using Application.ViewModels.SyllabusModels.FixViewSyllabus;
 using AutoMapper;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Client;
 using Microsoft.IdentityModel.Tokens;
 using static Microsoft.EntityFrameworkCore.EntityState;
 namespace Infrastructures.Repositories
@@ -76,7 +78,81 @@ namespace Infrastructures.Repositories
                                  .ToList()
      })
      .ToList();
-      return syllabusList;
+            return syllabusList;
+        }
+    
+
+        //public  async Task<SyllabusOutlineDTO> GetBySession(int Session, Guid syllabusID)
+        //{
+        //    //throw new NotImplementedException();
+        //    //var list_unit_in_session =  from unit in _dbContext.Units
+        //    List<ContentSyllabusDTO> contentSyllabusDTOs = new List<ContentSyllabusDTO>();
+        //    var list_unit_in_session = _dbContext.Units.Where(x => x.Session == Session && x.SyllabusID == syllabusID);
+        //    ContentSyllabusDTO contentSyllabusDTO1 = new ContentSyllabusDTO();
+        //    contentSyllabusDTO1.Lessons = LessonDTOsAsync(Session, syllabusID);
+        //    foreach (var item in list_unit_in_session)
+        //    {
+        //        //var lessonDTOs = await (from unit in _dbContext.Units
+        //        //                  join detaillecture in _dbContext.DetailUnitLecture on unit.Id equals detaillecture.UnitId
+        //        //                  join lecture in _dbContext.Lectures on detaillecture.LectureID equals lecture.Id
+        //        //                  where unit.Session == Session
+        //        //                  select new LessonDTO
+        //        //                  {
+
+        //        //                      DeliveryType = lecture.DeliveryType,
+        //        //                      Hours = lecture.Duration,
+        //        //                      Name = lecture.LectureName,
+        //        //                      OutputStandard = lecture.OutputStandards,
+        //        //                      Status = lecture.Status,
+
+        //        //                  }).ToListAsync();
+
+
+        //        ContentSyllabusDTO contentSyllabusDTO = new ContentSyllabusDTO
+        //        {
+        //            Hours = 20,
+        //            UnitName = item.UnitName,
+        //            UnitNum = item.UnitNum,
+        //            Lessons = lessonDTOs
+
+        //        };
+
+        //        contentSyllabusDTOs.Add(contentSyllabusDTO);
+
+        //    }
+
+
+        //    SyllabusOutlineDTO syllabusOutlineDTOL = new SyllabusOutlineDTO
+        //    {
+        //        Day = Session,
+        //        Content = contentSyllabusDTOs,
+
+        //    };
+        //    return syllabusOutlineDTOL;
+        //}
+
+        public List<LessonDTO> LessonDTOsAsync(Guid unitID)
+        {
+            var lessonDTOs = (from unit in _dbContext.Units
+                              join detaillecture in _dbContext.DetailUnitLecture on unit.Id equals detaillecture.UnitId
+                              join lecture in _dbContext.Lectures on detaillecture.LectureID equals lecture.Id
+                              where unit.Id == unitID
+                              select new LessonDTO
+                              {
+
+                                  DeliveryType = lecture.DeliveryType,
+                                  Hours = lecture.Duration,
+                                  Name = lecture.LectureName,
+                                  OutputStandard = lecture.OutputStandards,
+                                  Status = lecture.Status,
+
+                              }).ToList();
+            return lessonDTOs;
+        }
+
+        public Task<SyllabusOutlineDTO> GetBySession(int Session, Guid syllabusID)
+        {
+            throw new NotImplementedException();
         }
     }
 }

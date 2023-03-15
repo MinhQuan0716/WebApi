@@ -8,7 +8,7 @@ namespace Application.ViewModels.TrainingProgramModels.TrainingProgramView
 {
     public class DurationView
     {
-        public double TotalDate { get {return  TotalHours / 24;} } 
+        public double TotalDate { get { return TotalHours / 8; }  }
         public double TotalHours { get; set; }
 
     }

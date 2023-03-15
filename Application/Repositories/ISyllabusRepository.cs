@@ -1,4 +1,5 @@
 ﻿using Application.ViewModels.SyllabusModels;
+using Application.ViewModels.SyllabusModels.FixViewSyllabus;
 using Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -18,5 +19,11 @@ namespace Application.Repositories
 
         Task<Syllabus> AddSyllabusAsync(SyllabusGeneralDTO syllabusDTO);
         Task<IEnumerable<Syllabus>> GetSyllabusByTrainingProgramId(Guid trainingProgramId);
+
+        Task<SyllabusOutlineDTO> GetBySession(int Session,Guid syllabusID);
+
+        public List<LessonDTO> LessonDTOsAsync(Guid unitID);
+
+
     }
 }

@@ -14,6 +14,8 @@ using Application.Repositories;
 using Application.ViewModels.QuizModels;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Application.ViewModels.SyllabusModels.ViewDetail;
+using Application.ViewModels.SyllabusModels.FixViewSyllabus;
+using Application.ViewModels.TrainingProgramModels.TrainingProgramView;
 
 namespace Application.Services
 {
@@ -237,8 +239,135 @@ namespace Application.Services
             }
             return viewDTO;
         }
+
+
+        public async Task<FinalViewSyllabusDTO> FinalViewSyllabusDTO(Guid SyllabusID)
+        {
+                
+            FinalViewSyllabusDTO view = new FinalViewSyllabusDTO();
+            var SyllabusInformation = await _unitOfWork.SyllabusRepository.GetByIdAsync(SyllabusID);
+            var UnitInformation = await _unitOfWork.UnitRepository.FindAsync(x => x.SyllabusID == SyllabusID);
+
+            var generalInformation = _mapper.Map<GeneralInformationDTO>(SyllabusInformation);
+
+
+            var generalSyllabus = _mapper.Map<ShowDetailSyllabusNewDTO>(SyllabusInformation);
+            generalSyllabus.General = generalInformation;
+            //generalSyllabus.General.Duration.TotalHours = 12;
+
+            view.General = generalSyllabus;
+
+            //Process OutlinePart
+            //List<Unit> ProcessPart = await _unitOfWork.UnitRepository.FindAsync(x => x.SyllabusID == SyllabusID);
+            List<int> ListSession = new List<int>();
+            List<SyllabusOutlineDTO> lst = new List<SyllabusOutlineDTO>();
+            foreach (var item in UnitInformation)
+            {
+                ListSession = checkSession(item.Session, ListSession, UnitInformation.Count());
+
+            }
+
+            for (int i = 0; i < ListSession.Count; i++)
+            {
+                //List<LessonDTO> lessonDTOs = new List<LessonDTO>();
+
+                //SyllabusOutlineDTO syllabusOutlineDTO = await _unitOfWork.SyllabusRepository.GetBySession(ListSession[i], SyllabusID);
+
+                //lay nhung unit co session 
+                var unit_have_session = await _unitOfWork.UnitRepository.FindAsync(x => x.Session == ListSession[i]);
+
+                //trong tung unit co nhieu lesson 
+                foreach (var item in unit_have_session)
+                {
+                    //tim thong tin cua Lesson 
+                    List<ContentSyllabusDTO> contentSyllabusDTOs = new List<ContentSyllabusDTO>();
+
+                    ContentSyllabusDTO contentSyllabusDTO = new ContentSyllabusDTO()
+                    {
+                        Lessons = _unitOfWork.SyllabusRepository.LessonDTOsAsync(item.Id),
+                        Hours = 10,
+                        UnitName = item.UnitName,
+                        UnitNum = item.UnitNum
+                    };
+
+                    contentSyllabusDTOs.Add(contentSyllabusDTO);
+
+                    SyllabusOutlineDTO syllabusOutlineDTO = new SyllabusOutlineDTO()
+                    {
+                        Content = contentSyllabusDTOs,
+                        Day = ListSession[i]
+                    };
+                    lst.Add(syllabusOutlineDTO);
+
+                }
+                //lst.Add(syllabusOutlineDTO);
+
+            }
+            //view.General
+
+            TimeAllocationDTO allocationDTO = new TimeAllocationDTO()
+            {
+                AssignmentPercent = 54,
+                ConceptPercent = 29,
+                GuidePercent = 9,
+                ExamPercent = 6,
+                TestPercent = 1
+            };
+
+            //view.outlineSyllabusDTO.timeAllocationDTO = allocationDTO;
+            //view.outlineSyllabusDTO.outlineDTOs = lst;
+
+            OutlineSyllabusDTO viewOutline = new OutlineSyllabusDTO()
+            {
+                outlineDTOs = lst,
+                timeAllocationDTO = allocationDTO
+            };
+            view.outlineSyllabusDTO = viewOutline;
+
+            AssessmentSchemeDTO assessmentSchemeDTO = new AssessmentSchemeDTO()
+            {
+                AssignmentPercent = 15,
+                FinalPercent = 70,
+                QuizPercent = 15,
+                FinalTheoryPercent = 40,
+                GPAPercent = 70,
+                FinalPreactisePercent = 60
+            };
+            OtherSyllabusDTO otherSyllabusDTO = new OtherSyllabusDTO()
+            {
+                assessmentScheme = assessmentSchemeDTO,
+                TrainingDeliveryPriciple = "ai biet gi ba"
+            };
+            view.OtherSyllabusDTOOther = otherSyllabusDTO;
+            return view;
+        }
+
+        private List<int> checkSession(int Session, List<int> SessionL, int countNum)
+        {
+            //List<int> ListSession = new List<int>();
+            if (SessionL.Count == 0)
+            {
+                SessionL = new List<int>();
+                SessionL.Add(Session);
+            }
+            else
+            {
+
+
+                for (int i = 0; i <= countNum - 1; i++)
+
+                    if (SessionL[i] != Session)
+                    {
+                        SessionL.Add(Session);
+                    }
+            }
+            return SessionL;
+
+        }
     }
+
 }
+
 
 
 

@@ -125,5 +125,17 @@ namespace WebAPI.Controllers
             }
             return BadRequest();
         }
+
+
+        [HttpGet]
+        public async Task<IActionResult> ViewDetailFormat(Guid SyllabusId)
+        {
+            var result = await _syllabusService.FinalViewSyllabusDTO(SyllabusId);
+            if(result != null)
+            {
+                return Ok(result);
+            }
+            return BadRequest("Not Found ");
+        }
     }
 }
