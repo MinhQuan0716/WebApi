@@ -18,7 +18,7 @@ namespace Domain.Entities
         public string AttendancePermission { get; set; }
         public string TrainingMaterialPermission { get; set; }
         public string ApplicationPermission { get; set; }
-
+       
         public ICollection<User> Users { get; set; } 
     }
 }

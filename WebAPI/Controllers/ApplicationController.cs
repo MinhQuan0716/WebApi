@@ -11,7 +11,6 @@ using Microsoft.AspNetCore.Mvc;
 namespace WebAPI.Controllers
 {
 
-    [Authorize]
     public class ApplicationController : BaseController
     {
         private readonly IApplicationService _service;
@@ -23,8 +22,12 @@ namespace WebAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateApplication([FromBody] ApplicationDTO applicationDTO)
         {
-            await _service.CreateApplication(applicationDTO);
-            return NoContent();
+            bool isAbsent= await _service.CreateApplication(applicationDTO);
+            if (isAbsent)
+            {
+                return Ok("Create application succesfully");
+            }
+            return BadRequest("Error");
         }
 
         [HttpGet]

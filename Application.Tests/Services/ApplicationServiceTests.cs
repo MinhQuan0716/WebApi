@@ -28,7 +28,7 @@ namespace Application.Tests.Services
         private readonly IApplicationService _applicationService;
         public ApplicationServiceTests()
         {
-            _applicationService = new ApplicationService(_unitOfWorkMock.Object, _mapperConfig, configuration, _currentTimeMock.Object);
+            _applicationService = new ApplicationService(_unitOfWorkMock.Object, _mapperConfig, configuration, _currentTimeMock.Object,_claimsServiceMock.Object);
             _unitOfWorkMock.Setup(x => x.ApplicationRepository).Returns(_applicationRepositoryMock.Object);
             _unitOfWorkMock.Setup(x => x.TrainingClassRepository).Returns(_trainingClassRepositoryMock.Object);
 

@@ -12,8 +12,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using static Domain.Enums.Application.ApplicationFilterByEnum;
-namespace Application.Services
-{
+
+namespace Application.Services { 
+  
+
 
     public class ApplicationService : IApplicationService
     {
@@ -21,12 +23,14 @@ namespace Application.Services
         private readonly IMapper _mapper;
         private readonly AppConfiguration _configuration;
         private readonly ICurrentTime _currentTime;
-        public ApplicationService(IUnitOfWork unitOfWork, IMapper mapper, AppConfiguration configuration, ICurrentTime currentTime)
+    private readonly IClaimsService _claimsService;
+        public ApplicationService(IUnitOfWork unitOfWork, IMapper mapper, AppConfiguration configuration, ICurrentTime currentTime,IClaimsService claimsService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _configuration = configuration;
             _currentTime = currentTime;
+        _claimsService = claimsService;
         }
         public async Task<bool> UpdateStatus(Guid id, bool status)
         {
@@ -42,12 +46,25 @@ namespace Application.Services
             return false;
         }
 
-        public async Task CreateApplication(ApplicationDTO applicationDTO)
+        public async Task<bool> CreateApplication(ApplicationDTO applicationDTO)
         {
 
-            var Test = _mapper.Map<Applications>(applicationDTO);
-            await _unitOfWork.ApplicationRepository.AddAsync(Test);
-            await _unitOfWork.SaveChangeAsync();
+         //   var Test = _mapper.Map<Applications>(applicationDTO);
+            var detailTrainingClass = await _unitOfWork.DetailTrainingClassParticipateRepository.GetDetailTrainingClassParticipateAsync(_claimsService.GetCurrentUserId, applicationDTO.TrainingClassID);
+            if(detailTrainingClass != null)
+            {
+            Applications applications = new Applications()
+            {
+                TrainingClassId=applicationDTO.TrainingClassID,
+                UserId=_claimsService.GetCurrentUserId,
+                AbsentDateRequested=applicationDTO.AbsentDateRequested,
+                Reason=applicationDTO.Reason,
+            };
+
+                await _unitOfWork.ApplicationRepository.AddAsync(applications);
+            }
+            return await _unitOfWork.SaveChangeAsync() > 0;
+
 
         }
 
@@ -64,7 +81,7 @@ namespace Application.Services
                 condition = new ApplicationDateTimeFilterDTO()
                 {
                     AbsentDateRequested = _currentTime.GetCurrentTime(),
-                    Approved = null,
+                    Approved = false,
                     UserID = Guid.Empty,
                     Reason = searchString
                 };

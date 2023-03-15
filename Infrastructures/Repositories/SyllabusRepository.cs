@@ -58,22 +58,25 @@ namespace Infrastructures.Repositories
 
         public async Task<List<SyllabusViewAllDTO>> GetAllAsync()
         {
-            var syllabusList = _dbContext.Syllabuses.Join(_dbContext.Users, s => s.UserId, u => u.Id, (s, u) => new { s, u })
-                                                    .Join(_dbContext.Units, sy => sy.s.Id, un => un.SyllabusID, (sy, un) => new { sy, un })
-                                                     .Join(_dbContext.DetailUnitLecture, unit => unit.un.Id, deunit => deunit.UnitId, (unit, deunit) => new { unit, deunit })
-                                                     .Join(_dbContext.Lectures, deunits => deunits.deunit.LectureID, le => le.Id, (deunits, le) => new { deunits, le })
-                                                   .Select(n => new SyllabusViewAllDTO
-                                                   {
-                                                       SyllabusID = n.deunits.unit.un.SyllabusID,
-                                                       Name=n.deunits.unit.sy.s.SyllabusName,
-                                                       Code = n.deunits.unit.sy.s.Code,
-                                                       CreatedOn=n.deunits.unit.sy.s.CreationDate,
-                                                       CreatedBy = n.deunits.unit.sy.u.FullName,
-                                                       Duration = n.deunits.unit.sy.s.Duration,
-                                                       OutputStandard = n.le.OutputStandards
-
-                                                   }).ToList();
-            return syllabusList;
+            var syllabusList = _dbContext.Syllabuses
+     .Include(s => s.User)
+     .Include(s => s.Units)
+         .ThenInclude(u => u.DetailUnitLectures)
+             .ThenInclude(dul => dul.Lecture)
+     .Select(s => new SyllabusViewAllDTO
+     {
+         SyllabusID = s.Id,
+         Name = s.SyllabusName,
+         Code = s.Code,
+         CreatedOn = s.CreationDate,
+         CreatedBy = s.User.UserName,
+         Duration = s.Duration,
+         OutputStandard = s.Units.SelectMany(u => u.DetailUnitLectures)
+                                 .Select(dul => dul.Lecture.OutputStandards)
+                                 .ToList()
+     })
+     .ToList();
+      return syllabusList;
         }
     }
 }

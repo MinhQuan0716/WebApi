@@ -52,7 +52,7 @@ namespace Infrastructures
         #endregion
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
+        {/*
             base.OnModelCreating(modelBuilder);
             new UserConfiguration().Configure(modelBuilder.Entity<User>());
             new RoleConfiguration().Configure(modelBuilder.Entity<Role>());
@@ -78,7 +78,9 @@ namespace Infrastructures
             new TopicConfiguration().Configure(modelBuilder.Entity<Topic>());
             new LectureConfiguration().Configure(modelBuilder.Entity<Lecture>());   
             new GradingConfiguration().Configure(modelBuilder.Entity<Grading>());
-            new LectureConfiguration().Configure(modelBuilder.Entity<Lecture>());
+            new LectureConfiguration().Configure(modelBuilder.Entity<Lecture>());*/
+            new RoleConfiguration().Configure(modelBuilder.Entity<Role>());
+            modelBuilder.Entity<Lecture>().HasOne(l => l.Quiz).WithOne(q => q.Lecture).HasForeignKey<Quiz>(l => l.LectureID);
            
         }
 

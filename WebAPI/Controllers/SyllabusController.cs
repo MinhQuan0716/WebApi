@@ -25,7 +25,7 @@ namespace WebAPI.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllSyllabus()
         {
-            var getSyllabusList = _syllabusService.GetAllSyllabus();
+            var getSyllabusList =await  _syllabusService.GetAllSyllabus();
             if (getSyllabusList != null)
             {
                return Ok(getSyllabusList);

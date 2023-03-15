@@ -17,6 +17,6 @@ namespace Application.Interfaces
         public Task<TrainingClass> GetTrainingClassByIdAsync(string trainingClassId);
         public Task<TrainingClassViewModel?> CreateTrainingClassAsync(CreateTrainingClassDTO createTrainingClassDTO);
         public Task<List<TrainingClassDTO>> GetAllTrainingClassesAsync();
-        public Task<List<TrainingClassDTO>> FilterLocation(string[]? locationName, DateTime? date1, DateTime? date2);
+        public Task<List<TrainingClassDTO>> FilterLocation(string[]? locationName, string branchName, DateTime? date1, DateTime? date2, string[]? classStatus, string[]? attendInClass);
     }
 }

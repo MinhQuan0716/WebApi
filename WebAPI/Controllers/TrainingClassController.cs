@@ -1,6 +1,8 @@
 ﻿using Application.Interfaces;
+using Application.Utils;
 using Application.ViewModels.TrainingClassModels;
 using AutoMapper;
+using Domain.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -33,9 +35,11 @@ namespace WebAPI.Controllers
             {
                 return Ok(result);
             }
-            return BadRequest();
+            return NoContent();
         }
         [HttpGet]
+        [Authorize]
+        [ClaimRequirement(nameof(PermissionItem.ClassPermission), nameof(PermissionEnum.Create))]
         public async Task<IActionResult> DuplicateClass(Guid id)
         {
             var result = await _trainingClassService.DuplicateClass(id);
@@ -46,8 +50,10 @@ namespace WebAPI.Controllers
             return BadRequest();
         }
 
-        [Authorize(Roles = "Trainer")]
+      
         [HttpPut]
+        [Authorize]
+        [ClaimRequirement(nameof(PermissionItem.ClassPermission), nameof(PermissionEnum.Modifed))]
         public async Task<IActionResult> UpdateTrainingClass(string trainingClassId, UpdateTrainingCLassDTO updateTrainingCLassDTO)
         {
             try
@@ -67,7 +73,8 @@ namespace WebAPI.Controllers
             }
         }
         [HttpPost]
-        [Authorize(Roles = "Trainer")]
+        [Authorize]
+        [ClaimRequirement(nameof(PermissionItem.ClassPermission), nameof(PermissionEnum.Create))]
         public async Task<IActionResult> CreateTrainingClass(CreateTrainingClassDTO classDTO)
         {
             try
@@ -88,7 +95,7 @@ namespace WebAPI.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllTraningClass()
         {
-            var listResult = _trainingClassService.GetAllTrainingClassesAsync();
+            var listResult =await  _trainingClassService.GetAllTrainingClassesAsync();
             if (listResult != null)
             {
                 return Ok(listResult);
@@ -96,17 +103,19 @@ namespace WebAPI.Controllers
             return BadRequest();
         }
         [HttpPost]
-        public async Task<IActionResult> FilterResult(string[]? locationName, DateTime? date1, DateTime? date2)
+        public async Task<IActionResult> FilterResult(TrainingClassFilterModel trainingClassFilterModel)
         {
-            var fiterResult = await _trainingClassService.FilterLocation(locationName, date1, date2);
+            var fiterResult = await _trainingClassService.FilterLocation(trainingClassFilterModel.locationName,trainingClassFilterModel.branchName,trainingClassFilterModel.date1,trainingClassFilterModel.date2,trainingClassFilterModel.classStatus,trainingClassFilterModel.attendInClass);
             if (fiterResult.IsNullOrEmpty())
             {
-                return NotFound();
+                return NoContent();
             }
             return Ok(fiterResult);
         }
-        [Authorize(Roles = "Trainer")]
+       
         [HttpPut]
+        [Authorize]
+        [ClaimRequirement(nameof(PermissionItem.ClassPermission),nameof(PermissionEnum.Modifed))]
         public async Task<IActionResult> SoftRemoveTrainingClass(string trainingClassId)
         {
             try

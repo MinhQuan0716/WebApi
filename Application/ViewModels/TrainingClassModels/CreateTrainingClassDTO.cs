@@ -18,7 +18,6 @@ namespace Application.ViewModels.TrainingClassModels
         public string Code { get; set; }
         public string Attendee { get; set; }
         public string Branch { get; set; }
-
-        public ICollection<Guid>? UserId { get; set; }
+        public Guid UserId { get; set; }
     }
 }

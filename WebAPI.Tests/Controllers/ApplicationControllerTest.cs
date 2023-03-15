@@ -35,7 +35,7 @@ namespace WebAPI.Tests.Controllers
             // Act
             var result = await _applicationController.CreateApplication(model);
             // Assert
-            result.Should().BeOfType<NoContentResult>();
+            result.Should().BeOfType<BadRequestObjectResult>();
 
         }
         [Fact]

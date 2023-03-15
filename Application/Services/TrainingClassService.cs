@@ -138,11 +138,14 @@ namespace Application.Services
         }
 
 
-        public async Task<List<TrainingClassDTO>> FilterLocation(string[]? locationName, DateTime? date1, DateTime? date2)
+        public async Task<List<TrainingClassDTO>> FilterLocation(string[]? locationName, string branchName, DateTime? date1, DateTime? date2, string[]? classStatus, string[]?attendInClass)
         {
             ICriterias<TrainingClassDTO> locationCriteria = new LocationCriteria(locationName);
             ICriterias<TrainingClassDTO> dateCriteria = new DateCriteria(date1, date2);
-            ICriterias<TrainingClassDTO> andCirteria = new AndClassFilter(dateCriteria, locationCriteria);
+            ICriterias<TrainingClassDTO> branchCriteria = new ClassBranchCriteria(branchName);
+            ICriterias<TrainingClassDTO> statusCriteria=new StatusClassCriteria(classStatus);
+            ICriterias<TrainingClassDTO> attendCriteria=new AttendeeCriteria(attendInClass);    
+            ICriterias<TrainingClassDTO> andCirteria = new AndClassFilter(dateCriteria, locationCriteria,branchCriteria, statusCriteria,attendCriteria);
             var getAll = _unitOfWork.TrainingClassRepository.GetTrainingClasses();
             var filterResult = andCirteria.MeetCriteria(getAll);
             return filterResult;

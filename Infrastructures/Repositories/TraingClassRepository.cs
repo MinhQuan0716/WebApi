@@ -2,6 +2,7 @@
 using Application.Repositories;
 using Application.ViewModels.TrainingClassModels;
 using Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,24 +21,23 @@ namespace Infrastructures.Repositories
         }
         public List<TrainingClassDTO> GetTrainingClasses()
         {
-            var listGetAll = (from a in _dbContext.TrainingClasses
-                              join l in _dbContext.Locations on a.LocationID equals l.Id
-                              join u in _dbContext.Users on a.CreatedBy equals u.Id
-
-
-                              select new TrainingClassDTO
-                              {
-                                  Name = a.Name,
-                                  LocationName = l.LocationName,
-                                  CreationDate = a.CreationDate,
-                                  Code = a.Code,
-                                  CreatedBy = u.UserName,
-                                  StartDate = a.StartTime,
-                                  EndDate = a.EndTime,
-                              }
-
-                             ).ToList();
-            return listGetAll;
+            var getAllTrainingClass=_dbContext.TrainingClasses                             
+                                   .Select(t=>new TrainingClassDTO
+                                  {
+                                      Name= t.Name,
+                                      LocationName=t.Location.LocationName,
+                                      CreationDate=t.CreationDate,
+                                      Code=t.Code,
+                                      Branch=t.Branch,
+                                      StartDate=t.StartTime,
+                                      EndDate=t.EndTime,
+                                      Attendee=t.Attendee,
+                                      TotalDay=(t.EndTime-t.StartTime).TotalDays,
+                                      TotalHour =(t.EndTime-t.StartTime).TotalHours,
+                                      Status=t.StatusClassDetail,
+                                      CreatedBy=string.Join(",",_dbContext.Users.Where(x=>x.Id==t.CreatedBy).Select(u=>u.UserName))
+                                  }).ToList();  
+            return getAllTrainingClass;
         }
 
         public List<TrainingClass> SearchClassByName(string name)

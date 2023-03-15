@@ -195,9 +195,8 @@ namespace Infrastructures.Mappers
             CreateMap<UpdateTrainingProgramDTO, TrainingProgram>().ReverseMap();
 
             CreateMap<Applications, ApplicationDTO>()
-                .ForMember(dest => dest.UserID, opt => opt.MapFrom(src => src.UserId))
+                .ForMember(dest => dest.TrainingClassID, opt => opt.MapFrom(src => src.TrainingClassId))
                 .ForMember(dest => dest.Reason, opt => opt.MapFrom(src => src.Reason))
-                .ForMember(dest => dest.Approved, opt => opt.MapFrom(src => src.Approved))
                 .ForMember(dest => dest.AbsentDateRequested, opt => opt.MapFrom(src => src.AbsentDateRequested)).ReverseMap();
 
             CreateMap<TrainingProgram, ViewAllTrainingProgramDTO>()

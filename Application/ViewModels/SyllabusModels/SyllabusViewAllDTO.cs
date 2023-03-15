@@ -14,6 +14,6 @@ namespace Application.ViewModels.SyllabusModels
         public DateTime CreatedOn { get; set; }
         public double Duration { get; set; }
         public string CreatedBy { get; set; }
-        public string OutputStandard { get; set; }
+        public ICollection<string> OutputStandard { get; set; }
     }
 }

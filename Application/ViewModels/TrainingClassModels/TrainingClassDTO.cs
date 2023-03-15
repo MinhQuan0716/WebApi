@@ -15,5 +15,10 @@ namespace Application.ViewModels.TrainingClassModels
         public DateTime EndDate { get; set; }
         public DateTime CreationDate { get; set; }
         public string LocationName { get; set; } = default!;
+        public string Branch { get; set; } = default!;  
+        public string Status { get; set; } = default!;  
+        public string Attendee { get; set; } = default!;
+        public double  TotalDay { get; set; }
+        public double TotalHour { get; set; }
     }
 }

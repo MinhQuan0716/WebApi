@@ -13,7 +13,7 @@ namespace Application.Interfaces
 {
     public interface IApplicationService
     {
-        public Task CreateApplication(ApplicationDTO applicationDTO);
+        public Task<bool> CreateApplication(ApplicationDTO applicationDTO);
         Task<Pagination<Applications>> GetAllApplication(Guid classId,
                                                          ApplicationDateTimeFilterDTO condition = null,
                                                          string searchString = "",

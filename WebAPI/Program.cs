@@ -88,6 +88,54 @@ try
     {
         app.UseSwagger();
         app.UseSwaggerUI();
+        // add custom middlewares
+        app.UseMiddleware<GlobalExceptionMiddleware>();
+        app.UseMiddleware<PerformanceMiddleware>();
+       
+
+        // App health check at root/healthchecks
+        app.MapHealthChecks("/healthchecks");
+        // Configure the HTTP request pipeline.
+        if (app.Environment.IsDevelopment())
+        {
+            app.UseSwagger();
+            app.UseSwaggerUI();
+        }
+        // add custom middlewares
+
+
+
+
+        app.UseMiddleware<GlobalExceptionMiddlewareV2>();
+
+        app.UseMiddleware<PerformanceMiddleware>();
+        // App health check at root/healthchecks 
+        app.MapHealthChecks("/healthchecks");
+
+        app.UseHttpsRedirection();
+
+        app.UseAuthentication();
+        app.UseAuthorization();
+
+        app.MapControllers();
+
+        app.UseStaticFiles();
+
+
+
+        // hangfire host dashboard at "/dashboard"
+        app.MapHangfireDashboard("/dashboard");
+
+        // call hangfire
+        await app.StartAsync();
+        RecurringJob.AddOrUpdate<ApplicationCronJob>(util => util.CheckAttendancesEveryDay(),
+            "0 0 22 ? * *", TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time"));
+        await app.WaitForShutdownAsync();
+
+        app.Run();
+
+
+
     }
     // add custom middlewares
    

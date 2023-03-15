@@ -16,12 +16,13 @@ namespace Application.Utils
     {
         SyllabusPermission,
         TrainingProgramPermission,
-        AttendancePermission,
         ClassPermission,
+        AttendancePermission,
         LearningMaterial,
         UserPermission,
         TrainingMaterialPermission,
-        ApplicationPermission
+        ApplicationPermission,
+        TrainingClassPermission,
     }
 
     public class ClaimRequirementAttribute : TypeFilterAttribute
