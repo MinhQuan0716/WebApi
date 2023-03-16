@@ -14,7 +14,7 @@ namespace Application.ViewModels.QuizModels
         // public int NumberOfQuiz { get; set; }
         public Guid LectureID { get; set; }
         // public ICollection<ListOfQuestionsDTO> Questions { get; set; }
-        
+
         // public QuizBank QuizBank { get; set; }
         //public ICollection<SubmitQuiz> submitQuizzes { get; set; }
     }

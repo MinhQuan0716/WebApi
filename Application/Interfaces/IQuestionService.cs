@@ -23,11 +23,11 @@ namespace Application.Interfaces
 
         public Task<DoingQuizDTO> ViewDoingQuiz(Guid QuizID);
 
-        public  Task<bool> DoingQuizService(ICollection<AnswerQuizQuestionDTO> answerQuizQuestionDTO);
+        public Task<bool> DoingQuizService(ICollection<AnswerQuizQuestionDTO> answerQuizQuestionDTO);
 
         public Task<List<ViewDetailResultDTO>> ViewMarkDetail(Guid SubmitQuizID);
 
-        public  Task<double> MarkQuiz(Guid QuizID, Guid DetailTrainingDetailTrainingClassParticipateId);
+        public Task<double> MarkQuiz(Guid QuizID, Guid DetailTrainingDetailTrainingClassParticipateId);
 
         public Task<AnswerQuizDetailTraineeDTO> ViewDetaildoneQuiz(Guid QuizID);
     }

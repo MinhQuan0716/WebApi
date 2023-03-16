@@ -10,7 +10,8 @@ namespace Domain.Entities
     {
         public string LocationName { get; set; } = default!;
 
-        public ICollection<TrainingClass> TrainingClasses { get; set;}
-        public ICollection<DetailTrainingClassParticipate> DetailTrainingClassesParticipate { get;set; }
+        public ICollection<TrainingClass> TrainingClasses { get; set; }
+
+        public ICollection<DetailTrainingClassParticipate> DetailTrainingClassesParticipate { get; set; }
     }
 }

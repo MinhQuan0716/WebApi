@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Application.Repositories
 {
-    public  interface ITrainingMaterialRepository:IGenericRepository<TrainingMaterial>
+    public interface ITrainingMaterialRepository : IGenericRepository<TrainingMaterial>
     {
         Task<bool> DeleteTrainingMaterial(Guid id);
     }

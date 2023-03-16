@@ -18,6 +18,6 @@ namespace Application.ViewModels.SyllabusModels.UpdateSyllabusModels
 
         public double Duration { get; set; }
 
-        public ICollection<UpdateUnitDTO>? Units { get;set; } 
+        public ICollection<UpdateUnitDTO>? Units { get; set; }
     }
 }

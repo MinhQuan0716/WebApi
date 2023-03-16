@@ -15,7 +15,7 @@ namespace Infrastructures.Repositories
         private readonly AppDbContext _appDbContext;
         public QuizRepository(AppDbContext context, ICurrentTime timeService, IClaimsService claimsService) : base(context, timeService, claimsService)
         {
-            _appDbContext = context;    
+            _appDbContext = context;
         }
 
         public async Task<List<DetailQuizQuestion>> GetAllQuestionByQuizTestId(Guid id)
@@ -48,12 +48,12 @@ namespace Infrastructures.Repositories
                          };
 
             List<ViewDoneQuizDTO> listDto = new List<ViewDoneQuizDTO>();
-            foreach(var dto in result)
+            foreach (var dto in result)
             {
                 listDto.Add(dto);
             }
-        
-        return listDto;
+
+            return listDto;
         }
     }
 }

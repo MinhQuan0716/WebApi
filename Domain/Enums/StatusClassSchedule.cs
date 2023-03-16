@@ -9,6 +9,6 @@ namespace Domain.Enums
     public enum StatusClassSchedule
     {
         Active,
-        Inactive,       
+        Inactive,
     }
 }

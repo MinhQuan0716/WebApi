@@ -40,10 +40,10 @@ namespace Infrastructures.Tests.Repository
             var trainingClassMock = _fixture.Build<TrainingClass>()
                 .OmitAutoProperties()
                 .With(x => x.Name)
-                .With(x=>x.Attendee)
-                .With(x=>x.StatusClassDetail)
-                .With(x=>x.Branch)
-                .With(x=>x.Code)
+                .With(x => x.Attendee)
+                .With(x => x.StatusClassDetail)
+                .With(x => x.Branch)
+                .With(x => x.Code)
                 .Create();
             _dbContext.Add(trainingClassMock);
             _dbContext.SaveChanges();
@@ -54,7 +54,7 @@ namespace Infrastructures.Tests.Repository
                 .With(x => x.AvatarUrl)
                 .With(x => x.FullName)
                 .With(x => x.Email)
-                .With(x => x.IsDeleted,false)
+                .With(x => x.IsDeleted, false)
                 .With(x => x.Gender)
                 .With(x => x.RoleId, 1)
                 .Create();

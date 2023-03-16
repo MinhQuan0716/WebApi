@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Application.Repositories
 {
-    public interface ITopicRepository :IGenericRepository<Topic>
+    public interface ITopicRepository : IGenericRepository<Topic>
     {
     }
 }

@@ -10,10 +10,10 @@ namespace Application.ViewModels.FeedbackModels;
 
 public class FeedbackModel
 {
-    public string FeedbackTitle { get; set; } = null!;    
-    public string FeedbackLink { get; set; } = null!;    
+    public string FeedbackTitle { get; set; } = null!;
+    public string FeedbackLink { get; set; } = null!;
     public Guid? TrainingCLassId { get; set; }
-    
+
 }
 public class FeedbackVM : FeedbackModel
 {

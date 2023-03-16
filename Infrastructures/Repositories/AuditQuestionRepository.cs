@@ -40,10 +40,10 @@ namespace Infrastructures.Repositories
             // Newer Query
             var questions = _dbContext.DetailAuditQuestions.Include(x => x.AuditQuestion)
                             .Where(x => x.IsDeleted == false && x.AuditPlanId == auditPlanId)
-                            .Select(x => new AuditQuestion {Id = x.AuditQuestionId, Description = x.AuditQuestion.Description } );
-            if (questions is not null) return await questions.ToListAsync()                                                                                                                                                                                                                                                                                                                                                      ;
+                            .Select(x => new AuditQuestion { Id = x.AuditQuestionId, Description = x.AuditQuestion.Description });
+            if (questions is not null) return await questions.ToListAsync();
             else throw new Exception("Can not find any AuditQuestion");
-            
+
         }
     }
 }

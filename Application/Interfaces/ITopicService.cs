@@ -10,7 +10,7 @@ namespace Application.Interfaces
 {
     public interface ITopicService
     {
-       Task<bool> AddNewTopic(TopicModel topic);
+        Task<bool> AddNewTopic(TopicModel topic);
 
         Task<bool> DeleteTopic(Guid TopicID);
 

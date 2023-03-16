@@ -24,7 +24,7 @@ namespace WebAPI.Tests.Controllers
         {
 
             _syllabusController = new SyllabusController(_syllabusServiceMock.Object, _unitServiceMock.Object, _lectureServiceMock.Object);
-            
+
         }
         [Fact]
         public async Task SearchNameSyllabus_Get_ShuuldReturnCorrectValues()
@@ -99,7 +99,7 @@ namespace WebAPI.Tests.Controllers
             var lectures = mockData.Units.First().Lectures = _fixture.Build<LectureDTO>()
                                                                     .CreateMany(1)
                                                                     .ToList();
-            var syllabus = _fixture.Build<Syllabus>().Without(s=>s.Units).Without(x => x.DetailTrainingProgramSyllabus).Without(x => x.User).Create();
+            var syllabus = _fixture.Build<Syllabus>().Without(s => s.Units).Without(x => x.DetailTrainingProgramSyllabus).Without(x => x.User).Create();
             var detailUnitLectures = _fixture.Build<DetailUnitLecture>()
                                              .Without(u => u.Unit).Without(u => u.Lecture)
                                              .Create();
@@ -116,7 +116,7 @@ namespace WebAPI.Tests.Controllers
         }
         [Fact]
         public async Task AddNewSyllabus_ShouldReturnBadResult()
-        { 
+        {
             //Arrange
             var mockData_1 = _fixture.Build<SyllabusViewDTO>().Without(u => u.Units).Create();
             var mockData_2 = _fixture.Build<SyllabusViewDTO>().With(u => u.Units).Create();
@@ -124,8 +124,8 @@ namespace WebAPI.Tests.Controllers
             var result = await _syllabusController.AddNewSyllabus(mockData_1);
             //Assert
             result.Should().BeOfType<BadRequestResult>();
-                  
-            
+
+
 
 
         }

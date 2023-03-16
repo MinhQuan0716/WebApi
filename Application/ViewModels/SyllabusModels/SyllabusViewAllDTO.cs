@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Application.ViewModels.SyllabusModels
 {
-    public  class SyllabusViewAllDTO
+    public class SyllabusViewAllDTO
     {
         public Guid SyllabusID { get; set; }
         public string Name { get; set; }

@@ -21,21 +21,21 @@ namespace Application.Tests.Services
 
         public QuestionServiceTests()
         {
-            _questionService = new QuestionService(_claimsServiceMock.Object,_unitOfWorkMock.Object,_mapperConfig,_appConfigurationMock.Object);
+            _questionService = new QuestionService(_claimsServiceMock.Object, _unitOfWorkMock.Object, _mapperConfig, _appConfigurationMock.Object);
         }
 
         [Fact]
         public async Task CreateEmptyQuiz_ShouldReturnTrue()
         {
-            var emptyquiz = _fixture.Build<CreateEmptyQuizDTO>().With(x=> x.LectureID).Create();   
-            var mock = _fixture.Build<Quiz>().Without(x=> x.DetailQuizQuestion)
-                                             .Without(x=> x.Id)
-                                             .Without(x=> x.QuizName)
-                                             .Without(x=> x.CreatedBy).Without(x=> x.ModificationBy)
-                                             .Without(x => x.DeleteBy).Without(x=> x.IsDeleted)
-                                             .Without(x=> x.DeletionDate)
-                                             .Without(x=> x.Lecture)
-                                             .With(x=> x.LectureID).With(x=> x.NumberOfQuiz)
+            var emptyquiz = _fixture.Build<CreateEmptyQuizDTO>().With(x => x.LectureID).Create();
+            var mock = _fixture.Build<Quiz>().Without(x => x.DetailQuizQuestion)
+                                             .Without(x => x.Id)
+                                             .Without(x => x.QuizName)
+                                             .Without(x => x.CreatedBy).Without(x => x.ModificationBy)
+                                             .Without(x => x.DeleteBy).Without(x => x.IsDeleted)
+                                             .Without(x => x.DeletionDate)
+                                             .Without(x => x.Lecture)
+                                             .With(x => x.LectureID).With(x => x.NumberOfQuiz)
                                             .Create();
             _unitOfWorkMock.Setup(x => x.QuizRepository.AddAsync(It.IsAny<Quiz>())).Returns(Task.CompletedTask);
 
@@ -58,13 +58,13 @@ namespace Application.Tests.Services
                                               .Without(x => x.DeletionDate)
                                               .Without(x => x.Lecture)
                                               .Without(x => x.LectureID).Without(x => x.NumberOfQuiz)
-                                              .Without(x=> x.CreationDate)
-                                             .Without(x=> x.ModificationDate)
+                                              .Without(x => x.CreationDate)
+                                             .Without(x => x.ModificationDate)
                                               .Create();
             _unitOfWorkMock.Setup(x => x.QuizRepository.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(mock);
 
             var result = await _questionService.DeleteQuizTest(mock.Id);
-            
+
             result.Should().BeTrue();
         }
 

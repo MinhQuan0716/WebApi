@@ -10,6 +10,6 @@ namespace Application.ViewModels.SyllabusModels.FixViewSyllabus
     {
         public AssessmentSchemeDTO assessmentScheme { get; set; }
 
-        public  string TrainingDeliveryPriciple { get; set; }
+        public string TrainingDeliveryPriciple { get; set; }
     }
 }

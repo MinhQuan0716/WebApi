@@ -32,7 +32,7 @@ namespace WebAPI.Tests.Controllers
             var auditPlan = _mapperConfig.Map<AuditPlan>(createAuditDTO);
             _auditPlanServiceMock.Setup(x => x.CreateAuditPlan(It.IsAny<CreateAuditDTO>())).ReturnsAsync(auditPlan);
             var result = await auditPlanController.Create(createAuditDTO);
-            
+
             result.Should().BeAssignableTo<OkObjectResult>();
 
         }
@@ -42,7 +42,7 @@ namespace WebAPI.Tests.Controllers
         {
             var createAuditDTO = _fixture.Build<CreateAuditDTO>().Without(x => x.CreateAuditQuestionDTOS).Create();
             var auditPlan = _mapperConfig.Map<AuditPlan>(createAuditDTO);
-           _auditPlanServiceMock.Setup(x => x.CreateAuditPlan(It.IsAny<CreateAuditDTO>())).ReturnsAsync(auditPlan = null);
+            _auditPlanServiceMock.Setup(x => x.CreateAuditPlan(It.IsAny<CreateAuditDTO>())).ReturnsAsync(auditPlan = null);
             var result = await auditPlanController.Create(createAuditDTO);
 
             result.Should().BeAssignableTo<BadRequestResult>();

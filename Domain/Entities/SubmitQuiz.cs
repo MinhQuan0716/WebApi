@@ -15,6 +15,7 @@ namespace Domain.Entities
 
         //Fk to another table
         public Guid DetailQuizQuestionID { get; set; }
+
         public DetailQuizQuestion DetailQuizQuestion { get; set; }
 
 
@@ -24,12 +25,12 @@ namespace Domain.Entities
 
         public Guid UserID { get; set; }
 
-       //public User User { get; set; }
+        //public User User { get; set; }
 
         //public Guid UserID { get; set; }    
 
         //public User User { get; set; }
 
-   
+
     }
 }

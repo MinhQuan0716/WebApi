@@ -34,7 +34,7 @@ public class GradingRepository : GenericRepository<Grading>, IGradingRepository
                              on d.TrainingClassID equals c.Id
                      join l in _context.Lectures
                             on g.LectureId equals l.Id
-                    where c.Id == classID
+                     where c.Id == classID
                      select new MarkReportDto()
                      {
                          ClassName = c.Name,
@@ -80,15 +80,17 @@ public class GradingRepository : GenericRepository<Grading>, IGradingRepository
                      join lecture in _context.Lectures on grading.LectureId equals lecture.Id
                      join quiz in _context.Quizzes on lecture.QuizID equals quiz.Id
                      where detailtraining.UserId == traineeId
-                     select new ViewQuizAndMarkBelowDTO() {
+                     select new ViewQuizAndMarkBelowDTO()
+                     {
                          QuizMark = (int)grading.NumericGrade,
                          QuizName = quiz.QuizName
-                     
+
                      };
-       foreach( var item in result ) {
+        foreach (var item in result)
+        {
             listMark.Add(item);
         }
-    return listMark;
+        return listMark;
     }
 
 }

@@ -13,7 +13,7 @@ namespace Application.ViewModels.QuizModels
 
         public ICollection<ViewQuizForTrainer>? QuizQuestionDTOs { get; set; }
 
-        public ICollection<AnswerQuizQuestionDTO>? AnswerQuizQuestionDTOs {get ;set;}
+        public ICollection<AnswerQuizQuestionDTO>? AnswerQuizQuestionDTOs { get; set; }
 
     }
 }

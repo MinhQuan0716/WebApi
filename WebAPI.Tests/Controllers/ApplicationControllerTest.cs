@@ -48,11 +48,11 @@ namespace WebAPI.Tests.Controllers
             Guid? classId = Guid.Empty;
             int pageNumber = 0;
             int pageSize = 0;
-            var mockData = _fixture.Build<Pagination<Applications>>().Without(x=>x.Items).Create();
+            var mockData = _fixture.Build<Pagination<Applications>>().Without(x => x.Items).Create();
 
-            _applicationServiceMock.Setup(x => x.GetAllApplication(classId.Value,condition, searchString, by, pageNumber, pageSize)).ReturnsAsync(mockData);
+            _applicationServiceMock.Setup(x => x.GetAllApplication(classId.Value, condition, searchString, by, pageNumber, pageSize)).ReturnsAsync(mockData);
             // Act
-            var result = await _applicationController.ViewAllApplication(classId,condition, searchString, by, pageNumber, pageSize);
+            var result = await _applicationController.ViewAllApplication(classId, condition, searchString, by, pageNumber, pageSize);
             // Assert
             result.Should().BeOfType<OkObjectResult>();
             result.As<OkObjectResult>().Value.Should().Be(mockData);

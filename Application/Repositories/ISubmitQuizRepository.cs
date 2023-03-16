@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Application.Repositories
 {
-    public interface ISubmitQuizRepository :IGenericRepository<SubmitQuiz>
+    public interface ISubmitQuizRepository : IGenericRepository<SubmitQuiz>
     {
         List<ViewDetailResultDTO> GetViewDetail(Guid ViewID);
 

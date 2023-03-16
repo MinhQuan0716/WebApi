@@ -26,7 +26,7 @@ namespace Application.Tests.Services
                                            _currentTimeMock.Object,
                                            _appConfigurationMock.Object);
         }
-       
+
         [Fact]
         public async Task SendResetPasswordTest_ShouldReturnString()
         {
@@ -71,21 +71,21 @@ namespace Application.Tests.Services
             //Arrange
             var mockData = _fixture.Build<AddUserManually>().Create();
             mockData.Pass = mockData.Pass.Hash();
-            var user=_mapperConfig.Map<User>(mockData);
+            var user = _mapperConfig.Map<User>(mockData);
             _unitOfWorkMock.Setup(x => x.UserRepository.AddAsync(user)).Verifiable();
             _unitOfWorkMock.Setup(x => x.SaveChangeAsync()).ReturnsAsync(1);
             _unitOfWorkMock.Setup(x => x.UserRepository.GetUserByEmailAsync(user.Email)).ReturnsAsync(user);
             //Act
             var result = await _userService.AddUserManualAsync(mockData);
             //Assert
-            result.Email.Should().Be(mockData.Email); 
+            result.Email.Should().Be(mockData.Email);
 
         }
 
         [Fact]
         public async Task AddUserManual_ShouldReturnNull()
         {
-            var mockData=_fixture.Build<AddUserManually>().Create();
+            var mockData = _fixture.Build<AddUserManually>().Create();
             var user = _mapperConfig.Map<User>(mockData);
             _unitOfWorkMock.Setup(x => x.UserRepository.AddAsync(user)).Verifiable();
             _unitOfWorkMock.Setup(x => x.SaveChangeAsync()).ReturnsAsync(0);
@@ -299,7 +299,7 @@ namespace Application.Tests.Services
 
             //Assert
 
-            var result = await _userService.RefreshToken(string.Empty,string.Empty);
+            var result = await _userService.RefreshToken(string.Empty, string.Empty);
 
             //Assert
             result.Should().BeNull();
@@ -312,7 +312,7 @@ namespace Application.Tests.Services
             var token = _fixture.Create<Token>();
             //Assert
 
-            Func<Task> act = async () => await _userService.RefreshToken(token.AccessToken,token.RefreshToken);
+            Func<Task> act = async () => await _userService.RefreshToken(token.AccessToken, token.RefreshToken);
 
             //Assert
             act.Should().ThrowAsync<Exception>();
@@ -394,7 +394,7 @@ namespace Application.Tests.Services
 
             //act
             var result = await _userService.GetUserPaginationAsync(0, 10);
-        
+
             //assert
             _unitOfWorkMock.Verify(x => x.UserRepository.ToPagination(0, 10), Times.Once());
             result.Should().BeEquivalentTo(expected);
@@ -412,9 +412,9 @@ namespace Application.Tests.Services
             //act
             var result = await _userService.DisableUserById(userId);
             //assert
-            _unitOfWorkMock.Verify(x => x.UserRepository.GetByIdAsync(mockUser.Id),Times.Once);
+            _unitOfWorkMock.Verify(x => x.UserRepository.GetByIdAsync(mockUser.Id), Times.Once);
             _unitOfWorkMock.Verify(x => x.UserRepository.SoftRemove(mockUser), Times.Once);
-            _unitOfWorkMock.Verify(x=>x.SaveChangeAsync(), Times.Once);
+            _unitOfWorkMock.Verify(x => x.SaveChangeAsync(), Times.Once);
             Assert.IsType<bool>(result);
             result.Should().BeTrue();
         }
@@ -482,7 +482,7 @@ namespace Application.Tests.Services
             var newPassword = "string1";
             _unitOfWorkMock.Setup(service => service.UserRepository.GetAuthorizedUserAsync()).ReturnsAsync(mockData);
 
-            _unitOfWorkMock.Setup(s => s.UserRepository.ChangeUserPasswordAsync(mockData,newPassword)).ReturnsAsync(true);
+            _unitOfWorkMock.Setup(s => s.UserRepository.ChangeUserPasswordAsync(mockData, newPassword)).ReturnsAsync(true);
             var result = await _userService.ChangePasswordAsync("string", newPassword);
 
             result.Should().Be("Update Success!");
@@ -498,7 +498,7 @@ namespace Application.Tests.Services
             _unitOfWorkMock.Setup(x => x.UserRepository.GetByIdAsync(mockUser.Id)).ReturnsAsync(mockUser);
 
             //act
-            Func<Task> act = async()=> await _userService.GetUserByIdAsync(incorrectFormatId);
+            Func<Task> act = async () => await _userService.GetUserByIdAsync(incorrectFormatId);
 
             //assert
             _unitOfWorkMock.Verify(x => x.UserRepository.GetByIdAsync(mockUser.Id), Times.Never);
@@ -525,7 +525,7 @@ namespace Application.Tests.Services
         [Fact]
         public async void LogoutAsync_ReturnFalse_WhenUserIsNull()
         {
-            User mockUser =null;
+            User mockUser = null;
             _unitOfWorkMock.Setup(u => u.UserRepository.GetAuthorizedUserAsync()).ReturnsAsync(mockUser);
 
             //Act

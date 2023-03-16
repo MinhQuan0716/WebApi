@@ -39,7 +39,7 @@ namespace Infrastructures.FluentAPIs
                 UserPermission = nameof(PermissionEnum.FullAccess),
                 TrainingMaterialPermission = nameof(PermissionEnum.FullAccess),
                 ApplicationPermission = nameof(PermissionEnum.FullAccess),
-                
+
 
             },
             new Role
@@ -54,7 +54,7 @@ namespace Infrastructures.FluentAPIs
                 UserPermission = nameof(PermissionEnum.FullAccess),
                 TrainingMaterialPermission = nameof(PermissionEnum.FullAccess),
                 ApplicationPermission = nameof(PermissionEnum.AccessDenied),
-                
+
 
             },
             new Role
@@ -69,7 +69,7 @@ namespace Infrastructures.FluentAPIs
                 UserPermission = nameof(PermissionEnum.AccessDenied),
                 TrainingMaterialPermission = nameof(PermissionEnum.View),
                 ApplicationPermission = nameof(PermissionEnum.AccessDenied),
-               
+
 
             }
 

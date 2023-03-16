@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Application.Utils
 {
-    public  static class RefreshTokenString
+    public static class RefreshTokenString
     {
         public static string GetRefreshToken()
         {

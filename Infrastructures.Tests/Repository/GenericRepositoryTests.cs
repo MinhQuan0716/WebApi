@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace Infrastructures.Tests.Repository
 {
-    public class GenericRepositoryTests:SetupTest
+    public class GenericRepositoryTests : SetupTest
     {
         private readonly IGenericRepository<User> _genericRepository;
 
@@ -21,7 +21,7 @@ namespace Infrastructures.Tests.Repository
             _genericRepository = new GenericRepository<User>(
                 _dbContext,
                 _currentTimeMock.Object,
-                _claimsServiceMock.Object        
+                _claimsServiceMock.Object
                 );
         }
 
@@ -83,9 +83,9 @@ namespace Infrastructures.Tests.Repository
         [Fact]
         public async Task GenericRepository_AddAsync_ShouldReturnCorrectData()
         {
-            var mockData = _fixture.Build<User>().Without(u=>u.Syllabuses)
-                                                 .Without(u=>u.Role)
-                                                 .Without(u=>u.DetailTrainingClassParticipate)
+            var mockData = _fixture.Build<User>().Without(u => u.Syllabuses)
+                                                 .Without(u => u.Role)
+                                                 .Without(u => u.DetailTrainingClassParticipate)
                                                  .Without(u => u.Applications)
                                                  .Without(u => u.Attendances)
                                                  .Without(u => u.Feedbacks)
@@ -185,7 +185,7 @@ namespace Infrastructures.Tests.Repository
                                                  .Without(u => u.DetailTrainingClassParticipate)
                                                  .Without(u => u.Applications)
                                                  .Without(u => u.Attendances)
-                                                 .Without(u => u.Feedbacks).Without (x => x.SubmitQuizzes).CreateMany(2).ToList();
+                                                 .Without(u => u.Feedbacks).Without(x => x.SubmitQuizzes).CreateMany(2).ToList();
             await _dbContext.Users.AddRangeAsync(mockData);
             await _dbContext.SaveChangesAsync();
 

@@ -10,7 +10,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace WebAPI.Controllers
 {
-   // [Authorize]
+    // [Authorize]
     public class TrainingClassController : BaseController
     {
         private readonly ITrainingClassService _trainingClassService;
@@ -25,24 +25,23 @@ namespace WebAPI.Controllers
             _mapper = mapper;
         }
 
-       
-
         [HttpGet]
         public async Task<IActionResult> SearchClassByName(string name)
         {
-            var result = await _trainingClassService.SearchClassByName(name);
+            var result = await _trainingClassService.SearchClassByNameAsync(name);
             if (result != null)
             {
                 return Ok(result);
             }
             return NoContent();
         }
+
         [HttpGet]
         [Authorize]
         [ClaimRequirement(nameof(PermissionItem.ClassPermission), nameof(PermissionEnum.Create))]
         public async Task<IActionResult> DuplicateClass(Guid id)
         {
-            var result = await _trainingClassService.DuplicateClass(id);
+            var result = await _trainingClassService.DuplicateClassAsync(id);
             if (result)
             {
                 return Ok(result);
@@ -50,7 +49,7 @@ namespace WebAPI.Controllers
             return BadRequest();
         }
 
-      
+
         [HttpPut]
         [Authorize]
         [ClaimRequirement(nameof(PermissionItem.ClassPermission), nameof(PermissionEnum.Modifed))]
@@ -58,7 +57,7 @@ namespace WebAPI.Controllers
         {
             try
             {
-                if (await _trainingClassService.UpdateTrainingClass(trainingClassId, updateTrainingCLassDTO))
+                if (await _trainingClassService.UpdateTrainingClassAsync(trainingClassId, updateTrainingCLassDTO))
                 {
                     return Ok("Update class successfully");
                 }
@@ -72,6 +71,7 @@ namespace WebAPI.Controllers
                 return BadRequest("Update class fail: " + ex.Message);
             }
         }
+
         [HttpPost]
         [Authorize]
         [ClaimRequirement(nameof(PermissionItem.ClassPermission), nameof(PermissionEnum.Create))]
@@ -92,35 +92,37 @@ namespace WebAPI.Controllers
             }
 
         }
+
         [HttpGet]
         public async Task<IActionResult> GetAllTraningClass()
         {
-            var listResult =await  _trainingClassService.GetAllTrainingClassesAsync();
+            var listResult = await _trainingClassService.GetAllTrainingClassesAsync();
             if (listResult != null)
             {
                 return Ok(listResult);
             }
             return BadRequest();
         }
+
         [HttpPost]
         public async Task<IActionResult> FilterResult(TrainingClassFilterModel trainingClassFilterModel)
         {
-            var fiterResult = await _trainingClassService.FilterLocation(trainingClassFilterModel.locationName,trainingClassFilterModel.branchName,trainingClassFilterModel.date1,trainingClassFilterModel.date2,trainingClassFilterModel.classStatus,trainingClassFilterModel.attendInClass);
+            var fiterResult = await _trainingClassService.FilterLocation(trainingClassFilterModel.locationName, trainingClassFilterModel.branchName, trainingClassFilterModel.date1, trainingClassFilterModel.date2, trainingClassFilterModel.classStatus, trainingClassFilterModel.attendInClass);
             if (fiterResult.IsNullOrEmpty())
             {
                 return NoContent();
             }
             return Ok(fiterResult);
         }
-       
+
         [HttpPut]
         [Authorize]
-        [ClaimRequirement(nameof(PermissionItem.ClassPermission),nameof(PermissionEnum.Modifed))]
+        [ClaimRequirement(nameof(PermissionItem.ClassPermission), nameof(PermissionEnum.Modifed))]
         public async Task<IActionResult> SoftRemoveTrainingClass(string trainingClassId)
         {
             try
             {
-                if (await _trainingClassService.SoftRemoveTrainingClass(trainingClassId))
+                if (await _trainingClassService.SoftRemoveTrainingClassAsync(trainingClassId))
                 {
                     return Ok("SoftRemove class successfully");
                 }

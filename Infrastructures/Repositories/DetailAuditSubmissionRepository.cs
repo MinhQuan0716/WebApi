@@ -39,7 +39,7 @@ namespace Infrastructures.Repositories
                          };
 
             return await result.ToListAsync();
-                
+
         }
     }
 }

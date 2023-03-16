@@ -46,7 +46,7 @@ namespace WebAPI.Controllers
         [HttpPut]
         public async Task<IActionResult> UpdateQuizTest(Guid quizTestId, UpdateQuizTestDTO quizDto)
         {
-            var checkUpdateSuccesfully = await _quizService.UpdateQuizTest(quizTestId,quizDto);
+            var checkUpdateSuccesfully = await _quizService.UpdateQuizTest(quizTestId, quizDto);
             if (checkUpdateSuccesfully)
             {
                 return Ok("Update quiz test successfully!");
@@ -63,7 +63,7 @@ namespace WebAPI.Controllers
                 return Ok("Delete quiz test successfully!");
             }
             return BadRequest("Fail to delete quiz test!");
-        }   
+        }
 
         [HttpGet]
         public async Task<IActionResult> SearchByName(string ContentName)
@@ -100,12 +100,12 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost]
-        public  async Task<IActionResult> DoingQuiz(ICollection<AnswerQuizQuestionDTO> doingQuizDTOs,Guid TrainingClassParticipateID)
+        public async Task<IActionResult> DoingQuiz(ICollection<AnswerQuizQuestionDTO> doingQuizDTOs, Guid TrainingClassParticipateID)
         {
             bool success = await _quizService.DoingQuizService(doingQuizDTOs);
             if (success)
             {
-               
+
                 return Ok(await _quizService.MarkQuiz(doingQuizDTOs.First().QuizID, TrainingClassParticipateID));
             }
             return BadRequest();
@@ -125,7 +125,7 @@ namespace WebAPI.Controllers
             AnswerQuizDetailTraineeDTO answerQuizDetailTraineeDTO = await _quizService.ViewDetaildoneQuiz(QuizID);
             return Ok(answerQuizDetailTraineeDTO);
         }
-       
+
 
     }
 }

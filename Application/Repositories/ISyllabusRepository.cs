@@ -12,7 +12,7 @@ namespace Application.Repositories
 
     public interface ISyllabusRepository : IGenericRepository<Syllabus>
     {
-        public Task<List<SyllabusViewAllDTO>>GetAllAsync();
+        public Task<List<SyllabusViewAllDTO>> GetAllAsync();
         public Task<List<Syllabus>> FilterSyllabusByDuration(double duration1, double duration2);
 
         public Task<List<Syllabus>> SearchByName(string name);
@@ -20,7 +20,7 @@ namespace Application.Repositories
         Task<Syllabus> AddSyllabusAsync(SyllabusGeneralDTO syllabusDTO);
         Task<IEnumerable<Syllabus>> GetSyllabusByTrainingProgramId(Guid trainingProgramId);
 
-        Task<SyllabusOutlineDTO> GetBySession(int Session,Guid syllabusID);
+        Task<SyllabusOutlineDTO> GetBySession(int Session, Guid syllabusID);
 
         public List<LessonDTO> LessonDTOsAsync(Guid unitID);
 

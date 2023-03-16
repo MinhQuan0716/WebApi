@@ -26,6 +26,6 @@ namespace Infrastructures.Repositories
 
         public async Task<TrainingProgram> GetTraningProgramDetail(Guid trainingProgramId)
         => await _appDbContext.TrainingPrograms.Include(s => s.DetailTrainingProgramSyllabus).ThenInclude(s => s.Syllabus).FirstOrDefaultAsync();
-        
+
     }
 }

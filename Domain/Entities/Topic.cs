@@ -10,7 +10,6 @@ namespace Domain.Entities
     {
         public string TopicName { get; set; }
 
-
         public ICollection<Question> QuizBanks { get; set; }
     }
 }

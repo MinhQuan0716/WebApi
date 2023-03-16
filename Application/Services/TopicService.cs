@@ -14,13 +14,14 @@ namespace Application.Services
         private readonly IUnitOfWork _unitOfWork;
         private readonly IClaimsService _claimsService;
 
-        public TopicService(IUnitOfWork unitOfWork,IClaimsService claimsService)
+        public TopicService(IUnitOfWork unitOfWork, IClaimsService claimsService)
         {
-            _unitOfWork = unitOfWork;   
+            _unitOfWork = unitOfWork;
             _claimsService = claimsService;
         }
 
-        public async Task<bool> AddNewTopic(TopicModel topic) {
+        public async Task<bool> AddNewTopic(TopicModel topic)
+        {
             //throw new Exception();
             var checkDuplicate = await _unitOfWork.TopicRepository.FindAsync(x => x.TopicName == topic.TopicName);
 
@@ -29,9 +30,10 @@ namespace Application.Services
                 TopicName = topic.TopicName,
                 Id = new Guid(),
                 CreationDate = DateTime.Now
-                ,IsDeleted= false
+                ,
+                IsDeleted = false
             };
-            if(checkDuplicate.Count < 1)
+            if (checkDuplicate.Count < 1)
             {
                 await _unitOfWork.TopicRepository.AddAsync(NewTopic);
                 await _unitOfWork.SaveChangeAsync();
@@ -45,8 +47,9 @@ namespace Application.Services
         {
             //throw new Exception();
             var TopicFind = await _unitOfWork.TopicRepository.GetByIdAsync(TopicID);
-            if(TopicFind is not  null) {
-              
+            if (TopicFind is not null)
+            {
+
                 //TopicFind.DeleteBy =
                 _unitOfWork.TopicRepository.SoftRemove(TopicFind);
                 await _unitOfWork.SaveChangeAsync();
@@ -59,14 +62,14 @@ namespace Application.Services
         public async Task<List<Topic>> ViewAllTopic()
         {
             var TopicList = await _unitOfWork.TopicRepository.GetAllAsync();
-           return TopicList;
+            return TopicList;
         }
 
-        public async Task<bool> UpdateTopic(Guid TopicID,string TopicNameChange)
+        public async Task<bool> UpdateTopic(Guid TopicID, string TopicNameChange)
         {
             //throw new Exception();
-            var TopicFind  = await   _unitOfWork.TopicRepository.GetByIdAsync(TopicID);
-            if(TopicFind is not null)
+            var TopicFind = await _unitOfWork.TopicRepository.GetByIdAsync(TopicID);
+            if (TopicFind is not null)
             {
                 TopicFind.TopicName = TopicNameChange;
                 _unitOfWork.TopicRepository.Update(TopicFind);

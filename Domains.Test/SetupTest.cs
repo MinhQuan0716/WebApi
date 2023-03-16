@@ -37,7 +37,7 @@ namespace Domains.Test
         protected readonly Mock<ICurrentTime> _currentTimeMock;
 
         protected readonly Mock<IAttendanceService> _attendanceServiceMock;
-        protected readonly Mock<IAttendanceRepository> _attendanceRepositoryMock; 
+        protected readonly Mock<IAttendanceRepository> _attendanceRepositoryMock;
 
         protected readonly Mock<IApplicationRepository> _applicationRepositoryMock;
         protected readonly Mock<IApplicationService> _applicationServiceMock;
@@ -52,7 +52,7 @@ namespace Domains.Test
         protected readonly Mock<ITrainingClassService> _trainingClassServiceMock;
         protected readonly Mock<ILocationRepository> _locationRepositoryMock;
         protected readonly Mock<ILocationService> _locationServiceMock;
-                
+
         protected readonly Mock<IFeedbackService> _feedbackServiceMock;
         protected readonly Mock<IFeedbackRepository> _feedbackRepositoryMock;
 
@@ -100,10 +100,10 @@ namespace Domains.Test
 
             _applicationRepositoryMock = new Mock<IApplicationRepository>();
             _applicationServiceMock = new Mock<IApplicationService>();
-            _unitRepositoryMock = new Mock<IUnitRepository>();            
+            _unitRepositoryMock = new Mock<IUnitRepository>();
             _unitServiceMock = new Mock<IUnitService>();
             _lectureServiceMock = new Mock<ILectureService>();
-       
+
             _questionServiceMock = new Mock<IQuestionService>();
             _questionRepositoryMock = new Mock<IQuestionRepository>();
 
@@ -123,7 +123,7 @@ namespace Domains.Test
             _syllabusServiceMock = new Mock<ISyllabusService>();
             _feedbackServiceMock = new Mock<IFeedbackService>();
             _feedbackRepositoryMock = new Mock<IFeedbackRepository>();
-         
+
             var options = new DbContextOptionsBuilder<AppDbContext>()
                 .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
                 .Options;
@@ -138,7 +138,7 @@ namespace Domains.Test
             _trainingClassRepositoryMock = new Mock<ITrainingClassRepository>();
             _trainingClassServiceMock = new Mock<ITrainingClassService>();
 
-            _locationRepositoryMock= new Mock<ILocationRepository>();
+            _locationRepositoryMock = new Mock<ILocationRepository>();
             _locationServiceMock = new Mock<ILocationService>();
             _auditPlanServiceMock = new Mock<IAuditPlanService>();
 

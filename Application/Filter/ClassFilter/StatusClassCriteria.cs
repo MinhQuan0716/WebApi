@@ -9,11 +9,12 @@ using System.Threading.Tasks;
 
 namespace Application.Filter.ClassFilter
 {
-    public  class StatusClassCriteria:ICriterias<TrainingClassDTO>
+    public class StatusClassCriteria : ICriterias<TrainingClassDTO>
     {
         public string[]? statusClass;
-        public StatusClassCriteria(string[]? statusClass){ 
-        this.statusClass = statusClass;
+        public StatusClassCriteria(string[]? statusClass)
+        {
+            this.statusClass = statusClass;
         }
         public List<TrainingClassDTO> MeetCriteria(List<TrainingClassDTO> classList)
         {

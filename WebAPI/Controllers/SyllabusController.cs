@@ -25,10 +25,10 @@ namespace WebAPI.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllSyllabus()
         {
-            var getSyllabusList =await  _syllabusService.GetAllSyllabus();
+            var getSyllabusList = await _syllabusService.GetAllSyllabus();
             if (getSyllabusList != null)
             {
-               return Ok(getSyllabusList);
+                return Ok(getSyllabusList);
             }
             else
             {
@@ -84,8 +84,8 @@ namespace WebAPI.Controllers
 
                         }
                 }
-                if (syllabusBase is not null)
-                {
+            if (syllabusBase is not null)
+            {
                 return Ok("Successfully");
 
             }
@@ -131,7 +131,7 @@ namespace WebAPI.Controllers
         public async Task<IActionResult> ViewDetailFormat(Guid SyllabusId)
         {
             var result = await _syllabusService.FinalViewSyllabusDTO(SyllabusId);
-            if(result != null)
+            if (result != null)
             {
                 return Ok(result);
             }

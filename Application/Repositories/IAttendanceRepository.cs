@@ -16,7 +16,7 @@ namespace Application.Repositories
         List<Attendance> GetAttendancesByTraineeClassID(Guid id);
         List<Attendance> GetAttendancesByTraineeID(Guid id);
         int CountAbsentedDate(Guid traineeId, Guid classId);
-        Task<List<AttendanceMailDto>> GetAbsentAttendanceOfDay (DateTime date);
+        Task<List<AttendanceMailDto>> GetAbsentAttendanceOfDay(DateTime date);
     }
-    
+
 }

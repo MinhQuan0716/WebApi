@@ -22,19 +22,19 @@ namespace WebAPI.Middlewares
             catch (Exception ex)
             {
                 // var emailService = context.RequestServices.GetService<ISendMailHelper>();
-                
+
                 // if (emailService is not null)
                 // {
                 //     await emailService.SendMailAsync("quangtmse161987@fpt.edu.vn", "Exception", ex.ToString()); 
                 // }
-                
+
                 context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
                 context.Response.ContentType = "text/plain";
                 // todo push notification & writing log
                 _logger.LogError("Exception: ");
                 _logger.LogError(ex.ToString());
                 await context.Response.WriteAsync(ex.Message);
-             
+
 
             }
         }

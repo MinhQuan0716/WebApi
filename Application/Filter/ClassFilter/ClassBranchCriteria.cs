@@ -21,8 +21,8 @@ namespace Application.Filter.ClassFilter
         {
             if (!branchName.IsNullOrEmpty())
             {
-                List<TrainingClassDTO> trainingClassDTOs= new List<TrainingClassDTO>();
-                foreach(TrainingClassDTO classDTO in classList)
+                List<TrainingClassDTO> trainingClassDTOs = new List<TrainingClassDTO>();
+                foreach (TrainingClassDTO classDTO in classList)
                 {
                     if (classDTO.Branch.ToLower().Equals(branchName.ToLower()))
                     {

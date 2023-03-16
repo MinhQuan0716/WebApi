@@ -21,7 +21,7 @@ namespace Application.Filter.ClassFilter
         {
             if (!locationName.IsNullOrEmpty())
             {
-                List<TrainingClassDTO> classData= new List<TrainingClassDTO>();
+                List<TrainingClassDTO> classData = new List<TrainingClassDTO>();
                 for (int i = 0; i <= locationName.Length; i++)
                 {
                     foreach (TrainingClassDTO item in classList)
@@ -30,10 +30,10 @@ namespace Application.Filter.ClassFilter
                         {
                             classData.Add(item);
                         }
-                       
+
                     }
                     return classData;
-                }                          
+                }
             }
             return classList;
         }

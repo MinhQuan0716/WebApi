@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 
 namespace Application.Services
 {
-    public   class  QuestionService : IQuestionService
+    public class QuestionService : IQuestionService
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
@@ -108,7 +108,7 @@ namespace Application.Services
                 CorrectAnswer = quizDto.CorrectAnswer,
                 TopicID = quizDto.TopicID,
                 QuizTypeID = quizDto.TypeID,
-                 //CreationDate = DateTime.Now.Date,
+                //CreationDate = DateTime.Now.Date,
                 //CreatedBy = _claimsservice.GetCurrentUserId
             };
             await _unitOfWork.QuestionRepository.AddAsync(newQuestion);
@@ -117,7 +117,7 @@ namespace Application.Services
 
         public async Task<bool> CreateEmptyQuizTest(CreateEmptyQuizDTO quizDto)
         {
-          
+
             var newQuiz = new Quiz
             {
                 NumberOfQuiz = 0,
@@ -238,7 +238,7 @@ namespace Application.Services
                 if (detailQuizQuestion is not null)
                 {
                     var question = await _unitOfWork.QuestionRepository.GetByIdAsync(detailQuizQuestion.QuestionID);
-                    bool check = (question is not null && question.CorrectAnswer == answer.UserAnswer );
+                    bool check = (question is not null && question.CorrectAnswer == answer.UserAnswer);
                     var submitFromUser = new SubmitQuiz()
                     {
                         CreationDate = DateTime.Now,
@@ -250,7 +250,7 @@ namespace Application.Services
                         IsDeleted = false
                     };
                     var checkDuplicate = await _unitOfWork.SubmitQuizRepository.FindAsync(x => x.UserID == submitFromUser.UserID && x.DetailQuizQuestionID == submitFromUser.DetailQuizQuestionID);
-                    
+
                     if (checkDuplicate.Count == 0)
                     {
                         await _unitOfWork.SubmitQuizRepository.AddAsync(submitFromUser);
@@ -309,15 +309,15 @@ namespace Application.Services
 
         public async Task<AnswerQuizDetailTraineeDTO> ViewDetaildoneQuiz(Guid QuizID)
         {
-        
+
             AnswerQuizDetailTraineeDTO object_answer = new AnswerQuizDetailTraineeDTO();
             var User = await _unitOfWork.UserRepository.GetByIdAsync(_claimsservice.GetCurrentUserId);
             var Quiz = await _unitOfWork.QuizRepository.GetByIdAsync(QuizID);
             object_answer.QuizName = Quiz.QuizName;
             object_answer.NumberOfQuiz = Quiz.NumberOfQuiz;
-            object_answer.DoneQuiz =  _unitOfWork.QuizRepository.ViewAnswer(QuizID, User.Id);
-         
-            return object_answer;   
+            object_answer.DoneQuiz = _unitOfWork.QuizRepository.ViewAnswer(QuizID, User.Id);
+
+            return object_answer;
         }
 
 

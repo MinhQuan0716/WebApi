@@ -42,7 +42,7 @@ namespace Infrastructures.Repositories
 
         }
 
-        public int CheckTrueAnswer(Guid userID,Guid QuizID)
+        public int CheckTrueAnswer(Guid userID, Guid QuizID)
         {
 
             var result = from quiz in _appDbContext.Quizzes
@@ -50,8 +50,8 @@ namespace Infrastructures.Repositories
                          join submitquiz in _appDbContext.SubmitQuiz on detailquizquestion.Id equals submitquiz.DetailQuizQuestionID
                          where submitquiz.IsCorrect == true && quiz.Id == QuizID && submitquiz.UserID == userID
                          select submitquiz.UserID;
-        
-         return result.Count();
+
+            return result.Count();
         }
     }
 }

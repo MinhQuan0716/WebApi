@@ -38,7 +38,7 @@ namespace WebAPI.Tests.Controllers
             var context = new Mock<HttpContext>();
             var request = new Mock<HttpRequest>();
             _attendanceController.ControllerContext = new();
-            _attendanceController.ControllerContext.HttpContext= context.Object;
+            _attendanceController.ControllerContext.HttpContext = context.Object;
             context.Setup(x => x.Request).Returns(request.Object);
             _attendanceController.Request.Method = "POST";
 
@@ -57,12 +57,12 @@ namespace WebAPI.Tests.Controllers
         [Fact]
         public async void EditAttendance_ShouldReturnCorrectValue()
         {
-            var attendanceMock = _fixture.Build<Attendance>().OmitAutoProperties().Create(); 
+            var attendanceMock = _fixture.Build<Attendance>().OmitAutoProperties().Create();
             var attendanceDtoMock = _fixture.Build<AttendanceDTO>().OmitAutoProperties().Create();
             AttendanceDTO attendanceDtoMock_empty = null;
             var classIdMock = Guid.Empty;
-                _attendanceServiceMock.Setup(x=>x.UpdateAttendanceAsync(attendanceDtoMock, classIdMock)).ReturnsAsync(attendanceMock);
-                _attendanceServiceMock.Setup(x=>x.UpdateAttendanceAsync(attendanceDtoMock_empty, classIdMock)).ReturnsAsync(null as Attendance);
+            _attendanceServiceMock.Setup(x => x.UpdateAttendanceAsync(attendanceDtoMock, classIdMock)).ReturnsAsync(attendanceMock);
+            _attendanceServiceMock.Setup(x => x.UpdateAttendanceAsync(attendanceDtoMock_empty, classIdMock)).ReturnsAsync(null as Attendance);
             // Act
             var result = await _attendanceController.EditAttendance(classIdMock, attendanceDtoMock);
             OkObjectResult okObjectResult = result as OkObjectResult;

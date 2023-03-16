@@ -10,6 +10,6 @@ namespace Application.ViewModels.QuizModels
     {
         public string CorrectAnswer { get; set; }
 
-       
+
     }
 }

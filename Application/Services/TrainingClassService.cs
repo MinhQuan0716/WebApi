@@ -11,6 +11,9 @@ using System.Threading.Tasks;
 
 namespace Application.Services
 {
+    /// <summary>
+    /// Training Class Services
+    /// </summary>
     public class TrainingClassService : ITrainingClassService
     {
         private readonly IUnitOfWork _unitOfWork;
@@ -22,24 +25,35 @@ namespace Application.Services
             _mapper = mapper;
         }
         /// <summary>
-        /// This method set the isDeleted value of object to true
+        /// SoftRemoveTrainingClassAsync set the isDeleted value of training class to true
         /// </summary>
-        /// <param name="trainingClassId"></param>
-        /// <returns></returns>
-        /// <exception cref="NotImplementedException"></exception>
-        public async Task<bool> SoftRemoveTrainingClass(string trainingClassId)
+        /// <param className="trainingClassId">training class ID</param>
+        /// <returns>True if save succesful, false if save fail</returns>
+        public async Task<bool> SoftRemoveTrainingClassAsync(string trainingClassId)
         {
             var trainingClassObj = await GetTrainingClassByIdAsync(trainingClassId);
 
             _unitOfWork.TrainingClassRepository.SoftRemove(trainingClassObj);
             return (await _unitOfWork.SaveChangeAsync() > 0);
         }
-        public async Task<List<TrainingClass>> SearchClassByName(string name)
+
+        /// <summary>
+        /// SearchClassByNameAsync return classes by class className
+        /// </summary>
+        /// <param className="className">Training class name</param>
+        /// <returns>List of training classes<TrainingClass></returns>
+        public async Task<List<TrainingClass>> SearchClassByNameAsync(string className)
         {
-            var listClass = _unitOfWork.TrainingClassRepository.SearchClassByName(name);
+            var listClass = _unitOfWork.TrainingClassRepository.SearchClassByName(className);
             return listClass;
         }
-        public async Task<bool> DuplicateClass(Guid id)
+
+        /// <summary>
+        /// DuplicateClassAsync duplicate an existed training class
+        /// </summary>
+        /// <param name="id">Training class ID</param>
+        /// <returns>True if training class existed, false otherwise</returns>
+        public async Task<bool> DuplicateClassAsync(Guid id)
         {
             var result = await _unitOfWork.TrainingClassRepository.GetByIdAsync(id);
             if (result != null)
@@ -50,9 +64,9 @@ namespace Application.Services
                     StartTime = result.StartTime,
                     EndTime = result.EndTime,
                     CreatedBy = result.CreatedBy,
-                    Code=result.Code,
-                    Attendee=result.Attendee,   
-                    Branch=result.Branch,
+                    Code = result.Code,
+                    Attendee = result.Attendee,
+                    Branch = result.Branch,
                     CreationDate = result.CreationDate,
                     LocationID = result.LocationID,
                     DeleteBy = result.DeleteBy,
@@ -68,36 +82,36 @@ namespace Application.Services
             }
             return false;
         }
+
+        /// <summary>
+        /// CreateTrainingClassAsync add new training class to the database
+        /// </summary>
+        /// <param name="createTrainingClassDTO">Create training class DTO</param>
+        /// <returns>Training class view model</returns>
         public async Task<TrainingClassViewModel?> CreateTrainingClassAsync(CreateTrainingClassDTO createTrainingClassDTO)
         {
-            try
-            {
-                var trainingClassObj = _mapper.Map<TrainingClass>(createTrainingClassDTO);
-                await _unitOfWork.TrainingClassRepository.AddAsync(trainingClassObj);
-                
-                //set location
-                trainingClassObj.Location = await _unitOfWork.LocationRepository.GetByIdAsync(createTrainingClassDTO.LocationID) ?? throw new Exception("Invalid location Id");
+            var trainingClassObj = _mapper.Map<TrainingClass>(createTrainingClassDTO);
+            await _unitOfWork.TrainingClassRepository.AddAsync(trainingClassObj);
 
-                //set training program
-                trainingClassObj.TrainingProgram = await _unitOfWork.TrainingProgramRepository.GetByIdAsync(createTrainingClassDTO.TrainingProgramId) ?? throw new Exception("Invalid training program Id");
+            //set location
+            trainingClassObj.Location = await _unitOfWork.LocationRepository.GetByIdAsync(createTrainingClassDTO.LocationID) ?? throw new Exception("Invalid location Id");
 
-                return (await _unitOfWork.SaveChangeAsync() > 0) ? _mapper.Map<TrainingClassViewModel>(trainingClassObj) : null;
-            }
-            catch(Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
+            //set training program
+            trainingClassObj.TrainingProgram = await _unitOfWork.TrainingProgramRepository.GetByIdAsync(createTrainingClassDTO.TrainingProgramId) ?? throw new Exception("Invalid training program Id");
+
+            return (await _unitOfWork.SaveChangeAsync() > 0) ? _mapper.Map<TrainingClassViewModel>(trainingClassObj) : null;
         }
+
         /// <summary>
-        /// This method uses _classId to find and update that class
+        /// UpdateTrainingClassAsync update training class based on its id
         /// </summary>
-        /// <param name="_classId"></param>
-        /// <param name="updateTrainingCLassDTO"></param>
-        /// <returns></returns>
-        public async Task<bool> UpdateTrainingClass(string trainingClassId, UpdateTrainingCLassDTO updateTrainingCLassDTO)
+        /// <param className="trainingClassId">Training class ID</param>
+        /// <param className="updateTrainingCLassDTO">Update training class DTO</param>
+        /// <returns>True if save successfully, false if save fail</returns>
+        public async Task<bool> UpdateTrainingClassAsync(string trainingClassId, UpdateTrainingCLassDTO updateTrainingCLassDTO)
         {
-            var trainingClassObj= await GetTrainingClassByIdAsync(trainingClassId);
-            _mapper.Map<UpdateTrainingCLassDTO, TrainingClass>(updateTrainingCLassDTO, trainingClassObj);
+            var trainingClassObj = await GetTrainingClassByIdAsync(trainingClassId);
+            _mapper.Map(updateTrainingCLassDTO, trainingClassObj);
             //set location
             trainingClassObj.Location = await _unitOfWork.LocationRepository.GetByIdAsync(updateTrainingCLassDTO.LocationID) ?? throw new NullReferenceException("Invalid location Id");
 
@@ -107,12 +121,13 @@ namespace Application.Services
             _unitOfWork.TrainingClassRepository.Update(trainingClassObj);
             return (await _unitOfWork.SaveChangeAsync() > 0);
         }
+
         /// <summary>
         /// This method find, return Training class and throw exception if can't find or get a mapping exception
         /// </summary>
-        /// <param name="trainingClassId"></param>
-        /// <returns></returns>
-        /// <exception cref="Exception"></exception>
+        /// <param className="trainingClassId">Training class ID</param>
+        /// <returns>Training class</returns>
+        /// <exception cref="AutoMapperMappingException">When training class ID is not a guid</exception>
         public async Task<TrainingClass> GetTrainingClassByIdAsync(string trainingClassId)
         {
             try
@@ -127,10 +142,14 @@ namespace Application.Services
             }
             catch (AutoMapperMappingException)
             {
-                throw new AutoMapperMappingException("Id is not a guid");
+                throw new AutoMapperMappingException("Id must be a guid");
             }
         }
 
+        /// <summary>
+        /// GetAllTrainingClassesAsync returns all training classes
+        /// </summary>
+        /// <returns>List of training class</returns>
         public async Task<List<TrainingClassDTO>> GetAllTrainingClassesAsync()
         {
             var trainingClasses = _unitOfWork.TrainingClassRepository.GetTrainingClasses();
@@ -138,19 +157,19 @@ namespace Application.Services
         }
 
 
-        public async Task<List<TrainingClassDTO>> FilterLocation(string[]? locationName, string branchName, DateTime? date1, DateTime? date2, string[]? classStatus, string[]?attendInClass)
+        public async Task<List<TrainingClassDTO>> FilterLocation(string[]? locationName, string branchName, DateTime? date1, DateTime? date2, string[]? classStatus, string[]? attendInClass)
         {
             ICriterias<TrainingClassDTO> locationCriteria = new LocationCriteria(locationName);
             ICriterias<TrainingClassDTO> dateCriteria = new DateCriteria(date1, date2);
             ICriterias<TrainingClassDTO> branchCriteria = new ClassBranchCriteria(branchName);
-            ICriterias<TrainingClassDTO> statusCriteria=new StatusClassCriteria(classStatus);
-            ICriterias<TrainingClassDTO> attendCriteria=new AttendeeCriteria(attendInClass);    
-            ICriterias<TrainingClassDTO> andCirteria = new AndClassFilter(dateCriteria, locationCriteria,branchCriteria, statusCriteria,attendCriteria);
+            ICriterias<TrainingClassDTO> statusCriteria = new StatusClassCriteria(classStatus);
+            ICriterias<TrainingClassDTO> attendCriteria = new AttendeeCriteria(attendInClass);
+            ICriterias<TrainingClassDTO> andCirteria = new AndClassFilter(dateCriteria, locationCriteria, branchCriteria, statusCriteria, attendCriteria);
             var getAll = _unitOfWork.TrainingClassRepository.GetTrainingClasses();
             var filterResult = andCirteria.MeetCriteria(getAll);
             return filterResult;
         }
 
-    
+
     }
 }

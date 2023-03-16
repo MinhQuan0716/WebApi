@@ -30,7 +30,7 @@ namespace WebAPI.Tests.Controllers
 
         public TrainingClassTest()
         {
-            _trainingClassController = new TrainingClassController(_trainingClassServiceMock.Object,_claimsServiceMock.Object,_mapperConfig);
+            _trainingClassController = new TrainingClassController(_trainingClassServiceMock.Object, _claimsServiceMock.Object, _mapperConfig);
 
         }
 
@@ -51,7 +51,7 @@ namespace WebAPI.Tests.Controllers
 
             string name1 = "anything";
 
-            _trainingClassServiceMock.Setup(s => s.SearchClassByName(name1)).ReturnsAsync(trainingClasses);
+            _trainingClassServiceMock.Setup(s => s.SearchClassByNameAsync(name1)).ReturnsAsync(trainingClasses);
 
             var result = await _trainingClassController.SearchClassByName(name1);
             result.Should().BeOfType<OkObjectResult>();
@@ -64,17 +64,17 @@ namespace WebAPI.Tests.Controllers
             var existingClassId = Guid.NewGuid();
             var existingClass = _fixture.Build<TrainingClass>().
                 OmitAutoProperties()
-                .With(x=> x.Name)
-                .With(x=> x.StartTime)
-                .With(x=> x.EndTime)
-                .With(x=> x.Code)
-                .With(x=> x.Duration)
-                .With(x=> x.Attendee)
-                .With(x=> x.Branch) 
+                .With(x => x.Name)
+                .With(x => x.StartTime)
+                .With(x => x.EndTime)
+                .With(x => x.Code)
+                .With(x => x.Duration)
+                .With(x => x.Attendee)
+                .With(x => x.Branch)
                 .With(x => x.Id, existingClassId).Create();
             await _dbContext.SaveChangesAsync();
 
-            _trainingClassServiceMock.Setup(s => s.DuplicateClass(existingClassId)).ReturnsAsync(true);
+            _trainingClassServiceMock.Setup(s => s.DuplicateClassAsync(existingClassId)).ReturnsAsync(true);
 
             // Act
             var result = await _trainingClassController.DuplicateClass(existingClassId);
@@ -128,24 +128,24 @@ namespace WebAPI.Tests.Controllers
             string[] attendee = { "50" };
             string branchName = "stringstring";
             var nonEmptyResult = _fixture.Build<TrainingClassDTO>()
-                .CreateMany(10).ToList() ;
+                .CreateMany(10).ToList();
             var mockData = new TrainingClassFilterModel()
             {
-               branchName= branchName,
-               locationName= locationName,
-               date1= date1,
-               date2= date2,
-               attendInClass=attendee,
-               classStatus=statusClass
+                branchName = branchName,
+                locationName = locationName,
+                date1 = date1,
+                date2 = date2,
+                attendInClass = attendee,
+                classStatus = statusClass
             };
-           _trainingClassServiceMock.Setup(x => x.FilterLocation(locationName, branchName, date1, date2,statusClass,attendee)).ReturnsAsync(nonEmptyResult);
+            _trainingClassServiceMock.Setup(x => x.FilterLocation(locationName, branchName, date1, date2, statusClass, attendee)).ReturnsAsync(nonEmptyResult);
 
             // Act
             var result = await _trainingClassController.FilterResult(mockData);
 
             // Assert
             var okObjectResult = Assert.IsType<OkObjectResult>(result);
-           // var okFilterResult = Assert.IsType<OkObjectResult>(filterResult);
+            // var okFilterResult = Assert.IsType<OkObjectResult>(filterResult);
             var model = Assert.IsAssignableFrom<IEnumerable<TrainingClassDTO>>(okObjectResult.Value);
         }
     }

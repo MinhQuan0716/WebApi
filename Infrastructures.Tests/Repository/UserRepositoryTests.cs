@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace Infrastructures.Tests.Repository
 {
-    public class UserRepositoryTests:SetupTest
+    public class UserRepositoryTests : SetupTest
     {
         private readonly IUserRepository _userRepository;
         public UserRepositoryTests()
@@ -30,7 +30,7 @@ namespace Infrastructures.Tests.Repository
         public async Task CheckEmailExistedAsync_ReturnTrue()
         {
             var userMock = _fixture.Build<User>().Without(x => x.Applications).Without(x => x.Syllabuses).Without(x => x.Feedbacks).Without(x => x.Attendances).Without(x => x.DetailTrainingClassParticipate).Without(x => x.SubmitQuizzes).Create();
-            await _dbContext.Users.AddAsync( userMock );
+            await _dbContext.Users.AddAsync(userMock);
             await _dbContext.SaveChangesAsync();
 
             var result = await _userRepository.CheckEmailExistedAsync(userMock.Email);
@@ -48,7 +48,7 @@ namespace Infrastructures.Tests.Repository
 
             var result = await _userRepository.CheckEmailExistedAsync(_fixture.Create<string>());
 
-            result.Should().Be(false);   
+            result.Should().Be(false);
 
         }
 
@@ -107,7 +107,7 @@ namespace Infrastructures.Tests.Repository
             await _dbContext.Users.AddAsync(userMock);
             await _dbContext.SaveChangesAsync();
             //Act
-            var result= await _userRepository.GetUserByEmailAsync(userMock.Email);
+            var result = await _userRepository.GetUserByEmailAsync(userMock.Email);
 
             //Assert
             result.Id.Should().Be(userMock.Id);
@@ -150,8 +150,8 @@ namespace Infrastructures.Tests.Repository
 
             _unitOfWorkMock.Setup(u => u.UserRepository.Update(userMock)).Verifiable();
             _unitOfWorkMock.Setup(u => u.SaveChangeAsync()).ReturnsAsync(1);
-             //Act
-             var result = await _userRepository.ChangeUserPasswordAsync(userMock,newPassword);
+            //Act
+            var result = await _userRepository.ChangeUserPasswordAsync(userMock, newPassword);
 
             //Assert
             result.Should().BeTrue();

@@ -10,7 +10,7 @@ namespace Application.Interfaces
 {
     public interface ILocationService
     {
-        public Task<LocationDTO> AddNewLocation(CreateLocationDTO  createLocationDTO);
+        public Task<LocationDTO> AddNewLocation(CreateLocationDTO createLocationDTO);
         public Task<List<LocationDTO>> GetAllLocation();
     }
 }

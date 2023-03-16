@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Application.Repositories
 {
-    public interface ILocationRepository:IGenericRepository<Location>
+    public interface ILocationRepository : IGenericRepository<Location>
     {
     }
 }

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Application.Interfaces
 {
-    public interface IUnitService 
+    public interface IUnitService
     {
 
         Task<IEnumerable<Unit>> GetSyllabusDetail(Guid syllabusID);

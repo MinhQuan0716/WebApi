@@ -243,7 +243,7 @@ namespace Application.Services
 
         public async Task<FinalViewSyllabusDTO> FinalViewSyllabusDTO(Guid SyllabusID)
         {
-                
+
             FinalViewSyllabusDTO view = new FinalViewSyllabusDTO();
             var SyllabusInformation = await _unitOfWork.SyllabusRepository.GetByIdAsync(SyllabusID);
             var UnitInformation = await _unitOfWork.UnitRepository.FindAsync(x => x.SyllabusID == SyllabusID);

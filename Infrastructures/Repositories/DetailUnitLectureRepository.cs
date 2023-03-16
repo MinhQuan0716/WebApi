@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Infrastructures.Repositories
 {
-    public class DetailUnitLectureRepository : GenericRepository<DetailUnitLecture>,IDetailUnitLectureRepository
+    public class DetailUnitLectureRepository : GenericRepository<DetailUnitLecture>, IDetailUnitLectureRepository
     {
         private readonly AppDbContext _AppDbContext;
         public DetailUnitLectureRepository(AppDbContext context, ICurrentTime timeService, IClaimsService claimsService) : base(context, timeService, claimsService)
@@ -20,7 +20,7 @@ namespace Infrastructures.Repositories
 
         public List<LectureDTO> GetByUnitID(Guid UnitId)
         {
-            List<LectureDTO> lectureDTOs= new List<LectureDTO>();
+            List<LectureDTO> lectureDTOs = new List<LectureDTO>();
             var result = from detaillecture in _AppDbContext.DetailUnitLecture
                          join lecture in _AppDbContext.Lectures on detaillecture.LectureID equals lecture.Id
                          where detaillecture.UnitId == UnitId
@@ -28,11 +28,11 @@ namespace Infrastructures.Repositories
                          {
                              DeliveryType = lecture.DeliveryType,
                              Duration = (float)lecture.Duration,
-                             LectureName= lecture.LectureName,
+                             LectureName = lecture.LectureName,
                              OutputStandards = lecture.OutputStandards,
                              Status = lecture.Status,
                          };
-            foreach(var item in result)
+            foreach (var item in result)
             {
                 lectureDTOs.Add(item);
             }

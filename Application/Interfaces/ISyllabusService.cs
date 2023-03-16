@@ -1,4 +1,4 @@
-﻿﻿using Application.ViewModels.SyllabusModels;
+﻿using Application.ViewModels.SyllabusModels;
 using Application.ViewModels.SyllabusModels.FixViewSyllabus;
 using Application.ViewModels.SyllabusModels.UpdateSyllabusModels;
 using Application.ViewModels.SyllabusModels.ViewDetail;
@@ -13,8 +13,9 @@ using System.Threading.Tasks;
 namespace Application.Interfaces
 {
 
-    public interface ISyllabusService { 
-     
+    public interface ISyllabusService
+    {
+
         public Task<Syllabus> AddSyllabusAsync(SyllabusGeneralDTO syllabus);
         public Task<List<Syllabus>> FilterSyllabus(double duration1, double duration2);
         public Task<List<SyllabusViewAllDTO>> GetAllSyllabus();

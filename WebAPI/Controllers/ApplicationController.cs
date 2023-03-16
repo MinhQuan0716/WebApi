@@ -22,7 +22,7 @@ namespace WebAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateApplication([FromBody] ApplicationDTO applicationDTO)
         {
-            bool isAbsent= await _service.CreateApplication(applicationDTO);
+            bool isAbsent = await _service.CreateApplication(applicationDTO);
             if (isAbsent)
             {
                 return Ok("Create application succesfully");
@@ -41,7 +41,7 @@ namespace WebAPI.Controllers
         [HttpPost("{id}")]
         [Authorize]
         [ClaimRequirement(nameof(PermissionItem.ApplicationPermission), nameof(PermissionEnum.View))]
-        public async Task<IActionResult> ViewAllApplication([FromRoute(Name ="id")] Guid? classId,
+        public async Task<IActionResult> ViewAllApplication([FromRoute(Name = "id")] Guid? classId,
                                                             [FromBody] ApplicationDateTimeFilterDTO condition = null,
                                                             [FromQuery] string by = nameof(ApplicationFilterByEnum.CreationDate),
                                                             [FromQuery(Name = "s")] string searchString = "",
@@ -49,7 +49,7 @@ namespace WebAPI.Controllers
                                                             [FromQuery(Name = "ps")] int pageSize = 10)
         {
             // Run
-            var applications = await _service.GetAllApplication(classId.Value,condition, searchString, by, pageNumber, pageSize);
+            var applications = await _service.GetAllApplication(classId.Value, condition, searchString, by, pageNumber, pageSize);
             return Ok(applications);
         }
     }

@@ -11,13 +11,13 @@ using WebAPI.Controllers;
 
 namespace Domains.Test.Controller
 {
-    public class SyllabusClassTest :SetupTest
+    public class SyllabusClassTest : SetupTest
     {
         private readonly SyllabusController _syllabusController;
 
         public SyllabusClassTest()
         {
-            _syllabusController = new SyllabusController(_syllabusServiceMock.Object,_unitServiceMock.Object,_lectureServiceMock.Object);
+            _syllabusController = new SyllabusController(_syllabusServiceMock.Object, _unitServiceMock.Object, _lectureServiceMock.Object);
         }
 
         [Fact]
@@ -26,7 +26,7 @@ namespace Domains.Test.Controller
             var mockData = _fixture.Build<Syllabus>().Without(x => x.DetailTrainingProgramSyllabus).Without(x => x.User).Without(x => x.Units).Create<Syllabus>();
             _syllabusServiceMock.Setup(u => u.DeleteSyllabussAsync(mockData.Id.ToString())).ReturnsAsync(true);
             var result = await _syllabusController.DeleteSyllabus(mockData.Id.ToString());
-           
+
             Assert.IsType<NoContentResult>(result);
         }
 

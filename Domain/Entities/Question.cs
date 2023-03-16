@@ -11,8 +11,11 @@ namespace Domain.Entities
         public string Content { get; set; }
 
         public string Answer1 { get; set; }
+
         public string Answer2 { get; set; }
+
         public string Answer3 { get; set; }
+
         public string Answer4 { get; set; }
 
         public string CorrectAnswer { get; set; }
@@ -24,11 +27,13 @@ namespace Domain.Entities
         /// connect with topic ,1 topic have many quizbank , 1 quizbank belong 1 topc
         /// </summary>
         public Guid TopicID { get; set; }
+
         public Topic Topic { get; set; }
 
 
         //connect with quiz type 1 n
         public int QuizTypeID { get; set; }
+
         public QuizType QuizType { get; set; }
 
         public ICollection<DetailQuizQuestion> DetailQuizQuestion { get; set; }

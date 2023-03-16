@@ -113,7 +113,7 @@ namespace WebAPI.Tests.Controllers
             };
             FilterQuizModel filter_badrequest = new FilterQuizModel()
             {
-               QuizType = null,
+                QuizType = null,
                 QuizTopic = null
             };
             var listName = new List<Question?>();

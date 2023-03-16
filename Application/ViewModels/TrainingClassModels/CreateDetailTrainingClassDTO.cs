@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 
 namespace Application.ViewModels.TrainingClassModels
 {
-    internal class CreateDetailTrainingClassDTO 
+    internal class CreateDetailTrainingClassDTO
     {
         public Guid UserId { get; set; }
         public Guid TrainingClassID { get; set; }
         public string StatusClassDetail { get; set; }
 
- 
+
     }
 }

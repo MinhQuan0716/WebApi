@@ -32,7 +32,7 @@ public class ApplicationCronJob
     }
 
     public async Task CheckAttendancesEveryDay()
-    {                
+    {
         // get all attendances info of today
         var absentList = await _attendanceService.GetAllAbsentInfoAsync();
         // send email to these trainee
@@ -45,5 +45,5 @@ public class ApplicationCronJob
 
             await _mailHelper.SendMailAsync(x.Email, subject, message);
         }
-}
+    }
 }

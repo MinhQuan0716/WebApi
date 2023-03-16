@@ -39,7 +39,7 @@ namespace Application.Tests.Services
             var actualResult = await auditPlanService.CreateAuditPlan(createAuditDTO);
             actualResult.Should().BeAssignableTo<AuditPlan>();
             actualResult.Should().NotBeNull();
-            actualResult.AuditPlanName.Should().BeEquivalentTo(createAuditDTO.AuditPlanName);   
+            actualResult.AuditPlanName.Should().BeEquivalentTo(createAuditDTO.AuditPlanName);
         }
 
         [Fact]
@@ -48,7 +48,7 @@ namespace Application.Tests.Services
             var createAuditDTO = _fixture.Build<CreateAuditDTO>().Without(x => x.CreateAuditQuestionDTOS).Create<CreateAuditDTO>();
             var auditPlan = _mapperConfig.Map<AuditPlan>(createAuditDTO);
             _unitOfWorkMock.Setup(x => x.AuditPlanRepository.AddAsync(It.IsAny<AuditPlan>())).Verifiable();
-            
+
             _unitOfWorkMock.Setup(x => x.SaveChangeAsync()).ReturnsAsync(1);
             Func<Task> act = async () => await auditPlanService.CreateAuditPlan(createAuditDTO);
             await act.Should().ThrowAsync<Exception>().WithMessage("Questions can not null");
@@ -59,7 +59,7 @@ namespace Application.Tests.Services
         public async Task CreateAuditPlan_SaveChangeFailed()
         {
             var createAuditDTO = _fixture.Build<CreateAuditDTO>().Create<CreateAuditDTO>();
-          
+
             _unitOfWorkMock.Setup(x => x.AuditPlanRepository.AddAsync(It.IsAny<AuditPlan>())).Verifiable();
             _unitOfWorkMock.Setup(x => x.SaveChangeAsync()).ReturnsAsync(0);
             Func<Task> act = async () => await auditPlanService.CreateAuditPlan(createAuditDTO);
@@ -76,7 +76,7 @@ namespace Application.Tests.Services
             var questions = _fixture.Build<AuditQuestionViewModel>().CreateMany(2);
             var auditView = _mapperConfig.Map<AuditPlanViewModel>(auditPlan);
             _unitOfWorkMock.Setup(x => x.AuditPlanRepository.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(auditPlan);
-            
+
             _unitOfWorkMock.Setup(x => x.DetailAuditQuestionRepository.GetAuditQuestionsByAuditId(It.IsAny<Guid>())).ReturnsAsync(questions);
 
             var result = await auditPlanService.ViewDetailAuditPlan(auditPlan.Id);
@@ -129,7 +129,7 @@ namespace Application.Tests.Services
             var result = await auditPlanService.DeleteAuditPlan(Id);
             result.Should().BeFalse();
         }
-        
+
         [Fact]
         public async Task UpdateAuditPlan_ShouldReturnTrue()
         {
@@ -172,7 +172,7 @@ namespace Application.Tests.Services
 
             Func<Task> act = async () => await auditPlanService.UpdateAuditPlan(updateAuditDTO);
             await act.Should().ThrowAsync<Exception>().WithMessage("Save Changes Fail");
-            
+
         }
 
         [Fact]
@@ -181,7 +181,7 @@ namespace Application.Tests.Services
             var updateAuditDTO = _fixture.Build<UpdateAuditDTO>().Without(x => x.CreateAuditQuestionDTOS).Create();
             var audit = _mapperConfig.Map<AuditPlan>(updateAuditDTO);
             _unitOfWorkMock.Setup(x => x.AuditPlanRepository.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(audit = null);
-            
+
 
             Func<Task> act = async () => await auditPlanService.UpdateAuditPlan(updateAuditDTO);
             await act.Should().ThrowAsync<Exception>().WithMessage("Cant find any Audit Plan");

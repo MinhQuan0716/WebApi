@@ -47,10 +47,10 @@ namespace Infrastructures.Tests.Repository
                 .With(x => x.EndTime)
                 .With(x => x.TrainingProgramId, trainingProgram.Id)
                 .With(x => x.IsDeleted, false)
-                .With(x=>x.StatusClassDetail)
-                .With(x=>x.Branch)
-                .With(x=>x.Attendee)
-                .With(x=>x.Code)
+                .With(x => x.StatusClassDetail)
+                .With(x => x.Branch)
+                .With(x => x.Attendee)
+                .With(x => x.Code)
                 .CreateMany(2).ToArray();
             await _dbContext.AddRangeAsync(trainingClasses);
             _dbContext.SaveChanges();
@@ -157,7 +157,7 @@ namespace Infrastructures.Tests.Repository
         public async Task GetAbsentAttendanceOfDay_ShouldReturnCorrectData()
         {
             // Arrange
-            var date = DateTime.Now;            
+            var date = DateTime.Now;
             var userMock = new User
             {
                 Id = Guid.NewGuid(),
@@ -172,7 +172,7 @@ namespace Infrastructures.Tests.Repository
                 Attendee = "Intern",
                 Branch = "FSU",
                 Code = "Senier",
-                StatusClassDetail=nameof(StatusClassDetail.Active)
+                StatusClassDetail = nameof(StatusClassDetail.Active)
             };
             var attendanceMocks = new List<Attendance>
         {
@@ -193,7 +193,7 @@ namespace Infrastructures.Tests.Repository
                 UserId = userMock.Id,
                 User = userMock,
                 TrainingClassId = classMock.Id,
-                TrainingClass = classMock,                
+                TrainingClass = classMock,
                 Status = AttendanceStatusEnums.Absent.ToString(),
                 Date = date,
                 IsDeleted = false

@@ -20,7 +20,7 @@ public class FeedbackControllerTest : SetupTest
 
     public FeedbackControllerTest()
     {
-        _feedbackController = new FeedbacksController(_feedbackServiceMock.Object, 
+        _feedbackController = new FeedbacksController(_feedbackServiceMock.Object,
                                                         _claimsServiceMock.Object,
                                                         _mapperMock.Object);
     }

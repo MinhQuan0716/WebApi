@@ -15,6 +15,7 @@ namespace Domain.Entities
         public Guid QuizID { get; set; }
 
         public Guid QuestionID { get; set; }
+
         public Question Question { get; set; }
 
         //public SubmitQuiz SubmitQuiz { get; set; }

@@ -20,7 +20,7 @@ namespace Infrastructures.Tests.Repository
             _lectureRepository = new LectureRepository(_dbContext, _currentTimeMock.Object, _claimsServiceMock.Object);
         }
 
-       
+
 
     }
 }

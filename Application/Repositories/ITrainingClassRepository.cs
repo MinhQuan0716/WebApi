@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Application.Repositories
 {
-    public interface ITrainingClassRepository:IGenericRepository<TrainingClass>
+    public interface ITrainingClassRepository : IGenericRepository<TrainingClass>
     {
         public List<TrainingClass> SearchClassByName(string name);
         public List<TrainingClassDTO> GetTrainingClasses();

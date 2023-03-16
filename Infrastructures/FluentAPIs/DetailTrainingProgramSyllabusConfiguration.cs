@@ -20,7 +20,7 @@ namespace Infrastructures.FluentAPIs
             builder.HasOne(dt => dt.TrainingProgram).WithMany(tp => tp.DetailTrainingProgramSyllabus).HasForeignKey(dt => dt.TrainingProgramId);
         }
 
-        
-        
+
+
     }
 }

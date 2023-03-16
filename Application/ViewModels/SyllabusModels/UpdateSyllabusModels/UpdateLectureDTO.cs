@@ -19,7 +19,7 @@ namespace Application.ViewModels.SyllabusModels.UpdateSyllabusModels
 
         public string Status { get; set; }
 
-        public Guid? UnitID {get;set;}
+        public Guid? UnitID { get; set; }
 
     }
 }

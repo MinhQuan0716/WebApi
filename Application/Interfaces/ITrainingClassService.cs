@@ -10,10 +10,10 @@ namespace Application.Interfaces
 {
     public interface ITrainingClassService
     {
-        public Task<List<TrainingClass>> SearchClassByName(string name);
-        public Task<bool> DuplicateClass(Guid id);
-        public Task<bool> SoftRemoveTrainingClass(string traingingClassId);
-        public Task<bool> UpdateTrainingClass(string trainingClassId, UpdateTrainingCLassDTO updateTrainingCLassDTO);
+        public Task<List<TrainingClass>> SearchClassByNameAsync(string name);
+        public Task<bool> DuplicateClassAsync(Guid id);
+        public Task<bool> SoftRemoveTrainingClassAsync(string traingingClassId);
+        public Task<bool> UpdateTrainingClassAsync(string trainingClassId, UpdateTrainingCLassDTO updateTrainingCLassDTO);
         public Task<TrainingClass> GetTrainingClassByIdAsync(string trainingClassId);
         public Task<TrainingClassViewModel?> CreateTrainingClassAsync(CreateTrainingClassDTO createTrainingClassDTO);
         public Task<List<TrainingClassDTO>> GetAllTrainingClassesAsync();

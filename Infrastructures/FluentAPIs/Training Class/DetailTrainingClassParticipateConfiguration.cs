@@ -20,7 +20,7 @@ namespace Infrastructures.FluentAPIs
             builder.Property(x => x.TraineeParticipationStatus).HasDefaultValue("null");
             builder.HasOne(x => x.TrainingClass).WithMany(x => x.TrainingClassParticipates).HasForeignKey(x => x.TrainingClassID);
             builder.HasOne(x => x.User).WithMany(x => x.DetailTrainingClassParticipate).HasForeignKey(x => x.UserId);
-            
+
         }
     }
 }

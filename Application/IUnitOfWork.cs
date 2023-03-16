@@ -26,7 +26,7 @@ namespace Application
         public IDetailAuditQuestionRepository DetailAuditQuestionRepository { get; }
 
 
-        
+
 
         public ISubmitQuizRepository SubmitQuizRepository { get; }
         public IQuestionRepository QuestionRepository { get; }

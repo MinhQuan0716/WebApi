@@ -22,18 +22,18 @@ namespace Application.Filter.ClassFilter
         {
             if (date1 != null && date2 != null)
             {
-                List<TrainingClassDTO> trainingClassDTOs= new List<TrainingClassDTO>();
+                List<TrainingClassDTO> trainingClassDTOs = new List<TrainingClassDTO>();
                 foreach (TrainingClassDTO item in classList)
                 {
                     if (date1 <= item.StartDate && item.EndDate <= date2)
                     {
                         trainingClassDTOs.Add(item);
                     }
-                   
+
                 }
                 return trainingClassDTOs;
             }
-            else if(date1 != null && date2 == null)
+            else if (date1 != null && date2 == null)
             {
                 List<TrainingClassDTO> trainingClassDTOs = new List<TrainingClassDTO>();
                 foreach (TrainingClassDTO item in classList)
@@ -42,11 +42,11 @@ namespace Application.Filter.ClassFilter
                     {
                         trainingClassDTOs.Add(item);
                     }
-                    
+
                 }
                 return trainingClassDTOs;
             }
-            else if(date1== null && date2 != null)
+            else if (date1 == null && date2 != null)
             {
                 List<TrainingClassDTO> trainingClassDTOs = new List<TrainingClassDTO>();
                 foreach (TrainingClassDTO item in classList)
@@ -55,7 +55,7 @@ namespace Application.Filter.ClassFilter
                     {
                         trainingClassDTOs.Add(item);
                     }
-                   
+
                 }
                 return trainingClassDTOs;
             }

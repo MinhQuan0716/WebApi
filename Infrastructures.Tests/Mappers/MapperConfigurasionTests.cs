@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Infrastructures.Tests.Mappers
 {
-    public class MapperConfigurasionTests:SetupTest
+    public class MapperConfigurasionTests : SetupTest
     {
 
     }

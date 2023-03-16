@@ -61,13 +61,13 @@ namespace WebAPI.Test.Controllers
         {
             //arrange
             var mock = _fixture.Build<LocationDTO>().CreateMany().ToList();
-            _locationServiceMock.Setup(x=>x.GetAllLocation()).ReturnsAsync(mock);
+            _locationServiceMock.Setup(x => x.GetAllLocation()).ReturnsAsync(mock);
 
             //act
             var result = await locationsController.ViewAllLocation();
 
             //assert
-            _locationServiceMock.Verify(x=>x.GetAllLocation(), Times.Once);
+            _locationServiceMock.Verify(x => x.GetAllLocation(), Times.Once);
             Assert.NotNull(result);
             Assert.IsType<OkObjectResult>(result);
             ((OkObjectResult)result).Value.Should().Be(mock);

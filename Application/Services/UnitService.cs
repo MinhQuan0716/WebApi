@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Infrastructures
+namespace Application.Services
 {
     public class UnitService : IUnitService
     {
@@ -32,15 +32,16 @@ namespace Infrastructures
 
         }
 
-        public async Task<Unit> AddNewUnit(UnitDTO unitDTO,Syllabus syllabus)
+        public async Task<Unit> AddNewUnit(UnitDTO unitDTO, Syllabus syllabus)
         {
-            var NewUnit = new Unit() {
+            var NewUnit = new Unit()
+            {
                 Id = new Guid(),
                 UnitName = unitDTO.UnitName,
                 TotalTime = unitDTO.TotalTime,
                 Session = unitDTO.Session,
                 IsDeleted = false,
-                Syllabus=syllabus
+                Syllabus = syllabus
             };
             //throw new Exception();
             await _unitOfWork.UnitRepository.AddAsync(NewUnit);

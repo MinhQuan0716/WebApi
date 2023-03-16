@@ -27,7 +27,7 @@ namespace Infrastructures.Repositories
         {
             //var result = await _dbSet.FirstOrDefaultAsync(x => x.Id == id);
             // todo should throw exception when not found
-           
+
             //return result;
             return await includes
                .Aggregate(_dbSet.AsQueryable(),
@@ -79,7 +79,7 @@ namespace Infrastructures.Repositories
 
         public async Task<Pagination<TEntity>> ToPagination(int pageIndex = 0, int pageSize = 10)
         {
-            return await ToPagination(x => true,pageIndex,pageSize) ;
+            return await ToPagination(x => true, pageIndex, pageSize);
         }
         public async Task<Pagination<TEntity>> ToPagination(Expression<Func<TEntity, bool>> expression, int pageIndex = 0, int pageSize = 10)
         {
@@ -89,7 +89,7 @@ namespace Infrastructures.Repositories
                                     .Skip(pageIndex * pageSize)
                                     .Take(pageSize)
                                     .AsNoTracking()
-                                    .ToListAsync();           
+                                    .ToListAsync();
 
             var result = new Pagination<TEntity>()
             {
@@ -101,7 +101,7 @@ namespace Infrastructures.Repositories
 
             return result;
         }
-        public async Task<Pagination<TEntity>> ToPagination<TProperty>(IIncludableQueryable<TEntity, TProperty?> value, Expression<Func<TEntity, bool>> expression,  int pageIndex, int pageSize)
+        public async Task<Pagination<TEntity>> ToPagination<TProperty>(IIncludableQueryable<TEntity, TProperty?> value, Expression<Func<TEntity, bool>> expression, int pageIndex, int pageSize)
         {
             var itemCount = await _dbSet.Where(expression).CountAsync();
             var items = await value.Where(expression)
@@ -133,6 +133,6 @@ namespace Infrastructures.Repositories
 
         public async Task<List<TEntity>> FindAsync(Expression<Func<TEntity, bool>> expression) => await _dbSet.Where(expression).ToListAsync();
 
-   
+
     }
 }

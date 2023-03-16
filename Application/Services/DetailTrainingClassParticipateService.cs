@@ -31,7 +31,7 @@ namespace Application.Services
         }
 
         public async Task<DetailTrainingClassParticipate> CreateTrainingClassParticipate(Guid userId, Guid classId)
-        {            
+        {
             var trainingClass = await _unitOfWork.TrainingClassRepository.GetByIdAsync(classId);
             var user = await _unitOfWork.UserRepository.GetByIdAsync(userId);
             if (user is not null)

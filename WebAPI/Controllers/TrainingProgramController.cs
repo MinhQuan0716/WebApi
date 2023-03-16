@@ -24,7 +24,7 @@ namespace WebAPI.Controllers
         public async Task<IActionResult> GetDetail(Guid trainingProgramId)
         {
             var trainingProgram = await _trainingProgramService.GetTrainingProgramDetail(trainingProgramId);
-            if(trainingProgram is not null ) return Ok(trainingProgram); 
+            if (trainingProgram is not null) return Ok(trainingProgram);
             return BadRequest();
         }
 
@@ -41,7 +41,7 @@ namespace WebAPI.Controllers
         [HttpPut]
         [Authorize]
         [ClaimRequirement(nameof(PermissionItem.TrainingProgramPermission), nameof(PermissionEnum.Modifed))]
-        public async Task<IActionResult> Update(UpdateTrainingProgramDTO updateProgramDTO) 
+        public async Task<IActionResult> Update(UpdateTrainingProgramDTO updateProgramDTO)
         {
             var result = await _trainingProgramService.UpdateTrainingProgram(updateProgramDTO);
             if (result) return NoContent();
@@ -54,7 +54,7 @@ namespace WebAPI.Controllers
         public async Task<IActionResult> Delete(Guid trainingProgramId)
         {
             var result = await _trainingProgramService.DeleteTrainingProgram(trainingProgramId);
-            if(result) return NoContent();
+            if (result) return NoContent();
             return BadRequest("Delete Failed");
         }
 
@@ -62,7 +62,7 @@ namespace WebAPI.Controllers
         [Authorize]
         public async Task<IActionResult> GetAllTrainingProgram()
         {
-            var result= await _trainingProgramService.viewAllTrainingProgramDTOs();
+            var result = await _trainingProgramService.viewAllTrainingProgramDTOs();
             if (result is not null) return Ok(result);
             else return BadRequest("Missing required fields");
         }

@@ -13,7 +13,7 @@ namespace Application.ViewModels.SyllabusModels.FixViewSyllabus
         public string OutputStandard { get; set; }
 
         public double Hours { get; set; }
-        
+
         public string Status { get; set; }
 
         public string DeliveryType { get; set; }

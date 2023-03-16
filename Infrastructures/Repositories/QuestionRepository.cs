@@ -16,10 +16,10 @@ namespace Infrastructures.Repositories
         private readonly AppDbContext _appDbContext;
         public QuestionRepository(AppDbContext context, ICurrentTime timeService, IClaimsService claimsService) : base(context, timeService, claimsService)
         {
-            _appDbContext = context;    
+            _appDbContext = context;
         }
 
-       // using for trainer to view quiz
+        // using for trainer to view quiz
         public List<ViewQuizForTrainer> GetQuizForTrainer(Guid QuizID)
         {
 
@@ -60,8 +60,8 @@ namespace Infrastructures.Repositories
                              Answer2 = question.Answer2,
                              Answer3 = question.Answer3,
                              Answer4 = question.Answer4,
-                            UserAnswer = "",
-                             
+                             UserAnswer = "",
+
                          };
 
             return result.ToList();
@@ -70,4 +70,4 @@ namespace Infrastructures.Repositories
 
     }
 
-    }
+}

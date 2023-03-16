@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Infrastructures.Tests.Repository
 {
-    public class TrainingClassRepositoryTest:SetupTest
+    public class TrainingClassRepositoryTest : SetupTest
     {
     }
 }

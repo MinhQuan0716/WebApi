@@ -122,7 +122,7 @@ namespace Application.Services
             if (auditPlan is not null)
             {
                 var auditView = _mapper.Map<AuditPlanViewModel>(auditPlan);
-                
+
                 var questionsView = await _unitOfWork.DetailAuditQuestionRepository.GetAuditQuestionsByAuditId(auditId);
                 auditView.AuditQuestions = questionsView;
                 return auditView;

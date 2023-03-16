@@ -28,7 +28,7 @@ namespace Infrastructures
         public DbSet<Location> Locations { get; set; }
         public DbSet<DetailTrainingClassParticipate> DetailTrainingClassParticipates { get; set; }
         public DbSet<Attendance> Attendances { get; set; }
-        public DbSet<Applications> Applications { get; set; }        
+        public DbSet<Applications> Applications { get; set; }
         public DbSet<Feedback> Feedbacks { get; set; }
         public DbSet<TrainingProgram> TrainingPrograms { get; set; }
         public DbSet<DetailTrainingProgramSyllabus> detailTrainingProgramSyllabuses { get; set; }
@@ -39,7 +39,7 @@ namespace Infrastructures
         public DbSet<DetailAuditQuestion> DetailAuditQuestions { get; set; }
         public DbSet<DetailTrainingProgramSyllabus> DetailTrainingProgramSyllabuses { get; set; }
 
-        public DbSet<Topic> Topic { get; set; } 
+        public DbSet<Topic> Topic { get; set; }
 
         public DbSet<DetailQuizQuestion> DetailQuizQuestions { get; set; }
 
@@ -48,13 +48,13 @@ namespace Infrastructures
         public DbSet<Quiz> Quizzes { get; set; }
 
         public DbSet<SubmitQuiz> SubmitQuiz { get; set; }
-              
+
         public DbSet<Grading> Gradings { get; set; }
         #endregion
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());  
+            modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         }
 
     }

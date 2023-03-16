@@ -58,9 +58,9 @@ namespace Infrastructures.Mappers
               .ForMember(destinationMember => destinationMember.DateOfBirth, options => options.MapFrom(src => src.DateOfBirth))
               .ForMember(destinationMember => destinationMember.Gender, options => options.MapFrom(src => src.Gender))
               .ForMember(destinationMember => destinationMember.RoleId, options => options.MapFrom(src => src.RoleId)).ReverseMap();
-            
+
             CreateMap<AttendanceDTO, Attendance>()
-                .ForMember(a => a.Status, options => options.MapFrom(dto => dto.Status? nameof(AttendanceStatusEnums.Present): nameof(AttendanceStatusEnums.Absent)))
+                .ForMember(a => a.Status, options => options.MapFrom(dto => dto.Status ? nameof(AttendanceStatusEnums.Present) : nameof(AttendanceStatusEnums.Absent)))
                 .ForMember(a => a.UserId, options => options.MapFrom(dto => dto.UserId.Value))
                 .ForMember(a => a.Id, options => options.MapFrom(dto => dto.AttendanceId))
                 .ForMember(a => a.Date, options => options.MapFrom(dto => dto.Date))
@@ -78,9 +78,9 @@ namespace Infrastructures.Mappers
                 .ForMember(x => x.AvatarUrl, options => options.MapFrom(dto => dto.User.AvatarUrl))
                 .ForMember(x => x.DateOfBirth, options => options.MapFrom(dto => dto.User.DateOfBirth))
                 .ForMember(x => x.ApplicationId, options => options.MapFrom(dto => dto.ApplicationId))
-                .ForMember(x => x.ApplicationReason, options => options.MapFrom(dto => dto.Application.Reason))                
+                .ForMember(x => x.ApplicationReason, options => options.MapFrom(dto => dto.Application.Reason))
                 .ForMember(x => x.TrainingClassId, options => options.MapFrom(dto => dto.TrainingClass.Id))
-                .ForMember(x => x.ClassName, options => options.MapFrom(dto => dto.TrainingClass.Name))                
+                .ForMember(x => x.ClassName, options => options.MapFrom(dto => dto.TrainingClass.Name))
                 .ReverseMap();
 
             CreateMap<ResetPasswordDTO, User>()
@@ -176,7 +176,7 @@ namespace Infrastructures.Mappers
             CreateMap<UpdateTrainingCLassDTO, TrainingClass>().ReverseMap();
             CreateMap<TrainingClass, TrainingClassViewModel>()
                 .ForMember(x => x._Id, src => src.MapFrom(x => x.Id))
-                .ForMember(x=>x.LocationName, src =>src.MapFrom(x=>x.Location.LocationName));
+                .ForMember(x => x.LocationName, src => src.MapFrom(x => x.Location.LocationName));
 
             //map location
             CreateMap<CreateLocationDTO, Location>();
@@ -184,7 +184,7 @@ namespace Infrastructures.Mappers
                 .ForMember(x => x._Id, src => src.MapFrom(x => x.Id));
 
 
-  
+
             CreateMap<CreateTrainingProgramDTO, TrainingProgram>().ReverseMap();
             CreateMap<UpdateTrainingProgramDTO, TrainingProgram>().ReverseMap();
 
@@ -217,12 +217,12 @@ namespace Infrastructures.Mappers
                 .ForMember(dest => dest.AbsentDateRequested, opt => opt.MapFrom(src => src.AbsentDateRequested)).ReverseMap();
 
             CreateMap<TrainingProgram, ViewAllTrainingProgramDTO>()
-                .ForMember(destinationMember=>destinationMember.Id,options=>options.MapFrom(src=>src.Id))
-                .ForMember(destinationMember=>destinationMember.TrainingTitle,options=>options.MapFrom(src=>src.ProgramName))
-                .ForMember(destinationMember=>destinationMember.CreationDate,options=>options.MapFrom(src=>src.CreationDate))
-                .ForMember(destinationMember=>destinationMember.CreatedBy,options=>options.MapFrom(src=>src.CreatedBy))
-                .ForMember(destinationMember=>destinationMember.Duration, options=>options.MapFrom(src=>src.Duration))
-                .ForMember(destinationMember=>destinationMember.Status,options=>options.MapFrom(src=>src.Status))
+                .ForMember(destinationMember => destinationMember.Id, options => options.MapFrom(src => src.Id))
+                .ForMember(destinationMember => destinationMember.TrainingTitle, options => options.MapFrom(src => src.ProgramName))
+                .ForMember(destinationMember => destinationMember.CreationDate, options => options.MapFrom(src => src.CreationDate))
+                .ForMember(destinationMember => destinationMember.CreatedBy, options => options.MapFrom(src => src.CreatedBy))
+                .ForMember(destinationMember => destinationMember.Duration, options => options.MapFrom(src => src.Duration))
+                .ForMember(destinationMember => destinationMember.Status, options => options.MapFrom(src => src.Status))
                 .ReverseMap();
 
             CreateMap<AuditPlan, CreateAuditDTO>().ReverseMap();

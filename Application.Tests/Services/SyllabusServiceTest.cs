@@ -54,7 +54,7 @@ namespace Application.Tests.Services
             var updateSyllabusDTO = _fixture.Create<UpdateSyllabusDTO>();
             var syllabus = _mapperConfig.Map<Syllabus>(updateSyllabusDTO);
             syllabus.Id = Guid.NewGuid();
-            
+
             var lecturesDTO = updateSyllabusDTO.Units.First().UpdateLectureDTOs;
             var lectures = _mapperConfig.Map<List<Lecture>>(lecturesDTO);
 
@@ -70,7 +70,7 @@ namespace Application.Tests.Services
 
         }
         [Fact]
-        public async Task UpdateSyllabus_SaveChangesFail_ShouldReturnFalse() 
+        public async Task UpdateSyllabus_SaveChangesFail_ShouldReturnFalse()
         {
             var updateSyllabusDTO = _fixture.Create<UpdateSyllabusDTO>();
             var syllabus = _mapperConfig.Map<Syllabus>(updateSyllabusDTO);
@@ -89,7 +89,7 @@ namespace Application.Tests.Services
             _unitOfWorkMock.Setup(um => um.SyllabusRepository.Update(It.IsAny<Syllabus>())).Verifiable();
 
             var result = await _syllabusService.UpdateSyllabus(syllabus.Id, updateSyllabusDTO);
-          
+
             result.Should().BeFalse();
         }
 
@@ -138,7 +138,7 @@ namespace Application.Tests.Services
             _unitOfWorkMock.Setup(um => um.LectureRepository.GetLectureBySyllabusId(syllabus.Id)).ReturnsAsync(lectures);
             _unitOfWorkMock.Setup(um => um.LectureRepository.Update(It.IsAny<Lecture>())).Verifiable();
             _unitOfWorkMock.Setup(um => um.SyllabusRepository.Update(It.IsAny<Syllabus>())).Verifiable();
-            _unitOfWorkMock.Setup(um => um.UnitRepository.AddRangeAsync(It.IsAny<List<Unit>>())).Verifiable();    
+            _unitOfWorkMock.Setup(um => um.UnitRepository.AddRangeAsync(It.IsAny<List<Unit>>())).Verifiable();
 
             var result = await _syllabusService.UpdateSyllabus(syllabus.Id, updateSyllabusDTO);
 

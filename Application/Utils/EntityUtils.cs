@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Application.Utils
 {
-    public static  class EntityUtils
+    public static class EntityUtils
     {
         public static bool IsWithin<T>(this T value, T minimum, T maximum) where T : IComparable<T>
         {

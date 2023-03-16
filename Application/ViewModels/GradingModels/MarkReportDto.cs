@@ -9,7 +9,7 @@ namespace Application.ViewModels.GradingModels;
 public class MarkReportDto
 {
     public string ClassName { get; set; }
-    public string Username { get; set; }    
+    public string Username { get; set; }
     public string TraineeName { get; set; }
     public string LectureName { get; set; }
     public string DeliveryType { get; set; }

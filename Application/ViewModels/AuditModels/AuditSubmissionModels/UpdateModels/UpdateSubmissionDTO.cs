@@ -9,6 +9,6 @@ namespace Application.ViewModels.AuditModels.AuditSubmissionModels.UpdateModels
 {
     public class UpdateSubmissionDTO : CreateAuditSubmissionDTO
     {
-        public Guid Id { get; set;}
+        public Guid Id { get; set; }
     }
 }

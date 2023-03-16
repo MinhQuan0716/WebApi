@@ -80,7 +80,7 @@ namespace Infrastructures.Repositories
      .ToList();
             return syllabusList;
         }
-    
+
 
         //public  async Task<SyllabusOutlineDTO> GetBySession(int Session, Guid syllabusID)
         //{

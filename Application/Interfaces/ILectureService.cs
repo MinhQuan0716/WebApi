@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Application.Interfaces
 {
-    public interface ILectureService 
+    public interface ILectureService
     {
         Task<Lecture> AddNewLecture(LectureDTO lecture);
 

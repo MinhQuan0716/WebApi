@@ -17,7 +17,7 @@ namespace WebAPI.Controllers
         private readonly IAuditSubmissionService auditSubmissionService;
         private readonly IGradingService gradingService;
         private readonly IAuditPlanService auditPlanService;
-   
+
         public AuditSubmissionController(IAuditSubmissionService auditSubmissionService, IGradingService gradingService, IAuditPlanService auditPlanService)
         {
             this.auditSubmissionService = auditSubmissionService;
@@ -33,9 +33,9 @@ namespace WebAPI.Controllers
             var result = await auditSubmissionService.CreateAuditSubmission(createAuditSubmissionDTO);
             if (result is not null)
             {
-                if(auditPlanService is not null && gradingService is not null)
+                if (auditPlanService is not null && gradingService is not null)
                 {
-                   
+
                     var auditPlan = await auditPlanService.GetAuditPlanById(result.AuditPlanId);
                     if (auditPlan is not null)
                     {
@@ -59,19 +59,20 @@ namespace WebAPI.Controllers
 
                     }
                     else return BadRequest("Can not found AuditPlan");
-                } else return BadRequest("Not have auditPlan service and GradingService");
-                
+                }
+                else return BadRequest("Not have auditPlan service and GradingService");
+
             }
             else return BadRequest("Can not create Submission");
-           
 
-            
-            
+
+
+
         }
-          
-    
 
-    [HttpGet]
+
+
+        [HttpGet]
         public async Task<IActionResult> GetDetail(Guid auditSubmissionId)
         {
             var result = await auditSubmissionService.GetAuditSubmissionDetail(auditSubmissionId);

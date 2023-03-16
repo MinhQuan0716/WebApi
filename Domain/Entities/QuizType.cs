@@ -11,6 +11,7 @@ namespace Domain.Entities
     {
         [Key]
         public int LevelType { get; set; }
+
         public string NameType { get; set; }
 
         public ICollection<Question> QuizBanks { get; set; }

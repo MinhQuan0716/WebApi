@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace Application.Repositories
 {
-    public interface ITrainingProgramRepository : IGenericRepository<TrainingProgram> 
+    public interface ITrainingProgramRepository : IGenericRepository<TrainingProgram>
     {
-       
-    
+
+
     }
 }

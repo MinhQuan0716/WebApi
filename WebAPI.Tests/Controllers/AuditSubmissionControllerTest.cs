@@ -25,23 +25,23 @@ namespace WebAPI.Tests.Controllers
             auditSubmissionController = new AuditSubmissionController(_auditSubmissionServiceMock.Object, _gradingServiceMock.Object, _auditPlanServiceMock.Object);
         }
 
-/*        [Fact]
-        public async Task Create_ShouldReturn200()
-        {
-            var audit = _fixture.Build<AuditSubmission>().Without(x => x.DetailAuditSubmissions).Without(x => x.AuditPlan).Create();
-            _auditSubmissionServiceMock.Setup(x => x.CreateAuditSubmission(It.IsAny<CreateAuditSubmissionDTO>())).ReturnsAsync(audit);
-            var result = await auditSubmissionController.Create(_fixture.Build<CreateAuditSubmissionDTO>().Create());
-            result.Should().BeAssignableTo<OkResult>();
-        }*/
+        /*        [Fact]
+                public async Task Create_ShouldReturn200()
+                {
+                    var audit = _fixture.Build<AuditSubmission>().Without(x => x.DetailAuditSubmissions).Without(x => x.AuditPlan).Create();
+                    _auditSubmissionServiceMock.Setup(x => x.CreateAuditSubmission(It.IsAny<CreateAuditSubmissionDTO>())).ReturnsAsync(audit);
+                    var result = await auditSubmissionController.Create(_fixture.Build<CreateAuditSubmissionDTO>().Create());
+                    result.Should().BeAssignableTo<OkResult>();
+                }*/
 
-/*        [Fact]
-        public async Task Create_ShouldReturn400()
-        {
-            var audit = _fixture.Build<AuditSubmission>().Without(x => x.DetailAuditSubmissions).Without(x => x.AuditPlan).Create();
-            _auditSubmissionServiceMock.Setup(x => x.CreateAuditSubmission(It.IsAny<CreateAuditSubmissionDTO>())).ReturnsAsync(audit = null);
-            var result = await auditSubmissionController.Create(_fixture.Build<CreateAuditSubmissionDTO>().Create());
-            *//*result.Should().BeAssignableTo<BadRequestResult>();
-        }*/
+        /*        [Fact]
+                public async Task Create_ShouldReturn400()
+                {
+                    var audit = _fixture.Build<AuditSubmission>().Without(x => x.DetailAuditSubmissions).Without(x => x.AuditPlan).Create();
+                    _auditSubmissionServiceMock.Setup(x => x.CreateAuditSubmission(It.IsAny<CreateAuditSubmissionDTO>())).ReturnsAsync(audit = null);
+                    var result = await auditSubmissionController.Create(_fixture.Build<CreateAuditSubmissionDTO>().Create());
+                    *//*result.Should().BeAssignableTo<BadRequestResult>();
+                }*/
 
         [Fact]
         public async Task GetDetail_ShouldReturn200()

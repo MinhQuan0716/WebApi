@@ -50,7 +50,7 @@ namespace Infrastructures
 
             services.AddScoped<IFeedbackRepository, FeedbackRepository>();
             services.AddScoped<IGradingService, GradingService>();
-            services.AddScoped<IGradingRepository, GradingRepository>();            
+            services.AddScoped<IGradingRepository, GradingRepository>();
 
             services.AddScoped<IQuestionService, QuestionService>();
             services.AddScoped<IQuestionRepository, QuestionRepository>();
@@ -59,7 +59,7 @@ namespace Infrastructures
             services.AddScoped<ITopicRepository, TopicRepository>();
             services.AddScoped<IFeedbackRepository, FeedbackRepository>();
             services.AddScoped<IGradingService, GradingService>();
-            services.AddScoped<IGradingRepository, GradingRepository>();            
+            services.AddScoped<IGradingRepository, GradingRepository>();
             services.AddScoped<IDetailTrainingClassParticipateRepository, DetailTrainingClassParticipateRepository>();
 
             services.AddScoped<IAuditSubmissionRepository, AuditSubmissionRepository>();
@@ -71,7 +71,7 @@ namespace Infrastructures
             // this configuration just use in-memory for fast develop
             //services.AddDbContext<AppDbContext>(option => option.UseInMemoryDatabase("test"));
 
-            services.AddAutoMapper(typeof(MapperConfigurationsProfile).Assembly);            
+            services.AddAutoMapper(typeof(MapperConfigurationsProfile).Assembly);
 
             return services;
         }

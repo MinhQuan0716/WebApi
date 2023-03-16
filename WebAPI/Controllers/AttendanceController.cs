@@ -59,10 +59,10 @@ namespace WebAPI.Controllers
                                                                  [FromQuery(Name = "ps")] int pageSize = 40)
         {
             fromDate ??= DateTime.UtcNow.Date;
-            toDate ??= fromDate+DateTime.MaxValue.TimeOfDay;
+            toDate ??= fromDate + DateTime.MaxValue.TimeOfDay;
             var result = await _attendanceService.GetAllAttendanceWithFilter(
                          classId, search,
-                         by, containApplication,fromDate,toDate,
+                         by, containApplication, fromDate, toDate,
                          pageIndex, pageSize);
             return result is null ? NoContent() : Ok(result);
         }

@@ -15,7 +15,7 @@ namespace Application.Filter.ClassFilter
         private ICriterias<TrainingClassDTO> thirdCriteria;
         private ICriterias<TrainingClassDTO> fourthCriteria;
         private ICriterias<TrainingClassDTO> fifthCriteria;
-       public AndClassFilter(ICriterias<TrainingClassDTO> firstCriteria, ICriterias<TrainingClassDTO> secondCriteria, ICriterias<TrainingClassDTO> thirdCriteria, ICriterias<TrainingClassDTO> fourthCriteria, ICriterias<TrainingClassDTO> fifthCriteria)
+        public AndClassFilter(ICriterias<TrainingClassDTO> firstCriteria, ICriterias<TrainingClassDTO> secondCriteria, ICriterias<TrainingClassDTO> thirdCriteria, ICriterias<TrainingClassDTO> fourthCriteria, ICriterias<TrainingClassDTO> fifthCriteria)
         {
             this.firstCriterias = firstCriteria;
             this.secondCriterias = secondCriteria;
@@ -26,10 +26,10 @@ namespace Application.Filter.ClassFilter
 
         public List<TrainingClassDTO> MeetCriteria(List<TrainingClassDTO> classlist)
         {
-            List<TrainingClassDTO> firstResultList= firstCriterias.MeetCriteria(classlist);
-         List<TrainingClassDTO> secondResultList=secondCriterias.MeetCriteria(firstResultList);
-       List <TrainingClassDTO> thirdResultList= thirdCriteria.MeetCriteria(secondResultList);
-         List<TrainingClassDTO> fourthResultList= fourthCriteria.MeetCriteria(thirdResultList);
+            List<TrainingClassDTO> firstResultList = firstCriterias.MeetCriteria(classlist);
+            List<TrainingClassDTO> secondResultList = secondCriterias.MeetCriteria(firstResultList);
+            List<TrainingClassDTO> thirdResultList = thirdCriteria.MeetCriteria(secondResultList);
+            List<TrainingClassDTO> fourthResultList = fourthCriteria.MeetCriteria(thirdResultList);
             return fifthCriteria.MeetCriteria(fourthResultList);
         }
     }

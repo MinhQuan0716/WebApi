@@ -18,7 +18,9 @@ namespace Domain.Entities
 
         //Fk to another table
         public Lecture Lecture { get; set; }
+
         public Guid LectureID { get; set; }
+
         public int NumberOfQuiz { get; set; }
 
         public string? QuizName { get; set; }

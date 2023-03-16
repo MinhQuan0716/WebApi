@@ -51,7 +51,7 @@ namespace Application.Tests.Services
 
             Func<Task> act = async () => await auditSubmissionSerivce.CreateAuditSubmission(auditSubmission);
             await act.Should().ThrowAsync<Exception>().WithMessage("Save Changes Failed");
-          
+
         }
 
         [Fact]
@@ -111,9 +111,9 @@ namespace Application.Tests.Services
             var detailView = _fixture.Build<DetailAuditSubmissionViewModel>().CreateMany(2);
             var auditId = auditSubmission.Id;
             _unitOfWorkMock.Setup(x => x.AuditSubmissionRepository.GetByIdAsync(auditSubmission.Id)).ReturnsAsync(auditSubmission);
-            _unitOfWorkMock.Setup(x => x.DetailAuditSubmissionRepository.GetDetailView(It.IsAny<Guid>())).ReturnsAsync(detailView=null);
+            _unitOfWorkMock.Setup(x => x.DetailAuditSubmissionRepository.GetDetailView(It.IsAny<Guid>())).ReturnsAsync(detailView = null);
             Func<Task> act = async () => await auditSubmissionSerivce.GetAuditSubmissionDetail(auditId);
-            await act.Should().ThrowAsync<Exception>().WithMessage("Not have any detail submission"); 
+            await act.Should().ThrowAsync<Exception>().WithMessage("Not have any detail submission");
         }
         [Fact]
         public async Task GetAuditSubmissionDetail_NotFound_ShouldThrowException()
@@ -129,16 +129,16 @@ namespace Application.Tests.Services
         public async Task UpdateAuditSubmission_ShouldReturnTrue()
         {
             var updateDTO = _fixture.Build<UpdateSubmissionDTO>().Create();
-            var auditSubmission = _fixture.Build<AuditSubmission>().Without(x=>x.DetailAuditSubmissions).Without(x => x.AuditPlan).Create();
-            Guid id= Guid.NewGuid();
+            var auditSubmission = _fixture.Build<AuditSubmission>().Without(x => x.DetailAuditSubmissions).Without(x => x.AuditPlan).Create();
+            Guid id = Guid.NewGuid();
             _unitOfWorkMock.Setup(x => x.AuditSubmissionRepository.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(auditSubmission);
             _unitOfWorkMock.Setup(x => x.AuditSubmissionRepository.Update(auditSubmission)).Verifiable();
-            var listDetailAuditSubmission=_fixture.Build<DetailAuditSubmission>().Without(x => x.DetailAuditQuestion).Without(x => x.AuditSubmission).Without(x=>x.DetailAuditQuestion).CreateMany(1).ToList();  
+            var listDetailAuditSubmission = _fixture.Build<DetailAuditSubmission>().Without(x => x.DetailAuditQuestion).Without(x => x.AuditSubmission).Without(x => x.DetailAuditQuestion).CreateMany(1).ToList();
             _unitOfWorkMock.Setup(x => x.DetailAuditSubmissionRepository.FindAsync(x => x.AuditSubmissionId == id && x.IsDeleted == false)).ReturnsAsync(listDetailAuditSubmission);
-            
+
             _unitOfWorkMock.Setup(x => x.DetailAuditSubmissionRepository.SoftRemoveRange(listDetailAuditSubmission)).Verifiable();
 
-            var listDetailSubmission= new List<DetailAuditSubmission>();
+            var listDetailSubmission = new List<DetailAuditSubmission>();
             var detailAuditQuestion = _fixture.Build<DetailAuditQuestion>().Without(x => x.DetailAuditSubmissions).Without(x => x.AuditPlan).Create();
             _unitOfWorkMock.Setup(x => x.DetailAuditQuestionRepository.GetByIdAsync(id)).ReturnsAsync(detailAuditQuestion);
             listDetailSubmission.Add(new DetailAuditSubmission());
@@ -171,6 +171,6 @@ namespace Application.Tests.Services
             result.Should().BeFalse();
         }
 
-        
+
     }
 }

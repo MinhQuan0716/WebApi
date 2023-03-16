@@ -64,7 +64,7 @@ try
             },
             new string[]{}
         }
-    });                                                                                
+    });
     });
 
     // Dang ki hangfire de thuc hien cron job
@@ -84,14 +84,14 @@ try
     app.UseCors();
 
     // Configure the HTTP request pipeline.
-    if(app.Environment.IsDevelopment())
+    if (app.Environment.IsDevelopment())
     {
         app.UseSwagger();
         app.UseSwaggerUI();
         // add custom middlewares
         app.UseMiddleware<GlobalExceptionMiddleware>();
         app.UseMiddleware<PerformanceMiddleware>();
-       
+
 
         // App health check at root/healthchecks
         app.MapHealthChecks("/healthchecks");
@@ -138,12 +138,12 @@ try
 
     }
     // add custom middlewares
-   
 
-   
+
+
 
     app.UseMiddleware<GlobalExceptionMiddlewareV2>();
-   
+
     app.UseMiddleware<PerformanceMiddleware>();
     // App health check at root/healthchecks 
     app.MapHealthChecks("/healthchecks");
@@ -172,7 +172,8 @@ try
 catch (Exception ex)
 {
     Log.Fatal(ex, "Host Terminated unexpectedly");
-} finally
+}
+finally
 {
     Log.CloseAndFlush();
 }

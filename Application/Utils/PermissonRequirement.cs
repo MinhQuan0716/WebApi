@@ -45,7 +45,7 @@ namespace Application.Utils
         public void OnAuthorization(AuthorizationFilterContext context)
         {
             var getClaimValue = context.HttpContext.User.FindFirst(c => c.Type == _claim.Type).Value;
-            if(getClaimValue != "FullAccess")
+            if (getClaimValue != "FullAccess")
             {
                 var hasClaim = context.HttpContext.User.Claims.Any(c => c.Type == _claim.Type && c.Value == _claim.Value);
                 if (!hasClaim)

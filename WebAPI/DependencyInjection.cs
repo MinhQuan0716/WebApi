@@ -3,7 +3,6 @@ using Application.Repositories;
 using Application.Services;
 using FluentValidation.AspNetCore;
 using Infrastructures.Repositories;
-using Application.Services;
 using Application.Utils;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -17,14 +16,13 @@ using System.Text.Json.Serialization;
 using WebAPI.Middlewares;
 using WebAPI.Services;
 using WebAPI.Controllers;
-using Infrastructures;
 using Application.Commons;
 
 namespace WebAPI
 {
     public static class DependencyInjection
     {
-        public static IServiceCollection AddWebAPIService(this IServiceCollection services,string secretKey)
+        public static IServiceCollection AddWebAPIService(this IServiceCollection services, string secretKey)
         {
             services.AddControllers();
             services.AddEndpointsApiExplorer();
@@ -33,8 +31,8 @@ namespace WebAPI
             services.AddSingleton<GlobalExceptionMiddleware>();
             services.AddSingleton<PerformanceMiddleware>();
             services.AddSingleton<Stopwatch>();
-         services.AddScoped<ILectureService, LectureService>();
-            
+            services.AddScoped<ILectureService, LectureService>();
+
             services.AddScoped<IClaimsService, ClaimsService>();
             services.AddScoped<IAttendanceService, AttendanceService>();
             services.AddScoped<IUserService, UserService>();
@@ -45,7 +43,7 @@ namespace WebAPI
             services.AddScoped<IApplicationRepository, AppilicationRepository>();
             services.AddScoped<ISyllabusService, SyllabusService>();
             services.AddScoped<ITrainingMaterialRepository, TrainingMaterialRepository>();
-            services.AddScoped<ITrainingMaterialService, TrainingMaterialService>();    
+            services.AddScoped<ITrainingMaterialService, TrainingMaterialService>();
             services.AddSingleton<ExternalAuthUtils>();
             services.AddScoped<ITrainingClassService, TrainingClassService>();
             services.AddScoped<ILocationService, LocationService>();

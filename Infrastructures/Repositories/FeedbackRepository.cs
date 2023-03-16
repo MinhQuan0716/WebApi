@@ -25,7 +25,7 @@ public class FeedbackRepository : GenericRepository<Feedback>, IFeedbackReposito
     {
         var detailTraineeClass = _dbContext.DetailTrainingClassParticipates.Include("User").Where(x => x.TrainingClassID == classId).ToList();
         List<string> emailList = null;
-        foreach(var d in detailTraineeClass)
+        foreach (var d in detailTraineeClass)
         {
             if (emailList == null)
             {

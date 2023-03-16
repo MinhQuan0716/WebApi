@@ -35,7 +35,7 @@ namespace WebAPI.Tests.Controllers
 
             var result = await trainingProgramController.GetDetail(trainingProgram.Id);
             result.Should().BeOfType(typeof(OkObjectResult));
-            
+
 
         }
 
@@ -48,7 +48,7 @@ namespace WebAPI.Tests.Controllers
             _trainingProgramServiceMock.Setup(tp => tp.GetTrainingProgramDetail(trainingProgramId)).ReturnsAsync(trainingProgramView = null);
             var result = await trainingProgramController.GetDetail(trainingProgram.Id);
             result.Should().BeOfType(typeof(BadRequestResult));
-            
+
         }
 
         [Fact]
@@ -112,7 +112,7 @@ namespace WebAPI.Tests.Controllers
         {
             var listTrainingProgram = _fixture.Build<List<ViewAllTrainingProgramDTO>>().Create();
             _trainingProgramServiceMock.Setup(x => x.viewAllTrainingProgramDTOs()).ReturnsAsync(listTrainingProgram);
-            var actualResult=await trainingProgramController.GetAllTrainingProgram();
+            var actualResult = await trainingProgramController.GetAllTrainingProgram();
             actualResult.Should().BeAssignableTo<OkObjectResult>();
         }
         [Fact]
@@ -130,7 +130,7 @@ namespace WebAPI.Tests.Controllers
         public async Task GetAllTrainingProgram_ShouldReturnBadRequest()
         {
             var listTrainingProgram = _fixture.Build<List<ViewAllTrainingProgramDTO>>().Create();
-            _trainingProgramServiceMock.Setup(x => x.viewAllTrainingProgramDTOs()).ReturnsAsync(listTrainingProgram=null);
+            _trainingProgramServiceMock.Setup(x => x.viewAllTrainingProgramDTOs()).ReturnsAsync(listTrainingProgram = null);
             var actualResult = await trainingProgramController.GetAllTrainingProgram();
             actualResult.Should().BeAssignableTo<BadRequestObjectResult>();
         }

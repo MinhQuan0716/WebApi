@@ -15,10 +15,10 @@ namespace Application.ViewModels.SyllabusModels.FixViewSyllabus
         public int FinalPercent { get; set; }
 
 
-        public  int FinalTheoryPercent { get; set; }
-        
-        public  int FinalPreactisePercent { get; set; }
-      
-        public  int GPAPercent { get; set; }
+        public int FinalTheoryPercent { get; set; }
+
+        public int FinalPreactisePercent { get; set; }
+
+        public int GPAPercent { get; set; }
     }
 }

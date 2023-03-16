@@ -41,7 +41,7 @@ namespace Application.Tests.Services
             _unitOfWorkMock.Verify(x => x.LocationRepository.AddAsync(It.IsAny<Location>()), Times.Once);
             _unitOfWorkMock.Verify(x => x.SaveChangeAsync(), Times.Once);
             result.Should().BeEquivalentTo(expected);
-            
+
         }
         [Fact]
         public async Task AddNewLocation_ShouldReturnCorrectData_WhenSavedFail()

@@ -12,7 +12,7 @@ public interface IGradingService
 {
     Task<List<Grading>> GetAllGradingsAsync();
     Task<Grading> GetGradingsAsync(Guid gradingId);
-    Task<bool> UpdateGradingAsync(Guid gradingId,GradingModel model);
+    Task<bool> UpdateGradingAsync(Guid gradingId, GradingModel model);
     Task<bool> DeleteGradingAsync(Guid gradingId);
     Task CreateGradingAsync(GradingModel model);
     List<MarkReportDto> GetMarkReportOfClass(Guid classID);

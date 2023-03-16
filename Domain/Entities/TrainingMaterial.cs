@@ -6,13 +6,18 @@ using System.Threading.Tasks;
 
 namespace Domain.Entities
 {
-  public  class TrainingMaterial:BaseEntity
+    public class TrainingMaterial : BaseEntity
     {
         public string? TMatName { get; set; }
+
         public string? TMatType { get; set; }
+
         public string? TMatDescription { get; set; }
+
         public byte[]? TMatContent { get; set; }
+
         public Guid lectureID { get; set; }
+
         public Lecture Lecture { get; set; }
     }
 }

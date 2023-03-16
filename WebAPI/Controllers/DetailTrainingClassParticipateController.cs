@@ -28,7 +28,7 @@ namespace WebAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateTrainingClassParticipate(Guid userId, Guid classId)
         {
-            var create = await _detailTrainingClassParticipateService.CreateTrainingClassParticipate(userId, classId); 
+            var create = await _detailTrainingClassParticipateService.CreateTrainingClassParticipate(userId, classId);
             if (create != null)
             {
                 return Ok();

@@ -43,7 +43,7 @@ namespace WebAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> LoginAsync(LoginDTO loginObject)
         {
-            var token= await _userService.LoginAsync(loginObject);
+            var token = await _userService.LoginAsync(loginObject);
             if (token == null)
             {
                 return BadRequest("Login Failed!");
@@ -53,13 +53,13 @@ namespace WebAPI.Controllers
 
         [HttpPut]
         [Authorize]
-        public async Task<IActionResult> ChangePasswordAsync( ChangePasswordDTO changePasswordDTO)
+        public async Task<IActionResult> ChangePasswordAsync(ChangePasswordDTO changePasswordDTO)
         {
-            var checkChanged = await _userService.ChangePasswordAsync(changePasswordDTO.OldPassword,changePasswordDTO.NewPassword);
-           
+            var checkChanged = await _userService.ChangePasswordAsync(changePasswordDTO.OldPassword, changePasswordDTO.NewPassword);
+
             if (!checkChanged.Contains("Success"))
                 return BadRequest(checkChanged);
-            
+
             return Ok(checkChanged);
         }
         [HttpPost]
@@ -81,11 +81,11 @@ namespace WebAPI.Controllers
         //    return Ok(test);
         //}
 
-        [HttpPut] 
+        [HttpPut]
         public async Task<IActionResult> UpdateUser(UpdateDTO updateObject)
         {
             var result = await _userService.UpdateUserInformation(updateObject);
-            if(result)
+            if (result)
             {
                 return NoContent();
             }
@@ -178,7 +178,7 @@ namespace WebAPI.Controllers
         [HttpGet]
         public async Task<IActionResult> Logout()
         {
-            var result= await _userService.LogoutAsync();
+            var result = await _userService.LogoutAsync();
             if (result)
             {
                 return NoContent();
@@ -206,7 +206,7 @@ namespace WebAPI.Controllers
             {
                 await _userService.AddUserAsync(newUser);
             }
-            
+
             var token = await _userService.LoginWithEmail(_mapper.Map<LoginWithEmailDto>(newUser));
             return Ok(token);
         }

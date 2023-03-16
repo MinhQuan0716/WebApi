@@ -33,7 +33,7 @@ namespace WebAPI.Controllers
             if (result != null) return Ok(result);
             else return BadRequest();
         }
-        
+
         [HttpDelete]
         [Authorize]
         [ClaimRequirement(nameof(PermissionItem.ClassPermission), nameof(PermissionEnum.Modifed))]

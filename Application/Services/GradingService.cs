@@ -21,7 +21,7 @@ public class GradingService : IGradingService
     private readonly AppConfiguration _configuration;
     private readonly IClaimsService _claimsService;
 
-    public GradingService(IUnitOfWork unitOfWork, IMapper mapper, ICurrentTime currentTime, AppConfiguration configuration,IClaimsService claimsService)
+    public GradingService(IUnitOfWork unitOfWork, IMapper mapper, ICurrentTime currentTime, AppConfiguration configuration, IClaimsService claimsService)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
@@ -72,7 +72,7 @@ public class GradingService : IGradingService
         return result;
     }
 
-    public async Task<bool> UpdateGradingAsync(Guid gradingId,GradingModel model)
+    public async Task<bool> UpdateGradingAsync(Guid gradingId, GradingModel model)
     {
         var grading = await _unitOfWork.GradingRepository.GetByIdAsync(gradingId);
         if (grading == null)
@@ -88,10 +88,10 @@ public class GradingService : IGradingService
         return true;
     }
 
-   public async Task<int> ViewMarkQuizByQuizID(Guid LectureID)
+    public async Task<int> ViewMarkQuizByQuizID(Guid LectureID)
     {
-         var grading_find = await _unitOfWork.GradingRepository.GetAllAsync();
-          return (int)grading_find.Find(x => x.LectureId ==LectureID).NumericGrade;
+        var grading_find = await _unitOfWork.GradingRepository.GetAllAsync();
+        return (int)grading_find.Find(x => x.LectureId == LectureID).NumericGrade;
     }
     public async Task<List<ViewQuizAndMarkBelowDTO>> ViewAllQuizMark()
     {
@@ -99,5 +99,5 @@ public class GradingService : IGradingService
         return _unitOfWork.GradingRepository.GetAllMarkOfTrainee(user.Id);
     }
 
-    
+
 }

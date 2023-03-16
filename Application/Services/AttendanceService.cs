@@ -75,7 +75,7 @@ namespace Application.Services
             if (by.isNotValidEnum(typeof(AttendanceStatusEnums)))
                 throw new InvalidEnumArgumentException("Not valid Enum");
 
-            Expression<Func<Attendance, bool>> expression = x => 
+            Expression<Func<Attendance, bool>> expression = x =>
                 (classId == Guid.Empty || classId == x.TrainingClassId)    // by classId
                 && (x.User != null && x.User.FullName.Contains(search))                                    // by Username
                 && (containApplication == null || (x.Application != null) == containApplication) // by application                                  

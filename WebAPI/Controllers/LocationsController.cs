@@ -31,7 +31,7 @@ namespace WebAPI.Controllers
         public async Task<IActionResult> ViewAllLocation()
         {
             var result = await _locationService.GetAllLocation();
-            return (result.IsNullOrEmpty())?BadRequest("List empty"):Ok(result);
+            return (result.IsNullOrEmpty()) ? BadRequest("List empty") : Ok(result);
         }
     }
 }

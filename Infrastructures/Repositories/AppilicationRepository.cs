@@ -37,7 +37,7 @@ namespace Infrastructures.Repositories
                                                                                      && x.UserId == attendance.UserId
                                                                                      && x.AbsentDateRequested.Date == attendance.Date
                                                                                      && x.Approved
-                                                                                     ) ;
+                                                                                     );
             return application;
         }
     }

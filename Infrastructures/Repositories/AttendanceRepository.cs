@@ -40,12 +40,12 @@ namespace Infrastructures.Repositories
             return finAttendaceResult;
         }
 
-       
+
         public async Task<Pagination<Attendance>> GetAllAttendanceWithFilter(Expression<Func<Attendance, bool>> expression, int pageIndex, int pageSize)
         {
-           
-            var value = _dbSet.Include(x => x.User).Include(x=>x.Application).Include(x=>x.TrainingClass);
-            Pagination<Attendance> pagination = await ToPagination(value,expression, pageIndex, pageSize);
+
+            var value = _dbSet.Include(x => x.User).Include(x => x.Application).Include(x => x.TrainingClass);
+            Pagination<Attendance> pagination = await ToPagination(value, expression, pageIndex, pageSize);
             return pagination.Items.IsNullOrEmpty() ? null : pagination;
         }
 

@@ -34,7 +34,7 @@ public class FeedbacksController : BaseController
         return Ok(feedback);
     }
     [HttpPost]
-    public async Task<IActionResult> Create([FromBody]FeedbackModel model)
+    public async Task<IActionResult> Create([FromBody] FeedbackModel model)
     {
         await _feedbackService.CreateFeedbackAsync(model);
         return NoContent();
@@ -66,7 +66,8 @@ public class FeedbacksController : BaseController
         {
             await _feedbackService.SendFeedbacklink(feedbackId);
             return Ok();
-        } catch(Exception ex)
+        }
+        catch (Exception ex)
         {
             return BadRequest(ex.Message);
         }

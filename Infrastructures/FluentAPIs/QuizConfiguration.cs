@@ -20,7 +20,7 @@ namespace Infrastructures.FluentAPIs
             //builder.HasMany(x => x.submitQuizzes).WithOne(x => x.QuizTest).HasForeignKey(x => x.QUizTestId);
             //builder.HasOne(x => x.Lecture).WithOne(x => x.Quiz);
             builder.HasMany(x => x.DetailQuizQuestion).WithOne(x => x.Quiz).HasForeignKey(x => x.QuizID);
-     
+
 
         }
     }

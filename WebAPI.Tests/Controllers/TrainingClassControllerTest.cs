@@ -23,7 +23,7 @@ namespace WebAPI.Tests.Controllers
         public async Task CreateTrainingClass_ShouldReturnOK_WhenSavedSucceed()
         {
             //arrange
-            var mock = _fixture.Build<CreateTrainingClassDTO>().Create();
+            var mock = _fixture.Build<CreateTrainingClassDTO>().Without(x => x.Attendees).Without(x => x.TimeFrame).Create();
 
             var expected = _fixture.Build<TrainingClassViewModel>().Create();
             _trainingClassServiceMock.Setup(
@@ -44,7 +44,7 @@ namespace WebAPI.Tests.Controllers
         public async Task CreateTrainingClass_ShouldReturnBadRequest_WhenSavedFail()
         {
             //arrange
-            var mock = _fixture.Build<CreateTrainingClassDTO>().Create();
+            var mock = _fixture.Build<CreateTrainingClassDTO>().Without(x => x.Attendees).Without(x => x.TimeFrame).Create();
 
             TrainingClassViewModel expected = null!;
             _trainingClassServiceMock.Setup(
@@ -63,7 +63,7 @@ namespace WebAPI.Tests.Controllers
         public async Task CreateTrainingClass_ShouldReturnBadRequest_WhenGetException()
         {
             //arrange
-            var mock = _fixture.Build<CreateTrainingClassDTO>().Create();
+            var mock = _fixture.Build<CreateTrainingClassDTO>().Without(x => x.Attendees).Without(x => x.TimeFrame).Create();
 
             var exceptionMessage = "test message";
 
@@ -86,14 +86,14 @@ namespace WebAPI.Tests.Controllers
             //arrange
             var mockId = Guid.NewGuid();
             _trainingClassServiceMock
-                .Setup(x => x.SoftRemoveTrainingClass(It.IsAny<string>()))
+                .Setup(x => x.SoftRemoveTrainingClassAsync(It.IsAny<string>()))
                 .ReturnsAsync(true);
 
             //act
             var result = await _trainingClassController.SoftRemoveTrainingClass(mockId.ToString());
 
             //assert
-            _trainingClassServiceMock.Verify(x => x.SoftRemoveTrainingClass(
+            _trainingClassServiceMock.Verify(x => x.SoftRemoveTrainingClassAsync(
                 It.Is<string>(x => x.Equals(mockId.ToString()))
                 ), Times.Once);
             Assert.IsType<OkObjectResult>(result);
@@ -106,14 +106,14 @@ namespace WebAPI.Tests.Controllers
             //arrange
             var mockId = Guid.NewGuid();
             _trainingClassServiceMock
-                .Setup(x => x.SoftRemoveTrainingClass(It.IsAny<string>()))
+                .Setup(x => x.SoftRemoveTrainingClassAsync(It.IsAny<string>()))
                 .ReturnsAsync(false);
 
             //act
             var result = await _trainingClassController.SoftRemoveTrainingClass(mockId.ToString());
 
             //assert
-            _trainingClassServiceMock.Verify(x => x.SoftRemoveTrainingClass(
+            _trainingClassServiceMock.Verify(x => x.SoftRemoveTrainingClassAsync(
                 It.Is<string>(x => x.Equals(mockId.ToString()))
                 ), Times.Once);
             Assert.IsType<BadRequestObjectResult>(result);
@@ -126,33 +126,34 @@ namespace WebAPI.Tests.Controllers
             var mockId = Guid.NewGuid();
             var exceptionMessage = "test message";
             _trainingClassServiceMock
-                .Setup(x => x.SoftRemoveTrainingClass(It.IsAny<string>()))
+                .Setup(x => x.SoftRemoveTrainingClassAsync(It.IsAny<string>()))
                 .ThrowsAsync(new Exception(exceptionMessage));
             //act
             var result = await _trainingClassController.SoftRemoveTrainingClass(mockId.ToString());
 
             //assert
-            _trainingClassServiceMock.Verify(x => x.SoftRemoveTrainingClass(
+            _trainingClassServiceMock.Verify(x => x.SoftRemoveTrainingClassAsync(
                 It.IsAny<string>()
                 ), Times.Once);
             Assert.IsType<BadRequestObjectResult>(result);
             (result as BadRequestObjectResult)!.Value.Should().Be("SoftRemove class fail: " + exceptionMessage);
         }
 
+        [Fact]
         public async Task UpdateTrainingClass_ShouldReturnOK_WhenUpdateResultIsTrue()
         {
             //arrange
             var mockId = Guid.NewGuid();
             var mockUpdate = _fixture.Build<UpdateTrainingCLassDTO>().Create();
             _trainingClassServiceMock
-                .Setup(x => x.UpdateTrainingClass(It.IsAny<string>(), It.IsAny<UpdateTrainingCLassDTO>()))
+                .Setup(x => x.UpdateTrainingClassAsync(It.IsAny<string>(), It.IsAny<UpdateTrainingCLassDTO>()))
                 .ReturnsAsync(true);
 
             //act
             var result = await _trainingClassController.UpdateTrainingClass(mockId.ToString(), mockUpdate);
 
             //assert
-            _trainingClassServiceMock.Verify(x => x.UpdateTrainingClass(
+            _trainingClassServiceMock.Verify(x => x.UpdateTrainingClassAsync(
                 It.Is<string>(x => x.Equals(mockId.ToString())),
                 It.Is<UpdateTrainingCLassDTO>(x => x.Equals(mockUpdate))
                 ), Times.Once);
@@ -167,20 +168,21 @@ namespace WebAPI.Tests.Controllers
             var mockId = Guid.NewGuid();
             var mockUpdate = _fixture.Build<UpdateTrainingCLassDTO>().Create();
             _trainingClassServiceMock
-                .Setup(x => x.UpdateTrainingClass(It.IsAny<string>(), It.IsAny<UpdateTrainingCLassDTO>()))
+                .Setup(x => x.UpdateTrainingClassAsync(It.IsAny<string>(), It.IsAny<UpdateTrainingCLassDTO>()))
                 .ReturnsAsync(false);
 
             //act
             var result = await _trainingClassController.UpdateTrainingClass(mockId.ToString(), mockUpdate);
 
             //assert
-            _trainingClassServiceMock.Verify(x => x.UpdateTrainingClass(
+            _trainingClassServiceMock.Verify(x => x.UpdateTrainingClassAsync(
                 It.Is<string>(x => x.Equals(mockId.ToString())),
                 It.Is<UpdateTrainingCLassDTO>(x => x.Equals(mockUpdate))
                 ), Times.Once);
             Assert.IsType<BadRequestObjectResult>(result);
             (result as BadRequestObjectResult)!.Value.Should().Be("Update class fail: Saving fail");
         }
+
         [Fact]
         public async Task UpdateTrainingClass_ShouldReturnBadRequest_WhenGetAutoMappingException()
         {
@@ -189,18 +191,18 @@ namespace WebAPI.Tests.Controllers
             var mockUpdate = _fixture.Build<UpdateTrainingCLassDTO>().Create();
             var exceptionMessage = "test message";
             _trainingClassServiceMock
-                .Setup(x => x.UpdateTrainingClass(It.IsAny<string>(), It.IsAny<UpdateTrainingCLassDTO>()))
+                .Setup(x => x.UpdateTrainingClassAsync(It.IsAny<string>(), It.IsAny<UpdateTrainingCLassDTO>()))
                 .ThrowsAsync(new Exception(exceptionMessage));
             //act
             var result = await _trainingClassController.UpdateTrainingClass(mockId.ToString(), mockUpdate);
 
             //assert
-            _trainingClassServiceMock.Verify(x => x.UpdateTrainingClass(
+            _trainingClassServiceMock.Verify(x => x.UpdateTrainingClassAsync(
                 It.IsAny<string>(),
                 It.IsAny<UpdateTrainingCLassDTO>()
                 ), Times.Once);
             Assert.IsType<BadRequestObjectResult>(result);
-            (result as BadRequestObjectResult)!.Value.Should().Be("Update class fail: "+ exceptionMessage);
+            (result as BadRequestObjectResult)!.Value.Should().Be("Update class fail: " + exceptionMessage);
         }
     }
 }
