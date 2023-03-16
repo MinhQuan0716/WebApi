@@ -18,8 +18,8 @@ namespace Infrastructures.FluentAPIs
             builder.Property(x => x.CreationDate).HasDefaultValueSql("getutcdate()");
             builder.Property(x => x.IsDeleted).HasDefaultValue("false");
             builder.Property(x => x.StatusClassSchedule).HasDefaultValue("null");            
-            builder.Property(x => x.ClassStartTime).HasDefaultValueSql("datetime2");
-            builder.Property(x => x.ClassEndTime).HasDefaultValueSql("datetime2");
+            builder.Property(x => x.ClassStartTime).HasDefaultValueSql("getutcdate()");
+            builder.Property(x => x.ClassEndTime).HasDefaultValueSql("getutcdate()");
             builder.Property(x => x.RoomName).HasDefaultValue("null");
             builder.HasOne(x => x.TrainingClasses).WithMany(x => x.ClassSchedules).HasForeignKey(x => x.TrainingClassId);
         }
