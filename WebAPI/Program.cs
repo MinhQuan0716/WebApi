@@ -1,12 +1,8 @@
-using Application;
 using Application.Commons;
-using Application.Interfaces;
-using Application.Repositories;
 using Application.Utils;
 using Hangfire;
 using Hangfire.Logging;
 using Infrastructures;
-using Microsoft.Extensions.FileProviders;
 using Microsoft.OpenApi.Models;
 using Serilog;
 using Serilog.Events;
@@ -71,6 +67,12 @@ try
     });
     });
 
+    // Dang ki hangfire de thuc hien cron job
+    builder.Services.AddHangfire(config => config
+            .UseSimpleAssemblyNameTypeSerializer()
+            .UseRecommendedSerializerSettings()
+            .UseInMemoryStorage());
+    builder.Services.AddHangfireServer();
 
     var app = builder.Build();
     // Modify log message of serilog 
@@ -82,59 +84,8 @@ try
     app.UseCors();
 
     // Configure the HTTP request pipeline.
-    if (app.Environment.IsDevelopment())
-    {
-        app.UseSwagger();
-        app.UseSwaggerUI();
-        // add custom middlewares
-        app.UseMiddleware<GlobalExceptionMiddleware>();
-        app.UseMiddleware<PerformanceMiddleware>();
-
-
-        // App health check at root/healthchecks
-        app.MapHealthChecks("/healthchecks");
-        // Configure the HTTP request pipeline.
-        if (app.Environment.IsDevelopment())
-        {
-            app.UseSwagger();
-            app.UseSwaggerUI();
-        }
-        // add custom middlewares
-
-
-
-
-        app.UseMiddleware<GlobalExceptionMiddlewareV2>();
-
-        app.UseMiddleware<PerformanceMiddleware>();
-        // App health check at root/healthchecks 
-        app.MapHealthChecks("/healthchecks");
-
-        app.UseHttpsRedirection();
-
-        app.UseAuthentication();
-        app.UseAuthorization();
-
-        app.MapControllers();
-
-        app.UseStaticFiles();
-
-
-
-        // hangfire host dashboard at "/dashboard"
-        app.MapHangfireDashboard("/dashboard");
-
-        // call hangfire
-        await app.StartAsync();
-        RecurringJob.AddOrUpdate<ApplicationCronJob>(util => util.CheckAttendancesEveryDay(),
-            "0 0 22 ? * *", TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time"));
-        await app.WaitForShutdownAsync();
-
-        app.Run();
-
-
-
-    }
+    app.UseSwagger();
+    app.UseSwaggerUI();
     // add custom middlewares
 
 
@@ -148,27 +99,19 @@ try
 
     app.UseHttpsRedirection();
 
-app.UseStaticFiles();
-    app.UseStaticFiles(new StaticFileOptions()
-    {
-        FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), @"Resources")),
-        RequestPath = new PathString("/Resources")
-    });
-
     app.UseAuthentication();
-app.UseAuthorization();
+    app.UseAuthorization();
 
     app.MapControllers();
 
     // hangfire host dashboard at "/dashboard"
     app.MapHangfireDashboard("/dashboard");
 
-// call hangfire
-await app.StartAsync();
-RecurringJob.AddOrUpdate<ApplicationCronJob>(util => util.CheckAttendancesEveryDay(),
-    "0 0 22 ? * *", TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time"));
-//RecurringJob.AddOrUpdate<IAssignmentService>(e => e.CheckOverDue(), "* * * * *");
-await app.WaitForShutdownAsync();
+    // call hangfire
+    await app.StartAsync();
+    RecurringJob.AddOrUpdate<ApplicationCronJob>(util => util.CheckAttendancesEveryDay(),
+        "0 0 22 ? * *", TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time"));
+    await app.WaitForShutdownAsync();
 
     app.Run();
 
@@ -183,5 +126,3 @@ finally
 {
     Log.CloseAndFlush();
 }
-
-
