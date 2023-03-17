@@ -18,6 +18,12 @@ namespace Infrastructures.Repositories
             _dbContext = context;
         }
 
+        public DetailTrainingProgramSyllabus GetDetailByClassID(Guid programID)
+        {
+            var detailProgram=_dbContext.DetailTrainingProgramSyllabuses.Where(x=>x.TrainingProgramId==programID).FirstOrDefault();
+            return detailProgram;
+        }
+
         //To take detailTrainingProgram
         public Guid TakeDetailTrainingID(Guid user_id, Guid training_class_id)
         {

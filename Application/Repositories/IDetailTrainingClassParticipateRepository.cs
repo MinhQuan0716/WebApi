@@ -10,5 +10,6 @@ namespace Application.Repositories
     public interface IDetailTrainingClassParticipateRepository : IGenericRepository<DetailTrainingClassParticipate>
     {
         Task<DetailTrainingClassParticipate> GetDetailTrainingClassParticipateAsync(Guid userId, Guid classId);
+       Guid GetDetailTrainingClassParticipateByClassID(Guid classID);
     }
 }

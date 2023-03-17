@@ -1,12 +1,15 @@
 using Application.ViewModels.TrainingClassModels;
 using AutoFixture;
 using AutoMapper;
+using Domain.Entities;
 using Domains.Test;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using WebAPI.Controllers;
+using Xunit;
 
 namespace WebAPI.Tests.Controllers
 {
@@ -23,7 +26,7 @@ namespace WebAPI.Tests.Controllers
         public async Task CreateTrainingClass_ShouldReturnOK_WhenSavedSucceed()
         {
             //arrange
-            var mock = _fixture.Build<CreateTrainingClassDTO>().Without(x => x.Attendees).Without(x => x.TimeFrame).Create();
+            var mock = _fixture.Build<CreateTrainingClassDTO>().Without(x => x.Attendee).Without(x => x.TimeFrame).Create();
 
             var expected = _fixture.Build<TrainingClassViewModel>().Create();
             _trainingClassServiceMock.Setup(
@@ -203,6 +206,18 @@ namespace WebAPI.Tests.Controllers
                 ), Times.Once);
             Assert.IsType<BadRequestObjectResult>(result);
             (result as BadRequestObjectResult)!.Value.Should().Be("Update class fail: " + exceptionMessage);
+        }
+        [Fact]
+        public async  Task ViewDetailTrainingClass_ShouldOk_WhenFindSuccess()
+        {
+            //Arrange
+            var mockData=_fixture.Create<FinalTrainingClassDTO>();
+            Guid mockId = new Guid();
+            _trainingClassServiceMock.Setup(s => s.GetFinalTrainingClassesAsync(mockId)).ReturnsAsync(mockData);
+            //Act 
+            var result =await  _trainingClassController.GetTrainingClassDetail(mockId);
+            //Assert
+            Assert.IsType<OkObjectResult>(result);
         }
     }
 }

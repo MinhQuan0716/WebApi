@@ -1,6 +1,9 @@
 ﻿using Application.Filter.ClassFilter;
 using Application.Interfaces;
+using Application.ViewModels.SyllabusModels;
 using Application.ViewModels.TrainingClassModels;
+using Application.ViewModels.TrainingProgramModels;
+using Application.ViewModels.TrainingProgramModels.TrainingProgramView;
 using AutoMapper;
 using Domain.Entities;
 using System;
@@ -170,6 +173,62 @@ namespace Application.Services
             return filterResult;
         }
 
+        public async  Task<FinalTrainingClassDTO> GetFinalTrainingClassesAsync(Guid id)
+        {
+          FinalTrainingClassDTO finalDTO =new FinalTrainingClassDTO();
+            var trainingClassDetail = await _unitOfWork.TrainingClassRepository.GetByIdAsync(id);
+           var trainingClassViewAllDTO = _unitOfWork.TrainingClassRepository.GetTrainingClasses();
+            var trainingProgram = _unitOfWork.TrainingClassRepository.GetTrainingProgramByClassID(id);
+            var trainingClassDTO = _mapper.Map<TrainingClassViewDetail>(trainingClassDetail);
+            var detailProgramSyllabus=_unitOfWork.DetailTrainingProgramSyllabusRepository.GetDetailByClassID(trainingProgram.Id);
+            foreach (TrainingClassDTO trainingClasses in trainingClassViewAllDTO)
+            {
+
+                AttendeeDTO attendeeDTO = new AttendeeDTO()
+                {
+                    Attendee = trainingClasses.Attendee
+                };
+                CreatedByDTO createdByDTO = new CreatedByDTO()
+                {
+                    creationDate = trainingClasses.CreationDate,
+                    userName = trainingClasses.CreatedBy
+                };
+                TrainingProgramViewForTrainingClassDetail trainingProgramViewModel = new TrainingProgramViewForTrainingClassDetail()
+                {
+                    programId = trainingProgram.Id,
+                    programName = trainingProgram.ProgramName,
+                    programDuration = new DurationView
+                    {
+                        TotalHours = trainingProgram.Duration
+                    }
+
+                };
+                var syllabusDetail = await _unitOfWork.SyllabusRepository.FindAsync(x => x.Id == detailProgramSyllabus.SyllabusId);
+                foreach (Syllabus syllabus in syllabusDetail)
+                {
+                    var syllabusDTO = _mapper.Map<SyllabusViewForTrainingClassDetail>(syllabus);
+                    List<SyllabusViewForTrainingClassDetail> syllabusViewAllDTOs = new List<SyllabusViewForTrainingClassDetail>();
+                    syllabusViewAllDTOs.Add(syllabusDTO);
+                    finalDTO.syllabusDTO = syllabusViewAllDTOs;
+                }
+                finalDTO.TrainingClass = trainingClassDTO;
+                finalDTO.location = trainingClasses.LocationName;
+                finalDTO.FSU = trainingClasses.Branch;
+                finalDTO.general = new GeneralTrainingClassDTO
+                {
+                    class_date = new ClassDateDTO
+                    {
+                        StartDate = trainingClasses.StartDate,
+                        EndDate = trainingClasses.EndDate,
+                    }
+                };
+                finalDTO.attendeeDTO = attendeeDTO;
+                finalDTO.createdDTO = createdByDTO;
+                finalDTO.programModel = trainingProgramViewModel;
+            }
+            
+            return finalDTO;
+        }
 
     }
 }

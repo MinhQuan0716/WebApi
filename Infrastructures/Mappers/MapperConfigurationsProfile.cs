@@ -24,6 +24,7 @@ using Application.ViewModels.AuditModels.AuditSubmissionModels.ViewModels;
 using Application.ViewModels.AuditModels.AuditSubmissionModels.UpdateModels;
 using Application.ViewModels.TrainingProgramModels.TrainingProgramView;
 using Application.ViewModels.SyllabusModels.FixViewSyllabus;
+using Microsoft.AspNetCore.Routing.Constraints;
 
 namespace Infrastructures.Mappers
 {
@@ -145,7 +146,19 @@ namespace Infrastructures.Mappers
                 .ForMember(x => x.CourseObjectives, src => src.MapFrom(x => x.CourseObjective))
                 .ForMember(x => x.TechnicalRequirements, src => src.MapFrom(x => x.TechRequirements))
                 .ReverseMap();
-
+            CreateMap<Syllabus, SyllabusViewAllDTO>()
+                .ForMember(x=>x.SyllabusID,src=>src.MapFrom(x=>x.Id))
+                .ForMember(x=>x.Name,src=>src.MapFrom(x=>x.SyllabusName))
+                .ForMember(x=>x.syllabusStatus,src=>src.MapFrom(x=>x.Status))
+                .ForMember(x=>x.Duration,src=>src.MapFrom(x=>x.Duration))
+                .ReverseMap();
+            CreateMap<SyllabusViewForTrainingClassDetail,Syllabus>()
+                .ForMember(x=>x.Id,src=>src.MapFrom(s=>s.syllabus_id))
+                .ForMember(x=>x.SyllabusName,src=>src.MapFrom(s=>s.syllabus_name))
+                .ForMember(x=>x.Status,src=>src.MapFrom(s=>s.syllabus_status))
+                .ForMember(x=>x.Duration,src=>src.MapFrom(s=>s.syllabus_duration.TotalHours))
+                .ReverseMap();
+            //map unit
             CreateMap<UpdateUnitLectureDTO, DetailUnitLecture>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.LectureID, opt => opt.MapFrom(src => src.LectureId))
@@ -156,7 +169,7 @@ namespace Infrastructures.Mappers
                     .ForMember(uu => uu.TotalTime, uu => uu.MapFrom(src => src.TotalTime))
                     .ForMember(uu => uu.Session, uu => uu.MapFrom(src => src.Session))
                     .ReverseMap();
-
+            //map lecture
 
             CreateMap<LectureDTO, Lecture>()
                     .ForMember(ll => ll.LectureName, ll => ll.MapFrom(src => src.LectureName))
@@ -176,7 +189,18 @@ namespace Infrastructures.Mappers
             CreateMap<UpdateTrainingCLassDTO, TrainingClass>().ReverseMap();
             CreateMap<TrainingClass, TrainingClassViewModel>()
                 .ForMember(x => x._Id, src => src.MapFrom(x => x.Id))
-                .ForMember(x => x.LocationName, src => src.MapFrom(x => x.Location.LocationName));
+                .ForMember(x=>x.LocationName, src =>src.MapFrom(x=>x.Location.LocationName)).ReverseMap();
+            CreateMap< TrainingClassDTO,TrainingClass>()
+                .ForMember(dest => dest.Duration, opt => opt.MapFrom(src=>src.ClassDuration.TotalHours))
+                .ReverseMap();
+            CreateMap<TrainingClassViewDetail,TrainingClass>()
+                .ForMember(x=>x.Id,src=>src.MapFrom(x=>x.classId))
+                .ForMember(x=>x.Name,src=>src.MapFrom(x=>x.className))
+                .ForMember(x=>x.StatusClassDetail,src=>src.MapFrom(x=>x.classStatus))
+                .ForMember(x=>x.Code,src=>src.MapFrom(x=>x.classCode))
+                .ForMember(x=>x.Duration,src=>src.MapFrom(x=>x.classDuration.TotalHours))
+                .ReverseMap();
+                
 
             //map location
             CreateMap<CreateLocationDTO, Location>();

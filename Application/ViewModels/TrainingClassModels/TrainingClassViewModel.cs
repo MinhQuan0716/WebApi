@@ -18,7 +18,6 @@ namespace Application.ViewModels.TrainingClassModels
         public DateTime? ModificationDate { get; set; }
 
         public DateTime? DeletionDate { get; set; }
-        public string Attendee { get; set; }
         public string Branch { get; set; }
     }
 

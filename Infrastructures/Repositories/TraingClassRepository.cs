@@ -1,6 +1,9 @@
 ﻿using Application.Interfaces;
 using Application.Repositories;
+using Application.ViewModels.SyllabusModels;
 using Application.ViewModels.TrainingClassModels;
+using Application.ViewModels.TrainingProgramModels;
+using Application.ViewModels.TrainingProgramModels.TrainingProgramView;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -22,10 +25,21 @@ namespace Infrastructures.Repositories
         {
             _dbContext = context;
         }
-        /// <summary>
-        /// GetTrainingClasses return all training classes
-        /// </summary>
-        /// <returns>List of training classes</returns>
+
+       
+        public TrainingProgram GetTrainingProgramByClassID(Guid id) {
+            TrainingProgram getAllTrainingProgram = _dbContext.TrainingClasses.Include(x => x.TrainingProgram)
+                                                                .Where(x => x.Id == id)
+                                                                .Select(x => new TrainingProgram()
+                                                                {
+                                                                    Id = x.TrainingProgram.Id,
+                                                                    ProgramName = x.TrainingProgram.ProgramName,
+                                                                    Duration = x.TrainingProgram.Duration,
+                                                                }).First();
+            return getAllTrainingProgram;
+
+        }
+
         public List<TrainingClassDTO> GetTrainingClasses()
         {
             var getAllTrainingClass = _dbContext.TrainingClasses
@@ -39,14 +53,15 @@ namespace Infrastructures.Repositories
                                        StartDate = t.StartTime,
                                        EndDate = t.EndTime,
                                        Attendee = t.Attendee,
-                                       TotalDay = (t.EndTime - t.StartTime).TotalDays,
-                                       TotalHour = (t.EndTime - t.StartTime).TotalHours,
+                                       ClassDuration = new DurationView
+                                       {
+                                           TotalHours = t.Duration
+                                       },
                                        Status = t.StatusClassDetail,
                                        CreatedBy = string.Join(",", _dbContext.Users.Where(x => x.Id == t.CreatedBy).Select(u => u.UserName))
                                    }).ToList();
-            return getAllTrainingClass;
-        }
-
+                         return getAllTrainingClass;
+            }
         /// <summary>
         /// SearchClassByName find and return training classes
         /// which name are the same as the name parameter

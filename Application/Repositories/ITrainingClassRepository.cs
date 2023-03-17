@@ -12,5 +12,6 @@ namespace Application.Repositories
     {
         public List<TrainingClass> SearchClassByName(string name);
         public List<TrainingClassDTO> GetTrainingClasses();
+       TrainingProgram GetTrainingProgramByClassID(Guid id);
     }
 }

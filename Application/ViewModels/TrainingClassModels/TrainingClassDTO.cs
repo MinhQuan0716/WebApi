@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Application.ViewModels.TrainingProgramModels.TrainingProgramView;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,7 +19,6 @@ namespace Application.ViewModels.TrainingClassModels
         public string Branch { get; set; } = default!;
         public string Status { get; set; } = default!;
         public string Attendee { get; set; } = default!;
-        public double TotalDay { get; set; }
-        public double TotalHour { get; set; }
+        public DurationView ClassDuration { get; set; } = default!;
     }
 }

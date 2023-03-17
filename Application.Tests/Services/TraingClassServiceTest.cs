@@ -91,7 +91,7 @@ namespace Application.Tests.Services
                 .With(x => x.Attendee)
                 .With(x => x.Branch)
                 .With(x => x.StatusClassDetail)
-                .Without(x => x.Attendees)
+                .Without(x => x.Attendee)
                 .Without(x => x.TimeFrame)
                 .Create();
 

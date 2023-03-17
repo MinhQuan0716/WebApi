@@ -31,5 +31,16 @@ namespace Infrastructures.Repositories
             }
             return result;
         }
+
+        public  Guid GetDetailTrainingClassParticipateByClassID(Guid classID)
+        {
+            Guid detailID = Guid.Empty;
+            var  result = _dbContext.DetailTrainingClassParticipates.Single( x=>x.TrainingClassID == classID);
+            if (result != null)
+            {
+                 detailID = result.Id;
+            }
+            return detailID;
+        }
     }
 }

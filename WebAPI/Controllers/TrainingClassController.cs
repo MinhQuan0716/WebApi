@@ -114,6 +114,16 @@ namespace WebAPI.Controllers
             }
             return Ok(fiterResult);
         }
+        [HttpGet]
+        public async Task<IActionResult> GetTrainingClassDetail(Guid id)
+        {
+            var detailList=await _trainingClassService.GetFinalTrainingClassesAsync(id);
+            if (detailList != null)
+            {
+                return Ok(detailList);
+            }
+            return NotFound();
+        }
 
         [HttpPut]
         [Authorize]
