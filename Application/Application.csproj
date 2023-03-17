@@ -9,11 +9,8 @@
 
 	<ItemGroup>
 	  <Compile Remove="ViewModels\NewFolder1\**" />
-	  <Compile Remove="ViewModels\NewFolder\**" />
 	  <EmbeddedResource Remove="ViewModels\NewFolder1\**" />
-	  <EmbeddedResource Remove="ViewModels\NewFolder\**" />
 	  <None Remove="ViewModels\NewFolder1\**" />
-	  <None Remove="ViewModels\NewFolder\**" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -21,6 +18,8 @@
 		<PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
 		<PackageReference Include="EPPlus" Version="6.1.2" />
 		<PackageReference Include="Google.Apis.Auth" Version="1.59.0" />
+		<PackageReference Include="Hangfire" Version="1.7.33" />
+		<PackageReference Include="Hangfire.InMemory" Version="0.3.6" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.3" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.3" />
 	</ItemGroup>

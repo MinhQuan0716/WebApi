@@ -13,6 +13,6 @@ public class MarkReportDto
     public string TraineeName { get; set; }
     public string LectureName { get; set; }
     public string DeliveryType { get; set; }
-    public int NumericGrade { get; set; }
+    public double NumericGrade { get; set; }
     public string LetterGrade { get; set; }
 }

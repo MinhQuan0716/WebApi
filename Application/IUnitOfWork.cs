@@ -16,9 +16,10 @@ namespace Application
 
         public ITrainingMaterialRepository TrainingMaterialRepository { get; }
         public IAttendanceRepository AttendanceRepository { get; }
+        public IFeedbackRepository FeedbackRepository { get; }
+        public IAssignmentSubmissionRepository AssignmentSubmissionRepository { get; }
         public ITrainingClassRepository TrainingClassRepository { get; }
         public ILocationRepository LocationRepository { get; }
-        public IFeedbackRepository FeedbackRepository { get; }
         public IDetailTrainingProgramSyllabusRepository DetailTrainingProgramSyllabusRepository { get; }
         public ITrainingProgramRepository TrainingProgramRepository { get; }
         public IAuditPlanRepository AuditPlanRepository { get; }
@@ -37,6 +38,9 @@ namespace Application
         public IGradingRepository GradingRepository { get; }
         public IAuditSubmissionRepository AuditSubmissionRepository { get; }
         public IDetailAuditSubmissionRepository DetailAuditSubmissionRepository { get; }
+        public IAssignmentRepository AssignmentRepository { get; }
+
+        public IDetailTrainingClassParticipateRepository DetailTrainingClassParticipate { get; }
         public Task<int> SaveChangeAsync();
         public IDetailTrainingClassParticipateRepository DetailTrainingClassParticipateRepository { get; }
     }

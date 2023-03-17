@@ -17,4 +17,5 @@ public class Feedback : BaseEntity
     public Guid? TrainingCLassId { get; set; }
 
     public TrainingClass? TrainingClass { get; set; }
+
 }

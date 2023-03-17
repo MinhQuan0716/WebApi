@@ -13,6 +13,7 @@ using WebAPI.Controllers;
 using Microsoft.Extensions.Configuration;
 using Application.Services;
 using Infrastructures.Repositories;
+using Hangfire;
 
 namespace Domains.Test
 {
@@ -73,11 +74,18 @@ namespace Domains.Test
         protected readonly Mock<IAuditSubmissionService> _auditSubmissionServiceMock;
 
         protected readonly Mock<IGradingService> _gradingServiceMock;
+        protected readonly Mock<IGradingRepository> _gradingRepositoryMock;
 
+        protected readonly Mock<IAssignmentService> _assigmentServiceMock;
+        protected readonly Mock<IRecurringJobManager> _recurringJobManagerMock;
         protected Mock<IQuestionService> QuestionServiceMock => _questionServiceMock;
 
         protected Mock<IQuestionRepository> QuestionRepositoryMock => _questionRepositoryMock;
 
+        protected readonly Mock<IAssignmentSubmisstionService> _assignmentSubmissionServiceMock;
+
+        protected readonly Mock<IAssignmentRepository> _assignmentRepositoryMock;
+        protected readonly Mock<IAssignmentSubmissionRepository> _assignmentSubmissionRepositoryMock;
         public SetupTest()
         {
             var mappingConfig = new MapperConfiguration(mc =>
@@ -145,6 +153,15 @@ namespace Domains.Test
             _gradingServiceMock = new Mock<IGradingService>();
             _auditPlanServiceMock = new Mock<IAuditPlanService>();
             _auditSubmissionServiceMock = new Mock<IAuditSubmissionService>();
+            _gradingRepositoryMock= new Mock<IGradingRepository>();
+
+            _assigmentServiceMock=new Mock<IAssignmentService>();
+            _recurringJobManagerMock=new Mock<IRecurringJobManager>();
+
+            _assignmentSubmissionServiceMock = new Mock<IAssignmentSubmisstionService>();
+
+            _assignmentRepositoryMock=new Mock<IAssignmentRepository>();
+            _assignmentSubmissionRepositoryMock = new Mock<IAssignmentSubmissionRepository>();
         }
 
         public void Dispose()

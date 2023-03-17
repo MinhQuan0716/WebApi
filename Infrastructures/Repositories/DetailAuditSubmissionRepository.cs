@@ -26,18 +26,28 @@ namespace Infrastructures.Repositories
 
         public async Task<IEnumerable<DetailAuditSubmissionViewModel>> GetDetailView(Guid auditSubmissionId)
         {
-            var result = from d in _dbContext.DetailAuditSubmissions
-                         join dq in _dbContext.DetailAuditQuestions
-                         on d.DetailAuditQuestionId equals dq.Id
-                         join q in _dbContext.AuditQuestions
-                         on dq.AuditQuestionId equals q.Id
-                         where d.AuditSubmissionId == auditSubmissionId
-                         select new DetailAuditSubmissionViewModel
-                         {
-                             Question = q.Description,
-                             Answer = d.Answer
-                         };
 
+            // Old Query
+            /*            var result = from d in _dbContext.DetailAuditSubmissions
+                                     join dq in _dbContext.DetailAuditQuestions
+                                     on d.DetailAuditQuestionId equals dq.Id
+                                     join q in _dbContext.AuditQuestions
+                                     on dq.AuditQuestionId equals q.Id
+                                     where d.AuditSubmissionId == auditSubmissionId
+                                     select new DetailAuditSubmissionViewModel
+                                     {
+                                         Question = q.Description,
+                                         Answer = d.Answer
+                                     };*/
+            var result = _dbContext.DetailAuditSubmissions
+                                   .Include(x => x.DetailAuditQuestion).ThenInclude(d => d.AuditQuestion)
+                                   .Include(x => x.AuditSubmission)
+                                   .Where(auditSubmission => auditSubmission.AuditSubmissionId == auditSubmissionId)
+                                   .Select(auditSubmission => new DetailAuditSubmissionViewModel
+                                   {
+                                       Question = auditSubmission.DetailAuditQuestion.AuditQuestion.Description,
+                                       Answer = auditSubmission.Answer                                       
+                                   });
             return await result.ToListAsync();
 
         }

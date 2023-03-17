@@ -183,9 +183,9 @@ namespace Application.Services
 
         }
 
-        public Task<List<SyllabusViewAllDTO>> GetAllSyllabus()
+        public async Task<List<SyllabusViewAllDTO>> GetAllSyllabus()
         {
-            var syllabusList = _unitOfWork.SyllabusRepository.GetAllAsync();
+            var syllabusList = await _unitOfWork.SyllabusRepository.GetAllAsync();
             return syllabusList;
         }
 

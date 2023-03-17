@@ -3,6 +3,7 @@ using Application.Interfaces;
 using Application.Repositories;
 using Application.Services;
 using Application.Utils;
+using Domain.Entities;
 using Infrastructures.Mappers;
 using Infrastructures.Repositories;
 using Microsoft.AspNetCore.Authorization;
@@ -28,13 +29,15 @@ namespace Infrastructures
             services.AddScoped<ITrainingClassRepository, TraingClassRepository>();
             services.AddScoped<ILocationRepository, LocationRepository>();
             services.AddSingleton<ICurrentTime, CurrentTime>();
+            services.AddScoped<IAssignmentRepository,AssignmetRepository>();
+            services.AddScoped<IAssignmentSubmissionRepository, AssignmentSubmissionRepository>();
+            services.AddScoped<IApplicationRepository, AppilicationRepository>();
 
             services.AddScoped<IUnitService, UnitService>();
             services.AddScoped<IAttendanceService, AttendanceService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<ISyllabusService, SyllabusService>();
             services.AddScoped<IAttendanceRepository, AttendanceRepository>();
-            services.AddScoped<IAttendanceService, AttendanceService>();
             services.AddSingleton<ExternalAuthUtils>();
             services.AddScoped<IApplicationService, ApplicationService>();
             services.AddScoped<ITrainingClassRepository, TraingClassRepository>();
@@ -60,6 +63,8 @@ namespace Infrastructures
             services.AddScoped<IFeedbackRepository, FeedbackRepository>();
             services.AddScoped<IGradingService, GradingService>();
             services.AddScoped<IGradingRepository, GradingRepository>();
+            services.AddScoped<IDetailTrainingClassParticipateRepository, DetailTrainingClassParticipateRepository>();
+
             services.AddScoped<IDetailTrainingClassParticipateRepository, DetailTrainingClassParticipateRepository>();
 
             services.AddScoped<IAuditSubmissionRepository, AuditSubmissionRepository>();

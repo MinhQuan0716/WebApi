@@ -795,3 +795,4 @@ FodyWeavers.xsd
 /.vs/fa-training-management-system/v17/TestStore/0/testlog.manifest
 /.vs/fa-training-management-system/v17/.suo
 >>>>>>> 1f994078304148ae7e155c0aac649fdb92cc37a2
+/WebAPI/Logs/log.txt

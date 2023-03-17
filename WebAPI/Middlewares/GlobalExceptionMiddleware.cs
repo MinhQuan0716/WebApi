@@ -1,5 +1,6 @@
 ﻿using Application.Utils;
 using System.Net;
+using System.Runtime.CompilerServices;
 
 namespace WebAPI.Middlewares
 {
@@ -21,6 +22,8 @@ namespace WebAPI.Middlewares
             }
             catch (Exception ex)
             {
+               
+                await _sendmailHelper.SendMailAsync("quangtmse161987@fpt.edu.vn", "Exception", ex.Message);       
                 context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
                 context.Response.ContentType = "text/plain";
                 // todo push notification & writing log

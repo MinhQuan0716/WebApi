@@ -216,8 +216,9 @@ namespace Application.Tests.Services
         [Fact]
         public async Task Register_ShouldReturnUser()
         {
+            var listUser = new List<User>();
             var mockData = _fixture.Build<RegisterDTO>().Create();
-            _unitOfWorkMock.Setup(um => um.UserRepository.CheckEmailExistedAsync(mockData.Email)).ReturnsAsync(false);
+            _unitOfWorkMock.Setup(um => um.UserRepository.FindAsync(u => u.UserName == mockData.UserName || u.Email == mockData.Email)).ReturnsAsync(listUser);
             var addMockData = _mapperConfig.Map<User>(mockData);
             _unitOfWorkMock.Setup(um => um.UserRepository.AddAsync(addMockData)).Verifiable();
             _unitOfWorkMock.Setup(um => um.SaveChangeAsync()).ReturnsAsync(1);
@@ -228,9 +229,14 @@ namespace Application.Tests.Services
         [Fact]
         public async Task Register_ShouldThrowException()
         {
-
+            var listUser = _fixture.Build<User>().Without(u => u.Syllabuses)
+                                                 .Without(u => u.Role)
+                                                 .Without(u => u.DetailTrainingClassParticipate)
+                                                 .Without(u => u.Applications)
+                                                 .Without(u => u.Attendances)
+                                                 .Without(u => u.Feedbacks).CreateMany(1).ToList();
             var mockData = _fixture.Build<RegisterDTO>().Create();
-            _unitOfWorkMock.Setup(u => u.UserRepository.CheckEmailExistedAsync(mockData.Email)).ReturnsAsync(true);
+            _unitOfWorkMock.Setup(um => um.UserRepository.FindAsync(u => u.UserName == mockData.UserName || u.Email == mockData.Email)).ReturnsAsync(listUser);
             Func<Task> act = async () => await _userService.RegisterAsync(mockData);
             act.Should().ThrowAsync<Exception>();
         }

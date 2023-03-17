@@ -31,7 +31,6 @@ namespace Infrastructures
         public DbSet<Applications> Applications { get; set; }
         public DbSet<Feedback> Feedbacks { get; set; }
         public DbSet<TrainingProgram> TrainingPrograms { get; set; }
-        public DbSet<DetailTrainingProgramSyllabus> detailTrainingProgramSyllabuses { get; set; }
         public DbSet<AuditPlan> AuditPlans { get; set; }
         public DbSet<AuditSubmission> AuditSubmissions { get; set; }
         public DbSet<DetailAuditSubmission> DetailAuditSubmissions { get; set; }
@@ -50,6 +49,9 @@ namespace Infrastructures
         public DbSet<SubmitQuiz> SubmitQuiz { get; set; }
 
         public DbSet<Grading> Gradings { get; set; }
+              
+        public DbSet<Assignment> Assignments { get; set; }
+        public DbSet<AssignmentSubmission> AssignmentSubmissions { get; set; }
         #endregion
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

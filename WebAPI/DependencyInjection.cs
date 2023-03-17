@@ -16,7 +16,10 @@ using System.Text.Json.Serialization;
 using WebAPI.Middlewares;
 using WebAPI.Services;
 using WebAPI.Controllers;
+using Infrastructures;
+using Hangfire;
 using Application.Commons;
+using Microsoft.AspNetCore.Http.Features;
 
 namespace WebAPI
 {
@@ -85,12 +88,24 @@ namespace WebAPI
                     };
                 });
 
-            // As always, handlers must be provided for the requirements of the authorization   
-            //services.AddAuthorization(options =>
-            //{
-            //    options
-            //   .AddPolicy("Syllabus", policy => policy.Requirements.Add(new PermissionAuthorizeAttribute(context.User.FindFirst(x => x.Type == "SyllabusPermission").Value)));
-            //});
+            services.AddScoped<IAssignmentService, AssignmentService>();
+            services.AddScoped<IAssignmentSubmisstionService, AssignmentSubmissionService>();
+
+            ///HangFire
+            services.AddHangfire(config => config
+                .UseSimpleAssemblyNameTypeSerializer()
+                .UseRecommendedSerializerSettings()
+                .UseInMemoryStorage()
+                 );
+            services.AddHangfireServer();
+
+            services.Configure<FormOptions>(o =>
+             {
+                 o.ValueLengthLimit = int.MaxValue;
+                 o.MultipartBodyLengthLimit = int.MaxValue;
+                 o.MemoryBufferThreshold = int.MaxValue;
+             });
+
             return services;
         }
     }

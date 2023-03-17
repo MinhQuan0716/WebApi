@@ -30,7 +30,7 @@ namespace Application.Utils
                issuer: secretKey,
                audience: secretKey,
                claims,
-               expires: now.AddMinutes(12),
+               expires: now.AddMinutes(1000),
                signingCredentials: credentials);
 
 

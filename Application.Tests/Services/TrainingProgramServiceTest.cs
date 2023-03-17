@@ -422,35 +422,38 @@ namespace Application.Tests.Services
             result.Should().BeEquivalentTo(expected);
         }
 
-        /*        [Fact]
-                public async Task ViewAllTrainingProgram_ShouldBeReturnList()
+/*        [Fact]
+        public async Task ViewAllTrainingProgram_ShouldBeReturnList()
+        {
+            var listViewTrainingProgram = _fixture.Build<ViewAllTrainingProgramDTO>().Without(x => x.Content).CreateMany(2);
+            var listTrainingProgram = _mapperConfig.Map<List<TrainingProgram>>(listViewTrainingProgram);
+            _unitOfWorkMock.Setup(a => a.TrainingProgramRepository.GetAllAsync()).ReturnsAsync(listTrainingProgram);
+            var listLoadAllProgramId = from a in listViewTrainingProgram
+                                             select new
+                                             {
+                                                 Id = a.Id
+                                             };
+            IList<ViewAllTrainingProgramDTO> resultOutputList=new List<ViewAllTrainingProgramDTO>();
+            var trainingProgram = _fixture.Build<TrainingProgram>()
+                .Without(x=>x.TrainingClasses)
+                .Without(x=>x.DetailTrainingProgramSyllabus)
+                .Create();
+            var mapperView = _mapperConfig.Map<ViewAllTrainingProgramDTO>(trainingProgram);
+            var syllabusMock = _fixture.Build<Syllabus>()
+                .Without(x=>x.User)
+                .Without(x=>x.Units)
+                .Without(x=>x.DetailTrainingProgramSyllabus)
+                .Create();
+            foreach (var a in listLoadAllProgramId)
+            {
+                _unitOfWorkMock.Setup(x => x.TrainingProgramRepository.GetByIdAsync(a.Id)).ReturnsAsync(trainingProgram);
+                if (trainingProgram is not null && trainingProgram.IsDeleted == false)
                 {
-                    var listViewTrainingProgram = _fixture.Build<ViewAllTrainingProgramDTO>().Without(x => x.Content).CreateMany(2);
-                    var listTrainingProgram = _mapperConfig.Map<List<TrainingProgram>>(listViewTrainingProgram);
-                    _unitOfWorkMock.Setup(a => a.TrainingProgramRepository.GetAllAsync()).ReturnsAsync(listTrainingProgram);
-                    var listLoadAllProgramId = from a in listViewTrainingProgram
-                                               select new
-                                               {
-                                                   Id = a.Id
-                                               };
-                    IList<ViewAllTrainingProgramDTO> resultOutputList = new List<ViewAllTrainingProgramDTO>();
-                    var trainingProgram = _fixture.Build<TrainingProgram>().Without(x => x.TrainingClasses).Without(x => x.DetailTrainingProgramSyllabus).Create();
-                    var mapperView = _mapperConfig.Map<ViewAllTrainingProgramDTO>(trainingProgram);
-                    var syllabusMock = _fixture.Build<Syllabus>()
-                        .Without(x => x.Units)
-                        .Without(x => x.DetailTrainingProgramSyllabus)
-                        .Without(x => x.User)
-                        .Create();
-                    foreach (var a in listLoadAllProgramId)
-                    {
-                        _unitOfWorkMock.Setup(x => x.TrainingProgramRepository.GetByIdAsync(a.Id)).ReturnsAsync(trainingProgram);
-                        if (trainingProgram is not null && trainingProgram.IsDeleted == false)
-                        {
-                            var listGetSyllabusByProgramId = _mapperConfig.Map<ViewAllTrainingProgramDTO>(trainingProgram);
-                            listGetSyllabusByProgramId.Syllabuses = (ICollection<Syllabus>?)_unitOfWorkMock.Setup(x => x.SyllabusRepository.GetSyllabusByTrainingProgramId(listGetSyllabusByProgramId.Id));
-                            resultOutputList.Add(listGetSyllabusByProgramId);
-                        }
-                    }
+                    var listGetSyllabusByProgramId = _mapperConfig.Map<ViewAllTrainingProgramDTO>(trainingProgram);
+                    listGetSyllabusByProgramId.Syllabuses = (ICollection<Syllabus>?)_unitOfWorkMock.Setup(x => x.SyllabusRepository.GetSyllabusByTrainingProgramId(listGetSyllabusByProgramId.Id));
+                    resultOutputList.Add(listGetSyllabusByProgramId);
+                }
+            }
 
                 }*/
     }

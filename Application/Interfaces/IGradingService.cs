@@ -17,4 +17,5 @@ public interface IGradingService
     Task CreateGradingAsync(GradingModel model);
     List<MarkReportDto> GetMarkReportOfClass(Guid classID);
     List<MarkReportDto> GetMarkReportOfTrainee(Guid traineeId);
+    Task<bool> AddToGrading(GradingModel gradingModel);
 }

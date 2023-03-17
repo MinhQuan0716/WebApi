@@ -21,7 +21,13 @@ namespace Infrastructures.Repositories
             _timeService = timeService;
             _claimsService = claimsService;
         }
-        public Task<List<TEntity>> GetAllAsync() => _dbSet.ToListAsync();
+        public async Task<List<TEntity>> GetAllAsync(params Expression<Func<TEntity, object>>[] includes)
+        {
+            return await includes
+           .Aggregate(_dbSet.AsQueryable(),
+               (entity, property) => entity.Include(property))
+           .ToListAsync();
+        }
 
         public async Task<TEntity?> GetByIdAsync(Guid id, params Expression<Func<TEntity, object>>[] includes)
         {
@@ -131,8 +137,10 @@ namespace Infrastructures.Repositories
             _dbSet.UpdateRange(entities);
         }
 
-        public async Task<List<TEntity>> FindAsync(Expression<Func<TEntity, bool>> expression) => await _dbSet.Where(expression).ToListAsync();
-
-
+        public async Task<List<TEntity>> FindAsync(Expression<Func<TEntity, bool>> expression, params Expression<Func<TEntity, object>>[] includes)
+            =>  await includes
+           .Aggregate(_dbSet.AsQueryable(),
+               (entity, property) => entity.Include(property))
+           .Where(expression).ToListAsync();
     }
 }

@@ -24,6 +24,10 @@ namespace Domain.Entities
 
         public ICollection<Grading> Gradings { get; set; }
 
+        /// <summary>
+        /// One lecture may have one assignmnet
+        /// </summary>
+        public ICollection<Assignment> Assignments { get; set; }
         public ICollection<AuditPlan> AuditPlans { get; set; } = default!;
 
         public Quiz? Quiz { get; set; }

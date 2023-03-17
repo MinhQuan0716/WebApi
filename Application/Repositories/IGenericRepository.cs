@@ -7,7 +7,7 @@ namespace Application.Repositories
 {
     public interface IGenericRepository<TEntity> where TEntity : BaseEntity
     {
-        Task<List<TEntity>> GetAllAsync();
+        Task<List<TEntity>> GetAllAsync(params Expression<Func<TEntity, object>>[] includes);
         Task<TEntity?> GetByIdAsync(Guid id, params Expression<Func<TEntity, object>>[] includes);
         Task AddAsync(TEntity entity);
         void Update(TEntity entity);
@@ -18,7 +18,7 @@ namespace Application.Repositories
 
         Task<Pagination<TEntity>> ToPagination(int pageNumber = 0, int pageSize = 10);
 
-        Task<List<TEntity>> FindAsync(Expression<Func<TEntity, bool>> expression);
+        Task<List<TEntity>> FindAsync(Expression<Func<TEntity, bool>> expression, params Expression<Func<TEntity, object>>[] includes);
         Task<Pagination<TEntity>> ToPagination(Expression<Func<TEntity, bool>> expression, int pageIndex = 0, int pageSize = 10);
         Task<Pagination<TEntity>> ToPagination<TProperty>(Microsoft.EntityFrameworkCore.Query.IIncludableQueryable<TEntity, TProperty?> value, Expression<Func<TEntity, bool>> expression, int pageIndex, int pageSize);
     }

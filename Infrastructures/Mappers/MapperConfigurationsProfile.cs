@@ -2,14 +2,12 @@
 using Application.Commons;
 using Domain.Entities;
 using Application.ViewModels.UserViewModels;
-using Microsoft.AspNetCore.Mvc;
 using Application.ViewModels.SyllabusModels;
 using Application.ViewModels.SyllabusModels.UpdateSyllabusModels;
-using Microsoft.AspNetCore.Session;
 using Application.ViewModels.TrainingClassModels;
 using Application.ViewModels.Location;
 using Application.ViewModels.FeedbackModels;
-using Application.ViewModels.TrainingProgramModels;
+
 using Application.ViewModels.ApplicationViewModels;
 using Application.ViewModels.AuditModels;
 using Application.ViewModels.AuditModels.ViewModels;
@@ -17,12 +15,11 @@ using Application.ViewModels.TrainingProgramModels;
 using Application.ViewModels.AtttendanceModels;
 using Domain.Enums;
 using Application.ViewModels.GradingModels;
-using Application.ViewModels.AuditModels;
-using Application.ViewModels.AuditModels.ViewModels;
 using Application.ViewModels.AuditModels.AuditSubmissionModels.CreateModels;
 using Application.ViewModels.AuditModels.AuditSubmissionModels.ViewModels;
 using Application.ViewModels.AuditModels.AuditSubmissionModels.UpdateModels;
 using Application.ViewModels.TrainingProgramModels.TrainingProgramView;
+using Application.ViewModels.AssignmentModel;
 using Application.ViewModels.SyllabusModels.FixViewSyllabus;
 using Microsoft.AspNetCore.Routing.Constraints;
 
@@ -178,7 +175,7 @@ namespace Infrastructures.Mappers
                     .ForMember(ll => ll.DeliveryType, ll => ll.MapFrom(src => src.DeliveryType))
                     .ForMember(ll => ll.Status, ll => ll.MapFrom(src => src.Status))
                     .ReverseMap();
-
+        
 
             CreateMap<User, LoginWithEmailDto>()
                 .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
@@ -266,6 +263,13 @@ namespace Infrastructures.Mappers
             CreateMap<CreateAuditSubmissionDTO, AuditSubmission>().ReverseMap();
             CreateMap<AuditSubmission, AuditSubmissionViewModel>().ReverseMap();
             CreateMap<AuditSubmission, UpdateSubmissionDTO>().ReverseMap();
+
+            CreateMap<AssignmentViewModel, Assignment>()
+                .ForMember(av => av.AssignmentName, a => a.MapFrom(src => src.AssignmentName))
+                .ForMember(av => av.Description, a => a.MapFrom(src => src.Discription))
+                .ForMember(av => av.LectureID, a => a.MapFrom(src => src.LectureID))
+                .ForMember(av => av.DeadLine, a => a.MapFrom(src => src.DeadLine))
+                .ReverseMap();
         }
     }
 }

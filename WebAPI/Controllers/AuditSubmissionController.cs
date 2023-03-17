@@ -45,15 +45,9 @@ namespace WebAPI.Controllers
                         else if (result.TotalGrade < 6 && result.TotalGrade >= 4) letterGrade = "C";
                         else if (result.TotalGrade < 4 && result.TotalGrade <= 2) letterGrade = "D";
                         else letterGrade = "F";
+                        var gradingModel = new GradingModel(auditPlan.LectureId,detailTrainingClassParticipate,letterGrade,(int)result.TotalGrade);
 
-                        var gradingModel = new GradingModel
-                        {
-                            NumericGrade = (int?)result.TotalGrade,
-                            LectureId = auditPlan.LectureId
-                                                             ,
-                            DetailTrainingClassParticipateId = detailTrainingClassParticipate,
-                            LetterGrade = letterGrade
-                        };
+                     
                         await gradingService.CreateGradingAsync(gradingModel);
                         return Ok(result);
 

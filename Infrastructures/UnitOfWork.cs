@@ -19,9 +19,9 @@ namespace Infrastructures
 
         private readonly IAuditSubmissionRepository _auditSubmissionRepository;
         private readonly IDetailAuditSubmissionRepository _detailAuditSubmissionRepository;
+        private readonly IFeedbackRepository _feedbackRepository;
         private readonly ITrainingClassRepository _trainingClassRepository;
         public readonly ILocationRepository _locationRepository;
-        private readonly IFeedbackRepository _feedbackRepository;
 
         private readonly ITrainingProgramRepository _trainingProgramRepository;
         private readonly IDetailTrainingProgramSyllabusRepository _detailTrainingProgramSyllabusRepository;
@@ -39,6 +39,10 @@ namespace Infrastructures
 
         private readonly IGradingRepository _gradingRepository;
 
+    
+        private readonly IAssignmentRepository _assignmentRepository;
+        private readonly IAssignmentSubmissionRepository _assignmentSubmissionRepository;
+        public IDetailTrainingClassParticipateRepository _detailTrainingClassParticipate;
         public UnitOfWork(AppDbContext dbContext,
             IUserRepository userRepository, ITrainingMaterialRepository trainingMaterialRepository,
             ISyllabusRepository syllabusRepository, IUnitRepository unitRepository, ILectureRepository lectureRepository, IDetailUnitLectureRepository detailUnitLectureRepository, ITrainingClassRepository trainingClassRepository, ILocationRepository locationRepository,
@@ -47,8 +51,8 @@ namespace Infrastructures
             IGradingRepository gradingRepository,
             IAuditPlanRepository auditPlanRepository, IAuditQuestionRepository auditQuestionRepository, IDetailAuditQuestionRepository detailAuditQuestionRepository,
             IDetailTrainingClassParticipateRepository detailTrainingClassParticipateRepository, ISubmitQuizRepository submitQuizRepository,
-            IAuditSubmissionRepository auditSubmissionRepository, IDetailAuditSubmissionRepository detailAuditSubmissionRepository)
-
+            IAuditSubmissionRepository auditSubmissionRepository, IDetailAuditSubmissionRepository detailAuditSubmissionRepository,
+             IAssignmentRepository assignmentRepository, IAssignmentSubmissionRepository assignmentSubmissionRepository)
         {
             _dbContext = dbContext;
             _userRepository = userRepository;
@@ -65,9 +69,10 @@ namespace Infrastructures
             _detailTrainingProgramSyllabusRepository = detailTrainingProgramSyllabusRepository;
             _feedbackRepository = feedbackRepository;
             _attendanceRepository = attendanceRepository;
+            _assignmentRepository = assignmentRepository;
+            _assignmentSubmissionRepository = assignmentSubmissionRepository;
             _applicationRepository = applicationReapository;
-            _trainingProgramRepository = trainingProgramRepository;
-            _detailTrainingProgramSyllabusRepository = detailTrainingProgramSyllabusRepository;
+
 
             _quizRepository = quizRepository;
             _detailQuizQuestionRepository = detailQuizQuestionRepository;
@@ -82,6 +87,8 @@ namespace Infrastructures
             _detailTrainingClassParticipateRepository = detailTrainingClassParticipateRepository;
             _auditSubmissionRepository = auditSubmissionRepository;
             _detailAuditSubmissionRepository = detailAuditSubmissionRepository;
+            _auditPlanRepository = auditPlanRepository;
+            
         }
         public IUserRepository UserRepository => _userRepository;
         public ISyllabusRepository SyllabusRepository => _syllabusRepository;
@@ -92,19 +99,18 @@ namespace Infrastructures
         public ILectureRepository LectureRepository => _lectureRepository;
 
 
-
+        public IFeedbackRepository FeedbackRepository => _feedbackRepository;
         public IDetailUnitLectureRepository DetailUnitLectureRepository => _detailUnitLectureRepository;
 
 
         public ITrainingMaterialRepository TrainingMaterialRepository => _trainingMaterialRepository;
-
+        public ITrainingProgramRepository TrainingProgramRepository => _trainingProgramRepository;
 
         public ITrainingClassRepository TrainingClassRepository => _trainingClassRepository;
         public ILocationRepository LocationRepository => _locationRepository;
-
-        public ITrainingProgramRepository TrainingProgramRepository => _trainingProgramRepository;
         public IDetailTrainingProgramSyllabusRepository DetailTrainingProgramSyllabusRepository => _detailTrainingProgramSyllabusRepository;
-        public IFeedbackRepository FeedbackRepository => _feedbackRepository;
+        public IAssignmentRepository AssignmentRepository => _assignmentRepository;
+
 
         public IAttendanceRepository AttendanceRepository => _attendanceRepository;
 
@@ -119,16 +125,21 @@ namespace Infrastructures
         public ITopicRepository TopicRepository => _topicRepository;
 
         public IGradingRepository GradingRepository => _gradingRepository;
-        public IApplicationRepository ApplicationReapository => _applicationRepository;
+
         public IAuditPlanRepository AuditPlanRepository => _auditPlanRepository;
         public IAuditQuestionRepository AuditQuestionRepository => _auditQuestionRepository;
         public IDetailAuditQuestionRepository DetailAuditQuestionRepository => _detailAuditQuestionRepository;
         public IDetailTrainingClassParticipateRepository DetailTrainingClassParticipateRepository => _detailTrainingClassParticipateRepository;
 
+
+
+        public IAssignmentSubmissionRepository AssignmentSubmissionRepository => _assignmentSubmissionRepository;
         public ISubmitQuizRepository SubmitQuizRepository => _submitQuizRepository;
 
         public IAuditSubmissionRepository AuditSubmissionRepository => _auditSubmissionRepository;
         public IDetailAuditSubmissionRepository DetailAuditSubmissionRepository => _detailAuditSubmissionRepository;
+
+        public IDetailTrainingClassParticipateRepository DetailTrainingClassParticipate => _detailTrainingClassParticipateRepository;
 
         public async Task<int> SaveChangeAsync()
         {
