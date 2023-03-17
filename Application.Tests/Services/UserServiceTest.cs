@@ -571,14 +571,15 @@ namespace Application.Tests.Services
                                                   .Without(u => u.Attendances).Without(u => u.Syllabuses)
                                                   .Without(u => u.DetailTrainingClassParticipate).Without(u => u.Feedbacks)
                                                   .With(u => u.IsDeleted, false)
-                                                  .With(u => u.FullName, "tenngdung").With(u => u.RoleId, 1).With(u => u.Gender, "Female")
+                                                  .With(u => u.FullName, "tenngdung").With(u => u.RoleId, 1)
+                                                  .With(u => u.Gender, "Female").With(u => u.Level, "SiuCapVjpPr0")
                                                   .CreateMany(3).ToList();
             var expected = _mapperConfig.Map<List<UserViewModel>>(mockUsers);
             foreach (var user in expected)
                 user.RoleName = ((RoleEnums)user.RoleId).ToString();
             _unitOfWorkMock.Setup(x => x.UserRepository.GetAllAsync()).ReturnsAsync(mockUsers);
             //Act
-            var result = await _userService.SearchUsersWithFilter(null, null, null);
+            var result = await _userService.SearchUsersWithFilter(null, null, null,null);
             //Assert
             result.Should().BeEquivalentTo(expected);
         }
@@ -598,15 +599,15 @@ namespace Application.Tests.Services
                                                   .Without(u => u.Attendances).Without(u => u.Syllabuses)
                                                   .Without(u => u.DetailTrainingClassParticipate).Without(u => u.Feedbacks)
                                                   .With(u => u.IsDeleted, false)
-                                                  .With(u => u.FullName, "tenngdung").With(u => u.RoleId, 1).With(u => u.Gender, "Female")
-                                                  .CreateMany(3)
-                                                  .ToList();
+                                                  .With(u => u.FullName, "tenngdung").With(u => u.RoleId, 1)
+                                                  .With(u => u.Gender, "Female").With(u => u.Level, "SiuCapVjpPr0")
+                                                  .CreateMany(3).ToList();
             var expected = _mapperConfig.Map<List<UserViewModel>>(mockUsers);
             foreach (var user in expected)
                 user.RoleName = ((RoleEnums)user.RoleId).ToString();
             _unitOfWorkMock.Setup(x => x.UserRepository.GetAllAsync()).ReturnsAsync(mockUsers);
             //Act
-            var result = await _userService.SearchUsersWithFilter(null, "Female", null);
+            var result = await _userService.SearchUsersWithFilter(null, "Female", null, null);
             //Assert
             result.Should().BeEquivalentTo(expected);
         }
@@ -626,15 +627,43 @@ namespace Application.Tests.Services
                                                   .Without(u => u.Attendances).Without(u => u.Syllabuses)
                                                   .Without(u => u.DetailTrainingClassParticipate).Without(u => u.Feedbacks)
                                                   .With(u => u.IsDeleted, false)
-                                                  .With(u => u.FullName, "tenngdung").With(u => u.RoleId, 1).With(u => u.Gender, "Female")
-                                                  .CreateMany(3)
-                                                  .ToList();
+                                                  .With(u => u.FullName, "tenngdung").With(u => u.RoleId, 1)
+                                                  .With(u => u.Gender, "Female").With(u => u.Level, "SiuCapVjpPr0")
+                                                  .CreateMany(3).ToList();
             var expected = _mapperConfig.Map<List<UserViewModel>>(mockUsers);
             foreach (var user in expected)
                 user.RoleName = ((RoleEnums)user.RoleId).ToString();
             _unitOfWorkMock.Setup(x => x.UserRepository.GetAllAsync()).ReturnsAsync(mockUsers);
             //Act
-            var result = await _userService.SearchUsersWithFilter(null, null, 1);
+            var result = await _userService.SearchUsersWithFilter(null, null, 1, null);
+            //Assert
+            result.Should().BeEquivalentTo(expected);
+        }
+        [Fact]
+        public async void SearchUserWithFilter_ShouldReturnListOfMatchUserFilter_WithLevelFilter()
+        {
+            //Arrange
+            var mockUsers = _fixture.Build<User>().Without(u => u.Id).Without(u => u.SubmitQuizzes)
+                                                  .Without(u => u.Id).Without(u => u.CreationDate)
+                                                  .Without(u => u.CreatedBy).Without(u => u.ModificationDate)
+                                                  .Without(u => u.ModificationBy).Without(u => u.DeletionDate)
+                                                  .Without(u => u.DeleteBy).Without(u => u.UserName)
+                                                  .Without(u => u.PasswordHash).Without(u => u.Email).Without(u => u.DateOfBirth)
+                                                  .Without(u => u.AvatarUrl).Without(u => u.RefreshToken)
+                                                  .Without(u => u.ExpireTokenTime).Without(u => u.LoginDate)
+                                                  .Without(u => u.Role).Without(u => u.Applications)
+                                                  .Without(u => u.Attendances).Without(u => u.Syllabuses)
+                                                  .Without(u => u.DetailTrainingClassParticipate).Without(u => u.Feedbacks)
+                                                  .With(u => u.IsDeleted, false)
+                                                  .With(u => u.FullName, "tenngdung").With(u => u.RoleId, 1)
+                                                  .With(u => u.Gender, "Female").With(u => u.Level, "SiuCapVjpPr0")
+                                                  .CreateMany(3).ToList();
+            var expected = _mapperConfig.Map<List<UserViewModel>>(mockUsers);
+            foreach (var user in expected)
+                user.RoleName = ((RoleEnums)user.RoleId).ToString();
+            _unitOfWorkMock.Setup(x => x.UserRepository.GetAllAsync()).ReturnsAsync(mockUsers);
+            //Act
+            var result = await _userService.SearchUsersWithFilter(null, null, null, "SiuCapVjpPr0");
             //Assert
             result.Should().BeEquivalentTo(expected);
         }
@@ -654,7 +683,8 @@ namespace Application.Tests.Services
                                                   .Without(u => u.Attendances).Without(u => u.Syllabuses)
                                                   .Without(u => u.DetailTrainingClassParticipate).Without(u => u.Feedbacks)
                                                   .With(u => u.IsDeleted, false)
-                                                  .With(u => u.FullName, "tenngdung").With(u => u.RoleId, 1).With(u => u.Gender, "Female")
+                                                  .With(u => u.FullName, "tenngdung").With(u => u.RoleId, 1)
+                                                  .With(u => u.Gender, "Female").With(u => u.Level, "SiuCapVjpPr0")
                                                   .CreateMany(3).ToList();
             var expected = _mapperConfig.Map<List<UserViewModel>>(mockUsers);
             foreach (var user in expected)
@@ -664,7 +694,7 @@ namespace Application.Tests.Services
                     u.FullName.Contains("Gicungdc")
                 )).ReturnsAsync(mockUsers);
             //Act
-            var result = await _userService.SearchUsersWithFilter("Gicungdc", null, null);
+            var result = await _userService.SearchUsersWithFilter("Gicungdc", null, null, null);
             //Assert
             result.Should().BeEquivalentTo(expected);
         }
@@ -684,9 +714,9 @@ namespace Application.Tests.Services
                                                   .Without(u => u.Attendances).Without(u => u.Syllabuses)
                                                   .Without(u => u.DetailTrainingClassParticipate).Without(u => u.Feedbacks)
                                                   .With(u => u.IsDeleted, false)
-                                                  .With(u => u.FullName, "tenngdung").With(u => u.RoleId, 1).With(u => u.Gender, "Female")
-                                                  .CreateMany(3)
-                                                  .ToList();
+                                                  .With(u => u.FullName, "tenngdung").With(u => u.RoleId, 1)
+                                                  .With(u => u.Gender, "Female").With(u => u.Level, "SiuCapVjpPr0")
+                                                  .CreateMany(3).ToList();
             var expected = _mapperConfig.Map<List<UserViewModel>>(mockUsers);
             foreach (var user in expected)
                 user.RoleName = ((RoleEnums)user.RoleId).ToString();
@@ -695,12 +725,12 @@ namespace Application.Tests.Services
                     u.FullName.Contains("ten")
                 )).ReturnsAsync(mockUsers);
             //Act
-            var result = await _userService.SearchUsersWithFilter("ten", "Female", null);
+            var result = await _userService.SearchUsersWithFilter("ten", "Female", null, null);
             //Assert
             result.Should().BeEquivalentTo(expected);
         }
         [Fact]
-        public async void SearchUserWithFilter_ShouldReturnListOfMatchUserFullnameAndFilter_WithValidStringAndRoleAndGenderFilter()
+        public async void SearchUserWithFilter_ShouldReturnListOfMatchUserFullnameAndFilter_WithValidStringAndRoleAndGenderAndLevelFilter()
         {
             //Arrange
             var mockUsers = _fixture.Build<User>().Without(u => u.Id).Without(u => u.SubmitQuizzes)
@@ -715,9 +745,9 @@ namespace Application.Tests.Services
                                                   .Without(u => u.Attendances).Without(u => u.Syllabuses)
                                                   .Without(u => u.DetailTrainingClassParticipate).Without(u => u.Feedbacks)
                                                   .With(u => u.IsDeleted, false)
-                                                  .With(u => u.FullName, "tenngdung").With(u => u.RoleId, 1).With(u => u.Gender, "Female")
-                                                  .CreateMany(3)
-                                                  .ToList();
+                                                  .With(u => u.FullName, "tenngdung").With(u => u.RoleId, 1)
+                                                  .With(u => u.Gender, "Female").With(u => u.Level, "SiuCapVjpPr0")
+                                                  .CreateMany(3).ToList();
             var expected = _mapperConfig.Map<List<UserViewModel>>(mockUsers);
             foreach (var user in expected)
                 user.RoleName = ((RoleEnums)user.RoleId).ToString();
@@ -726,7 +756,7 @@ namespace Application.Tests.Services
                     u.FullName.Contains("ten")
                 )).ReturnsAsync(mockUsers);
             //Act
-            var result = await _userService.SearchUsersWithFilter("ten", "Female", 1);
+            var result = await _userService.SearchUsersWithFilter("ten", "Female", 1, "SiuCapVjpPr0");
             //Assert
             result.Should().BeEquivalentTo(expected);
         }
@@ -746,9 +776,9 @@ namespace Application.Tests.Services
                                                   .Without(u => u.Attendances).Without(u => u.Syllabuses)
                                                   .Without(u => u.DetailTrainingClassParticipate).Without(u => u.Feedbacks)
                                                   .With(u => u.IsDeleted, false)
-                                                  .With(u => u.FullName, "tenngdung").With(u => u.RoleId, 1).With(u => u.Gender, "Female")
-                                                  .CreateMany(3)
-                                                  .ToList();
+                                                  .With(u => u.FullName, "tenngdung").With(u => u.RoleId, 1)
+                                                  .With(u => u.Gender, "Female").With(u => u.Level, "SiuCapVjpPr0")
+                                                  .CreateMany(3).ToList();
             var expected = _mapperConfig.Map<List<UserViewModel>>(mockUsers);
             foreach (var user in expected)
                 user.RoleName = ((RoleEnums)user.RoleId).ToString();
@@ -757,7 +787,38 @@ namespace Application.Tests.Services
                     u.FullName.Contains("ten")
                 )).ReturnsAsync(mockUsers);
             //Act
-            var result = await _userService.SearchUsersWithFilter("ten", null, 1);
+            var result = await _userService.SearchUsersWithFilter("ten", null, 1, null);
+            //Assert
+            result.Should().BeEquivalentTo(expected);
+        }
+        [Fact]
+        public async void SearchUserWithFilter_ShouldReturnListOfMatchUserFullnameAndFilter_WithValidStringAndLevelFilter()
+        {
+            //Arrange
+            var mockUsers = _fixture.Build<User>().Without(u => u.Id).Without(u => u.SubmitQuizzes)
+                                                  .Without(u => u.Id).Without(u => u.CreationDate)
+                                                  .Without(u => u.CreatedBy).Without(u => u.ModificationDate)
+                                                  .Without(u => u.ModificationBy).Without(u => u.DeletionDate)
+                                                  .Without(u => u.DeleteBy).Without(u => u.UserName)
+                                                  .Without(u => u.PasswordHash).Without(u => u.Email).Without(u => u.DateOfBirth)
+                                                  .Without(u => u.AvatarUrl).Without(u => u.RefreshToken)
+                                                  .Without(u => u.ExpireTokenTime).Without(u => u.LoginDate)
+                                                  .Without(u => u.Role).Without(u => u.Applications)
+                                                  .Without(u => u.Attendances).Without(u => u.Syllabuses)
+                                                  .Without(u => u.DetailTrainingClassParticipate).Without(u => u.Feedbacks)
+                                                  .With(u => u.IsDeleted, false)
+                                                  .With(u => u.FullName, "tenngdung").With(u => u.RoleId, 1)
+                                                  .With(u => u.Gender, "Female").With(u => u.Level, "SiuCapVjpPr0")
+                                                  .CreateMany(3).ToList();
+            var expected = _mapperConfig.Map<List<UserViewModel>>(mockUsers);
+            foreach (var user in expected)
+                user.RoleName = ((RoleEnums)user.RoleId).ToString();
+            _unitOfWorkMock.Setup(x => x.UserRepository.FindAsync
+                (u =>
+                    u.FullName.Contains("ten")
+                )).ReturnsAsync(mockUsers);
+            //Act
+            var result = await _userService.SearchUsersWithFilter("ten", null, null, "SiuCapVjpPr0");
             //Assert
             result.Should().BeEquivalentTo(expected);
         }

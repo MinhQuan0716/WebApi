@@ -221,7 +221,19 @@ public class UserService : IUserService
         if (user != null)
         {
             var key = StringUtils.RandomString(6);
-            var result = await _sendMailHelper.SendMailAsync(email, "ResetPassword", key);
+            //Get project's directory and fetch ForgotPasswordTemplate content from EmailTemplates
+            string exePath = Environment.CurrentDirectory.ToString();
+            if (exePath.Contains(@"\bin\Debug\net7.0"))
+                exePath = exePath.Remove(exePath.Length - (@"\bin\Debug\net7.0").Length);
+            string FilePath = exePath + @"\EmailTemplates\ForgotPasswordTemplate.html";
+            StreamReader streamreader = new StreamReader(FilePath);
+            string MailText = streamreader.ReadToEnd();
+            streamreader.Close();
+            //Replace [resetpasswordkey] = key
+            MailText = MailText.Replace("[resetpasswordkey]", key);
+            //Replace [emailaddress] = email
+            MailText = MailText.Replace("[emailaddress]", email);
+            var result = await _sendMailHelper.SendMailAsync(email, "ResetPassword", MailText);
             if (result)
             {
                 _memoryCache.Set(key, email, DateTimeOffset.Now.AddMinutes(10));
@@ -409,12 +421,13 @@ public class UserService : IUserService
         }
     }
 
-    public async Task<List<UserViewModel>> SearchUsersWithFilter(string? searchString, string? gender, int? role)// ,string level, string status)
+    public async Task<List<UserViewModel>> SearchUsersWithFilter(string? searchString, string? gender, int? role, string? level)
     {
         //init filter
         ICriterias<User> genderCriteria = new GenderCriteria(gender);
         ICriterias<User> roleCriteria = new RoleCriteria(role);
-        ICriterias<User> andCriteria = new AndUserCriteria(genderCriteria, roleCriteria);
+        ICriterias<User> levelCriteria = new LevelCriteria(level);
+        ICriterias<User> andCriteria = new AndUserCriteria(genderCriteria, roleCriteria, levelCriteria);
         //search user with filter
         if (searchString != null)
         {
@@ -425,7 +438,7 @@ public class UserService : IUserService
             return result;
         }
         //using filter only (filter from all users)
-        else if (gender != null || role != null)
+        else if (!gender.IsNullOrEmpty() || role != null || !level.IsNullOrEmpty())
         {
             var listUser = await _unitOfWork.UserRepository.GetAllAsync();
             var result = _mapper.Map<List<UserViewModel>>(andCriteria.MeetCriteria(listUser));

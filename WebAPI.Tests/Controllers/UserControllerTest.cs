@@ -370,11 +370,11 @@ public class UserControllerTest : SetupTest
                                                        .Without(u => u.LoginDate)
                                                        .Without(u => u.Syllabuses)
                                                        .CreateMany(3).ToList();
-        _userServiceMock.Setup(x => x.SearchUsersWithFilter(mockUsers[1].FullName, mockUsers[1].Gender, mockUsers[1].RoleId)).ReturnsAsync(mockUsers);
+        _userServiceMock.Setup(x => x.SearchUsersWithFilter(mockUsers[1].FullName, mockUsers[1].Gender, mockUsers[1].RoleId, mockUsers[1].Level)).ReturnsAsync(mockUsers);
         //act
-        var result = await _userController.Search(mockUsers[1].FullName, mockUsers[1].Gender, mockUsers[1].RoleId) as OkObjectResult;
+        var result = await _userController.Search(mockUsers[1].FullName, mockUsers[1].Gender, mockUsers[1].RoleId, mockUsers[1].Level) as OkObjectResult;
         //assert
-        _userServiceMock.Verify(x => x.SearchUsersWithFilter(mockUsers[1].FullName, mockUsers[1].Gender, mockUsers[1].RoleId), Times.Once);
+        _userServiceMock.Verify(x => x.SearchUsersWithFilter(mockUsers[1].FullName, mockUsers[1].Gender, mockUsers[1].RoleId, mockUsers[1].Level), Times.Once);
         Assert.NotNull(result);
         Assert.IsType<List<UserViewModel>>(result.Value);
         Assert.Equal(StatusCodes.Status200OK, result.StatusCode);
@@ -385,9 +385,9 @@ public class UserControllerTest : SetupTest
     public async Task SearchUserWithFilter_ShouldReturnNoContent_WhenIsNullOrEmpty()
     {
         //act
-        var result = await _userController.Search("", "", 69) as NoContentResult;
+        var result = await _userController.Search("", "", 69,"") as NoContentResult;
         //assert
-        _userServiceMock.Verify(x => x.SearchUsersWithFilter("", "", 69), Times.Once);
+        _userServiceMock.Verify(x => x.SearchUsersWithFilter("", "", 69, ""), Times.Once);
         Assert.NotNull(result);
         Assert.Equal(StatusCodes.Status204NoContent, result.StatusCode);
     }

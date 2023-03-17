@@ -26,6 +26,7 @@ namespace Application.Utils
                 var _epass = _config["EmailSetting:Password"];
                 var _dispName = _config["EmailSetting:DisplayName"];
                 MailMessage myMessage = new MailMessage();
+                myMessage.IsBodyHtml = true;
                 myMessage.To.Add(email);
                 myMessage.From = new MailAddress(_email, _dispName);
                 myMessage.Subject = subject;
@@ -61,6 +62,7 @@ namespace Application.Utils
                 {
                     myMessage.To.Add(email);
                 }
+                myMessage.IsBodyHtml = true;
                 myMessage.From = new MailAddress(_email, _dispName);
                 myMessage.Subject = subject;
                 myMessage.Body = message;

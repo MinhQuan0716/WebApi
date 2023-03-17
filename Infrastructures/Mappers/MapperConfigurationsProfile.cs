@@ -33,6 +33,7 @@ namespace Infrastructures.Mappers
 
             // Create Mapping UpdateDTO -- User
             CreateMap<UpdateDTO, User>()
+                .ForMember(uu => uu.Level, opt => opt.MapFrom(src => src.Level))
                 .ForMember(uu => uu.UserName, opt => opt.MapFrom(src => src.Email))
                 .ForMember(uu => uu.DateOfBirth, opt => opt.MapFrom(src => src.DateOfBirth))
                 .ForMember(uu => uu.FullName, opt => opt.MapFrom(src => src.FullName))

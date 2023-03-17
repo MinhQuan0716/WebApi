@@ -18,6 +18,7 @@ namespace Application.ViewModels.UserViewModels
         public string Email { get; set; } = null!;
         public DateTime? DateOfBirth { get; set; }
         public string? Gender { get; set; }
+        public string? Level { get; set; }
         public int RoleId { get; set; }
         public string RoleName { get; set; }
         public Role Role { get; set; }

@@ -70,8 +70,17 @@ public class FeedbackService : IFeedbackService
             var emailsList = _unitOfWork.FeedbackRepository.GetTraineeEmailsOfClass(model.TrainingCLassId!.Value);
             if (emailsList != null)
             {
-                var message = $"Feedback link: {model.FeedbackLink}";
-                await _mailHelper.SendMailAsync(emailsList, model.FeedbackTitle, message);
+                //Get project's directory and fetch FeedbackTemplate content from EmailTemplates
+                string exePath = Environment.CurrentDirectory.ToString();
+                if (exePath.Contains(@"\bin\Debug\net7.0"))
+                    exePath = exePath.Remove(exePath.Length - (@"\bin\Debug\net7.0").Length);
+                string FilePath = exePath + @"\EmailTemplates\FeedbackTemplate.html";
+                StreamReader streamreader = new StreamReader(FilePath);
+                string MailText = streamreader.ReadToEnd();
+                streamreader.Close();
+                //Replace [resetpasswordkey] = key
+                MailText = MailText.Replace("[feedbacklink]", $"{model.FeedbackLink}");
+                await _mailHelper.SendMailAsync(emailsList, model.FeedbackTitle, MailText);
                 return true;
             }
             else

@@ -3,10 +3,10 @@ using Domain.Entities;
 
 namespace Application.Filter.UserFilter
 {
-    public class GenderCriteria : ICriterias<User>
+    public class LevelCriteria : ICriterias<User>
     {
         private string searchCriteria;
-        public GenderCriteria(string searchCriteria)
+        public LevelCriteria(string searchCriteria)
         {
             this.searchCriteria = searchCriteria;
         }
@@ -17,7 +17,7 @@ namespace Application.Filter.UserFilter
                 List<User> userData = new List<User>();
                 foreach (User user in users)
                 {
-                    if (string.IsNullOrEmpty(user.Gender) ||user.Gender.ToLower().Equals(searchCriteria.ToLower()))
+                    if (string.IsNullOrEmpty(user.Level) || user.Level.ToLower().Equals(searchCriteria.ToLower()))
                     {
                         userData.Add(user);
                     }

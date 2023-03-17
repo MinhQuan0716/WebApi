@@ -5,19 +5,22 @@ namespace Application.Filter.UserFilter
 {
     public class AndUserCriteria : ICriterias<User>
     {
-        private ICriterias<User> criteria;
-        private ICriterias<User> otherCriteria;
+        private ICriterias<User> firstCriteria;
+        private ICriterias<User> secondCriteria;
+        private ICriterias<User> thirdCriteria;
 
-        public AndUserCriteria(ICriterias<User> criteria, ICriterias<User> otherCriteria)
+        public AndUserCriteria(ICriterias<User> firstCriteria, ICriterias<User> secondCriteria,ICriterias<User> thirdCriteria)
         {
-            this.criteria = criteria;
-            this.otherCriteria = otherCriteria;
+            this.firstCriteria = firstCriteria;
+            this.secondCriteria = secondCriteria;
+            this.thirdCriteria = thirdCriteria;
         }
 
         public List<User> MeetCriteria(List<User> users)
         {
-            List<User> firstCriteriaUsers = criteria.MeetCriteria(users);
-            return otherCriteria.MeetCriteria(firstCriteriaUsers);
+            List<User> firstCriteriaUsers = firstCriteria.MeetCriteria(users);
+            List<User> secondCriteriaUsers = secondCriteria.MeetCriteria(firstCriteriaUsers);
+            return thirdCriteria.MeetCriteria(secondCriteriaUsers);
         }
     }
 }

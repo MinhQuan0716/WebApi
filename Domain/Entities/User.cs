@@ -22,7 +22,7 @@ namespace Domain.Entities
         public string? Gender { get; set; }
 
         public string? AvatarUrl { get; set; }
-
+        public string? Level { get; set; }
         //RefreshToken
         public string? RefreshToken { get; set; }
 
