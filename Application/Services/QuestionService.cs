@@ -285,14 +285,14 @@ namespace Application.Services
             int correct_answer = _unitOfWork.SubmitQuizRepository.CheckTrueAnswer(user.Id, QuizID);
             var quiz = await _unitOfWork.QuizRepository.GetByIdAsync(QuizID);
             int number_of_question = quiz.NumberOfQuiz;
-            double result = ((double)correct_answer / (double)number_of_question) * 10;
+            int result = (correct_answer / number_of_question) * 10;
 
             await AddGrading(quiz.LectureID, DetailTrainingDetailTrainingClassParticipateId, result);
             return result;
         }
 
 
-        public async Task<bool> AddGrading(Guid LectureID, Guid DetailTrainingClassParticipateId, double TotalMark)
+        public async Task<bool> AddGrading(Guid LectureID, Guid DetailTrainingClassParticipateId, int TotalMark)
         {
             Grading new_grading = new Grading()
             {
