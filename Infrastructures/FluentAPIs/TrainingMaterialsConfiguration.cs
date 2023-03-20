@@ -18,7 +18,7 @@ namespace Infrastructures.FluentAPIs
             builder.Property(s => s.TMatName).HasDefaultValueSql("null");
             builder.Property(s => s.TMatType).HasDefaultValueSql("null");
             builder.Property(s => s.TMatDescription).HasDefaultValueSql("null");
-            builder.Property(s => s.TMatContent).HasDefaultValueSql("null");
+            builder.Property(s => s.TMatURL).HasDefaultValueSql("null");
             builder.HasOne(s => s.Lecture).WithMany(u => u.TrainingMaterials).HasForeignKey(s => s.lectureID);
         }
     }

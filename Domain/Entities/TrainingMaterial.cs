@@ -14,7 +14,7 @@ namespace Domain.Entities
 
         public string? TMatDescription { get; set; }
 
-        public byte[]? TMatContent { get; set; }
+        public string? TMatURL { get; set; }
 
         public Guid lectureID { get; set; }
 

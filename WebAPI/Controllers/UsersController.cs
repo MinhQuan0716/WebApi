@@ -233,7 +233,7 @@ namespace WebAPI.Controllers
             var import = await _userService.ImportExcel(file);
             if (!import.IsNullOrEmpty())
             {
-                return Ok(import);
+                return Ok();
             }
             return BadRequest();
         }

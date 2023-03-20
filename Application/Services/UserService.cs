@@ -387,7 +387,7 @@ public class UserService : IUserService
                             list.Add(new User
                             {
                                 UserName = worksheet.Cells[row, 2].Value.ToString().Trim(),
-                                PasswordHash = worksheet.Cells[row, 3].Value.ToString().Trim(),
+                                PasswordHash = worksheet.Cells[row, 3].Value.ToString().Hash(),
                                 FullName = worksheet.Cells[row, 4].Value.ToString().Trim(),
                                 Email = worksheet.Cells[row, 5].Value.ToString().Trim(),
                                 DateOfBirth = DateTime.Parse(worksheet.Cells[row, 6].Value.ToString().Trim()),

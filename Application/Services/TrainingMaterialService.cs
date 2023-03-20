@@ -6,8 +6,10 @@ using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Net.WebRequestMethods;
 
 namespace Application.Services
 {
@@ -32,11 +34,10 @@ namespace Application.Services
             return file;
         }
 
-        public async Task<TrainingMaterial> Upload(IFormFile file, Guid lectureId)
+        public async Task<TrainingMaterial> Upload(IFormFile file, Guid lectureId, string blobUrl)
         {
             using (var memoryStream = new MemoryStream())
             {
-                await file.CopyToAsync(memoryStream);
                 var material = new TrainingMaterial();
                 if (memoryStream.Length > 0)
                 {
@@ -44,9 +45,8 @@ namespace Application.Services
                     {
                         TMatName = file.FileName,
                         TMatType = System.IO.Path.GetExtension(file.FileName),
-                        TMatContent = memoryStream.ToArray(),
+                        TMatURL = blobUrl,
                         lectureID = lectureId,
-                        //lectureID = _unitOfWork.LectureRepository.GetLectureIdByName(lectureName),
                     };
 
                     await _unitOfWork.TrainingMaterialRepository.AddAsync(material);
@@ -104,7 +104,7 @@ namespace Application.Services
 
                         findTrainingMaterial.TMatName = file.FileName;
                         findTrainingMaterial.TMatType = System.IO.Path.GetExtension(file.FileName);
-                        findTrainingMaterial.TMatContent = memoryStream.ToArray();
+                        //findTrainingMaterial.TMatContent = memoryStream.ToArray();
                         findTrainingMaterial.lectureID = findTrainingMaterial.lectureID;
 
 
