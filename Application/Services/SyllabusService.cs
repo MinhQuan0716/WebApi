@@ -42,6 +42,7 @@ namespace Application.Services
             var syllabus = _mapper.Map<Syllabus>(syllabusDTO);
             syllabus.Id = syllabusId;
             syllabus.UserId = userID;
+
             //var newSyllabus = new Syllabus
             //{
             //    Id = new Guid(),
@@ -195,6 +196,11 @@ namespace Application.Services
 
             Syllabus syllabusDetail = await _unitOfWork.SyllabusRepository.GetByIdAsync(SyllabusID);
 
+            //if (!syllabusDetail.IsDeleted)
+            //{
+            //    return null;
+            //}
+
             SyllabusGeneralDTO syllabusGeneralDTO = new SyllabusGeneralDTO()
             {
 
@@ -246,6 +252,11 @@ namespace Application.Services
 
             FinalViewSyllabusDTO view = new FinalViewSyllabusDTO();
             var SyllabusInformation = await _unitOfWork.SyllabusRepository.GetByIdAsync(SyllabusID);
+            if (SyllabusInformation.IsDeleted)
+            {
+                return null;
+            }
+
             var UnitInformation = await _unitOfWork.UnitRepository.FindAsync(x => x.SyllabusID == SyllabusID);
 
             var generalInformation = _mapper.Map<GeneralInformationDTO>(SyllabusInformation);

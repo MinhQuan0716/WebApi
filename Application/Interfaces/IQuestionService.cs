@@ -11,9 +11,9 @@ namespace Application.Interfaces
     public interface IQuestionService
     {
 
-        Task<IEnumerable<Question>> Search(string SearchName);
+        public Task<List<CreateQuizIntoBankDTO>> Search(string SearchName);
 
-        Task<List<Question>> Filter(ICollection<Guid> TopicList, ICollection<int> QuizType);
+        Task<List<CreateQuizIntoBankDTO>> Filter(ICollection<Guid> TopicList, ICollection<int> QuizType);
 
         public Task<bool> AddQuestionToBank(CreateQuizIntoBankDTO quizDto);
         public Task<bool> CreateEmptyQuizTest(CreateEmptyQuizDTO quizDto);
@@ -30,5 +30,10 @@ namespace Application.Interfaces
         public Task<double> MarkQuiz(Guid QuizID, Guid DetailTrainingDetailTrainingClassParticipateId);
 
         public Task<AnswerQuizDetailTraineeDTO> ViewDetaildoneQuiz(Guid QuizID);
+
+        public  Task<bool> UpdateQuestion(Guid QuestionID, UpdateQuestionDTO createQuizIntoBankDTO);
+
+        public Task<bool> RemoveQuestionInBank(Guid QuestionId);
+
     }
 }

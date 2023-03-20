@@ -22,6 +22,7 @@ using Application.ViewModels.TrainingProgramModels.TrainingProgramView;
 using Application.ViewModels.AssignmentModel;
 using Application.ViewModels.SyllabusModels.FixViewSyllabus;
 using Microsoft.AspNetCore.Routing.Constraints;
+using Application.ViewModels.QuizModels;
 
 namespace Infrastructures.Mappers
 {
@@ -90,10 +91,10 @@ namespace Infrastructures.Mappers
 
             CreateMap<SyllabusGeneralDTO, Syllabus>()
            .ForMember(ss => ss.SyllabusName, ss => ss.MapFrom(src => src.SyllabusName))
-            .ForMember(ss => ss.Duration, ss => ss.MapFrom(src => src.Duration))
              .ForMember(ss => ss.CourseObjective, ss => ss.MapFrom(src => src.CourseObject))
                .ForMember(ss => ss.TechRequirements, ss => ss.MapFrom(src => src.TechRequirements))
                .ForMember(ss => ss.Duration, ss => ss.MapFrom(src => src.Duration))
+               .ForMember(ss => ss.Level, ss => ss.MapFrom(src => src.Level))
                .ReverseMap();
 
             CreateMap<UpdateLectureDTO, Lecture>()
@@ -271,6 +272,26 @@ namespace Infrastructures.Mappers
                 .ForMember(av => av.LectureID, a => a.MapFrom(src => src.LectureID))
                 .ForMember(av => av.DeadLine, a => a.MapFrom(src => src.DeadLine))
                 .ReverseMap();
+
+            CreateMap<CreateQuizIntoBankDTO, Question>()
+                    .ForMember(cq => cq.TopicID, a => a.MapFrom(src => src.TopicID))
+                    .ForMember(cq => cq.QuizTypeID, a => a.MapFrom(src => src.TypeID))
+                    .ForMember(cq => cq.Content, a => a.MapFrom(src => src.Content))
+                    .ForMember(cq => cq.Answer1, a => a.MapFrom(src => src.Answer1))
+                    .ForMember(cq => cq.Answer2, a => a.MapFrom(src => src.Answer2))
+                    .ForMember(cq => cq.Answer4, a => a.MapFrom(src => src.Answer3))
+                    .ForMember(cq => cq.CorrectAnswer, a => a.MapFrom(src => src.CorrectAnswer))
+                    .ReverseMap();
+
+            CreateMap<UpdateQuestionDTO, Question>()
+            .ForMember(cq => cq.TopicID, a => a.MapFrom(src => src.TopicID))
+            .ForMember(cq => cq.QuizTypeID, a => a.MapFrom(src => src.TypeID))
+            .ForMember(cq => cq.Content, a => a.MapFrom(src => src.Content))
+            .ForMember(cq => cq.Answer1, a => a.MapFrom(src => src.Answer1))
+            .ForMember(cq => cq.Answer2, a => a.MapFrom(src => src.Answer2))
+            .ForMember(cq => cq.Answer4, a => a.MapFrom(src => src.Answer3))
+            .ForMember(cq => cq.CorrectAnswer, a => a.MapFrom(src => src.CorrectAnswer))
+            .ReverseMap();
         }
     }
 }

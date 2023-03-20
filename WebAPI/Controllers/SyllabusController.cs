@@ -48,7 +48,7 @@ namespace WebAPI.Controllers
                 return NotFound();
             }
         }
-        [HttpGet]
+        [HttpDelete]
         public async Task<IActionResult> DeleteSyllabus(string id)
         {
             var checkSyllabus = await _syllabusService.DeleteSyllabussAsync(id);
@@ -135,7 +135,7 @@ namespace WebAPI.Controllers
             {
                 return Ok(result);
             }
-            return BadRequest("Not Found ");
+            return BadRequest("Not Found Or Have Been Deleted ");
         }
     }
 }

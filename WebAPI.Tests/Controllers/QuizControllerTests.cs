@@ -89,8 +89,8 @@ namespace WebAPI.Tests.Controllers
         public async Task SearchByName_ShouldReturnCorrectValue()
         {
             // Setup
-            var listName = new List<Question>();
-            _questionServiceMock.Setup(x => x.Search(It.IsAny<string>())).ReturnsAsync(null as List<Question>);
+            var listName = new List<CreateQuizIntoBankDTO>();
+            _questionServiceMock.Setup(x => x.Search(It.IsAny<string>())).ReturnsAsync(null as List<CreateQuizIntoBankDTO>);
             _questionServiceMock.Setup(x => x.Search(It.Is<string>(x => x == ""))).ReturnsAsync(listName);
 
             // Act
@@ -116,9 +116,9 @@ namespace WebAPI.Tests.Controllers
                 QuizType = null,
                 QuizTopic = null
             };
-            var listName = new List<Question?>();
+            var listName = new List<CreateQuizIntoBankDTO?>();
             _questionServiceMock.Setup(x => x.Filter(filter.QuizTopic, filter.QuizType)).ReturnsAsync(listName);
-            _questionServiceMock.Setup(x => x.Filter(It.Is<List<Guid>>(x => x == null), It.Is<List<int>>(x => x == null))).ReturnsAsync(null as List<Question?>);
+            _questionServiceMock.Setup(x => x.Filter(It.Is<List<Guid>>(x => x == null), It.Is<List<int>>(x => x == null))).ReturnsAsync(null as List<CreateQuizIntoBankDTO?>);
 
             // Act
             var result = await _questionController.FilterQuizBank(filter);

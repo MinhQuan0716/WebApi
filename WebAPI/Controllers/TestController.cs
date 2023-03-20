@@ -105,7 +105,6 @@ namespace WebAPI.Controllers
             bool success = await _quizService.DoingQuizService(doingQuizDTOs);
             if (success)
             {
-
                 return Ok(await _quizService.MarkQuiz(doingQuizDTOs.First().QuizID, TrainingClassParticipateID));
             }
             return BadRequest();
@@ -124,6 +123,28 @@ namespace WebAPI.Controllers
         {
             AnswerQuizDetailTraineeDTO answerQuizDetailTraineeDTO = await _quizService.ViewDetaildoneQuiz(QuizID);
             return Ok(answerQuizDetailTraineeDTO);
+        }
+
+        [HttpDelete]
+        public async Task<IActionResult> RemoveQuestionInBank(Guid QuestionID)
+        {
+            bool check = await _quizService.RemoveQuestionInBank(QuestionID);
+            if (check)
+            {
+                return NoContent();
+            }
+            return BadRequest();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpgradeQuestion(Guid QuestionID,UpdateQuestionDTO createQuizIntoBankDTO)
+        {
+            bool check = await _quizService.UpdateQuestion(QuestionID,createQuizIntoBankDTO);
+            if(check)
+            {
+                return NoContent();
+            }
+            return BadRequest();
         }
 
 

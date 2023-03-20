@@ -33,7 +33,7 @@ namespace Application.Services
         }
 
 
-        public async Task<List<Question>> Filter(ICollection<Guid> TopicList, ICollection<int> QuizType)
+        public async Task<List<CreateQuizIntoBankDTO>> Filter(ICollection<Guid> TopicList, ICollection<int> QuizType)
         {
             List<Question> quizBanks1 = await _unitOfWork.QuestionRepository.GetAllAsync();
             List<Question> quizBanks = new List<Question>();
@@ -42,16 +42,18 @@ namespace Application.Services
             //var topicList = await _unitOfWork.QuizBankRepository.FilterQuizTestWithTopic(TopicList);
             foreach (var quizTest in QuizType)
             {
-                Question comsuon = quizBanks1.Find(x => x.QuizTypeID == quizTest);
+                Question comsuon = quizBanks1.Find(x => x.QuizTypeID == quizTest && x.IsDeleted == false);
                 quizType.Add(comsuon);
             }
             foreach (var quizTest in TopicList)
             {
-                Question comsuon = quizBanks1.Find(x => x.TopicID == quizTest);
+                Question comsuon = quizBanks1.Find(x => x.TopicID == quizTest && x.IsDeleted == false);
                 quizBanks.Add(comsuon);
             }
             //var quizType = await _unitOfWork.QuizBankRepository.FilterQuizTestWithType(QuizType);
             List<Question> lastchane = new List<Question>();
+            List<CreateQuizIntoBankDTO> createQuizIntoBankDTOs = new List<CreateQuizIntoBankDTO>();
+            //CreateQuizIntoBankDTO QuestionMapper = _mapper.Map<CreateQuizIntoBankDTO>(lastchane);
 
             foreach (var topic in quizBanks)
             {
@@ -59,25 +61,34 @@ namespace Application.Services
                 {
                     if (topic == quiz)
                     {
-                        lastchane.Add(topic);
+                        CreateQuizIntoBankDTO QuestionMapper = _mapper.Map<CreateQuizIntoBankDTO>(topic);
+                        //lastchane.Add(topic);
+                        createQuizIntoBankDTOs.Add(QuestionMapper);
                     }
                 }
 
             }
 
-            return lastchane;
+            return createQuizIntoBankDTOs;
         }
 
-        public async Task<IEnumerable<Question>> Search(string SearchName)
+        public async Task<List<CreateQuizIntoBankDTO>> Search(string SearchName)
         {
             //throw new NotImplementedException();
-            var searchByName = await _unitOfWork.QuestionRepository.FindAsync(x => x.Content.Contains(SearchName));
+            var searchByName = await _unitOfWork.QuestionRepository.FindAsync(x => x.Content.Contains(SearchName) && x.IsDeleted == false);
+            //var mapQuiz = _mapper.Map<CreateQuizIntoBankDTO>(searchByName);
+            List<CreateQuizIntoBankDTO> comsuon = new List<CreateQuizIntoBankDTO>();
+            foreach (var topic in searchByName)
+            {
+                var mapQuiz = _mapper.Map<CreateQuizIntoBankDTO>(topic);
+                comsuon.Add(mapQuiz);
+            }
             if (searchByName is null)
             {
                 throw new Exception();
 
             }
-            return searchByName;
+            return comsuon;
 
         }
 
@@ -320,6 +331,37 @@ namespace Application.Services
             return object_answer;
         }
 
+        public async Task<bool> RemoveQuestionInBank(Guid QuestionId)
+        {
+            Question FindQuestion = await _unitOfWork.QuestionRepository.GetByIdAsync(QuestionId);
+            if (FindQuestion is null)
+            {
+                return false;
+            }
+       
+             _unitOfWork.QuestionRepository.SoftRemove(FindQuestion);
+                await _unitOfWork.SaveChangeAsync();
+            return true;
+        }
+
+        public async Task<bool> UpdateQuestion(Guid QuestionID,UpdateQuestionDTO createQuizIntoBankDTO)
+        {
+            var QuestionFind = await _unitOfWork.QuestionRepository.GetByIdAsync(QuestionID);
+            QuestionFind.Answer4 = createQuizIntoBankDTO.Answer4;
+            QuestionFind.Answer1 = createQuizIntoBankDTO.Answer1;
+            QuestionFind.Answer2 = createQuizIntoBankDTO.Answer2;
+            QuestionFind.Answer3 = createQuizIntoBankDTO.Answer3;
+            QuestionFind.Content = createQuizIntoBankDTO.Content;
+            QuestionFind.TopicID = createQuizIntoBankDTO.TopicID;
+            QuestionFind.QuizTypeID = createQuizIntoBankDTO.TypeID;
+            QuestionFind.IsDeleted = true;
+            _unitOfWork.QuestionRepository.Update(QuestionFind);
+            await _unitOfWork.SaveChangeAsync();
+            return true;
+
+
+
+        }
 
     }
 }

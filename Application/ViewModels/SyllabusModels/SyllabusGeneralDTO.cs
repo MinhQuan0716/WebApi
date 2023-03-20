@@ -18,6 +18,10 @@ namespace Application.ViewModels.SyllabusModels
 
         public double Duration { get; set; }
 
+        public string Level { get; set; }
+
+       
+
         //public Guid UserId { get; set; }
 
 

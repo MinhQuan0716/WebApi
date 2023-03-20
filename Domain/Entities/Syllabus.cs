@@ -12,7 +12,7 @@ namespace Domain.Entities
 
         public string Code { get; set; }
 
-        public string Status { get; set; }
+        public string Status { get; set; } 
         public string Level { get; set; }
         public string CourseObjective { get; set; }
         public string TechRequirements { get; set; }
