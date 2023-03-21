@@ -11,7 +11,9 @@ using Domain.Enums;
 
 namespace WebAPI.Controllers
 {
-    public class SyllabusController : BaseController
+    [ApiController]
+    [Route("api/[controller]/[action]")]
+    public class SyllabusController : ControllerBase
     {
         private readonly ISyllabusService _syllabusService;
         private readonly IUnitService _unitService;
@@ -36,6 +38,7 @@ namespace WebAPI.Controllers
             }
         }
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> FilerSyllabus(double firstDuration, double secondDuration)
         {
             List<Syllabus> filterSyllabusList = await _syllabusService.FilterSyllabus(firstDuration, secondDuration);
@@ -49,6 +52,7 @@ namespace WebAPI.Controllers
             }
         }
         [HttpDelete]
+        [Authorize]
         public async Task<IActionResult> DeleteSyllabus(string id)
         {
             var checkSyllabus = await _syllabusService.DeleteSyllabussAsync(id);
@@ -72,10 +76,18 @@ namespace WebAPI.Controllers
             Unit unitBase;
             Lecture lectureBase;
             syllabusBase = await _syllabusService.AddSyllabusAsync(NewSyllasbus.SyllabusBase);
+            if(NewSyllasbus.Units.Count == 0)
+            {
+                return BadRequest("Unit is Empty");
+            }
             if (NewSyllasbus.Units is not null)
                 foreach (UnitDTO unitDTO in NewSyllasbus.Units)
                 {
                     unitBase = await _unitService.AddNewUnit(unitDTO, syllabusBase);
+                    if(unitDTO.Lectures.Count == 0)
+                    {
+                        return BadRequest("Lectures is Empty");
+                    }
                     if (unitDTO.Lectures is not null)
                         foreach (LectureDTO lecture in unitDTO.Lectures)
                         {
@@ -93,7 +105,8 @@ namespace WebAPI.Controllers
 
         }
 
-        [HttpGet("GetName/{name}")]
+        [HttpGet("detail/{name}")]
+        [Authorize]
         public async Task<IActionResult> Get(string name)
         {
             var result = await _syllabusService.GetByName(name);
@@ -116,6 +129,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> ViewDetail(Guid SyllabusId)
         {
             var result = await _syllabusService.ViewDetailSyllabus(SyllabusId);
@@ -128,6 +142,7 @@ namespace WebAPI.Controllers
 
 
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> ViewDetailFormat(Guid SyllabusId)
         {
             var result = await _syllabusService.FinalViewSyllabusDTO(SyllabusId);

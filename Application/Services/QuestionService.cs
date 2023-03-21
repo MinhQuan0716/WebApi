@@ -148,6 +148,7 @@ namespace Application.Services
             };
             // count +1 numberOfQuiz when 1 question add to quiz
             var getQuizTest = await _unitOfWork.QuizRepository.GetByIdAsync(quizDto.QuizId);
+          
             getQuizTest.NumberOfQuiz += 1;
             _unitOfWork.QuizRepository.Update(getQuizTest);
 
@@ -205,8 +206,11 @@ namespace Application.Services
             var number = await _unitOfWork.QuizRepository.GetByIdAsync(QuizID);
             DoingQuizDTO lastquiz = new DoingQuizDTO();
 
-            User user = await _unitOfWork.UserRepository.GetByIdAsync(_claimsservice.GetCurrentUserId);
-            if (user.RoleId == 3)
+            var user = await _unitOfWork.UserRepository.GetByIdAsync(_claimsservice.GetCurrentUserId);
+            if(user == null) {
+                throw new Exception("Not found user");
+            }
+            if (user.RoleId == 4)
             {
                 DoingQuizDTO doingQuizDTOTrainer = new DoingQuizDTO()
                 {
@@ -216,7 +220,7 @@ namespace Application.Services
                 };
                 lastquiz = doingQuizDTOTrainer;
             }
-            else if (user.RoleId == 4)
+            else
             {
                 DoingQuizDTO doingQuizDTOTrainee = new DoingQuizDTO()
                 {
@@ -293,10 +297,24 @@ namespace Application.Services
         public async Task<double> MarkQuiz(Guid QuizID, Guid DetailTrainingDetailTrainingClassParticipateId)
         {
             User? user = await _unitOfWork.UserRepository.GetByIdAsync(_claimsservice.GetCurrentUserId);
+            if (user == null)
+            {
+                throw new Exception("Not Found the User,please check again");
+            }
+
+          var check =  await _unitOfWork.DetailTrainingClassParticipateRepository.FindAsync(x => x.UserId == user.Id && x.Id == DetailTrainingDetailTrainingClassParticipateId);
+            if(check.Count == 0)
+            {
+                throw new Exception("USer not join in this class");
+            }
             int correct_answer = _unitOfWork.SubmitQuizRepository.CheckTrueAnswer(user.Id, QuizID);
             var quiz = await _unitOfWork.QuizRepository.GetByIdAsync(QuizID);
+            if (quiz is null) {
+                throw new Exception("Can Get The Quiz");
+            }
             int number_of_question = quiz.NumberOfQuiz;
-            int result = (correct_answer / number_of_question) * 10;
+            double checkNum = (correct_answer / number_of_question) * 10;
+            int result = (int)checkNum;
 
             await AddGrading(quiz.LectureID, DetailTrainingDetailTrainingClassParticipateId, result);
             return result;
@@ -324,6 +342,10 @@ namespace Application.Services
             AnswerQuizDetailTraineeDTO object_answer = new AnswerQuizDetailTraineeDTO();
             var User = await _unitOfWork.UserRepository.GetByIdAsync(_claimsservice.GetCurrentUserId);
             var Quiz = await _unitOfWork.QuizRepository.GetByIdAsync(QuizID);
+            if (Quiz is null) {
+                throw new NullReferenceException("You Haven't Do the Test before");
+                
+            }
             object_answer.QuizName = Quiz.QuizName;
             object_answer.NumberOfQuiz = Quiz.NumberOfQuiz;
             object_answer.DoneQuiz = _unitOfWork.QuizRepository.ViewAnswer(QuizID, User.Id);
@@ -333,7 +355,7 @@ namespace Application.Services
 
         public async Task<bool> RemoveQuestionInBank(Guid QuestionId)
         {
-            Question FindQuestion = await _unitOfWork.QuestionRepository.GetByIdAsync(QuestionId);
+            var FindQuestion = await _unitOfWork.QuestionRepository.GetByIdAsync(QuestionId);
             if (FindQuestion is null)
             {
                 return false;
@@ -347,6 +369,10 @@ namespace Application.Services
         public async Task<bool> UpdateQuestion(Guid QuestionID,UpdateQuestionDTO createQuizIntoBankDTO)
         {
             var QuestionFind = await _unitOfWork.QuestionRepository.GetByIdAsync(QuestionID);
+            if(QuestionFind is null)
+            {
+                    return false;
+            }
             QuestionFind.Answer4 = createQuizIntoBankDTO.Answer4;
             QuestionFind.Answer1 = createQuizIntoBankDTO.Answer1;
             QuestionFind.Answer2 = createQuizIntoBankDTO.Answer2;
@@ -354,6 +380,7 @@ namespace Application.Services
             QuestionFind.Content = createQuizIntoBankDTO.Content;
             QuestionFind.TopicID = createQuizIntoBankDTO.TopicID;
             QuestionFind.QuizTypeID = createQuizIntoBankDTO.TypeID;
+            QuestionFind.CorrectAnswer = createQuizIntoBankDTO.CorrectAnswer;
             QuestionFind.IsDeleted = true;
             _unitOfWork.QuestionRepository.Update(QuestionFind);
             await _unitOfWork.SaveChangeAsync();

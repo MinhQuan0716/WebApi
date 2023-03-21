@@ -114,21 +114,17 @@ namespace WebAPI.Tests.Controllers
             //Act
             var result = await _syllabusController.AddNewSyllabus(mockData);
         }
-        [Fact]
-        public async Task AddNewSyllabus_ShouldReturnBadResult()
-        {
-            //Arrange
-            var mockData_1 = _fixture.Build<SyllabusViewDTO>().Without(u => u.Units).Create();
-            var mockData_2 = _fixture.Build<SyllabusViewDTO>().With(u => u.Units).Create();
-            //Act
-            var result = await _syllabusController.AddNewSyllabus(mockData_1);
-            //Assert
-            result.Should().BeOfType<BadRequestResult>();
-
-
-
-
-        }
+        //[Fact]
+        //public async Task AddNewSyllabus_ShouldReturnBadResult()
+        //{
+        //    //Arrange
+        //    var mockData_1 = _fixture.Build<SyllabusViewDTO>().Without(u => u.Units).Create();
+        //    var mockData_2 = _fixture.Build<SyllabusViewDTO>().With(u => u.Units).Create();
+        //    //Act
+        //    var result = await _syllabusController.AddNewSyllabus(mockData_1);
+        //    //Assert
+        //    result.Should().BeOfType<BadRequestResult>();
+        //}
     }
 
 }

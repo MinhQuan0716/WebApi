@@ -43,13 +43,14 @@ namespace WebAPI.Tests.Controllers
         }
 
         [Fact]
-        public async Task CreateAssignment_ShouldReturnOk()
+        public async Task CreateAssignment_ShouldReturn201()
         {
             var assigment = _fixture.Build<AssignmentViewModel>().Without(x => x.File).Create();
             assigment.File = formFile;
             _assigmentServiceMock.Setup(x => x.CreateAssignment(assigment)).ReturnsAsync(true);
             var actualResult = await _controller.CreateAssignment(assigment);
-            actualResult.Should().BeOfType<CreatedAtActionResult>();
+            var code = (actualResult as StatusCodeResult).StatusCode;
+            code.Should().Be(201);
         }
 
         [Fact]

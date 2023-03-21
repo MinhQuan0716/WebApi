@@ -42,6 +42,7 @@ namespace Application.Services
             var syllabus = _mapper.Map<Syllabus>(syllabusDTO);
             syllabus.Id = syllabusId;
             syllabus.UserId = userID;
+            syllabus.Status = "Active";
 
             //var newSyllabus = new Syllabus
             //{

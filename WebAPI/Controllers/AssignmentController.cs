@@ -62,7 +62,7 @@ namespace WebAPI.Controllers
             {
                 return NoContent();
             }
-            return CreatedAtAction("ViewAssignmentByLectureID", assignmentViewModel.LectureID);
+            return StatusCode(StatusCodes.Status201Created);
         }
        
         

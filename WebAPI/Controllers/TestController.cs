@@ -1,16 +1,21 @@
 ﻿using Application.Interfaces;
 using Application.ViewModels.QuizModels;
 using Domain.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Controllers
 {
-    public class TestController : BaseController
+    [Authorize]
+    [Route("api/[controller]/[action]")]
+    [ApiController]
+    public class TestController : ControllerBase
     {
         private readonly IQuestionService _quizService;
         public TestController(IQuestionService quizService) => _quizService = quizService;
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> AddQuestionIntoBank(CreateQuizIntoBankDTO quizObject)
         {
             var checkAddSuccesfully = await _quizService.AddQuestionToBank(quizObject);
@@ -22,6 +27,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> CreateEmptyQuizTest(CreateEmptyQuizDTO quizObject)
         {
             var checkAddSuccesfully = await _quizService.CreateEmptyQuizTest(quizObject);
@@ -33,6 +39,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> AddQuestionToQuizTest(AddQuestionToQuizTestDTO quizObject)
         {
             var checkAddSuccesfully = await _quizService.AddQuestionToQuizTest(quizObject);
@@ -44,6 +51,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpPut]
+        [Authorize]
         public async Task<IActionResult> UpdateQuizTest(Guid quizTestId, UpdateQuizTestDTO quizDto)
         {
             var checkUpdateSuccesfully = await _quizService.UpdateQuizTest(quizTestId, quizDto);
@@ -55,6 +63,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpDelete]
+        [Authorize]
         public async Task<IActionResult> DeleteQuizTest(Guid quizTestId)
         {
             var checkDeleteSuccesfully = await _quizService.DeleteQuizTest(quizTestId);
@@ -66,6 +75,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> SearchByName(string ContentName)
         {
             var search = await _quizService.Search(ContentName);
@@ -77,6 +87,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> FilterQuizBank(FilterQuizModel name)
         {
             var listName = await _quizService.Filter(name.QuizTopic, name.QuizType);
@@ -88,6 +99,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> ViewQuiz(Guid QuizID)
         {
             var QuizView = await _quizService.ViewDoingQuiz(QuizID);
@@ -100,6 +112,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> DoingQuiz(ICollection<AnswerQuizQuestionDTO> doingQuizDTOs, Guid TrainingClassParticipateID)
         {
             bool success = await _quizService.DoingQuizService(doingQuizDTOs);
@@ -111,6 +124,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> ViewDetailResult(Guid QuizID)
         {
             List<ViewDetailResultDTO> markDetails = await _quizService.ViewMarkDetail(QuizID);
@@ -119,6 +133,7 @@ namespace WebAPI.Controllers
 
 
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> ViewDetailResultTrainee(Guid QuizID)
         {
             AnswerQuizDetailTraineeDTO answerQuizDetailTraineeDTO = await _quizService.ViewDetaildoneQuiz(QuizID);
@@ -126,6 +141,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpDelete]
+        [Authorize]
         public async Task<IActionResult> RemoveQuestionInBank(Guid QuestionID)
         {
             bool check = await _quizService.RemoveQuestionInBank(QuestionID);
@@ -137,6 +153,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> UpgradeQuestion(Guid QuestionID,UpdateQuestionDTO createQuizIntoBankDTO)
         {
             bool check = await _quizService.UpdateQuestion(QuestionID,createQuizIntoBankDTO);
