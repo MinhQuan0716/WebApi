@@ -12,7 +12,9 @@ using System.Drawing.Text;
 
 namespace WebAPI.Controllers
 {
-    public class AuditSubmissionController : BaseController
+    [ApiController]
+    [Route("api/[controller]")]
+    public class AuditSubmissionController : ControllerBase
     {
         private readonly IAuditSubmissionService auditSubmissionService;
         private readonly IGradingService gradingService;
@@ -46,8 +48,6 @@ namespace WebAPI.Controllers
                         else if (result.TotalGrade < 4 && result.TotalGrade <= 2) letterGrade = "D";
                         else letterGrade = "F";
                         var gradingModel = new GradingModel(auditPlan.LectureId,detailTrainingClassParticipate,letterGrade,(int)result.TotalGrade);
-
-                     
                         await gradingService.CreateGradingAsync(gradingModel);
                         return Ok(result);
 
@@ -63,10 +63,7 @@ namespace WebAPI.Controllers
 
 
         }
-
-
-
-        [HttpGet]
+        [HttpGet("detail/{auditSubmissionId}")]
         public async Task<IActionResult> GetDetail(Guid auditSubmissionId)
         {
             var result = await auditSubmissionService.GetAuditSubmissionDetail(auditSubmissionId);
@@ -95,7 +92,7 @@ namespace WebAPI.Controllers
             else return BadRequest();
         }
 
-        [HttpGet]
+        [HttpGet("{auditPlanId}")]
         public async Task<IActionResult> GetAllByAuditPlan(Guid auditPLanId)
         {
             var result = await auditSubmissionService.GetAllAuditSubmissionByAuditPlan(auditPLanId);

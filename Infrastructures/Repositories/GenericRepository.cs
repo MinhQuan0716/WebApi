@@ -26,6 +26,7 @@ namespace Infrastructures.Repositories
             return await includes
            .Aggregate(_dbSet.AsQueryable(),
                (entity, property) => entity.Include(property))
+           .Where(x => x.IsDeleted == false)
            .ToListAsync();
         }
 
@@ -39,7 +40,7 @@ namespace Infrastructures.Repositories
                .Aggregate(_dbSet.AsQueryable(),
                    (entity, property) => entity.Include(property))
                .AsNoTracking()
-               .FirstOrDefaultAsync(x => x.Id.Equals(id));
+               .FirstOrDefaultAsync(x => x.Id.Equals(id) && x.IsDeleted == false);
         }
 
         public async Task AddAsync(TEntity entity)
@@ -141,6 +142,6 @@ namespace Infrastructures.Repositories
             =>  await includes
            .Aggregate(_dbSet.AsQueryable(),
                (entity, property) => entity.Include(property))
-           .Where(expression).ToListAsync();
+           .Where(expression).Where(x => x.IsDeleted == false).ToListAsync();
     }
 }

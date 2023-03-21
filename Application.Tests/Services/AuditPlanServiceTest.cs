@@ -82,7 +82,7 @@ namespace Application.Tests.Services
             var result = await auditPlanService.ViewDetailAuditPlan(auditPlan.Id);
             result.Should().BeAssignableTo<AuditPlanViewModel>();
             result.Should().NotBeNull();
-            result.AuditPlanName.Should().BeEquivalentTo(auditPlan.AuditPlanName);
+            result!.AuditPlanName.Should().BeEquivalentTo(auditPlan.AuditPlanName);
         }
 
         [Fact]
@@ -92,7 +92,7 @@ namespace Application.Tests.Services
             Guid id = Guid.NewGuid();
             _unitOfWorkMock.Setup(x => x.AuditPlanRepository.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(auditPlan);
             Func<Task> act = async () => await auditPlanService.ViewDetailAuditPlan(id);
-            await act.Should().ThrowAsync<Exception>().WithMessage("Not Have any audit plan with that AuditId");
+            await act.Should().ThrowAsync<Exception>().WithMessage("Not found! AuditPlan is not existed or has been deleted");
         }
 
         [Fact]

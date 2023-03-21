@@ -6,9 +6,12 @@ using Domain.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
+
 namespace WebAPI.Controllers
 {
-    public class AuditPlanController : BaseController
+    [Route("api/[controller]")]
+    [ApiController]
+    public class AuditPlanController : ControllerBase
     {
         private readonly IAuditPlanService auditPlanService;
         public AuditPlanController(IAuditPlanService auditPlanService)
@@ -26,7 +29,7 @@ namespace WebAPI.Controllers
             else return BadRequest();
         }
 
-        [HttpGet]
+        [HttpGet("{auditPlanId}")]
         public async Task<IActionResult> GetDetail(Guid auditPlanId)
         {
             var result = await auditPlanService.ViewDetailAuditPlan(auditPlanId);

@@ -127,7 +127,7 @@ namespace Application.Services
                 auditView.AuditQuestions = questionsView;
                 return auditView;
             }
-            throw new Exception("Not Have any audit plan with that AuditId");
+            throw new Exception("Not found! AuditPlan is not existed or has been deleted");
 
         }
     }
