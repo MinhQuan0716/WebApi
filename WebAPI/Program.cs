@@ -1,4 +1,5 @@
 using Application.Commons;
+using Application.Interfaces;
 using Application.Utils;
 using Hangfire;
 using Hangfire.Logging;
