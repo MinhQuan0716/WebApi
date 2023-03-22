@@ -26,9 +26,7 @@ namespace Application.Interfaces
         public Task<SyllabusShowDetailDTO> ViewDetailSyllabus(Guid SyllabusID);
 
         public Task<FinalViewSyllabusDTO> FinalViewSyllabusDTO(Guid SyllabusID);
-
-
-
+        public Task<int> SaveChangesAsync();
     }
 }
 

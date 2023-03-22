@@ -96,8 +96,9 @@ namespace Application.Services
                    && (classId != Guid.Empty && classId == x.TrainingClassId || classId == Guid.Empty)
                    &&
                    (
-                   (by == nameof(CreationDate) && x.CreationDate >= condition.FromDate && x.CreationDate <= condition.ToDate)
-                   || (by == nameof(RequestDate) && x.AbsentDateRequested >= condition.FromDate && x.AbsentDateRequested <= condition.ToDate)
+                       (by == nameof(CreationDate) && x.CreationDate >= condition.FromDate && x.CreationDate <= condition.ToDate)
+                       ||
+                       (by == nameof(RequestDate) && x.AbsentDateRequested >= condition.FromDate && x.AbsentDateRequested <= condition.ToDate)
                    )
                  , pageNumber, pageSize);
 

@@ -57,7 +57,6 @@ namespace Application.Services
             //    IsDeleted = false
             //};
             await _unitOfWork.SyllabusRepository.AddAsync(syllabus);
-            await _unitOfWork.SaveChangeAsync();
             return syllabus;
         }
         public async Task<List<Syllabus>> FilterSyllabus(double duration1, double duration2)
@@ -375,6 +374,11 @@ namespace Application.Services
             }
             return SessionL;
 
+        }
+
+        public Task<int> SaveChangesAsync()
+        {
+            return _unitOfWork.SaveChangeAsync();
         }
     }
 

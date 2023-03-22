@@ -14,26 +14,25 @@ namespace Application.Services
     public class LectureService : ILectureService
     {
 
-        private readonly IUnitOfWork _UnitOfWork;
+        private readonly IUnitOfWork _unitOfWork;
 
         public LectureService(IUnitOfWork unitOfWork)
         {
-            _UnitOfWork = unitOfWork;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<Lecture> AddNewLecture(LectureDTO lecture)
         {
             Lecture NewLecture = new Lecture()
             {
-                Id = new Guid(),
+                Id = Guid.NewGuid(),
                 LectureName = lecture.LectureName,
                 OutputStandards = lecture.OutputStandards,
                 Duration = lecture.Duration,
                 DeliveryType = lecture.DeliveryType,
                 Status = lecture.Status,
             };
-            await _UnitOfWork.LectureRepository.AddAsync(NewLecture);
-            await _UnitOfWork.SaveChangeAsync();
+            await _unitOfWork.LectureRepository.AddAsync(NewLecture);
             return NewLecture;
         }
 
@@ -45,9 +44,10 @@ namespace Application.Services
                 LectureID = lecture.Id,
                 CreatedBy = lecture.CreatedBy,
                 IsDeleted = false
+                ,Id = Guid.NewGuid()
             };
-            await _UnitOfWork.DetailUnitLectureRepository.AddAsync(NewLecture);
-            await _UnitOfWork.SaveChangeAsync();
+            await _unitOfWork.DetailUnitLectureRepository.AddAsync(NewLecture);
+
             return NewLecture;
 
 

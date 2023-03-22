@@ -95,6 +95,7 @@ namespace Infrastructures.Mappers
                .ForMember(ss => ss.TechRequirements, ss => ss.MapFrom(src => src.TechRequirements))
                .ForMember(ss => ss.Duration, ss => ss.MapFrom(src => src.Duration))
                .ForMember(ss => ss.Level, ss => ss.MapFrom(src => src.Level))
+               .ForMember(ss => ss.Status, ss => ss.MapFrom(src => "Active"))
                .ReverseMap();
 
             CreateMap<UpdateLectureDTO, Lecture>()

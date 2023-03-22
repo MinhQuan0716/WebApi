@@ -9,7 +9,9 @@ using Google.Apis.Logging;
 using Google.Apis.Util;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel;
+using System.Drawing.Text;
 using System.Linq.Expressions;
+using System.Threading.Channels;
 using static Domain.Enums.AttendanceStatusEnums;
 
 namespace Application.Services
@@ -20,6 +22,7 @@ namespace Application.Services
         private readonly IMapper _mapper;
         private readonly ICurrentTime _currentTime;
         private readonly AppConfiguration _configuration;
+
         public AttendanceService(IUnitOfWork unitOfWork, IMapper mapper, AppConfiguration configuration, ICurrentTime? currentTime)
         {
             _unitOfWork = unitOfWork;
@@ -73,7 +76,7 @@ namespace Application.Services
         public async Task<Pagination<AttendanceViewDTO>> GetAllAttendanceWithFilter(Guid classId, string search, string by, bool? containApplication, DateTime? fromDate, DateTime? toDate, int pageIndex = 0, int pageSize = 40)
         {
             if (by.isNotValidEnum(typeof(AttendanceStatusEnums)))
-                throw new InvalidEnumArgumentException("Not valid Enum");
+                throw new InvalidEnumArgumentException("Not valid AttendanceStatus");
 
             Expression<Func<Attendance, bool>> expression = x =>
                 (classId == Guid.Empty || classId == x.TrainingClassId)    // by classId
@@ -84,11 +87,9 @@ namespace Application.Services
 
             Pagination<Attendance> pagination = await _unitOfWork.AttendanceRepository.GetAllAttendanceWithFilter(expression, pageIndex, pageSize);
 
-            if (pagination == null)
-                return null;
-            Pagination<AttendanceViewDTO> paginationValue = _mapper.Map<Pagination<AttendanceViewDTO>>(pagination);
+            return pagination != null ? _mapper.Map<Pagination<AttendanceViewDTO>>(pagination) ?? null : null;
 
-            return paginationValue;
+
         }
 
         public Task<List<Attendance>> GetAllAttendancesAsync()
@@ -116,8 +117,18 @@ namespace Application.Services
             var attendances = await _unitOfWork.AttendanceRepository.GetAbsentAttendanceOfDay(_currentTime.GetCurrentTime());
             return attendances;
         }
+        public static Expression<Func<Attendance, bool>> GetFilterExpression(Guid classId, string search, string by, bool? containApplication, DateTime? fromDate, DateTime? toDate)
+        {
+            return x => (classId == Guid.Empty || x.TrainingClassId == classId) &&                  // Filter by classId (if provided)
+                            (search == null || x.User.FullName.Contains(search)) &&                    // Filter by username (if provided)
+                            (containApplication == null || x.Application != null == containApplication) &&  // Filter by application (if provided)
+                            (fromDate == null || x.Date >= fromDate) &&                                 // Filter by start date (if provided)
+                            (toDate == null || x.Date <= toDate) &&                                     // Filter by end date (if provided)
+                            (by == nameof(None) || x.Status == by);                                     // Filter by status (if provided)
+        }
+        #region Private Methods
 
-        #region Private Method
+
         private async Task<Attendance> MapAttendance(Guid classId, AttendanceDTO attendanceDto)
         {
             if (attendanceDto.Date == default) attendanceDto.Date = _currentTime.GetCurrentTime();
@@ -136,8 +147,7 @@ namespace Application.Services
         private async Task<TrainingClass> GetAndCheckClassExist(Guid classId)
         {
             TrainingClass trainingClass = await _unitOfWork.TrainingClassRepository.GetByIdAsync(classId);
-            trainingClass.ThrowIfNull("Training Class Missing");
-            return trainingClass;
+            return trainingClass.ThrowIfNull("Training Class Missing");
         }
         #endregion
     }

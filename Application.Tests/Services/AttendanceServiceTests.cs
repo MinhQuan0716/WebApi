@@ -41,7 +41,6 @@ namespace Application.Tests.Services
             _unitOfWorkMock.Setup(s => s.SaveChangeAsync()).ReturnsAsync(1);
         }
 
-        // Problem ko Mock Được GetByidAsync với phần HttpPatch
         [Fact]
         public void UploadAttendanceFormAsync_ReturnsCorrectData()
         {

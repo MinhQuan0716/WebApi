@@ -36,7 +36,7 @@ namespace Application.Services
         {
             var NewUnit = new Unit()
             {
-                Id = new Guid(),
+                Id = Guid.NewGuid(),
                 UnitName = unitDTO.UnitName,
                 TotalTime = unitDTO.TotalTime,
                 Session = unitDTO.Session,
@@ -45,7 +45,6 @@ namespace Application.Services
             };
             //throw new Exception();
             await _unitOfWork.UnitRepository.AddAsync(NewUnit);
-            await _unitOfWork.SaveChangeAsync();
             return NewUnit;
         }
     }

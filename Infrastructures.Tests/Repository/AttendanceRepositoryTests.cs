@@ -175,52 +175,52 @@ namespace Infrastructures.Tests.Repository
                 StatusClassDetail = nameof(StatusClassDetail.Active)
             };
             var attendanceMocks = new List<Attendance>
-        {
-            new Attendance
             {
-                Id = Guid.NewGuid(),
-                UserId = userMock.Id,
-                User = userMock,
-                TrainingClassId = classMock.Id,
-                TrainingClass = classMock,
-                Status = AttendanceStatusEnums.Absent.ToString(),
-                Date = date.AddDays(-1),
-                IsDeleted = false
-            },
-            new Attendance
-            {
-                Id = Guid.NewGuid(),
-                UserId = userMock.Id,
-                User = userMock,
-                TrainingClassId = classMock.Id,
-                TrainingClass = classMock,
-                Status = AttendanceStatusEnums.Absent.ToString(),
-                Date = date,
-                IsDeleted = false
-            },
-            new Attendance
-            {
-                Id = Guid.NewGuid(),
-                UserId = userMock.Id,
-                User = userMock,
-                TrainingClassId = classMock.Id,
-                TrainingClass = classMock,
-                Status = AttendanceStatusEnums.Present.ToString(),
-                Date = date,
-                IsDeleted = false
-            },
-            new Attendance
-            {
-                Id = Guid.NewGuid(),
-                UserId = userMock.Id,
-                User = userMock,
-                TrainingClassId = classMock.Id,
-                TrainingClass = classMock,
-                Status = AttendanceStatusEnums.Absent.ToString(),
-                Date = date.AddDays(1),
-                IsDeleted = false
-            }
-        };
+                new Attendance
+                {
+                    Id = Guid.NewGuid(),
+                    UserId = userMock.Id,
+                    User = userMock,
+                    TrainingClassId = classMock.Id,
+                    TrainingClass = classMock,
+                    Status = AttendanceStatusEnums.Absent.ToString(),
+                    Date = date.AddDays(-1),
+                    IsDeleted = false
+                },
+                new Attendance
+                {
+                    Id = Guid.NewGuid(),
+                    UserId = userMock.Id,
+                    User = userMock,
+                    TrainingClassId = classMock.Id,
+                    TrainingClass = classMock,
+                    Status = AttendanceStatusEnums.Absent.ToString(),
+                    Date = date,
+                    IsDeleted = false
+                },
+                new Attendance
+                {
+                    Id = Guid.NewGuid(),
+                    UserId = userMock.Id,
+                    User = userMock,
+                    TrainingClassId = classMock.Id,
+                    TrainingClass = classMock,
+                    Status = AttendanceStatusEnums.Present.ToString(),
+                    Date = date,
+                    IsDeleted = false
+                },
+                new Attendance
+                {
+                    Id = Guid.NewGuid(),
+                    UserId = userMock.Id,
+                    User = userMock,
+                    TrainingClassId = classMock.Id,
+                    TrainingClass = classMock,
+                    Status = AttendanceStatusEnums.Absent.ToString(),
+                    Date = date.AddDays(1),
+                    IsDeleted = false
+                }
+            };
             await _dbContext.Attendances.AddRangeAsync(attendanceMocks);
             await _dbContext.SaveChangesAsync();
 
@@ -235,6 +235,8 @@ namespace Infrastructures.Tests.Repository
             result.First().Date.Should().Be(date);
             result.First().NumOfAbsented.Should().Be(3);
         }
+
+
 
     }
 }

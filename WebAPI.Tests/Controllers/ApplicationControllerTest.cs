@@ -45,12 +45,12 @@ namespace WebAPI.Tests.Controllers
             ApplicationDateTimeFilterDTO condition = _fixture.Build<ApplicationDateTimeFilterDTO>().Create();
             string searchString = null;
             string by = null;
-            Guid? classId = Guid.Empty;
+            Guid classId = default;
             int pageNumber = 0;
             int pageSize = 0;
             var mockData = _fixture.Build<Pagination<Applications>>().Without(x => x.Items).Create();
 
-            _applicationServiceMock.Setup(x => x.GetAllApplication(classId.Value, condition, searchString, by, pageNumber, pageSize)).ReturnsAsync(mockData);
+            _applicationServiceMock.Setup(x => x.GetAllApplication(classId,condition, searchString, by, pageNumber, pageSize)).ReturnsAsync(mockData);
             // Act
             var result = await _applicationController.ViewAllApplication(classId, condition, searchString, by, pageNumber, pageSize);
             // Assert

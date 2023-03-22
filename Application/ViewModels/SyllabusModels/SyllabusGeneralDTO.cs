@@ -20,7 +20,7 @@ namespace Application.ViewModels.SyllabusModels
 
         public string Level { get; set; }
 
-       
+
 
         //public Guid UserId { get; set; }
 

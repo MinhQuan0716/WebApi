@@ -46,10 +46,12 @@ namespace WebAPI.Controllers
             return BadRequest();
         }
 
-        [HttpGet("{id:maxlength(50):guid?}")]
+        [HttpGet]
+        [HttpGet("{classId:maxlength(50):guid?}")]
+        [Authorize]
         [ClaimRequirement(nameof(PermissionItem.AttendancePermission), nameof(PermissionEnum.View))]
 
-        public async Task<IActionResult> GetAllAttendanceReports([FromRoute(Name = "id")] Guid classId = default,
+        public async Task<IActionResult> GetAllAttendanceReports(Guid classId = default,
                                                                  [FromQuery(Name = "from")] DateTime? toDate = null,
                                                                  [FromQuery(Name = "to")] DateTime? fromDate = null,
                                                                  [FromQuery(Name = "s")] string search = "",
@@ -59,14 +61,15 @@ namespace WebAPI.Controllers
                                                                  [FromQuery(Name = "ps")] int pageSize = 40)
         {
             fromDate ??= DateTime.UtcNow.Date;
-            toDate ??= fromDate + DateTime.MaxValue.TimeOfDay;
+            toDate ??= DateTime.UtcNow.AddDays(1).Date.AddTicks(-1);
             var result = await _attendanceService.GetAllAttendanceWithFilter(
                          classId, search,
                          by, containApplication, fromDate, toDate,
                          pageIndex, pageSize);
-            return result is null ? NoContent() : Ok(result);
+            return result is null ? NotFound("There are currently no Attendances") : Ok(result);
         }
-        [HttpPost, HttpPatch]
+        [HttpPost("{classId:maxlength(50):guid?}"), HttpPatch("{classId:maxlength(50):guid?}")]
+        [Authorize]
         [ClaimRequirement(nameof(PermissionItem.AttendancePermission), nameof(PermissionEnum.Create))]
         [ClaimRequirement(nameof(PermissionItem.AttendancePermission), nameof(PermissionEnum.Modifed))]
 

@@ -96,8 +96,10 @@ namespace WebAPI.Controllers
 
                         }
                 }
-            if (syllabusBase is not null)
+
+            if (syllabusBase is not null && await _syllabusService.SaveChangesAsync()>0)
             {
+                
                 return Ok("Successfully");
 
             }

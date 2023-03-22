@@ -86,7 +86,7 @@ namespace WebAPI.Tests.Controllers
             result_1.Should().BeOfType<OkObjectResult>();
             OkObjectResult okObjectResult = result_1 as OkObjectResult;
             okObjectResult.Value.Should().Be(mockData_1);
-            result_2.Should().BeOfType<NoContentResult>();
+            result_2.Should().BeOfType<NotFoundObjectResult>();
         }
     }
 }
