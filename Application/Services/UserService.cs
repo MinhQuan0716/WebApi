@@ -34,7 +34,6 @@ public class UserService : IUserService
     private readonly IMapper _mapper;
     private readonly ICurrentTime _currentTime;
     private readonly AppConfiguration _configuration;
-    private readonly IConfiguration _config;
     private readonly IMemoryCache _memoryCache;
     private readonly ISendMailHelper _sendMailHelper;
     public UserService(IUnitOfWork unitOfWork, IMapper mapper, ICurrentTime currentTime, AppConfiguration configuration)
@@ -67,7 +66,6 @@ public class UserService : IUserService
         _mapper = mapper;
         _currentTime = currentTime;
         _configuration = configuration;
-        _config = config;
         _memoryCache = memoryCache;
         _sendMailHelper = sendMailHelper;
     }
