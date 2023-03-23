@@ -121,7 +121,7 @@ namespace WebAPI.Controllers
         }
 
 
-        [HttpPut]
+        [HttpPatch]
         [Authorize]
         [ClaimRequirement(nameof(PermissionItem.SyllabusPermission), nameof(PermissionEnum.FullAccess))]
         public async Task<IActionResult> UpdateSyllabus(Guid syllabusId, UpdateSyllabusModel updateObject)

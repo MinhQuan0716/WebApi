@@ -50,6 +50,7 @@ namespace Application.Services
                 // Create Training Program
                 var trainingProgram = _mapper.Map<TrainingProgram>(createTrainingProgramDTO);
                 trainingProgram.Id = Guid.NewGuid();
+                trainingProgram.Status = "Active";
                 await _unitOfWork.TrainingProgramRepository.AddAsync(trainingProgram);
                 await _unitOfWork.SaveChangeAsync();
 
