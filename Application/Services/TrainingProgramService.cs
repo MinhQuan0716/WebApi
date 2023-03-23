@@ -62,7 +62,9 @@ namespace Application.Services
                         var newDetailProgramSyllabus = new DetailTrainingProgramSyllabus { SyllabusId = syllabus.Id, TrainingProgramId = trainingProgram.Id, Status = "active" };
                         await _unitOfWork.DetailTrainingProgramSyllabusRepository.AddAsync(newDetailProgramSyllabus);
                     }
+                    trainingProgram.Duration += syllabus!.Duration;
                 }
+                _unitOfWork.TrainingProgramRepository.Update(trainingProgram);
                 if (await _unitOfWork.SaveChangeAsync() > 0) return trainingProgram;
             }
             return null;

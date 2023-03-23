@@ -1,6 +1,8 @@
 ﻿using Application;
 using Application.Interfaces;
 using Application.ViewModels.SyllabusModels;
+using Application.ViewModels.SyllabusModels.UpdateSyllabusModels.HotFix;
+using AutoMapper;
 using Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -13,10 +15,13 @@ namespace Application.Services
     public class UnitService : IUnitService
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IMapper _mapper;
 
-        public UnitService(IUnitOfWork unitOfWork)
+        public UnitService(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
+            _mapper = mapper;
+
         }
 
         public async Task<IEnumerable<Unit>> GetSyllabusDetail(Guid syllabusID)
@@ -46,6 +51,18 @@ namespace Application.Services
             //throw new Exception();
             await _unitOfWork.UnitRepository.AddAsync(NewUnit);
             return NewUnit;
+        }
+
+
+        public async Task<Unit> AddNewUnitHotFix(UpdateContentModel updateSyllabusModel, int session, Guid syllabusID)
+        {
+
+            var unitMapper = _mapper.Map<Unit>(updateSyllabusModel);
+            unitMapper.Session = session;
+            unitMapper.SyllabusID = syllabusID;
+            await _unitOfWork.UnitRepository.AddAsync(unitMapper);
+            await _unitOfWork.SaveChangeAsync();
+            return unitMapper;
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Application.Repositories;
 using Application.ViewModels.SyllabusModels;
+using Application.ViewModels.SyllabusModels.UpdateSyllabusModels.HotFix;
 using Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -15,5 +16,7 @@ namespace Application.Interfaces
         Task<IEnumerable<Unit>> GetSyllabusDetail(Guid syllabusID);
 
         Task<Unit> AddNewUnit(UnitDTO unitDTO, Syllabus syllabus);
+
+        Task<Unit> AddNewUnitHotFix(UpdateContentModel updateSyllabusModel, int session, Guid syllabusID);
     }
 }

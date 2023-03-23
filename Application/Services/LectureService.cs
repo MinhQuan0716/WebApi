@@ -1,6 +1,8 @@
 ﻿using Application.Interfaces;
 using Application.Repositories;
 using Application.ViewModels.SyllabusModels;
+using Application.ViewModels.SyllabusModels.UpdateSyllabusModels.HotFix;
+using AutoMapper;
 using Domain.Entities;
 using Microsoft.AspNetCore.Http.HttpResults;
 using System;
@@ -15,10 +17,11 @@ namespace Application.Services
     {
 
         private readonly IUnitOfWork _unitOfWork;
-
-        public LectureService(IUnitOfWork unitOfWork)
+        private readonly IMapper _mapper;
+        public LectureService(IUnitOfWork unitOfWork,IMapper mapper)
         {
             _unitOfWork = unitOfWork;
+            _mapper = mapper;
         }
 
         public async Task<Lecture> AddNewLecture(LectureDTO lecture)
@@ -47,11 +50,24 @@ namespace Application.Services
                 ,Id = Guid.NewGuid()
             };
             await _unitOfWork.DetailUnitLectureRepository.AddAsync(NewLecture);
-
+            await _unitOfWork.SaveChangeAsync();
             return NewLecture;
 
 
         }
+
+        public async Task<Lecture> AddNewLectureHotFix(UpdateLessonModel updateLessonModel)
+        {
+            var lectureMapper = _mapper.Map<Lecture>(updateLessonModel);
+            lectureMapper.Id = Guid.NewGuid();
+            await _unitOfWork.LectureRepository.AddAsync(lectureMapper);
+            await _unitOfWork.SaveChangeAsync();
+            return lectureMapper;
+        }
+
+        
+
+        
 
     }
 

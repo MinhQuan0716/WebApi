@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Application.ViewModels.SyllabusModels.ViewDetail;
 using Application.ViewModels.SyllabusModels.FixViewSyllabus;
 using Application.ViewModels.TrainingProgramModels.TrainingProgramView;
+using Application.ViewModels.SyllabusModels.UpdateSyllabusModels.HotFix;
 
 namespace Application.Services
 {
@@ -85,9 +86,9 @@ namespace Application.Services
         /// <param name="syllabusId">ID of updated syllabus</param>
         /// <param name="updateItem">Changing description</param>
         /// <returns>bool</returns>
-        public async Task<bool> UpdateSyllabus(Guid syllabusId, UpdateSyllabusDTO updateItem)
+        public async Task<bool> UpdateSyllabus(Guid syllabusId, UpdateSyllabusModel updateItem)
         {
-            var result = false;
+            /*var result = false;
             var syllabus = await _unitOfWork.SyllabusRepository.GetByIdAsync(syllabusId);
 
             if (syllabus is not null)
@@ -166,9 +167,97 @@ namespace Application.Services
                     if (await _unitOfWork.SaveChangeAsync() > 0) result = true;
                 }
             }
+            return result;*/
+            var result = false;
+            var syllabus = await _unitOfWork.SyllabusRepository.GetByIdAsync(syllabusId);
+            if(syllabus is not null)
+            {
+                _ = _mapper.Map(updateItem, syllabus, typeof(UpdateSyllabusModel), typeof(Syllabus));
+                syllabus.Duration = updateItem.Durations.TotalHours;
+                _unitOfWork.SyllabusRepository.Update(syllabus);
+                if (await _unitOfWork.SaveChangeAsync() > 0)
+                {
+                    foreach (var item in updateItem.Outline)
+                    {
+                        var resultUnit = await UpdateUnit(syllabusId, item.Content, item.Day);
+                    }
+                    result = true;
+                }
+                else throw new Exception("Can not Update Syllabus!");
+            } 
+            return result;
+
+        }
+        #region PrivateUpdateMethod
+        private async Task<bool> UpdateLecture(Guid unitId, Guid syllabusId, List<UpdateLessonModel> updateLecture)
+        {
+            var result = false;
+            var lectures = await _unitOfWork.LectureRepository.GetLectureBySyllabusId(syllabusId);
+            if(lectures.Count() > 0)
+            {
+                // Remove old Lectures
+                _unitOfWork.LectureRepository.SoftRemoveRange((List<Lecture>)lectures);
+                if (await _unitOfWork.SaveChangeAsync() <= 0) throw new Exception("Save change fail");
+
+                // Add New Lectures
+                var newLectures = _mapper.Map<List<Lecture>>(updateLecture);
+                foreach (var item in newLectures)
+                {
+                    item.Id = Guid.NewGuid();
+                    await _unitOfWork.LectureRepository.AddAsync(item);
+                    if(await _unitOfWork.SaveChangeAsync() > 0)
+                    {
+                        await _unitOfWork.DetailUnitLectureRepository.AddAsync(new DetailUnitLecture {UnitId = unitId, LectureID = item.Id });
+                    }
+                    
+                }
+                if (await _unitOfWork.SaveChangeAsync() > 0) result = true;
+          
+
+            } 
             return result;
         }
-
+        private async Task<bool> UpdateUnit(Guid syllabusId, List<UpdateContentModel> updateUnit, int session)
+        {
+            var result = false;
+            var units = await _unitOfWork.UnitRepository.FindAsync(x => x.SyllabusID == syllabusId);
+            if (units.Count > 0)
+            {
+                _unitOfWork.UnitRepository.SoftRemoveRange(units);
+                if(await _unitOfWork.SaveChangeAsync() > 0)
+                {
+                    /*                    var updateUnits = _mapper.Map<List<Unit>>(updateUnit);
+                                        foreach (var item in updateUnits)
+                                        {
+                                            item.Id = Guid.NewGuid();
+                                            item.Session = session;
+                                            item.SyllabusID = syllabusId;
+                                            await _unitOfWork.UnitRepository.AddAsync(item);
+                                            if(await _unitOfWork.SaveChangeAsync() > 0)
+                                            {
+                                                UpdateLecture(unitId : item.Id, syllabusId, updateUnit.)
+                                            }
+                                        }*/
+                    foreach (var item in updateUnit)
+                    {
+                        var unit = _mapper.Map<Unit>(item);
+                        unit.Id = Guid.NewGuid();
+                        unit.Session = session;
+                        unit.SyllabusID = syllabusId;
+                        await _unitOfWork.UnitRepository.AddAsync(unit);
+                        if(await _unitOfWork.SaveChangeAsync() > 0)
+                        {
+                            await UpdateLecture(unitId: unit.Id, syllabusId, item.Lessons);
+                        }
+                    }
+                } else throw new Exception("Save Changes Failed");
+                result = true;
+            }
+            
+            return result;
+          
+        }
+        #endregion
         public Task<List<Syllabus>> GetByName(string name)
         {
 
@@ -204,7 +293,7 @@ namespace Application.Services
             SyllabusGeneralDTO syllabusGeneralDTO = new SyllabusGeneralDTO()
             {
 
-                Code = syllabusDetail.Code,
+                Code = syllabusDetail!.Code,
                 CourseObject = syllabusDetail.CourseObjective,
                 Duration = syllabusDetail.Duration,
                 SyllabusName = syllabusDetail.SyllabusName,
@@ -379,6 +468,21 @@ namespace Application.Services
         public Task<int> SaveChangesAsync()
         {
             return _unitOfWork.SaveChangeAsync();
+        }
+
+
+
+        public async Task<Syllabus> AddNewSyllabusService(UpdateSyllabusModel updateSyllabusModel)
+        {
+            
+            var mapperSyllabus  = _mapper.Map<Syllabus>(updateSyllabusModel);
+            //mapperSyllabus.Duration = updateSyllabusModel.Duration.TotalHours;
+            mapperSyllabus.UserId =  _claimsservice.GetCurrentUserId;
+            mapperSyllabus.Id = Guid.NewGuid();
+            await _unitOfWork.SyllabusRepository.AddAsync(mapperSyllabus);
+            await _unitOfWork.SaveChangeAsync();
+            return mapperSyllabus;
+
         }
     }
 

@@ -112,7 +112,7 @@ try
     await app.StartAsync();
     RecurringJob.AddOrUpdate<ApplicationCronJob>(util => util.CheckAttendancesEveryDay(),
         "0 0 22 ? * *", TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time"));
-    RecurringJob.AddOrUpdate<IAssignmentService>(a => a.CheckOverDue(), "* * * * *");
+    //RecurringJob.AddOrUpdate<IAssignmentService>(a => a.CheckOverDue(), "* * * * *");
     await app.WaitForShutdownAsync();
 
     app.Run();

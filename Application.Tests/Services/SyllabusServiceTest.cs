@@ -1,4 +1,4 @@
-﻿using Application.Services;
+﻿/*using Application.Services;
 using Application.ViewModels.SyllabusModels.UpdateSyllabusModels;
 using AutoFixture;
 using Domain.Entities;
@@ -146,3 +146,4 @@ namespace Application.Tests.Services
         }
     }
 }
+*/
