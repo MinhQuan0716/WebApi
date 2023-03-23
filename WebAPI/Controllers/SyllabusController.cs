@@ -8,6 +8,7 @@ using Application.ViewModels.SyllabusModels.UpdateSyllabusModels;
 using Microsoft.AspNetCore.Authorization;
 using Application.Utils;
 using Domain.Enums;
+using Application.ViewModels.SyllabusModels.UpdateSyllabusModels.HotFix;
 
 namespace WebAPI.Controllers
 {
@@ -67,45 +68,45 @@ namespace WebAPI.Controllers
             return BadRequest("Delete Syllabus Not Successfully");
         }
 
-        [HttpPost]
-        [Authorize]
-        [ClaimRequirement(nameof(PermissionItem.SyllabusPermission), nameof(PermissionEnum.Create))]
-        public async Task<IActionResult> AddNewSyllabus(SyllabusViewDTO NewSyllasbus)
-        {
-            Syllabus syllabusBase;
-            Unit unitBase;
-            Lecture lectureBase;
-            syllabusBase = await _syllabusService.AddSyllabusAsync(NewSyllasbus.SyllabusBase);
-            if(NewSyllasbus.Units.Count == 0)
-            {
-                return BadRequest("Unit is Empty");
-            }
-            if (NewSyllasbus.Units is not null)
-                foreach (UnitDTO unitDTO in NewSyllasbus.Units)
-                {
-                    unitBase = await _unitService.AddNewUnit(unitDTO, syllabusBase);
-                    if(unitDTO.Lectures.Count == 0)
-                    {
-                        return BadRequest("Lectures is Empty");
-                    }
-                    if (unitDTO.Lectures is not null)
-                        foreach (LectureDTO lecture in unitDTO.Lectures)
-                        {
-                            lectureBase = await _lectureService.AddNewLecture(lecture);
-                            await _lectureService.AddNewDetailLecture(lectureBase, unitBase);
+        //[HttpPost]
+        //[Authorize]
+        //[ClaimRequirement(nameof(PermissionItem.SyllabusPermission), nameof(PermissionEnum.Create))]
+        //public async Task<IActionResult> AddNewSyllabus(SyllabusViewDTO NewSyllasbus)
+        //{
+        //    Syllabus syllabusBase;
+        //    Unit unitBase;
+        //    Lecture lectureBase;
+        //    syllabusBase = await _syllabusService.AddSyllabusAsync(NewSyllasbus.SyllabusBase);
+        //    if (NewSyllasbus.Units.Count == 0)
+        //    {
+        //        return BadRequest("Unit is Empty");
+        //    }
+        //    if (NewSyllasbus.Units is not null)
+        //        foreach (UnitDTO unitDTO in NewSyllasbus.Units)
+        //        {
+        //            unitBase = await _unitService.AddNewUnit(unitDTO, syllabusBase);
+        //            if (unitDTO.Lectures.Count == 0)
+        //            {
+        //                return BadRequest("Lectures is Empty");
+        //            }
+        //            if (unitDTO.Lectures is not null)
+        //                foreach (LectureDTO lecture in unitDTO.Lectures)
+        //                {
+        //                    lectureBase = await _lectureService.AddNewLecture(lecture);
+        //                    await _lectureService.AddNewDetailLecture(lectureBase, unitBase);
 
-                        }
-                }
+        //                }
+        //        }
 
-            if (syllabusBase is not null && await _syllabusService.SaveChangesAsync()>0)
-            {
-                
-                return Ok("Successfully");
+        //    if (syllabusBase is not null && await _syllabusService.SaveChangesAsync() > 0)
+        //    {
 
-            }
-            return BadRequest();
+        //        return Ok("Successfully");
 
-        }
+        //    }
+        //    return BadRequest();
+
+        //}
 
         [HttpGet("detail/{name}")]
         [Authorize]
@@ -120,10 +121,10 @@ namespace WebAPI.Controllers
         }
 
 
-        [HttpPut]
+        [HttpPatch]
         [Authorize]
         [ClaimRequirement(nameof(PermissionItem.SyllabusPermission), nameof(PermissionEnum.FullAccess))]
-        public async Task<IActionResult> UpdateSyllabus(Guid syllabusId, UpdateSyllabusDTO updateObject)
+        public async Task<IActionResult> UpdateSyllabus(Guid syllabusId, UpdateSyllabusModel updateObject)
         {
             var result = await _syllabusService.UpdateSyllabus(syllabusId, updateObject);
             if (result) return NoContent();
@@ -153,6 +154,34 @@ namespace WebAPI.Controllers
                 return Ok(result);
             }
             return BadRequest("Not Found Or Have Been Deleted ");
+        }
+
+
+        [HttpPost]
+        [ClaimRequirement(nameof(PermissionItem.SyllabusPermission), nameof(PermissionEnum.Create))]
+        public async Task<IActionResult> AddNewSyllabus(UpdateSyllabusModel updateSyllabusModel)
+        {
+           
+            var syllabus = await _syllabusService.AddNewSyllabusService(updateSyllabusModel);
+            if (syllabus is null) return BadRequest("Add Syllabus Unsuccessfully");
+            foreach (var item in updateSyllabusModel.Outline)
+            {
+                
+                foreach (var item1 in item.Content)
+                {
+                    
+                    var unit = await _unitService.AddNewUnitHotFix(item1, item.Day, syllabus.Id);
+                    if (unit is null) return BadRequest("Add Unit Unsuccessfully");
+                    foreach (var item2 in item1.Lessons)
+                    {
+                        var lecture = await _lectureService.AddNewLectureHotFix(item2);
+                        if (lecture is null) return BadRequest("Add Unit Unsuccessfully");
+                        await _lectureService.AddNewDetailLecture(lecture, unit);
+                    }
+                }
+            }
+            return Ok("Successfully");
+
         }
     }
 }

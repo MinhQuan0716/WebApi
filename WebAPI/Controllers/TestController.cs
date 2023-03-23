@@ -14,8 +14,10 @@ namespace WebAPI.Controllers
         private readonly IQuestionService _quizService;
         public TestController(IQuestionService quizService) => _quizService = quizService;
 
+
+
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles = "SuperAdmin,Admin,Trainer,Mentor")]
         public async Task<IActionResult> AddQuestionIntoBank(CreateQuizIntoBankDTO quizObject)
         {
             var checkAddSuccesfully = await _quizService.AddQuestionToBank(quizObject);
@@ -27,7 +29,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles = "SuperAdmin,Admin,Trainer,Mentor")]
         public async Task<IActionResult> CreateEmptyQuizTest(CreateEmptyQuizDTO quizObject)
         {
             var checkAddSuccesfully = await _quizService.CreateEmptyQuizTest(quizObject);
@@ -39,7 +41,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles = "SuperAdmin,Admin,Trainer,Mentor")]
         public async Task<IActionResult> AddQuestionToQuizTest(AddQuestionToQuizTestDTO quizObject)
         {
             var checkAddSuccesfully = await _quizService.AddQuestionToQuizTest(quizObject);
@@ -51,7 +53,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpPut]
-        [Authorize]
+        [Authorize(Roles = "SuperAdmin,Admin,Trainer,Mentor")]
         public async Task<IActionResult> UpdateQuizTest(Guid quizTestId, UpdateQuizTestDTO quizDto)
         {
             var checkUpdateSuccesfully = await _quizService.UpdateQuizTest(quizTestId, quizDto);
@@ -63,7 +65,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpDelete]
-        [Authorize]
+        [Authorize(Roles = "SuperAdmin,Admin,Trainer,Mentor")]
         public async Task<IActionResult> DeleteQuizTest(Guid quizTestId)
         {
             var checkDeleteSuccesfully = await _quizService.DeleteQuizTest(quizTestId);
@@ -112,7 +114,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles = "Trainee")]
         public async Task<IActionResult> DoingQuiz(ICollection<AnswerQuizQuestionDTO> doingQuizDTOs, Guid TrainingClassParticipateID)
         {
             bool success = await _quizService.DoingQuizService(doingQuizDTOs);
@@ -124,8 +126,8 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet]
-        [Authorize]
-        public async Task<IActionResult> ViewDetailResult(Guid QuizID)
+        [Authorize(Roles = "SuperAdmin,Admin,Trainer,Mentor")]
+        public async Task<IActionResult> ViewQuizDetail(Guid QuizID)
         {
             List<ViewDetailResultDTO> markDetails = await _quizService.ViewMarkDetail(QuizID);
             return Ok(markDetails);
@@ -134,14 +136,14 @@ namespace WebAPI.Controllers
 
         [HttpGet]
         [Authorize]
-        public async Task<IActionResult> ViewDetailResultTrainee(Guid QuizID)
+        public async Task<IActionResult> ViewDetailResultByTrainee(Guid QuizID)
         {
             AnswerQuizDetailTraineeDTO answerQuizDetailTraineeDTO = await _quizService.ViewDetaildoneQuiz(QuizID);
             return Ok(answerQuizDetailTraineeDTO);
         }
 
         [HttpDelete]
-        [Authorize]
+        [Authorize(Roles = "SuperAdmin,Admin,Trainer,Mentor")]
         public async Task<IActionResult> RemoveQuestionInBank(Guid QuestionID)
         {
             bool check = await _quizService.RemoveQuestionInBank(QuestionID);
@@ -153,7 +155,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles = "SuperAdmin,Admin,Trainer,Mentor")]
         public async Task<IActionResult> UpgradeQuestion(Guid QuestionID,UpdateQuestionDTO createQuizIntoBankDTO)
         {
             bool check = await _quizService.UpdateQuestion(QuestionID,createQuizIntoBankDTO);

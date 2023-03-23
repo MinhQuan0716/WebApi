@@ -65,7 +65,7 @@ namespace WebAPI.Tests.Controllers
             //Assert
             Assert.NotNull(filterResult);
         }
-        [Fact]
+      /*  [Fact]
         public async Task UpdateSyllabus_ShouldReturnNoContent()
         {
             Guid id = Guid.NewGuid();
@@ -86,33 +86,33 @@ namespace WebAPI.Tests.Controllers
             if (objResult is not null)
                 objResult.Value.Should().BeSameAs("Update Failed");
         }
-        [Fact]
-        public async Task AddNewSyllabus_ShouldReturnCorrectData()
-        {
-            //Arrange
-            var mockData = _fixture.Build<SyllabusViewDTO>().Without(u => u.Units).Create();
+        //[Fact]
+        //public async Task AddNewSyllabus_ShouldReturnCorrectData()
+        //{
+        //    //Arrange
+        //    var mockData = _fixture.Build<SyllabusViewDTO>().Without(u => u.Units).Create();
 
-            var units = mockData.Units = _fixture.Build<UnitDTO>()
-                                                .Without(l => l.Lectures)
-                                                .CreateMany(1)
-                                                .ToList();
-            var lectures = mockData.Units.First().Lectures = _fixture.Build<LectureDTO>()
-                                                                    .CreateMany(1)
-                                                                    .ToList();
-            var syllabus = _fixture.Build<Syllabus>().Without(s => s.Units).Without(x => x.DetailTrainingProgramSyllabus).Without(x => x.User).Create();
-            var detailUnitLectures = _fixture.Build<DetailUnitLecture>()
-                                             .Without(u => u.Unit).Without(u => u.Lecture)
-                                             .Create();
-            _syllabusServiceMock.Setup(s => s.AddSyllabusAsync(mockData.SyllabusBase))
-                                .ReturnsAsync(syllabus);
-            _unitServiceMock.Setup(s => s.AddNewUnit(mockData.Units.First(), syllabus))
-                            .ReturnsAsync(detailUnitLectures.Unit);
-            _lectureServiceMock.Setup(l => l.AddNewLecture(lectures.First()))
-                               .ReturnsAsync(detailUnitLectures.Lecture);
-            _lectureServiceMock.Setup(l => l.AddNewDetailLecture(detailUnitLectures.Lecture,
-                                                                 detailUnitLectures.Unit)).ReturnsAsync(detailUnitLectures);
-            //Act
-            var result = await _syllabusController.AddNewSyllabus(mockData);
+        //    var units = mockData.Units = _fixture.Build<UnitDTO>()
+        //                                        .Without(l => l.Lectures)
+        //                                        .CreateMany(1)
+        //                                        .ToList();
+        //    var lectures = mockData.Units.First().Lectures = _fixture.Build<LectureDTO>()
+        //                                                            .CreateMany(1)
+        //                                                            .ToList();
+        //    var syllabus = _fixture.Build<Syllabus>().Without(s => s.Units).Without(x => x.DetailTrainingProgramSyllabus).Without(x => x.User).Create();
+        //    var detailUnitLectures = _fixture.Build<DetailUnitLecture>()
+        //                                     .Without(u => u.Unit).Without(u => u.Lecture)
+        //                                     .Create();
+        //    _syllabusServiceMock.Setup(s => s.AddSyllabusAsync(mockData.SyllabusBase))
+        //                        .ReturnsAsync(syllabus);
+        //    _unitServiceMock.Setup(s => s.AddNewUnit(mockData.Units.First(), syllabus))
+        //                    .ReturnsAsync(detailUnitLectures.Unit);
+        //    _lectureServiceMock.Setup(l => l.AddNewLecture(lectures.First()))
+        //                       .ReturnsAsync(detailUnitLectures.Lecture);
+        //    _lectureServiceMock.Setup(l => l.AddNewDetailLecture(detailUnitLectures.Lecture,
+        //                                                         detailUnitLectures.Unit)).ReturnsAsync(detailUnitLectures);
+        //    //Act
+        //    var result = await _syllabusController.AddNewSyllabus(mockData);
         }
         //[Fact]
         //public async Task AddNewSyllabus_ShouldReturnBadResult()
@@ -125,9 +125,12 @@ namespace WebAPI.Tests.Controllers
         //    //Assert
         //    result.Should().BeOfType<BadRequestResult>();
         //}
-    }
+    
 
 }
 
+*/
 
-
+ }
+      
+        }

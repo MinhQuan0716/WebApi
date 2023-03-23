@@ -23,6 +23,7 @@ using Application.ViewModels.AssignmentModel;
 using Application.ViewModels.SyllabusModels.FixViewSyllabus;
 using Microsoft.AspNetCore.Routing.Constraints;
 using Application.ViewModels.QuizModels;
+using Application.ViewModels.SyllabusModels.UpdateSyllabusModels.HotFix;
 
 namespace Infrastructures.Mappers
 {
@@ -98,41 +99,7 @@ namespace Infrastructures.Mappers
                .ForMember(ss => ss.Status, ss => ss.MapFrom(src => "Active"))
                .ReverseMap();
 
-            CreateMap<UpdateLectureDTO, Lecture>()
-                .ForMember(dest => dest.LectureName, opt => opt.MapFrom(src => src.LectureName))
-                .ForMember(dest => dest.OutputStandards, opt => opt.MapFrom(src => src.OutputStandards))
-                .ForMember(dest => dest.Duration, opt => opt.MapFrom(src => src.Duration))
-                .ForMember(dest => dest.DeliveryType, opt => opt.MapFrom(src => src.DeliveryType))
-                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status))
-                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.LectureID))
-                .ReverseMap();
-
-
-
-            CreateMap<UpdateUnitDTO, Unit>()
-                .ForMember(dest => dest.UnitName, opt => opt.MapFrom(src => src.UnitName))
-                .ForMember(dest => dest.TotalTime, opt => opt.MapFrom(src => src.TotalTime))
-                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.UnitID))
-                .ForMember(dest => dest.SyllabusID, opt => opt.MapFrom(src => src.syllabusId))
-                .ReverseMap();
-
-            CreateMap<UpdateSyllabusDTO, Syllabus>()
-                .ForMember(dest => dest.Code, opt => opt.MapFrom(src => src.Code))
-                .ForMember(dest => dest.CourseObjective, opt => opt.MapFrom(src => src.CourseObject))
-                .ForMember(dest => dest.SyllabusName, opt => opt.MapFrom(src => src.SyllabusName))
-                .ForMember(dest => dest.TechRequirements, opt => opt.MapFrom(src => src.TechRequirement))
-                .ForMember(dest => dest.Duration, opt => opt.MapFrom(src => src.Duration))
-                .ForMember(dest => dest.Units, opt => opt.MapFrom(src => src.Units.Select(x => new Unit
-                {
-                    Id = x.UnitID!.Value,
-                    UnitName = x.UnitName,
-                    TotalTime = x.TotalTime,
-                    SyllabusID = x.syllabusId!.Value
-                })))
-                .ReverseMap();
-
-
-            // Mapper khung dien 
+   
             CreateMap<Syllabus, GeneralInformationDTO>()
                 .ForMember(x => x.Id, s => s.MapFrom(src => src.Id))
                 .ForMember(x => x.CreatedOn, s => s.MapFrom(src => src.CreationDate))
@@ -158,11 +125,6 @@ namespace Infrastructures.Mappers
                 .ForMember(x=>x.Status,src=>src.MapFrom(s=>s.syllabus_status))
                 .ForMember(x=>x.Duration,src=>src.MapFrom(s=>s.syllabus_duration.TotalHours))
                 .ReverseMap();
-            //map unit
-            CreateMap<UpdateUnitLectureDTO, DetailUnitLecture>()
-                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
-                .ForMember(dest => dest.LectureID, opt => opt.MapFrom(src => src.LectureId))
-                .ForMember(dest => dest.UnitId, opt => opt.MapFrom(src => src.UnitId)).ReverseMap();
 
             CreateMap<UnitDTO, Unit>()
                     .ForMember(uu => uu.UnitName, uu => uu.MapFrom(src => src.UnitName))
@@ -293,6 +255,37 @@ namespace Infrastructures.Mappers
             .ForMember(cq => cq.Answer4, a => a.MapFrom(src => src.Answer3))
             .ForMember(cq => cq.CorrectAnswer, a => a.MapFrom(src => src.CorrectAnswer))
             .ReverseMap();
+
+            #region Mapping for hotfix UpdateSyllabus
+            CreateMap<UpdateSyllabusModel, Syllabus>()
+                .ForMember(x => x.Status, src => src.MapFrom(x => x.Status))
+                .ForMember(x => x.SyllabusName, src => src.MapFrom(x => x.SyllabusName))
+                .ForMember(x => x.Level, src => src.MapFrom(x => x.General.Level))
+                .ForMember(x => x.CourseObjective, src => src.MapFrom(x => x.General.CourseObjective))
+                .ForMember(x => x.TechRequirements, src => src.MapFrom(x => x.General.TechnicalRequirements))
+                .ForMember(x => x.Code, src => src.MapFrom(x => x.Code))
+                .ForMember(x => x.Duration, src => src.Ignore())
+                .AfterMap((src,dest) =>
+                {
+                    src.General.CourseObjective = dest.CourseObjective;
+                    src.General.Level = dest.Level;
+                    src.General.TechnicalRequirements = dest.TechRequirements;
+                }) 
+                .ReverseMap();
+
+            CreateMap<Unit, UpdateContentModel>()
+                .ForMember(x => x.UnitName, src => src.MapFrom(x => x.UnitName))
+                .ForMember(x => x.Hours, src => src.MapFrom(x => x.TotalTime))
+                .ForMember(x => x.Unit, src => src.MapFrom(x => x.UnitNum))
+                .ReverseMap();
+            CreateMap<Lecture, UpdateLessonModel>()
+                .ForMember(x => x.OutputStandards, src => src.MapFrom(x => x.OutputStandards))
+                .ForMember(x => x.Status, src => src.MapFrom(x => x.Status))
+                .ForMember(x => x.Name, src => src.MapFrom(x => x.LectureName))
+                .ForMember(x => x.Hours, src => src.MapFrom(x => x.Duration))
+                .ForMember(x => x.DeliveryType, src => src.MapFrom(x => x.DeliveryType))
+                .ReverseMap();
+            #endregion
         }
     }
 }

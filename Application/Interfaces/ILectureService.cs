@@ -1,4 +1,5 @@
 ﻿using Application.ViewModels.SyllabusModels;
+using Application.ViewModels.SyllabusModels.UpdateSyllabusModels.HotFix;
 using Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -13,5 +14,7 @@ namespace Application.Interfaces
         Task<Lecture> AddNewLecture(LectureDTO lecture);
 
         Task<DetailUnitLecture> AddNewDetailLecture(Lecture lecture, Unit unit);
+
+        Task<Lecture> AddNewLectureHotFix(UpdateLessonModel updateLessonModel);
     }
 }
