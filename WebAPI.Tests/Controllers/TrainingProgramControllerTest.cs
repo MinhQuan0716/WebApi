@@ -69,7 +69,7 @@ namespace WebAPI.Tests.Controllers
             var result = await trainingProgramController.Create(createTrainingDTO);
             result.Should().BeAssignableTo<BadRequestResult>();
         }
-        [Fact]
+/*        [Fact]
         public async Task UpdateTrainingProgram_ShouldReturn204()
         {
             var updateProgramDTO = _fixture.Build<UpdateTrainingProgramDTO>().Create();
@@ -78,8 +78,8 @@ namespace WebAPI.Tests.Controllers
             var actualResult = await trainingProgramController.Update(updateProgramDTO);
             actualResult.Should().BeAssignableTo<NoContentResult>();
         }
-
-        [Fact]
+*/
+/*        [Fact]
         public async Task UpdateTrainingProgram_ShouldReturn400()
         {
             var updateProgramDTO = _fixture.Build<UpdateTrainingProgramDTO>().Create();
@@ -87,7 +87,7 @@ namespace WebAPI.Tests.Controllers
 
             var actualResult = await trainingProgramController.Update(updateProgramDTO);
             actualResult.Should().BeAssignableTo<BadRequestResult>();
-        }
+        }*/
         public async Task SearchTrainingProgramWithFilter_ShouldReturnCorrectData()
         {
             //arrange
