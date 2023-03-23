@@ -8,9 +8,7 @@ namespace Application.ViewModels.TrainingProgramModels
 {
     public class CreateTrainingProgramDTO
     {
-        public string ProgramName { get; set; }
-        public double Duration { get; set; }
-        public string Status { get; set; }
+        public string ProgramName { get; set; } = default!;
         public ICollection<Guid>? SyllabusesId { get; set; }
     }
 }

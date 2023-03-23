@@ -50,9 +50,10 @@ namespace Application.Services
                 // Create Training Program
                 var trainingProgram = _mapper.Map<TrainingProgram>(createTrainingProgramDTO);
                 trainingProgram.Id = Guid.NewGuid();
+                trainingProgram.Status = "Active";
                 await _unitOfWork.TrainingProgramRepository.AddAsync(trainingProgram);
                 await _unitOfWork.SaveChangeAsync();
-
+               
                 // Create Training Program Detail (Syllabuses - TrainingProgram)
                 foreach (var syllabusId in syllabusesId)
                 {
@@ -62,7 +63,9 @@ namespace Application.Services
                         var newDetailProgramSyllabus = new DetailTrainingProgramSyllabus { SyllabusId = syllabus.Id, TrainingProgramId = trainingProgram.Id, Status = "active" };
                         await _unitOfWork.DetailTrainingProgramSyllabusRepository.AddAsync(newDetailProgramSyllabus);
                     }
+                    trainingProgram.Duration += syllabus!.Duration;
                 }
+                _unitOfWork.TrainingProgramRepository.Update(trainingProgram);
                 if (await _unitOfWork.SaveChangeAsync() > 0) return trainingProgram;
             }
             return null;
@@ -75,6 +78,7 @@ namespace Application.Services
             if (updateProgram is not null)
             {
                 updateProgram = _mapper.Map<TrainingProgram>(updateProgramDTO);
+                updateProgram.Status = "Active";
                 if (updateProgram is not null) _unitOfWork.TrainingProgramRepository.Update(updateProgram);
                 var detailProgramSyllbuses = await _unitOfWork.DetailTrainingProgramSyllabusRepository.FindAsync(x => x.TrainingProgramId == updateProgram.Id);
                 if (detailProgramSyllbuses is not null) _unitOfWork.DetailTrainingProgramSyllabusRepository.SoftRemoveRange(detailProgramSyllbuses);
@@ -87,8 +91,10 @@ namespace Application.Services
                     {
                         var newDetailProgramSyllabus = new DetailTrainingProgramSyllabus { SyllabusId = syllabus.Id, TrainingProgramId = updateProgramDTO.Id.Value, Status = "active" };
                         await _unitOfWork.DetailTrainingProgramSyllabusRepository.AddAsync(newDetailProgramSyllabus);
+                        updateProgram!.Duration += syllabus.Duration;
                     }
                 }
+                _unitOfWork.TrainingProgramRepository.Update(updateProgram!);
 
                 if (await _unitOfWork.SaveChangeAsync() > 0)
                     return true;

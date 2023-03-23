@@ -38,11 +38,12 @@ namespace WebAPI.Controllers
             else return BadRequest();
         }
 
-        [HttpPut]
+        [HttpPatch]
         [Authorize]
         [ClaimRequirement(nameof(PermissionItem.TrainingProgramPermission), nameof(PermissionEnum.Modifed))]
-        public async Task<IActionResult> Update(UpdateTrainingProgramDTO updateProgramDTO)
+        public async Task<IActionResult> Update(Guid updateId, UpdateTrainingProgramDTO updateProgramDTO)
         {
+            updateProgramDTO.Id = updateId;
             var result = await _trainingProgramService.UpdateTrainingProgram(updateProgramDTO);
             if (result) return NoContent();
             else return BadRequest();
