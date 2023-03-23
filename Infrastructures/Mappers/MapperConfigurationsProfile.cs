@@ -152,7 +152,7 @@ namespace Infrastructures.Mappers
             CreateMap<TrainingClass, TrainingClassViewModel>()
                 .ForMember(x => x._Id, src => src.MapFrom(x => x.Id))
                 .ForMember(x=>x.LocationName, src =>src.MapFrom(x=>x.Location.LocationName)).ReverseMap();
-            CreateMap< TrainingClassDTO,TrainingClass>()
+            CreateMap< TrainingClassFilterDTO,TrainingClass>()
                 .ForMember(dest => dest.Duration, opt => opt.MapFrom(src=>src.ClassDuration.TotalHours))
                 .ReverseMap();
             CreateMap<TrainingClassViewDetail,TrainingClass>()
@@ -162,7 +162,17 @@ namespace Infrastructures.Mappers
                 .ForMember(x=>x.Code,src=>src.MapFrom(x=>x.classCode))
                 .ForMember(x=>x.Duration,src=>src.MapFrom(x=>x.classDuration.TotalHours))
                 .ReverseMap();
-                
+            CreateMap<TrainingClassFilterDTO, TrainingClassViewAllDTO>()
+                .ForMember(v=>v.id,src=>src.MapFrom(x=>x.ClassID))
+                .ForMember(v => v.className, src => src.MapFrom(x => x.Name))
+                .ForMember(v => v.classCode, src => src.MapFrom(x => x.Code))
+                .ForMember(v => v.fsu, src => src.MapFrom(x => x.Branch))
+                .ForMember(v => v.location, src => src.MapFrom(x => x.LocationName))
+                .ForMember(v => v.classDuration, src => src.MapFrom(x => x.ClassDuration))
+                .ForMember(v => v.attendee, src => src.MapFrom(x => x.Attendee))
+                .ForMember(v => v.createdBy, src => src.MapFrom(x => x.CreatedBy))
+                .ForMember(v => v.createdOn, src => src.MapFrom(x => x.CreationDate))
+                .ReverseMap();
 
             //map location
             CreateMap<CreateLocationDTO, Location>();

@@ -1,5 +1,6 @@
 using Application.ViewModels.TrainingClassModels;
 using Domain.Entities;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,8 +17,9 @@ namespace Application.Interfaces
         public Task<bool> UpdateTrainingClassAsync(string trainingClassId, UpdateTrainingCLassDTO updateTrainingCLassDTO);
         public Task<TrainingClass> GetTrainingClassByIdAsync(string trainingClassId);
         public Task<TrainingClassViewModel?> CreateTrainingClassAsync(CreateTrainingClassDTO createTrainingClassDTO);
-        public Task<List<TrainingClassDTO>> GetAllTrainingClassesAsync();
-        public Task<List<TrainingClassDTO>> FilterLocation(string[]? locationName, string branchName, DateTime? date1, DateTime? date2, string[]? classStatus, string[]? attendInClass);
+        public Task<List<TrainingClassViewAllDTO>> GetAllTrainingClassesAsync();
+        public Task<List<TrainingClassViewAllDTO>> FilterLocation(string[]? locationName, string branchName, DateTime? date1, DateTime? date2, string[]? classStatus, string[]? attendInClass,string trainerName);
         public Task<FinalTrainingClassDTO> GetFinalTrainingClassesAsync(Guid id);
+        public Task<List<TrainingClass>> ImportExcel(IFormFile file);
     }
 }

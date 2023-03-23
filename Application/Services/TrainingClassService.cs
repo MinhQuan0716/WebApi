@@ -1,13 +1,17 @@
 ﻿using Application.Filter.ClassFilter;
 using Application.Interfaces;
+using Application.Utils;
 using Application.ViewModels.SyllabusModels;
 using Application.ViewModels.TrainingClassModels;
 using Application.ViewModels.TrainingProgramModels;
 using Application.ViewModels.TrainingProgramModels.TrainingProgramView;
 using AutoMapper;
 using Domain.Entities;
+using Microsoft.AspNetCore.Http;
+using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -93,19 +97,19 @@ namespace Application.Services
         /// <returns>Training class view model</returns>
         public async Task<TrainingClassViewModel?> CreateTrainingClassAsync(CreateTrainingClassDTO createTrainingClassDTO)
         {
-            
-                var trainingClassObj = _mapper.Map<TrainingClass>(createTrainingClassDTO);
-                await _unitOfWork.TrainingClassRepository.AddAsync(trainingClassObj);
 
-                //set location
-                trainingClassObj.Location = await _unitOfWork.LocationRepository.GetByIdAsync(createTrainingClassDTO.LocationID) ?? throw new Exception("Invalid location Id");
+            var trainingClassObj = _mapper.Map<TrainingClass>(createTrainingClassDTO);
+            await _unitOfWork.TrainingClassRepository.AddAsync(trainingClassObj);
 
-                //set training program
-                trainingClassObj.TrainingProgram = await _unitOfWork.TrainingProgramRepository.GetByIdAsync(createTrainingClassDTO.TrainingProgramId) ?? throw new Exception("Invalid training program Id");
+            //set location
+            trainingClassObj.Location = await _unitOfWork.LocationRepository.GetByIdAsync(createTrainingClassDTO.LocationID) ?? throw new Exception("Invalid location Id");
 
-                return (await _unitOfWork.SaveChangeAsync() > 0) ? _mapper.Map<TrainingClassViewModel>(trainingClassObj) : null;
+            //set training program
+            trainingClassObj.TrainingProgram = await _unitOfWork.TrainingProgramRepository.GetByIdAsync(createTrainingClassDTO.TrainingProgramId) ?? throw new Exception("Invalid training program Id");
+
+            return (await _unitOfWork.SaveChangeAsync() > 0) ? _mapper.Map<TrainingClassViewModel>(trainingClassObj) : null;
         }
-         
+
 
         /// <summary>
         /// UpdateTrainingClassAsync update training class based on its id
@@ -114,122 +118,198 @@ namespace Application.Services
         /// <param className="updateTrainingCLassDTO">Update training class DTO</param>
         /// <returns>True if save successfully, false if save fail</returns>
         public async Task<bool> UpdateTrainingClassAsync(string trainingClassId, UpdateTrainingCLassDTO updateTrainingCLassDTO)
+        {
+            var trainingClassObj = await GetTrainingClassByIdAsync(trainingClassId);
+            _mapper.Map(updateTrainingCLassDTO, trainingClassObj);
+            //set location
+            trainingClassObj.Location = await _unitOfWork.LocationRepository.GetByIdAsync(updateTrainingCLassDTO.LocationID) ?? throw new NullReferenceException("Invalid location Id");
+
+            //set training program
+            trainingClassObj.TrainingProgram = await _unitOfWork.TrainingProgramRepository.GetByIdAsync(updateTrainingCLassDTO.TrainingProgramId) ?? throw new NullReferenceException("Invalid training program Id");
+
+            _unitOfWork.TrainingClassRepository.Update(trainingClassObj);
+            return (await _unitOfWork.SaveChangeAsync() > 0);
+        }
+
+        /// <summary>
+        /// This method find, return Training class and throw exception if can't find or get a mapping exception
+        /// </summary>
+        /// <param className="trainingClassId">Training class ID</param>
+        /// <returns>Training class</returns>
+        /// <exception cref="AutoMapperMappingException">When training class ID is not a guid</exception>
+        public async Task<TrainingClass> GetTrainingClassByIdAsync(string trainingClassId)
+        {
+            try
             {
-                var trainingClassObj = await GetTrainingClassByIdAsync(trainingClassId);
-                _mapper.Map(updateTrainingCLassDTO, trainingClassObj);
-                //set location
-                trainingClassObj.Location = await _unitOfWork.LocationRepository.GetByIdAsync(updateTrainingCLassDTO.LocationID) ?? throw new NullReferenceException("Invalid location Id");
-
-                //set training program
-                trainingClassObj.TrainingProgram = await _unitOfWork.TrainingProgramRepository.GetByIdAsync(updateTrainingCLassDTO.TrainingProgramId) ?? throw new NullReferenceException("Invalid training program Id");
-
-                _unitOfWork.TrainingClassRepository.Update(trainingClassObj);
-                return (await _unitOfWork.SaveChangeAsync() > 0);
-            }
-
-            /// <summary>
-            /// This method find, return Training class and throw exception if can't find or get a mapping exception
-            /// </summary>
-            /// <param className="trainingClassId">Training class ID</param>
-            /// <returns>Training class</returns>
-            /// <exception cref="AutoMapperMappingException">When training class ID is not a guid</exception>
-            public async Task<TrainingClass> GetTrainingClassByIdAsync(string trainingClassId)
-            {
-                try
+                var _classId = _mapper.Map<Guid>(trainingClassId);
+                var trainingClassObj = await _unitOfWork.TrainingClassRepository.GetByIdAsync(_classId);
+                if (trainingClassObj == null)
                 {
-                    var _classId = _mapper.Map<Guid>(trainingClassId);
-                    var trainingClassObj = await _unitOfWork.TrainingClassRepository.GetByIdAsync(_classId);
-                    if (trainingClassObj == null)
+                    throw new NullReferenceException("Incorrect Id");
+                }
+                return trainingClassObj;
+            }
+            catch (AutoMapperMappingException)
+            {
+                throw new AutoMapperMappingException("Id must be a guid");
+            }
+        }
+
+        /// <summary>
+        /// GetAllTrainingClassesAsync returns all training classes
+        /// </summary>
+        /// <returns>List of training class</returns>
+        public async Task<List<TrainingClassViewAllDTO>> GetAllTrainingClassesAsync()
+        {
+            var trainingClasses = _unitOfWork.TrainingClassRepository.GetTrainingClasses();
+            return trainingClasses;
+        }
+
+
+        public async Task<List<TrainingClassViewAllDTO>> FilterLocation(string[]? locationName, string branchName, DateTime? date1, DateTime? date2, string[]? classStatus, string[]? attendInClass, string? trainerName)
+        {
+            ICriterias<TrainingClassFilterDTO> locationCriteria = new LocationCriteria(locationName);
+            ICriterias<TrainingClassFilterDTO> dateCriteria = new DateCriteria(date1, date2);
+            ICriterias<TrainingClassFilterDTO> branchCriteria = new ClassBranchCriteria(branchName);
+            ICriterias<TrainingClassFilterDTO> statusCriteria = new StatusClassCriteria(classStatus);
+            ICriterias<TrainingClassFilterDTO> attendCriteria = new AttendeeCriteria(attendInClass);
+            ICriterias<TrainingClassFilterDTO> trainerCriteria = new CreatedByCriteria(trainerName);
+            List<TrainingClassViewAllDTO> filterList = new List<TrainingClassViewAllDTO>();
+            ICriterias<TrainingClassFilterDTO> andCirteria = new AndClassFilter(dateCriteria, locationCriteria, branchCriteria, statusCriteria, attendCriteria, trainerCriteria);
+            var getAll = _unitOfWork.TrainingClassRepository.GetTrainingClassesForFilter();
+            var filterResult = andCirteria.MeetCriteria(getAll);
+            foreach (var item in filterResult)
+            {
+                var filterResultFormat = _mapper.Map<TrainingClassViewAllDTO>(item);
+                
+                filterList.Add(filterResultFormat);
+               
+            }
+            return filterList;
+
+        }
+
+        public async Task<FinalTrainingClassDTO> GetFinalTrainingClassesAsync(Guid id)
+        {
+            FinalTrainingClassDTO finalDTO = new FinalTrainingClassDTO();
+            var trainingClassDetail = await _unitOfWork.TrainingClassRepository.GetByIdAsync(id);
+            var trainingClassViewAllDTO = _unitOfWork.TrainingClassRepository.GetTrainingClassesForFilter();
+            var trainingProgram = _unitOfWork.TrainingClassRepository.GetTrainingProgramByClassID(id);
+            var trainingClassDTO = _mapper.Map<TrainingClassViewDetail>(trainingClassDetail);
+            var detailProgramSyllabus = _unitOfWork.DetailTrainingProgramSyllabusRepository.GetDetailByClassID(trainingProgram.Id);
+            foreach (TrainingClassFilterDTO trainingClasses in trainingClassViewAllDTO)
+            {
+
+                AttendeeDTO attendeeDTO = new AttendeeDTO()
+                {
+                    Attendee = trainingClasses.Attendee
+                };
+                CreatedByDTO createdByDTO = new CreatedByDTO()
+                {
+                    creationDate = trainingClasses.CreationDate,
+                    userName = trainingClasses.CreatedBy
+                };
+                TrainingProgramViewForTrainingClassDetail trainingProgramViewModel = new TrainingProgramViewForTrainingClassDetail()
+                {
+                    programId = trainingProgram.Id,
+                    programName = trainingProgram.ProgramName,
+                    programDuration = new DurationView
                     {
-                        throw new NullReferenceException("Incorrect Id");
+                        TotalHours = trainingProgram.Duration
                     }
-                    return trainingClassObj;
-                }
-                catch (AutoMapperMappingException)
+
+                };
+                var syllabusDetail = await _unitOfWork.SyllabusRepository.FindAsync(x => x.Id == detailProgramSyllabus.SyllabusId);
+                foreach (Syllabus syllabus in syllabusDetail)
                 {
-                    throw new AutoMapperMappingException("Id must be a guid");
+                    var syllabusDTO = _mapper.Map<SyllabusViewForTrainingClassDetail>(syllabus);
+                    List<SyllabusViewForTrainingClassDetail> syllabusViewAllDTOs = new List<SyllabusViewForTrainingClassDetail>();
+                    syllabusViewAllDTOs.Add(syllabusDTO);
+                    finalDTO.syllabusDTO = syllabusViewAllDTOs;
                 }
-            }
-
-            /// <summary>
-            /// GetAllTrainingClassesAsync returns all training classes
-            /// </summary>
-            /// <returns>List of training class</returns>
-            public async Task<List<TrainingClassDTO>> GetAllTrainingClassesAsync()
-            {
-                var trainingClasses = _unitOfWork.TrainingClassRepository.GetTrainingClasses();
-                return trainingClasses;
-            }
-
-
-            public async Task<List<TrainingClassDTO>> FilterLocation(string[]? locationName, string branchName, DateTime? date1, DateTime? date2, string[]? classStatus, string[]? attendInClass)
-            {
-                ICriterias<TrainingClassDTO> locationCriteria = new LocationCriteria(locationName);
-                ICriterias<TrainingClassDTO> dateCriteria = new DateCriteria(date1, date2);
-                ICriterias<TrainingClassDTO> branchCriteria = new ClassBranchCriteria(branchName);
-                ICriterias<TrainingClassDTO> statusCriteria = new StatusClassCriteria(classStatus);
-                ICriterias<TrainingClassDTO> attendCriteria = new AttendeeCriteria(attendInClass);
-                ICriterias<TrainingClassDTO> andCirteria = new AndClassFilter(dateCriteria, locationCriteria, branchCriteria, statusCriteria, attendCriteria);
-                var getAll = _unitOfWork.TrainingClassRepository.GetTrainingClasses();
-                var filterResult = andCirteria.MeetCriteria(getAll);
-                return filterResult;
-            }
-
-            public async Task<FinalTrainingClassDTO> GetFinalTrainingClassesAsync(Guid id)
-            {
-                FinalTrainingClassDTO finalDTO = new FinalTrainingClassDTO();
-                var trainingClassDetail = await _unitOfWork.TrainingClassRepository.GetByIdAsync(id);
-                var trainingClassViewAllDTO = _unitOfWork.TrainingClassRepository.GetTrainingClasses();
-                var trainingProgram = _unitOfWork.TrainingClassRepository.GetTrainingProgramByClassID(id);
-                var trainingClassDTO = _mapper.Map<TrainingClassViewDetail>(trainingClassDetail);
-                var detailProgramSyllabus = _unitOfWork.DetailTrainingProgramSyllabusRepository.GetDetailByClassID(trainingProgram.Id);
-                foreach (TrainingClassDTO trainingClasses in trainingClassViewAllDTO)
+                finalDTO.TrainingClass = trainingClassDTO;
+                finalDTO.location = trainingClasses.LocationName;
+                finalDTO.FSU = trainingClasses.Branch;
+                finalDTO.general = new GeneralTrainingClassDTO
                 {
-
-                    AttendeeDTO attendeeDTO = new AttendeeDTO()
+                    class_date = new ClassDateDTO
                     {
-                        Attendee = trainingClasses.Attendee
-                    };
-                    CreatedByDTO createdByDTO = new CreatedByDTO()
-                    {
-                        creationDate = trainingClasses.CreationDate,
-                        userName = trainingClasses.CreatedBy
-                    };
-                    TrainingProgramViewForTrainingClassDetail trainingProgramViewModel = new TrainingProgramViewForTrainingClassDetail()
-                    {
-                        programId = trainingProgram.Id,
-                        programName = trainingProgram.ProgramName,
-                        programDuration = new DurationView
-                        {
-                            TotalHours = trainingProgram.Duration
-                        }
-
-                    };
-                    var syllabusDetail = await _unitOfWork.SyllabusRepository.FindAsync(x => x.Id == detailProgramSyllabus.SyllabusId);
-                    foreach (Syllabus syllabus in syllabusDetail)
-                    {
-                        var syllabusDTO = _mapper.Map<SyllabusViewForTrainingClassDetail>(syllabus);
-                        List<SyllabusViewForTrainingClassDetail> syllabusViewAllDTOs = new List<SyllabusViewForTrainingClassDetail>();
-                        syllabusViewAllDTOs.Add(syllabusDTO);
-                        finalDTO.syllabusDTO = syllabusViewAllDTOs;
+                        StartDate = trainingClasses.StartDate,
+                        EndDate = trainingClasses.EndDate,
                     }
-                    finalDTO.TrainingClass = trainingClassDTO;
-                    finalDTO.location = trainingClasses.LocationName;
-                    finalDTO.FSU = trainingClasses.Branch;
-                    finalDTO.general = new GeneralTrainingClassDTO
-                    {
-                        class_date = new ClassDateDTO
-                        {
-                            StartDate = trainingClasses.StartDate,
-                            EndDate = trainingClasses.EndDate,
-                        }
-                    };
-                    finalDTO.attendeeDTO = attendeeDTO;
-                    finalDTO.createdDTO = createdByDTO;
-                    finalDTO.programModel = trainingProgramViewModel;
-                }
-
-                return finalDTO;
+                };
+                finalDTO.attendeeDTO = attendeeDTO;
+                finalDTO.createdDTO = createdByDTO;
+                finalDTO.programModel = trainingProgramViewModel;
             }
+
+            return finalDTO;
+        }
+
+        public async Task<List<TrainingClass>> ImportExcel(IFormFile file)
+        {
+            // chỉ nhận các file extension của excel
+            var supportedTypes = new[] { "xls", "xlsx" };
+            var fileExt = System.IO.Path.GetExtension(file.FileName).Substring(1);
+            if (!supportedTypes.Contains(fileExt))
+            {
+                throw new Exception("You can only upload Excel files (.xls / .xlsx");
+            }
+
+            // license của EPPlus
+            ExcelPackage.LicenseContext = OfficeOpenXml.LicenseContext.NonCommercial;
+
+            try
+            {
+                var list = new List<TrainingClass>();
+                using (var stream = new MemoryStream())
+                {
+                    await file.CopyToAsync(stream);
+                    using (var package = new ExcelPackage(stream))
+                    {
+                        ExcelWorksheet worksheet = package.Workbook.Worksheets[0];
+                        var rowcount = worksheet.Dimension.Rows;
+
+                        for (int row = 2; row <= rowcount; row++)
+                        {
+                            try
+                            {
+                                List<Guid> guidList = new List<Guid>();
+                                guidList.Add(new Guid(worksheet.Cells[row, 11].Value.ToString()));
+                                guidList.Add(new Guid(worksheet.Cells[row, 9].Value.ToString()));
+                                guidList.Add(new Guid(worksheet.Cells[row, 13].Value.ToString()));
+                                list.Add(new TrainingClass
+                                {
+                                    Name = worksheet.Cells[row, 2].Value.ToString().Trim(),
+                                    StartTime = DateTime.Parse(worksheet.Cells[row, 3].Value.ToString().Trim()),
+                                    EndTime = DateTime.Parse(worksheet.Cells[row, 4].Value.ToString().Trim()),
+                                    Code = worksheet.Cells[row, 5].Value.ToString().Trim(),
+                                    Duration = Double.Parse(worksheet.Cells[row, 6].Value.ToString().Trim()),
+                                    Attendee = worksheet.Cells[row, 7].Value.ToString().Trim(),
+                                    Branch = worksheet.Cells[row, 8].Value.ToString().Trim(),
+                                    LocationID = guidList[1],
+                                    StatusClassDetail = worksheet.Cells[row, 10].Value.ToString().Trim(),
+                                    TrainingProgramId = guidList[0],
+                                    CreationDate = DateTime.Parse(worksheet.Cells[row, 12].Value.ToString().Trim()),
+                                    CreatedBy = guidList[2],
+                                    IsDeleted = bool.Parse(worksheet.Cells[row, 14].Value.ToString().Trim()),
+                                });
+                            }
+                            catch (NullReferenceException)
+                            {
+                                throw new Exception("Excel file is missing some data");
+                            }
+                        }
+                        await _unitOfWork.TrainingClassRepository.AddRangeAsync(list);
+                        await _unitOfWork.SaveChangeAsync();
+                    }
+                    return list;
+                }
+            }
+            catch (Exception)
+            {
+                throw new Exception("Excel file has invalid data");
+            }
+        }
     }
 }

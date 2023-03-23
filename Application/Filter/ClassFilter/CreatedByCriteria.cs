@@ -9,22 +9,21 @@ using System.Threading.Tasks;
 
 namespace Application.Filter.ClassFilter
 {
-    public class ClassBranchCriteria : ICriterias<TrainingClassFilterDTO>
+    public class CreatedByCriteria : ICriterias<TrainingClassFilterDTO>
     {
-        string? branchName;
-        public ClassBranchCriteria(string? branchName)
+        public string? createdBy { get; set; } 
+        public CreatedByCriteria(string? createdBy)
         {
-            this.branchName = branchName;
+            this.createdBy = createdBy;
         }
-
         public List<TrainingClassFilterDTO> MeetCriteria(List<TrainingClassFilterDTO> classList)
         {
-            if (!branchName.IsNullOrEmpty())
+            if (!createdBy.IsNullOrEmpty())
             {
                 List<TrainingClassFilterDTO> trainingClassDTOs = new List<TrainingClassFilterDTO>();
                 foreach (TrainingClassFilterDTO classDTO in classList)
                 {
-                    if (classDTO.Branch.ToLower().Equals(branchName.ToLower()))
+                    if (classDTO.CreatedBy.ToLower().Equals(createdBy.ToLower()))
                     {
                         trainingClassDTOs.Add(classDTO);
                     }

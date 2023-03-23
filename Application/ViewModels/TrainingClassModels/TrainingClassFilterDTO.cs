@@ -7,8 +7,9 @@ using System.Threading.Tasks;
 
 namespace Application.ViewModels.TrainingClassModels
 {
-    public partial class TrainingClassDTO
+    public partial class TrainingClassFilterDTO
     {
+        public Guid ClassID { get; set; } = default!;
         public string Name { get; set; } = default!;
         public string Code { get; set; } = default!;
         public string CreatedBy { get; set; } = default!;

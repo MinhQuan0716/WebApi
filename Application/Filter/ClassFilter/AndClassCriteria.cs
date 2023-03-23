@@ -8,29 +8,32 @@ using System.Threading.Tasks;
 
 namespace Application.Filter.ClassFilter
 {
-    public class AndClassFilter : ICriterias<TrainingClassDTO>
+    public class AndClassFilter : ICriterias<TrainingClassFilterDTO>
     {
-        private ICriterias<TrainingClassDTO> firstCriterias;
-        private ICriterias<TrainingClassDTO> secondCriterias;
-        private ICriterias<TrainingClassDTO> thirdCriteria;
-        private ICriterias<TrainingClassDTO> fourthCriteria;
-        private ICriterias<TrainingClassDTO> fifthCriteria;
-        public AndClassFilter(ICriterias<TrainingClassDTO> firstCriteria, ICriterias<TrainingClassDTO> secondCriteria, ICriterias<TrainingClassDTO> thirdCriteria, ICriterias<TrainingClassDTO> fourthCriteria, ICriterias<TrainingClassDTO> fifthCriteria)
+        private ICriterias<TrainingClassFilterDTO> firstCriterias;
+        private ICriterias<TrainingClassFilterDTO> secondCriterias;
+        private ICriterias<TrainingClassFilterDTO> thirdCriteria;
+        private ICriterias<TrainingClassFilterDTO> fourthCriteria;
+        private ICriterias<TrainingClassFilterDTO> fifthCriteria;
+        private ICriterias<TrainingClassFilterDTO> sixthCriteria;
+        public AndClassFilter(ICriterias<TrainingClassFilterDTO> firstCriteria, ICriterias<TrainingClassFilterDTO> secondCriteria, ICriterias<TrainingClassFilterDTO> thirdCriteria, ICriterias<TrainingClassFilterDTO> fourthCriteria, ICriterias<TrainingClassFilterDTO> fifthCriteria, ICriterias<TrainingClassFilterDTO> sixthCriteria)
         {
             this.firstCriterias = firstCriteria;
             this.secondCriterias = secondCriteria;
             this.thirdCriteria = thirdCriteria;
             this.fourthCriteria = fourthCriteria;
             this.fifthCriteria = fifthCriteria;
+            this.sixthCriteria = sixthCriteria;
         }
 
-        public List<TrainingClassDTO> MeetCriteria(List<TrainingClassDTO> classlist)
+        public List<TrainingClassFilterDTO> MeetCriteria(List<TrainingClassFilterDTO> classlist)
         {
-            List<TrainingClassDTO> firstResultList = firstCriterias.MeetCriteria(classlist);
-            List<TrainingClassDTO> secondResultList = secondCriterias.MeetCriteria(firstResultList);
-            List<TrainingClassDTO> thirdResultList = thirdCriteria.MeetCriteria(secondResultList);
-            List<TrainingClassDTO> fourthResultList = fourthCriteria.MeetCriteria(thirdResultList);
-            return fifthCriteria.MeetCriteria(fourthResultList);
+            List<TrainingClassFilterDTO> firstResultList = firstCriterias.MeetCriteria(classlist);
+            List<TrainingClassFilterDTO> secondResultList = secondCriterias.MeetCriteria(firstResultList);
+            List<TrainingClassFilterDTO> thirdResultList = thirdCriteria.MeetCriteria(secondResultList);
+            List<TrainingClassFilterDTO> fourthResultList = fourthCriteria.MeetCriteria(thirdResultList);
+         List<TrainingClassFilterDTO> fifthResultList= fifthCriteria.MeetCriteria(fourthResultList);
+            return sixthCriteria.MeetCriteria(fifthResultList);
         }
     }
 }

@@ -107,7 +107,7 @@ namespace WebAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> FilterResult(TrainingClassFilterModel trainingClassFilterModel)
         {
-            var fiterResult = await _trainingClassService.FilterLocation(trainingClassFilterModel.locationName, trainingClassFilterModel.branchName, trainingClassFilterModel.date1, trainingClassFilterModel.date2, trainingClassFilterModel.classStatus, trainingClassFilterModel.attendInClass);
+            var fiterResult = await _trainingClassService.FilterLocation(trainingClassFilterModel.locationName, trainingClassFilterModel.branchName, trainingClassFilterModel.date1, trainingClassFilterModel.date2, trainingClassFilterModel.classStatus, trainingClassFilterModel.attendInClass,trainingClassFilterModel.trainer);
             if (fiterResult.IsNullOrEmpty())
             {
                 return NoContent();
@@ -145,6 +145,18 @@ namespace WebAPI.Controllers
             {
                 return BadRequest("SoftRemove class fail: " + ex.Message);
             }
+        }
+        [HttpPost]
+      /*  [Authorize]
+        [ClaimRequirement(nameof(PermissionItem.ClassPermission), nameof(PermissionEnum.Create))]*/
+        public async Task<IActionResult> ImportTrainingClass(IFormFile file)
+        {
+            var addSuccess = await _trainingClassService.ImportExcel(file);
+            if (addSuccess != null)
+            {
+                return Ok();
+            }
+            return BadRequest();
         }
 
     }

@@ -39,29 +39,51 @@ namespace Infrastructures.Repositories
             return getAllTrainingProgram;
 
         }
-
-        public List<TrainingClassDTO> GetTrainingClasses()
+        public List<TrainingClassFilterDTO> GetTrainingClassesForFilter()
         {
             var getAllTrainingClass = _dbContext.TrainingClasses
-                                   .Select(t => new TrainingClassDTO
-                                   {
-                                       Name = t.Name,
-                                       LocationName = t.Location.LocationName,
-                                       CreationDate = t.CreationDate,
-                                       Code = t.Code,
-                                       Branch = t.Branch,
-                                       StartDate = t.StartTime,
-                                       EndDate = t.EndTime,
-                                       Attendee = t.Attendee,
-                                       ClassDuration = new DurationView
-                                       {
-                                           TotalHours = t.Duration
-                                       },
-                                       Status = t.StatusClassDetail,
-                                       CreatedBy = string.Join(",", _dbContext.Users.Where(x => x.Id == t.CreatedBy).Select(u => u.UserName))
-                                   }).ToList();
-                         return getAllTrainingClass;
-            }
+                                     .Select(t => new TrainingClassFilterDTO
+                                     {
+                                         ClassID=t.Id,
+                                         Name = t.Name,
+                                         LocationName = t.Location.LocationName,
+                                         CreationDate = t.CreationDate,
+                                         Code = t.Code,
+                                         Branch = t.Branch,
+                                         StartDate = t.StartTime,
+                                         EndDate = t.EndTime,
+                                         Attendee = t.Attendee,
+                                         ClassDuration = new DurationView
+                                         {
+                                             TotalHours = t.Duration
+                                         },
+                                         Status = t.StatusClassDetail,
+                                         CreatedBy = string.Join(",", _dbContext.Users.Where(x => x.Id == t.CreatedBy).Select(u => u.UserName))
+                                     }).ToList();
+            return getAllTrainingClass;
+        }
+
+     public    List<TrainingClassViewAllDTO> GetTrainingClasses()
+        {
+            var getAllTrainingClass = _dbContext.TrainingClasses
+                                     .Select(t => new TrainingClassViewAllDTO
+                                     {
+                                         id=t.Id,
+                                        className = t.Name,
+                                         location = t.Location.LocationName,
+                                        createdOn = t.CreationDate,
+                                         classCode = t.Code,
+                                         fsu = t.Branch,
+                                         attendee = t.Attendee,
+                                         classDuration = new DurationView
+                                         {
+                                             TotalHours = t.Duration
+                                         },
+                                         createdBy = string.Join(",", _dbContext.Users.Where(x => x.Id == t.CreatedBy).Select(u => u.UserName))
+                                     }).ToList();
+            return getAllTrainingClass;
+        }
+
         /// <summary>
         /// SearchClassByName find and return training classes
         /// which name are the same as the name parameter
@@ -73,5 +95,7 @@ namespace Infrastructures.Repositories
             var nameClass = _dbContext.TrainingClasses.Where(x => x.Name.ToLower().Equals(name.ToLower())).ToList();
             return nameClass;
         }
+
+       
     }
 }

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Application.Filter.ClassFilter
 {
-    public class AttendeeCriteria : ICriterias<TrainingClassDTO>
+    public class AttendeeCriteria : ICriterias<TrainingClassFilterDTO>
     {
         public string[]? attendInClass;
         public AttendeeCriteria(string[]? attendInClass)
@@ -17,15 +17,15 @@ namespace Application.Filter.ClassFilter
             this.attendInClass = attendInClass;
         }
 
-        public List<TrainingClassDTO> MeetCriteria(List<TrainingClassDTO> classList)
+        public List<TrainingClassFilterDTO> MeetCriteria(List<TrainingClassFilterDTO> classList)
         {
 
             if (!attendInClass.IsNullOrEmpty())
             {
-                List<TrainingClassDTO> classData = new List<TrainingClassDTO>();
+                List<TrainingClassFilterDTO> classData = new List<TrainingClassFilterDTO>();
                 for (int i = 0; i <= attendInClass.Length; i++)
                 {
-                    foreach (TrainingClassDTO item in classList)
+                    foreach (TrainingClassFilterDTO item in classList)
                     {
                         if (attendInClass[i].ToLower().Equals(item.Status.ToLower()))
                         {
