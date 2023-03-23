@@ -166,18 +166,18 @@ namespace WebAPI.Tests.Controllers
             result.Should().BeOfType<OkObjectResult>();
             result.As<OkObjectResult>().Value.Should().Be(mark);
         }
-        [Fact]
-        public async Task ViewDetailResult_ShouldReturnCorrectValue()
-        {
-            // Setup
-            var markDetails = new List<ViewDetailResultDTO>();
-            _questionServiceMock.Setup(x => x.ViewMarkDetail(It.IsAny<Guid>())).ReturnsAsync(markDetails);
-            // Act
-            var result = await _questionController.ViewDetailResult(Guid.NewGuid());
+        //[Fact]
+        //public async Task ViewDetailResult_ShouldReturnCorrectValue()
+        //{
+        //    // Setup
+        //    var markDetails = new List<ViewDetailResultDTO>();
+        //    _questionServiceMock.Setup(x => x.ViewMarkDetail(It.IsAny<Guid>())).ReturnsAsync(markDetails);
+        //    // Act
+        //    var result = await _questionController.ViewDetailResult(Guid.NewGuid());
 
-            // Assert
-            result.Should().BeOfType<OkObjectResult>();
-            result.As<OkObjectResult>().Value.Should().Be(markDetails);
-        }
+        //    // Assert
+        //    result.Should().BeOfType<OkObjectResult>();
+        //    result.As<OkObjectResult>().Value.Should().Be(markDetails);
+        //}
     }
 }

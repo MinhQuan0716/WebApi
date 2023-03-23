@@ -212,6 +212,16 @@ namespace Application.Services
             }
             if (user.RoleId == 4)
             {
+                DoingQuizDTO doingQuizDTOTrainee = new DoingQuizDTO()
+                {
+                    NumberOfQuestion = number.NumberOfQuiz,
+                    AnswerQuizQuestionDTOs = listQuestionForTrainee
+                };
+                lastquiz = doingQuizDTOTrainee;
+            }
+            else
+            {
+             
                 DoingQuizDTO doingQuizDTOTrainer = new DoingQuizDTO()
                 {
 
@@ -219,15 +229,6 @@ namespace Application.Services
                     QuizQuestionDTOs = listQuestionForTrainer,
                 };
                 lastquiz = doingQuizDTOTrainer;
-            }
-            else
-            {
-                DoingQuizDTO doingQuizDTOTrainee = new DoingQuizDTO()
-                {
-                    NumberOfQuestion = number.NumberOfQuiz,
-                    AnswerQuizQuestionDTOs = listQuestionForTrainee
-                };
-                lastquiz = doingQuizDTOTrainee;
             }
 
             return lastquiz;
@@ -307,17 +308,29 @@ namespace Application.Services
             {
                 throw new Exception("USer not join in this class");
             }
-            int correct_answer = _unitOfWork.SubmitQuizRepository.CheckTrueAnswer(user.Id, QuizID);
+            double correct_answer = _unitOfWork.SubmitQuizRepository.CheckTrueAnswer(user.Id, QuizID);
             var quiz = await _unitOfWork.QuizRepository.GetByIdAsync(QuizID);
             if (quiz is null) {
-                throw new Exception("Can Get The Quiz");
+                throw new Exception("Cannot Get The Quiz");
             }
-            int number_of_question = quiz.NumberOfQuiz;
-            double checkNum = (correct_answer / number_of_question) * 10;
+           double number_of_question = quiz.NumberOfQuiz;
+            double cont = 0; 
+                cont = (correct_answer /
+                number_of_question);
+            double checkNum = cont * 10;
             int result = (int)checkNum;
+            //string check11 = "" + checkNum;
 
+            //int result = int.Parse(check11.Substring(0));
+            //if (check11.Length > 1)
+            //{
+            //    if (int.Parse(check11.Substring(1)) == 0)
+            //    {
+            //        result = int.Parse(check11.Substring(0, 1));
+            //    }
+            //}
             await AddGrading(quiz.LectureID, DetailTrainingDetailTrainingClassParticipateId, result);
-            return result;
+            return checkNum;
         }
 
 
@@ -389,6 +402,7 @@ namespace Application.Services
 
 
         }
+
 
     }
 }
