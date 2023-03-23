@@ -258,7 +258,7 @@ namespace Application.Services
           
         }
         #endregion
-        public Task<List<Syllabus>> GetByName(string name)
+        public Task<List<SyllabusViewAllDTO>> GetByName(string name)
         {
 
             var result = _unitOfWork.SyllabusRepository.SearchByName(name);

@@ -108,9 +108,9 @@ namespace WebAPI.Controllers
 
         //}
 
-        [HttpGet("detail/{name}")]
+        [HttpGet]
         [Authorize]
-        public async Task<IActionResult> Get(string name)
+        public async Task<IActionResult> SearchByName(string name)
         {
             var result = await _syllabusService.GetByName(name);
             if (result != null)

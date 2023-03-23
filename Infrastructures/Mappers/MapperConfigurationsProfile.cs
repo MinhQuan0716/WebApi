@@ -114,9 +114,9 @@ namespace Infrastructures.Mappers
                 .ForMember(x => x.TechnicalRequirements, src => src.MapFrom(x => x.TechRequirements))
                 .ReverseMap();
             CreateMap<Syllabus, SyllabusViewAllDTO>()
-                .ForMember(x=>x.SyllabusID,src=>src.MapFrom(x=>x.Id))
-                .ForMember(x=>x.Name,src=>src.MapFrom(x=>x.SyllabusName))
-                .ForMember(x=>x.syllabusStatus,src=>src.MapFrom(x=>x.Status))
+                .ForMember(x=>x.ID,src=>src.MapFrom(x=>x.Id))
+                .ForMember(x=>x.SyllabusName,src=>src.MapFrom(x=>x.SyllabusName))
+                //.ForMember(x=>x.syllabusStatus,src=>src.MapFrom(x=>x.Status))
                 .ForMember(x=>x.Duration,src=>src.MapFrom(x=>x.Duration))
                 .ReverseMap();
             CreateMap<SyllabusViewForTrainingClassDetail,Syllabus>()
