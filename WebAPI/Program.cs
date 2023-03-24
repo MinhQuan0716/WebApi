@@ -115,8 +115,6 @@ try
     //RecurringJob.AddOrUpdate<IAssignmentService>(a => a.CheckOverDue(), "* * * * *");
     await app.WaitForShutdownAsync();
 
-    app.Run();
-
 
 
 }
