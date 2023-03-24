@@ -19,5 +19,7 @@ namespace Application.ViewModels.TrainingClassModels
         public DateTime? date2 { get; set; }
         public string[]? classStatus { get; set; }
         public string[]? attendInClass { get; set; }
+        public string[]? classTime { get; set; }    
+        public string? trainer { get; set; }
     }
 }

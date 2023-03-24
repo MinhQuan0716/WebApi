@@ -3,6 +3,7 @@ using Application.Interfaces;
 using Application.Repositories;
 using Application.ViewModels.SyllabusModels;
 using Application.ViewModels.SyllabusModels.FixViewSyllabus;
+using Application.ViewModels.TrainingProgramModels.TrainingProgramView;
 using AutoMapper;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -50,9 +51,23 @@ namespace Infrastructures.Repositories
             else return null;
         }
 
-        public async Task<List<Syllabus>> SearchByName(string name)
+        public async Task<List<SyllabusViewAllDTO>> SearchByName(string name)
         {
-            var result = _dbContext.Syllabuses.Where(x => x.SyllabusName.ToUpper().Contains(name)).ToList();
+            var result = _dbContext.Syllabuses
+                .Where(x => x.SyllabusName.ToUpper().Contains(name))
+                .Select(s => new SyllabusViewAllDTO
+                {
+                    ID = s.Id,
+                    SyllabusName = s.SyllabusName,
+                    Code = s.Code,
+                    CreatedOn = s.CreationDate,
+                    CreatedBy = s.User.UserName,
+                    Duration = new DurationView() { TotalHours = s.Duration },
+                    OutputStandard = s.Units.SelectMany(u => u.DetailUnitLectures)
+                                 .Select(dul => dul.Lecture.OutputStandards)
+                                 .ToList()
+                }).ToList();
+
             return result;
 
 
@@ -65,14 +80,15 @@ namespace Infrastructures.Repositories
      .Include(s => s.Units)
          .ThenInclude(u => u.DetailUnitLectures)
              .ThenInclude(dul => dul.Lecture)
+             .Where(s=>s.IsDeleted== false)
      .Select(s => new SyllabusViewAllDTO
      {
-         SyllabusID = s.Id,
-         Name = s.SyllabusName,
+         ID = s.Id,
+         SyllabusName = s.SyllabusName,
          Code = s.Code,
          CreatedOn = s.CreationDate,
          CreatedBy = s.User.UserName,
-         Duration = s.Duration,
+         Duration = new DurationView() { TotalHours = s.Duration},
          OutputStandard = s.Units.SelectMany(u => u.DetailUnitLectures)
                                  .Select(dul => dul.Lecture.OutputStandards)
                                  .ToList()

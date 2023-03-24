@@ -87,7 +87,7 @@ namespace WebAPI.Tests.Controllers
         public async Task GetAllTraningClass_ReturnsOk_WhenListResultIsNotNull()
         {
             // Arrange
-            List<TrainingClassDTO> trainingClasses = _fixture.CreateMany<TrainingClassDTO>(3).ToList();
+            List<TrainingClassViewAllDTO> trainingClasses = _fixture.CreateMany<TrainingClassViewAllDTO>(3).ToList();
             _trainingClassServiceMock.Setup(s => s.GetAllTrainingClassesAsync()).ReturnsAsync(trainingClasses);
 
             // Act
@@ -105,12 +105,12 @@ namespace WebAPI.Tests.Controllers
             string[] statusClass = { "New" };
             string[] attendee = { "None" };
             string branchName = "new";
-            var nonEmptyResult = _fixture.Build<TrainingClassDTO>()
+            string trainerName = "New";
+            var nonEmptyResult = _fixture.Build<TrainingClassViewAllDTO>()
                 .CreateMany(10).ToList();
             var mockData = _fixture.Build<TrainingClassFilterModel>().Create();
 
-            _trainingClassServiceMock.Setup(x => x.FilterLocation(locationName, branchName, date1, date2, attendee, statusClass)).ReturnsAsync(nonEmptyResult);
-
+            _trainingClassServiceMock.Setup(x => x.FilterLocation(locationName, branchName, date1, date2, statusClass, attendee, trainerName)).ReturnsAsync(nonEmptyResult);
             // Act
             var result = await _trainingClassController.FilterResult(mockData);
 
@@ -127,7 +127,8 @@ namespace WebAPI.Tests.Controllers
             string[] statusClass = { "Active" };
             string[] attendee = { "50" };
             string branchName = "stringstring";
-            var nonEmptyResult = _fixture.Build<TrainingClassDTO>()
+            string trainerName = "Name";
+            var nonEmptyResult = _fixture.Build<TrainingClassViewAllDTO>()
                 .CreateMany(10).ToList();
             var mockData = new TrainingClassFilterModel()
             {
@@ -136,9 +137,10 @@ namespace WebAPI.Tests.Controllers
                 date1 = date1,
                 date2 = date2,
                 attendInClass = attendee,
-                classStatus = statusClass
+                classStatus = statusClass,
+                trainer=trainerName
             };
-            _trainingClassServiceMock.Setup(x => x.FilterLocation(locationName, branchName, date1, date2, statusClass, attendee)).ReturnsAsync(nonEmptyResult);
+            _trainingClassServiceMock.Setup(x => x.FilterLocation(locationName, branchName, date1, date2, statusClass, attendee,trainerName)).ReturnsAsync(nonEmptyResult);
 
             // Act
             var result = await _trainingClassController.FilterResult(mockData);
@@ -146,7 +148,7 @@ namespace WebAPI.Tests.Controllers
             // Assert
             var okObjectResult = Assert.IsType<OkObjectResult>(result);
             // var okFilterResult = Assert.IsType<OkObjectResult>(filterResult);
-            var model = Assert.IsAssignableFrom<IEnumerable<TrainingClassDTO>>(okObjectResult.Value);
+            var model = Assert.IsAssignableFrom<IEnumerable<TrainingClassViewAllDTO>>(okObjectResult.Value);
         }
     }
 }

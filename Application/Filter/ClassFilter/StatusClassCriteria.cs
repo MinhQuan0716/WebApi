@@ -9,21 +9,21 @@ using System.Threading.Tasks;
 
 namespace Application.Filter.ClassFilter
 {
-    public class StatusClassCriteria : ICriterias<TrainingClassDTO>
+    public class StatusClassCriteria : ICriterias<TrainingClassFilterDTO>
     {
         public string[]? statusClass;
         public StatusClassCriteria(string[]? statusClass)
         {
             this.statusClass = statusClass;
         }
-        public List<TrainingClassDTO> MeetCriteria(List<TrainingClassDTO> classList)
+        public List<TrainingClassFilterDTO> MeetCriteria(List<TrainingClassFilterDTO> classList)
         {
             if (!statusClass.IsNullOrEmpty())
             {
-                List<TrainingClassDTO> classData = new List<TrainingClassDTO>();
+                List<TrainingClassFilterDTO> classData = new List<TrainingClassFilterDTO>();
                 for (int i = 0; i <= statusClass.Length; i++)
                 {
-                    foreach (TrainingClassDTO item in classList)
+                    foreach (TrainingClassFilterDTO item in classList)
                     {
                         if (statusClass[i].ToLower().Equals(item.Status.ToLower()))
                         {

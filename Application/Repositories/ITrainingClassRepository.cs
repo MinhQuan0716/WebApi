@@ -11,7 +11,8 @@ namespace Application.Repositories
     public interface ITrainingClassRepository : IGenericRepository<TrainingClass>
     {
         public List<TrainingClass> SearchClassByName(string name);
-        public List<TrainingClassDTO> GetTrainingClasses();
-       TrainingProgram GetTrainingProgramByClassID(Guid id);
+        public List<TrainingClassFilterDTO> GetTrainingClassesForFilter();
+        public List<TrainingClassViewAllDTO> GetTrainingClasses();
+        TrainingProgram GetTrainingProgramByClassID(Guid id);
     }
 }

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Application.Filter.ClassFilter
 {
-    public class DateCriteria : ICriterias<TrainingClassDTO>
+    public class DateCriteria : ICriterias<TrainingClassFilterDTO>
     {
         public DateTime? date1;
         public DateTime? date2;
@@ -18,12 +18,12 @@ namespace Application.Filter.ClassFilter
             this.date2 = date2;
         }
 
-        public List<TrainingClassDTO> MeetCriteria(List<TrainingClassDTO> classList)
+        public List<TrainingClassFilterDTO> MeetCriteria(List<TrainingClassFilterDTO> classList)
         {
             if (date1 != null && date2 != null)
             {
-                List<TrainingClassDTO> trainingClassDTOs = new List<TrainingClassDTO>();
-                foreach (TrainingClassDTO item in classList)
+                List<TrainingClassFilterDTO> trainingClassDTOs = new List<TrainingClassFilterDTO>();
+                foreach (TrainingClassFilterDTO item in classList)
                 {
                     if (date1 <= item.StartDate && item.EndDate <= date2)
                     {
@@ -35,8 +35,8 @@ namespace Application.Filter.ClassFilter
             }
             else if (date1 != null && date2 == null)
             {
-                List<TrainingClassDTO> trainingClassDTOs = new List<TrainingClassDTO>();
-                foreach (TrainingClassDTO item in classList)
+                List<TrainingClassFilterDTO> trainingClassDTOs = new List<TrainingClassFilterDTO>();
+                foreach (TrainingClassFilterDTO item in classList)
                 {
                     if (date1 <= item.StartDate)
                     {
@@ -48,8 +48,8 @@ namespace Application.Filter.ClassFilter
             }
             else if (date1 == null && date2 != null)
             {
-                List<TrainingClassDTO> trainingClassDTOs = new List<TrainingClassDTO>();
-                foreach (TrainingClassDTO item in classList)
+                List<TrainingClassFilterDTO> trainingClassDTOs = new List<TrainingClassFilterDTO>();
+                foreach (TrainingClassFilterDTO item in classList)
                 {
                     if (date1 <= item.StartDate)
                     {

@@ -32,15 +32,14 @@ namespace WebAPI.Tests.Controllers
             //_fixture.Behaviors.OfType<ThrowingRecursionBehavior>().ToList()
             //   .ForEach(b => _fixture.Behaviors.Remove(b));
             //_fixture.Behaviors.Add(new OmitOnRecursionBehavior());
-            List<Syllabus> mockData_1 = _fixture.Build<Syllabus>().Without(x => x.DetailTrainingProgramSyllabus).Without(u => u.Units).Without(u => u.User).CreateMany(5).ToList();
-            await _dbContext.AddRangeAsync(mockData_1);
-            await _dbContext.SaveChangesAsync();
+    List<SyllabusViewAllDTO> mockData_1 = _fixture.Build<SyllabusViewAllDTO>().CreateMany(2).ToList();
+            
 
             string name1 = "anything";
             //string name2 = "this shout return nothing";
             _syllabusServiceMock.Setup(s => s.GetByName(name1)).ReturnsAsync(mockData_1);
             //_syllabusServiceMock.Setup(s => s.GetByName(name2)).ReturnsAsync(mockData_2);
-            var result = await _syllabusController.Get(name1);
+            var result = await _syllabusController.SearchByName(name1);
 
             result.Should().BeOfType<OkObjectResult>();
         }
