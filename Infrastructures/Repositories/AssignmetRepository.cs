@@ -19,6 +19,24 @@ namespace Infrastructures.Repositories
             _dbContext = context;
         }
 
+        public async Task AddProcedure()
+        {
+            await _dbContext.Database.ExecuteSqlRawAsync(@"CREATE PROCEDURE [dbo].[Assignments_Update_Overdue]
+                AS
+                BEGIN
+                    SET NOCOUNT ON;
+                    Update [Assignments]
+                    Set [IsOverDue] = 'True'
+                    Where [DeadLine] < GETDATE() AND [IsDeleted] ='False' AND [IsOverDue] = 'False'
+                END");
+        }
+
+        public async Task<bool> CheckExistedProcedure()
+        {
+            string query = String.Format(@"SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Assignments_Update_Overdue]') AND type in (N'P', N'PC')");
+            return await _dbContext.Database.SqlQueryRaw<string>(query).AnyAsync();
+        }
+
         public async Task CheckOverdue()
         {
             await _dbContext.Database.ExecuteSqlRawAsync($"EXEC [Assignments_Update_Overdue];");

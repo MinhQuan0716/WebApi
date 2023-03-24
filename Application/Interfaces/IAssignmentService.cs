@@ -20,5 +20,8 @@ namespace Application.Interfaces
 
         Task<bool> CreateAssignment(AssignmentViewModel assignmentViewModel);
         Task<FileEntity> DownLoad(Guid assignmentID);
+
+        Task AddProcedure();
+        Task<bool> CheckExistedProcedure();
     }
 }

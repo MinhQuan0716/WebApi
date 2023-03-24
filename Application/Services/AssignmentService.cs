@@ -100,6 +100,21 @@ namespace Application.Services
             var fileEntity = assignment.FileName.GetFileEntity();
             return fileEntity;
         }
+
+        public async Task AddProcedure()
+        {
+            var isExisted= await CheckExistedProcedure();
+            if (isExisted==false) 
+            {
+                await _unitOfWork.AssignmentRepository.AddProcedure();
+            }
+            
+        }
+
+        public async Task<bool> CheckExistedProcedure()
+        {
+            return await _unitOfWork.AssignmentRepository.CheckExistedProcedure();
+        }
     }
 
 
