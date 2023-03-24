@@ -99,7 +99,7 @@ namespace WebAPI.Controllers
             var result = await _userService.SendResetPassword(email);
             if (!result.IsNullOrEmpty())
             {
-                return Ok(result);
+                return Ok();
             }
             else return BadRequest("Can Not found User");
         }
