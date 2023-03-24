@@ -1,4 +1,5 @@
-﻿using Domain.Entities;
+﻿using Application.ViewModels.UserViewModels;
+using Domain.Entities;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -51,6 +52,7 @@ namespace Application.Utils
             var tokenHandler = new JwtSecurityTokenHandler();
             if (tokenHandler.CanReadToken(token))
             {
+                
                 var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out SecurityToken securityToken);
                 if (securityToken is not JwtSecurityToken jwtSecurityToken || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
                     throw new SecurityTokenException("Invalid token");
@@ -60,6 +62,40 @@ namespace Application.Utils
             else return null;
             
 
+        }
+
+        public static JwtDTO VerifyToken(this string? token, string secretKey)
+        {
+            var tokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateAudience = false,
+                ValidateIssuer = false,
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey)),
+                ValidateLifetime = false
+            };
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            if (tokenHandler.CanReadToken(token))
+            {
+
+                var principal = tokenHandler.ReadJwtToken(token).Claims;
+
+                var result = new JwtDTO
+                {
+                    UserId = principal.First(x => x.Type == "UserId").Value,
+                    ApplicationPermission = principal.First(x => x.Type == "ApplicationPermission").Value,
+                    AttendancePermission = principal.First(x => x.Type == "AttendancePermission").Value,
+                    ClassPermission = principal.First(x => x.Type == "ClassPermission").Value,
+                    LearningMaterial = principal.First(x => x.Type == "LearningMaterial").Value,
+                    SyllabusPermission = principal.First(x => x.Type == "SyllabusPermission").Value,
+                    TrainingMaterialPermission = principal.First(x => x.Type == "TrainingMaterialPermission").Value,
+                    TrainingProgramPermission = principal.First(x => x.Type == "TrainingProgramPermission").Value,
+                    UserPermission = principal.First(x => x.Type == "UserPermission").Value
+                };
+                return result;
+            }
+            else return null;
         }
 
     }

@@ -10,6 +10,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
+using System.Security.Claims;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace Application.Interfaces;
 
@@ -43,6 +45,6 @@ public interface IUserService
     Task<Token> LoginWithEmail(LoginWithEmailDto loginDto);
     public Task<List<User>> ImportExcel(IFormFile file);
     public Task<List<UserViewModel>> SearchUsersWithFilter(string searchString, string? gender, int? role, string? level);
-    public bool CheckToken(string accessToken);
+    public JwtDTO CheckToken(string accessToken);
 
 }

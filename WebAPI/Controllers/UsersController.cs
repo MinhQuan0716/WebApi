@@ -252,7 +252,7 @@ namespace WebAPI.Controllers
         public IActionResult VerifyToken(string token)
         {
             var result = _userService.CheckToken(token);
-            if (result) return Ok(true);
+            if (result is not null) return Ok(result);
             else return BadRequest("Invalid Token");
         }
     }

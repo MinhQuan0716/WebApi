@@ -124,16 +124,16 @@ public class UserService : IUserService
         };
 
     }
-    public bool CheckToken(string accessToken)
+    public JwtDTO CheckToken(string accessToken)
     {
         if(accessToken.IsNullOrEmpty())
         {
-            return false;
+            throw new Exception("Invalid Token");
         }else
         {
-            var principal = accessToken.GetPrincipalFromExpiredToken(_configuration.JWTSecretKey);
-            if (principal is not null) return true;
-            else return false;
+            var principal = accessToken.VerifyToken(_configuration.JWTSecretKey);
+            if (principal is not null) return principal;
+            else throw new Exception("Invalid Token");
         }
     }
 
