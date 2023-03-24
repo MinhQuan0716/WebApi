@@ -124,6 +124,18 @@ public class UserService : IUserService
         };
 
     }
+    public bool CheckToken(string accessToken)
+    {
+        if(accessToken.IsNullOrEmpty())
+        {
+            return false;
+        }else
+        {
+            var principal = accessToken.GetPrincipalFromExpiredToken(_configuration.JWTSecretKey);
+            if (principal is not null) return true;
+            else return false;
+        }
+    }
 
     public async Task<Token> RefreshToken(string accessToken, string refreshToken)
     {

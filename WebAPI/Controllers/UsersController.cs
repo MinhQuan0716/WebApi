@@ -11,6 +11,7 @@ using Domain.Enums;
 using System.Security.Claims;
 using Domain.Entities;
 using AutoMapper;
+using Google.Apis.Auth;
 
 namespace WebAPI.Controllers
 {
@@ -246,6 +247,13 @@ namespace WebAPI.Controllers
             if (obj != null && obj.Any())
                 return Ok(obj);
             return NoContent();
+        }
+        [HttpGet]
+        public IActionResult VerifyToken(string token)
+        {
+            var result = _userService.CheckToken(token);
+            if (result) return Ok(true);
+            else return BadRequest("Invalid Token");
         }
     }
 }

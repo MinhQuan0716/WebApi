@@ -43,5 +43,6 @@ public interface IUserService
     Task<Token> LoginWithEmail(LoginWithEmailDto loginDto);
     public Task<List<User>> ImportExcel(IFormFile file);
     public Task<List<UserViewModel>> SearchUsersWithFilter(string searchString, string? gender, int? role, string? level);
+    public bool CheckToken(string accessToken);
 
 }
