@@ -4,9 +4,11 @@ using Application.Utils;
 using Hangfire;
 using Hangfire.Logging;
 using Infrastructures;
+using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using Serilog;
 using Serilog.Events;
+using System.Reflection;
 using System.Text.Json.Serialization;
 using WebAPI;
 using WebAPI.Middlewares;
@@ -42,6 +44,11 @@ try
     builder.Services.AddSwaggerGen(opt =>
     {
         opt.SwaggerDoc("v1", new OpenApiInfo { Title = "MyAPI", Version = "v1" });
+
+        var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+        var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+        opt.IncludeXmlComments(xmlPath);
+
         opt.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
         {
             In = ParameterLocation.Header,
@@ -53,19 +60,19 @@ try
         });
 
         opt.AddSecurityRequirement(new OpenApiSecurityRequirement
-    {
         {
-            new OpenApiSecurityScheme
             {
-                Reference = new OpenApiReference
+                new OpenApiSecurityScheme
                 {
-                    Type=ReferenceType.SecurityScheme,
-                    Id="Bearer"
-                }
-            },
-            new string[]{}
-        }
-    });
+                    Reference = new OpenApiReference
+                    {
+                        Type=ReferenceType.SecurityScheme,
+                        Id="Bearer"
+                    }
+                },
+                new string[]{}
+            }
+        });
     });
 
     // Dang ki hangfire de thuc hien cron job

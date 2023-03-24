@@ -108,8 +108,9 @@ namespace Infrastructures.Repositories
 
             return result;
         }
-        public async Task<Pagination<TEntity>> ToPagination<TProperty>(IIncludableQueryable<TEntity, TProperty?> value, Expression<Func<TEntity, bool>> expression, int pageIndex, int pageSize)
+        public async Task<Pagination<TEntity>> ToPagination(IQueryable<TEntity> value, Expression<Func<TEntity, bool>> expression, int pageIndex, int pageSize)
         {
+         
             var itemCount = await _dbSet.Where(expression).CountAsync();
             var items = await value.Where(expression)
                                     .OrderByDescending(x => x.CreationDate)

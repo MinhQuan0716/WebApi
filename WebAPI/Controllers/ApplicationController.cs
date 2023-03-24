@@ -1,6 +1,6 @@
 ﻿using Application.Interfaces;
+using Application.Models.ApplicationModels;
 using Application.Utils;
-using Application.ViewModels;
 using Application.ViewModels.ApplicationViewModels;
 using Domain.Entities;
 using Domain.Enums;
@@ -38,18 +38,31 @@ namespace WebAPI.Controllers
             var result = await _service.UpdateStatus(id, status);
             return result;
         }
+
+        
+        [HttpGet]
+        public async Task<IActionResult> ViewAllApplication(Guid classId)
+        {
+            return await ViewAllApplicationFilter(classId);
+        }
+        /// <summary>
+        /// this method will help you get all of the application with 
+        /// the filter you are inputting
+        /// </summary>
+        /// <param name="classId">The trainingclassId</param>
+        /// <param name="filter">filter body</param>
+        /// <returns>a pagination of a filter</returns>
+        [HttpPost]
         [HttpPost("{classId:maxlength(50):guid?}")]
         [Authorize]
         [ClaimRequirement(nameof(PermissionItem.ApplicationPermission), nameof(PermissionEnum.View))]
-        public async Task<IActionResult> ViewAllApplication(Guid classId = default,
-                                                            [FromBody] ApplicationDateTimeFilterDTO condition = null,
-                                                            [FromQuery] string by = nameof(ApplicationFilterByEnum.CreationDate),
-                                                            [FromQuery(Name = "s")] string searchString = "",
-                                                            [FromQuery(Name = "p")] int pageNumber = 0,
-                                                            [FromQuery(Name = "ps")] int pageSize = 10)
+        public async Task<IActionResult> ViewAllApplicationFilter(Guid classId = default,
+                                                            [FromBody] ApplicationFilterDTO filter = null)
         {
             // Run
-            var applications = await _service.GetAllApplication(classId, condition, searchString, by, pageNumber, pageSize);
+            var applications = await _service.GetAllApplication(classId, filter);
+
+            if (applications is null) return BadRequest("Application Not Found!");
             return Ok(applications);
         }
     }

@@ -50,7 +50,7 @@ namespace Application.Services
                 ,Id = Guid.NewGuid()
             };
             await _unitOfWork.DetailUnitLectureRepository.AddAsync(NewLecture);
-            await _unitOfWork.SaveChangeAsync();
+
             return NewLecture;
 
 
@@ -61,7 +61,6 @@ namespace Application.Services
             var lectureMapper = _mapper.Map<Lecture>(updateLessonModel);
             lectureMapper.Id = Guid.NewGuid();
             await _unitOfWork.LectureRepository.AddAsync(lectureMapper);
-            await _unitOfWork.SaveChangeAsync();
             return lectureMapper;
         }
 

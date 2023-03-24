@@ -1,8 +1,8 @@
 ﻿using Application.Commons;
 using Application.Interfaces;
+using Application.Models.ApplicationModels;
 using Application.Repositories;
 using Application.Services;
-using Application.ViewModels;
 using Application.ViewModels.AtttendanceModels;
 using AutoFixture;
 using Domain.Entities;
@@ -41,28 +41,23 @@ namespace Application.Tests.Services
         [Fact]
         public async Task GetAllApplication_ShouldReturnCorrectValue()
         {
-            ApplicationDateTimeFilterDTO condition = null;
-            string searchString = "";
-            string by = nameof(CreationDate);
-            int pageNumber = 0;
-            int pageSize = 10;
-            Guid classId = Guid.Empty;
-
+            ApplicationFilterDTO filter = new();
+            Guid classId = default;
             var mockData_ListOf10 = _fixture.Build<Applications>().OmitAutoProperties().CreateMany(10).ToList();
             Pagination<Applications> mockData = new()
             {
                 Items = mockData_ListOf10,
-                PageIndex = pageNumber,
+                PageIndex = filter.PageNumber,
                 PageSize = 10,
                 TotalItemsCount = 100
             };
-            _applicationRepositoryMock.Setup(x => x.ToPagination(It.IsAny<Expression<Func<Applications, bool>>>(), pageNumber, pageSize)).ReturnsAsync(mockData);
+            _applicationRepositoryMock.Setup(x => x.ToPagination(It.IsAny<Expression<Func<Applications, bool>>>(), filter.PageNumber, filter.PageSize)).ReturnsAsync(mockData);
             // Act
-            Pagination<Applications> result = await _applicationService.GetAllApplication(classId, condition, searchString, by, pageNumber, pageSize);
+            Pagination<Applications> result = await _applicationService.GetAllApplication(classId, filter);
             // Assert
             result.Should().Be(mockData);
-            result.PageIndex.Should().Be(pageNumber);
-            result.PageSize.Should().Be(pageSize);
+            result.PageIndex.Should().Be(filter.PageNumber);
+            result.PageSize.Should().Be(filter.PageSize);
         }
     }
 }

@@ -7,6 +7,7 @@ using Domain.Entities;
 using Infrastructures.Mappers;
 using Infrastructures.Repositories;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -29,9 +30,8 @@ namespace Infrastructures
             services.AddScoped<ITrainingClassRepository, TraingClassRepository>();
             services.AddScoped<ILocationRepository, LocationRepository>();
             services.AddSingleton<ICurrentTime, CurrentTime>();
-            services.AddScoped<IAssignmentRepository,AssignmetRepository>();
+            services.AddScoped<IAssignmentRepository,AssignmentRepository>();
             services.AddScoped<IAssignmentSubmissionRepository, AssignmentSubmissionRepository>();
-            services.AddScoped<IApplicationRepository, AppilicationRepository>();
 
             services.AddScoped<IUnitService, UnitService>();
             services.AddScoped<IAttendanceService, AttendanceService>();

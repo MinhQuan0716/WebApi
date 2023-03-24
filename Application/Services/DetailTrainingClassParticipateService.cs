@@ -34,20 +34,17 @@ namespace Application.Services
         {
             var trainingClass = await _unitOfWork.TrainingClassRepository.GetByIdAsync(classId);
             var user = await _unitOfWork.UserRepository.GetByIdAsync(userId);
-            if (user is not null)
-            {
-                if (user.RoleId == 4)
-                {
-                    var newDetailTrainingClassParticipate = new DetailTrainingClassParticipate { UserId = user.Id, TrainingClassID = trainingClass.Id, TraineeParticipationStatus = "NotJoined" };
-                    await _unitOfWork.DetailTrainingClassParticipateRepository.AddAsync(newDetailTrainingClassParticipate);
-                    await _unitOfWork.SaveChangeAsync();
-                    return newDetailTrainingClassParticipate;
-                }
-            }
-            return null;
+            if (user is not null) return null;
+
+            if (user.RoleId != 4) return null;
+
+            var newDetailTrainingClassParticipate = new DetailTrainingClassParticipate { UserId = user.Id, TrainingClassID = trainingClass.Id, TraineeParticipationStatus = nameof(TraineeParticipationStatusEnum.NotJoined) };
+            await _unitOfWork.DetailTrainingClassParticipateRepository.AddAsync(newDetailTrainingClassParticipate);
+            await _unitOfWork.SaveChangeAsync();
+            return newDetailTrainingClassParticipate;
         }
 
-        public async Task<bool> IsTraining(Guid classid)
+        public async Task<bool> UpdateTrainingStatus(Guid classid)
         {
             bool isTraining = false;
             var userid = _claimsService.GetCurrentUserId;
@@ -55,7 +52,7 @@ namespace Application.Services
             DetailTrainingClassParticipate detail = await _unitOfWork.DetailTrainingClassParticipateRepository.GetDetailTrainingClassParticipateAsync(userid, classid);
             if (detail != null)
             {
-                detail.TraineeParticipationStatus = nameof(TraineeParticipationStatus.Training);
+                detail.TraineeParticipationStatus = nameof(TraineeParticipationStatusEnum.Joined);
                 _unitOfWork.DetailTrainingClassParticipateRepository.Update(detail);
                 await _unitOfWork.SaveChangeAsync();
                 isTraining = true;

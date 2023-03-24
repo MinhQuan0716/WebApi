@@ -158,18 +158,19 @@ namespace WebAPI.Controllers
 
 
         [HttpPost]
+        [Authorize]
         [ClaimRequirement(nameof(PermissionItem.SyllabusPermission), nameof(PermissionEnum.Create))]
         public async Task<IActionResult> AddNewSyllabus(UpdateSyllabusModel updateSyllabusModel)
         {
-           
+
             var syllabus = await _syllabusService.AddNewSyllabusService(updateSyllabusModel);
             if (syllabus is null) return BadRequest("Add Syllabus Unsuccessfully");
             foreach (var item in updateSyllabusModel.Outline)
             {
-                
+
                 foreach (var item1 in item.Content)
                 {
-                    
+
                     var unit = await _unitService.AddNewUnitHotFix(item1, item.Day, syllabus.Id);
                     if (unit is null) return BadRequest("Add Unit Unsuccessfully");
                     foreach (var item2 in item1.Lessons)
@@ -180,7 +181,8 @@ namespace WebAPI.Controllers
                     }
                 }
             }
-            return Ok("Successfully");
+            await _syllabusService.SaveChangesAsync();
+            return Ok("Added Successfully");
 
         }
     }

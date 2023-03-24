@@ -18,7 +18,7 @@ namespace Application.Utils
                 .Select(s => s[random.Next(s.Length)]).ToArray());
         }
 
-        public static bool isNotValidEnum(this string myenum, Type type)
+        public static bool IsNotValidEnum(this string myenum, Type type)
         {
             bool check = false;
             foreach (string @enum in Enum.GetNames(type))

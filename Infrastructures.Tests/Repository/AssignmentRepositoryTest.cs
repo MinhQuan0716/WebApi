@@ -18,7 +18,7 @@ namespace Infrastructures.Tests.Repository
         private readonly IAssignmentRepository _assignmentRepository;
         public AssignmentRepositoryTest() 
         {
-            _assignmentRepository= new AssignmetRepository(_dbContext,_currentTimeMock.Object,_claimsServiceMock.Object);
+            _assignmentRepository= new AssignmentRepository(_dbContext,_currentTimeMock.Object,_claimsServiceMock.Object);
         }
 
         [Fact]

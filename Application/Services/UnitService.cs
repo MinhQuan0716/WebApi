@@ -58,10 +58,10 @@ namespace Application.Services
         {
 
             var unitMapper = _mapper.Map<Unit>(updateSyllabusModel);
+            unitMapper.Id = Guid.NewGuid();
             unitMapper.Session = session;
             unitMapper.SyllabusID = syllabusID;
             await _unitOfWork.UnitRepository.AddAsync(unitMapper);
-            await _unitOfWork.SaveChangeAsync();
             return unitMapper;
         }
     }

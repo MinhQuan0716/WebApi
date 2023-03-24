@@ -11,10 +11,10 @@ using System.Threading.Tasks;
 
 namespace Infrastructures.Repositories
 {
-    public class AssignmetRepository : GenericRepository<Assignment>, IAssignmentRepository
+    public class AssignmentRepository : GenericRepository<Assignment>, IAssignmentRepository
     {
         private readonly AppDbContext _dbContext;
-        public AssignmetRepository(AppDbContext context, ICurrentTime timeService, IClaimsService claimsService) : base(context, timeService, claimsService)
+        public AssignmentRepository(AppDbContext context, ICurrentTime timeService, IClaimsService claimsService) : base(context, timeService, claimsService)
         {
             _dbContext = context;
         }

@@ -10,7 +10,7 @@ namespace Application.Interfaces
 {
     public interface IDetailTrainingClassParticipateService
     {
-        public Task<bool> IsTraining(Guid classId);
+        public Task<bool> UpdateTrainingStatus(Guid classId);
 
         public Task<DetailTrainingClassParticipate> CreateTrainingClassParticipate(Guid userId, Guid classId);
     }

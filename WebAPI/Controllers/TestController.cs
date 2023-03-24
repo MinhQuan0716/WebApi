@@ -112,15 +112,24 @@ namespace WebAPI.Controllers
             return BadRequest();
 
         }
-
+        /// <summary>
+        /// Create the Trainee answering quiz here
+        /// </summary>
+        /// <param name="doingQuizDTOs">Input the users answers</param>
+        /// <param name="TrainingClassParticipateID">The id relation of training class and user id <br/>(get id in api: DetailTrainingClassParticipate)</param>
+        /// <returns>the mark in decimal(18,2) => 10.00 format</returns>
+        /// <response code="200">Returns 200 if the quiz create successful.</response>
+        /// <response code="400">Returns 400 if DoingQuiz failed.</response>
+       
         [HttpPost]
-        [Authorize(Roles = "Trainee")]
+        [Authorize(Roles = "SuperAdmin,Trainee")]
         public async Task<IActionResult> DoingQuiz(ICollection<AnswerQuizQuestionDTO> doingQuizDTOs, Guid TrainingClassParticipateID)
         {
             bool success = await _quizService.DoingQuizService(doingQuizDTOs);
             if (success)
             {
-                return Ok(await _quizService.MarkQuiz(doingQuizDTOs.First().QuizID, TrainingClassParticipateID));
+                double mark = await _quizService.MarkQuiz(doingQuizDTOs.First().QuizID, TrainingClassParticipateID);
+                return base.Ok($"{mark:F2}");
             }
             return BadRequest();
         }
@@ -156,10 +165,10 @@ namespace WebAPI.Controllers
 
         [HttpPost]
         [Authorize(Roles = "SuperAdmin,Admin,Trainer,Mentor")]
-        public async Task<IActionResult> UpgradeQuestion(Guid QuestionID,UpdateQuestionDTO createQuizIntoBankDTO)
+        public async Task<IActionResult> UpgradeQuestion(Guid QuestionID, UpdateQuestionDTO createQuizIntoBankDTO)
         {
-            bool check = await _quizService.UpdateQuestion(QuestionID,createQuizIntoBankDTO);
-            if(check)
+            bool check = await _quizService.UpdateQuestion(QuestionID, createQuizIntoBankDTO);
+            if (check)
             {
                 return NoContent();
             }

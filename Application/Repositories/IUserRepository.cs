@@ -16,4 +16,5 @@ public interface IUserRepository : IGenericRepository<User>
     Task<User> GetAuthorizedUserAsync();
     Task<bool> ChangeUserPasswordAsync(User mockData, string newPassword);
     Task<User> GetUserByUserNameAsync(string userName);
+   
 }

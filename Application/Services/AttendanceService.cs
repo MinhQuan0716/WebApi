@@ -75,7 +75,7 @@ namespace Application.Services
 
         public async Task<Pagination<AttendanceViewDTO>> GetAllAttendanceWithFilter(Guid classId, string search, string by, bool? containApplication, DateTime? fromDate, DateTime? toDate, int pageIndex = 0, int pageSize = 40)
         {
-            if (by.isNotValidEnum(typeof(AttendanceStatusEnums)))
+            if (by.IsNotValidEnum(typeof(AttendanceStatusEnums)))
                 throw new InvalidEnumArgumentException("Not valid AttendanceStatus");
 
             Expression<Func<Attendance, bool>> expression = x =>

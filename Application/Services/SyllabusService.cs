@@ -15,7 +15,6 @@ using Application.ViewModels.QuizModels;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Application.ViewModels.SyllabusModels.ViewDetail;
 using Application.ViewModels.SyllabusModels.FixViewSyllabus;
-using Application.ViewModels.TrainingProgramModels.TrainingProgramView;
 using Application.ViewModels.SyllabusModels.UpdateSyllabusModels.HotFix;
 
 namespace Application.Services
@@ -45,18 +44,7 @@ namespace Application.Services
             syllabus.UserId = userID;
             syllabus.Status = "Active";
 
-            //var newSyllabus = new Syllabus
-            //{
-            //    Id = new Guid(),
-            //    SyllabusName = syllabusDTO.SyllabusName,
-            //    Code = syllabusDTO.Code,
-            //    CourseObjective = syllabusDTO.CourseObject,
-            //    Duration = syllabusDTO.Duration,
-            //    TechRequirements = syllabusDTO.TechRequirements,
-            //    UserId = _claimsservice.GetCurrentUserId,
-            //    CreationDate = DateTime.Now,
-            //    IsDeleted = false
-            //};
+           
             await _unitOfWork.SyllabusRepository.AddAsync(syllabus);
             return syllabus;
         }
@@ -480,7 +468,7 @@ namespace Application.Services
             mapperSyllabus.UserId =  _claimsservice.GetCurrentUserId;
             mapperSyllabus.Id = Guid.NewGuid();
             await _unitOfWork.SyllabusRepository.AddAsync(mapperSyllabus);
-            await _unitOfWork.SaveChangeAsync();
+            
             return mapperSyllabus;
 
         }

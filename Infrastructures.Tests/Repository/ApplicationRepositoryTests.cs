@@ -1,6 +1,5 @@
 ﻿using Application;
 using Application.Repositories;
-using Application.ViewModels;
 using AutoFixture;
 using Domain.Entities;
 using Domains.Test;
@@ -16,6 +15,7 @@ using System.Threading.Tasks;
 using static Domain.Enums.Application.ApplicationFilterByEnum;
 using static System.Net.Mime.MediaTypeNames;
 using FluentAssertions;
+using Application.Models.ApplicationModels;
 
 namespace Infrastructures.Tests.Repository
 {
@@ -93,77 +93,54 @@ namespace Infrastructures.Tests.Repository
                     application.AbsentDateRequested = DateTime.Parse("01/01/2023").AddDays(1);
                 applicationList.Add(application);
             }
-
-
-
             _dbContext.AddRange(applicationList);
             _dbContext.SaveChanges();
             #endregion
             // Setup
-            string searchString = "";
             #region conditionSettings
-            var condition_empty = new ApplicationDateTimeFilterDTO()
+            var condition_empty = new ApplicationFilterDTO();
+            var condition_user_1 = new ApplicationFilterDTO()
             {
-                AbsentDateRequested = DateTime.UtcNow,
-                Approved = null,
-                UserID = Guid.Empty,
-                Reason = searchString
-            };
-            var condition_user_1 = new ApplicationDateTimeFilterDTO()
-            {
-                AbsentDateRequested = DateTime.UtcNow,
-                Approved = null,
                 UserID = user_1_Mock.Id,
-                Reason = searchString
             };
-            var condition_contains = new ApplicationDateTimeFilterDTO()
+            var condition_contains = new ApplicationFilterDTO()
             {
-                AbsentDateRequested = DateTime.UtcNow,
-                Approved = null,
-                UserID = Guid.Empty,
-                Reason = searchString
+                Search = "a-b"
             };
-            var condition_dateTime = new ApplicationDateTimeFilterDTO()
+            var condition_dateTime = new ApplicationFilterDTO()
             {
-                Approved = null,
-                UserID = Guid.Empty,
-                Reason = searchString,
+                FromDate = DateTime.Parse("01/01/2023").AddDays(1)
             };
-            condition_dateTime.FromDate = DateTime.Parse("01/01/2023").AddDays(1);
-            condition_dateTime.AbsentDateRequested = condition_dateTime.FromDate.AddDays(1);
-            condition_dateTime.ToDate = condition_dateTime.AbsentDateRequested.AddDays(1);
-            ApplicationDateTimeFilterDTO condition = null;
-            string by = nameof(CreationDate);
+            var condition_combine = new ApplicationFilterDTO()
+            {
+                ByDateType = nameof(RequestDate),
+                UserID = user_2_Mock.Id,
+                Search = "a-b",
+                ToDate = DateTime.Parse("01/01/2023").AddDays(2),
+                FromDate = DateTime.Parse("01/01/2023").AddDays(1),
+                Approved = false
+            };
             #endregion
             Guid classId = Guid.Empty;
-            Expression<Func<Applications, bool>> expression = x =>
-                x.Reason.Contains(searchString)
-                // 3 condition below are checking if it is null if not it will be used to check the value
-                && (condition.Approved != null && condition.Approved == x.Approved || condition.Approved == null)
-                && (condition.UserID != Guid.Empty && condition.UserID == x.UserId || condition.UserID == Guid.Empty)
-                && (classId != Guid.Empty && classId == x.TrainingClassId || classId == Guid.Empty)
-                &&
-                (
-                    (by == nameof(CreationDate) && x.CreationDate >= condition.FromDate && x.CreationDate <= condition.ToDate)
-                    || (by == nameof(RequestDate) && x.AbsentDateRequested >= condition.FromDate && x.AbsentDateRequested <= condition.ToDate)
-                );
             //Act & assert
-            condition = condition_empty;
+            Expression<Func<Applications, bool>> expression = _applicationRepository.GetFilterExpression(classId, condition_empty);
+
             var applications = await _applicationRepository.ToPagination(expression: expression, 0, 10);
 
-            condition = condition_user_1;
+            expression = _applicationRepository.GetFilterExpression(classId, condition_user_1);
+
             var applicationsOfUser_1 = await _applicationRepository.ToPagination(expression: expression, 0, 10);
 
-            condition = condition_contains;
-            searchString = "a-b";
+            expression = _applicationRepository.GetFilterExpression(classId, condition_contains);
+
             var applicationsOfSearch = await _applicationRepository.ToPagination(expression: expression, 0, 10);
 
-            condition = condition_dateTime;
+            expression = _applicationRepository.GetFilterExpression(classId, condition_dateTime);
+
             var applicationsOfDatetime = await _applicationRepository.ToPagination(expression: expression, 0, 10);
 
-            by = nameof(RequestDate);
-            condition.UserID = user_2_Mock.Id;
-            classId = trainingClassMock.Id;
+            expression = _applicationRepository.GetFilterExpression(classId, condition_combine);
+
             var applicationsCombine = await _applicationRepository.ToPagination(expression: expression, 0, 10);
 
             // Assert
@@ -175,7 +152,13 @@ namespace Infrastructures.Tests.Repository
             applicationsOfSearch.TotalItemsCount.Should().Be(20);
             applicationsOfDatetime.TotalItemsCount.Should().Be(10);
             applicationsCombine.Items.Should().NotBeEmpty();
-            applicationsCombine.Items.Count.Should().Be(5);
+            applicationsCombine.Items.Should().HaveCount(5);
+            applicationsCombine.Items.AsQueryable()
+                .Where(x => x.UserId == user_2_Mock.Id)
+                .Where(x => x.Reason.Contains("a-b"))
+                .Where(x => x.AbsentDateRequested >= condition_combine.FromDate)
+                .Where(x => x.Approved == false)
+                .Should().HaveCount(5);
         }
     }
 }

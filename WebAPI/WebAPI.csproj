@@ -39,7 +39,9 @@
 		<ProjectReference Include="..\Infrastructures\Infrastructures.csproj" />
 	</ItemGroup>
 	<PropertyGroup>
-        <GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
-    </PropertyGroup>
+		<GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<NoWarn>1701;1702;1591</NoWarn>
+	</PropertyGroup>
 
 </Project>

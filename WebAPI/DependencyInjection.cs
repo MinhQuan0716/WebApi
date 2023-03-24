@@ -43,7 +43,7 @@ namespace WebAPI
             services.AddScoped<IUnitService, UnitService>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<ISyllabusRepository, SyllabusRepository>();
-            services.AddScoped<IApplicationRepository, AppilicationRepository>();
+            services.AddScoped<IApplicationRepository, ApplicationRepository>();
             services.AddScoped<ISyllabusService, SyllabusService>();
             services.AddScoped<ITrainingMaterialRepository, TrainingMaterialRepository>();
             services.AddScoped<ITrainingMaterialService, TrainingMaterialService>();
