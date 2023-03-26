@@ -26,25 +26,37 @@ namespace Infrastructures.Repositories
             _dbContext = context;
         }
 
-       
-        public TrainingProgram GetTrainingProgramByClassID(Guid id) {
-            TrainingProgram getAllTrainingProgram = _dbContext.TrainingClasses.Include(x => x.TrainingProgram)
-                                                                .Where(x => x.Id == id)
-                                                                .Select(x => new TrainingProgram()
-                                                                {
-                                                                    Id = x.TrainingProgram.Id,
-                                                                    ProgramName = x.TrainingProgram.ProgramName,
-                                                                    Duration = x.TrainingProgram.Duration,
-                                                                }).First();
+
+        public TrainingProgramViewForTrainingClassDetail GetTrainingProgramByClassID(Guid id)
+        {
+            var getAllTrainingProgram = _dbContext.TrainingClasses
+                                       .Include(x => x.TrainingProgram)
+                                       
+                                       .Where(x => x.Id == id)
+                                      .Select(x => new TrainingProgramViewForTrainingClassDetail()
+                                       {
+                                        programId = x.TrainingProgram.Id,
+                                        programName = x.TrainingProgram.ProgramName,
+                                        programDuration = new DurationView
+                                        {
+                                        TotalHours = x.TrainingProgram.Duration
+                                        },
+                                        lastEdit =new LastEditDTO
+                                        {
+                                            modificationBy=_dbContext.Users.Where(u=>u.Id==x.TrainingProgram.ModificationBy).Select(u=>u.UserName).FirstOrDefault(),
+                                            modificationDate=x.TrainingProgram.ModificationDate
+                                        }
+                                   }).FirstOrDefault();
             return getAllTrainingProgram;
 
         }
         public List<TrainingClassFilterDTO> GetTrainingClassesForFilter()
         {
             var getAllTrainingClass = _dbContext.TrainingClasses
+                                        .Where(x => x.IsDeleted == false)
                                      .Select(t => new TrainingClassFilterDTO
                                      {
-                                         ClassID=t.Id,
+                                         ClassID = t.Id,
                                          Name = t.Name,
                                          LocationName = t.Location.LocationName,
                                          CreationDate = t.CreationDate,
@@ -63,15 +75,15 @@ namespace Infrastructures.Repositories
             return getAllTrainingClass;
         }
 
-     public    List<TrainingClassViewAllDTO> GetTrainingClasses()
+        public List<TrainingClassViewAllDTO> GetTrainingClasses()
         {
             var getAllTrainingClass = _dbContext.TrainingClasses
                                      .Select(t => new TrainingClassViewAllDTO
                                      {
-                                         id=t.Id,
-                                        className = t.Name,
+                                         id = t.Id,
+                                         className = t.Name,
                                          location = t.Location.LocationName,
-                                        createdOn = t.CreationDate,
+                                         createdOn = t.CreationDate,
                                          classCode = t.Code,
                                          fsu = t.Branch,
                                          attendee = t.Attendee,
@@ -96,6 +108,36 @@ namespace Infrastructures.Repositories
             return nameClass;
         }
 
-       
+        public TrainingClassFilterDTO GetTrainingClassFilterById(Guid id)
+        {
+            var getAllTrainingClass = _dbContext.TrainingClasses
+                             .Where(x => x.IsDeleted == false && x.Id == id)
+
+                          .Select(t => new TrainingClassFilterDTO
+                          {
+                              ClassID = t.Id,
+                              Name = t.Name,
+                              LocationName = t.Location.LocationName,
+                              CreationDate = t.CreationDate,
+                              Code = t.Code,
+                              Branch = t.Branch,
+                              StartDate = t.StartTime,
+                              EndDate = t.EndTime,
+                              Attendee = t.Attendee,
+                              ClassDuration = new DurationView
+                              {
+                                  TotalHours = t.Duration
+                              },
+                              LastEditDTO = new LastEditDTO
+                              {
+                                  modificationBy = _dbContext.Users.Where(u => u.Id == t.ModificationBy).Select(u => u.UserName).SingleOrDefault(),
+                                  modificationDate = t.ModificationDate,
+                              },
+                              Status = t.StatusClassDetail,
+                              CreatedBy = _dbContext.Users.Where(x => x.Id == t.CreatedBy).Select(u => u.UserName).SingleOrDefault()
+                          });
+            TrainingClassFilterDTO trainingClassFilterDTO = getAllTrainingClass.FirstOrDefault();
+            return trainingClassFilterDTO;
+        }
     }
 }

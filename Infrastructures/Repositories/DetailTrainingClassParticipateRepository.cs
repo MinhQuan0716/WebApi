@@ -1,5 +1,6 @@
 ﻿using Application.Interfaces;
 using Application.Repositories;
+using Application.ViewModels.TrainingClassModels;
 using AutoMapper;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -22,6 +23,7 @@ namespace Infrastructures.Repositories
             _mapper = mapper;
         }
 
+
         public async Task<DetailTrainingClassParticipate> GetDetailTrainingClassParticipateAsync(Guid userId, Guid classId)
         {
             var result = _dbContext.DetailTrainingClassParticipates.SingleOrDefault(x => x.UserId == userId && x.TrainingClassID == classId);
@@ -41,6 +43,38 @@ namespace Infrastructures.Repositories
                  detailID = result.Id;
             }
             return detailID;
+        }
+
+        public async Task<List<ClassTrainerDTO>> GetDetailTrainingClassParticipatesByClassIDAsync(Guid classID)
+        {
+            var result = await _dbContext.DetailTrainingClassParticipates
+                        .Include(de => de.User)
+                        .Include(de => de.TrainingClass)
+                        .Where(de => de.TrainingClassID == classID)
+                        .Select(de => new ClassTrainerDTO
+                        {
+                            trainerId = de.User.Id,
+                            name=de.User.UserName,
+                            email=de.User.Email,
+                            phone="0908761239"
+                        }).ToListAsync();
+            return result;
+            
+        }
+        public async Task<List<ClassAdminDTO>> GetAdminInClasssByClassIDAsync(Guid id)
+        {
+            var result =await _dbContext.DetailTrainingClassParticipates
+                        .Include(de => de.User)
+                        .Include(de => de.TrainingClass)
+                        .Where(de => de.TrainingClassID == id)
+                        .Select(de => new ClassAdminDTO
+                        {
+                            adminID = de.CreatedBy,
+                            name = _dbContext.Users.Where(u => u.Id == de.CreatedBy).Select(u => u.UserName).FirstOrDefault(),
+                            email = _dbContext.Users.Where(u => u.Id == de.CreatedBy).Select(u => u.Email).FirstOrDefault(),
+                            phone = "0907123497"
+                        }).ToListAsync();
+            return result;
         }
     }
 }

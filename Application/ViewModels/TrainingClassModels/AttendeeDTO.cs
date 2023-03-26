@@ -8,7 +8,9 @@ namespace Application.ViewModels.TrainingClassModels
 {
     public  class AttendeeDTO
     {
-        public string Attendee { get; set; }
-
+        public string attendee { get; set; }
+        public int plannedNumber { get; set; }
+        public int acceptedNumber { get; set; }
+        public int actualNumber { get; set; }
     }
 }

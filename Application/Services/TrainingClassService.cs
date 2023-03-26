@@ -181,9 +181,9 @@ namespace Application.Services
             foreach (var item in filterResult)
             {
                 var filterResultFormat = _mapper.Map<TrainingClassViewAllDTO>(item);
-                
+
                 filterList.Add(filterResultFormat);
-               
+
             }
             return filterList;
 
@@ -192,56 +192,63 @@ namespace Application.Services
         public async Task<FinalTrainingClassDTO> GetFinalTrainingClassesAsync(Guid id)
         {
             FinalTrainingClassDTO finalDTO = new FinalTrainingClassDTO();
-            var trainingClassDetail = await _unitOfWork.TrainingClassRepository.GetByIdAsync(id);
-            var trainingClassViewAllDTO = _unitOfWork.TrainingClassRepository.GetTrainingClassesForFilter();
+            var trainingClassFilterDetail = _unitOfWork.TrainingClassRepository.GetTrainingClassFilterById(id);
             var trainingProgram = _unitOfWork.TrainingClassRepository.GetTrainingProgramByClassID(id);
-            var trainingClassDTO = _mapper.Map<TrainingClassViewDetail>(trainingClassDetail);
-            var detailProgramSyllabus = _unitOfWork.DetailTrainingProgramSyllabusRepository.GetDetailByClassID(trainingProgram.Id);
-            foreach (TrainingClassFilterDTO trainingClasses in trainingClassViewAllDTO)
+            var detailProgramSyllabus = _unitOfWork.DetailTrainingProgramSyllabusRepository.GetDetailByClassID(trainingProgram.programId);
+            var detailTrainingClass = await _unitOfWork.DetailTrainingClassParticipate.GetDetailTrainingClassParticipatesByClassIDAsync(id);
+            var adminInClass = await _unitOfWork.DetailTrainingClassParticipateRepository.GetAdminInClasssByClassIDAsync(id);
+         
+            AttendeeDTO attendeeDTO = new AttendeeDTO()
             {
+                attendee = trainingClassFilterDetail.Attendee,
+                plannedNumber=50,
+                acceptedNumber=30,
+                actualNumber=20,
+            };
+            CreatedByDTO createdByDTO = new CreatedByDTO()
+            {
+                creationDate = trainingClassFilterDetail.CreationDate,
+                userName = trainingClassFilterDetail.CreatedBy
+            };
+            finalDTO.trainingPrograms = trainingProgram;
+            finalDTO.syllabuses = detailProgramSyllabus;
 
-                AttendeeDTO attendeeDTO = new AttendeeDTO()
+            finalDTO.classId = trainingClassFilterDetail.ClassID;
+            finalDTO.classCode= trainingClassFilterDetail.Code;
+            finalDTO.classStatus = trainingClassFilterDetail.Status;
+            finalDTO.className = trainingClassFilterDetail.Name;
+            finalDTO.dateOrder = new DateOrderForViewDetail
+            {
+                current = 10,
+                total=10*3
+            };
+            finalDTO.classDuration = trainingClassFilterDetail.ClassDuration;
+         
+            finalDTO.lastEdit = new LastEditDTO()
+            {
+                modificationBy = trainingClassFilterDetail.LastEditDTO.modificationBy,
+                modificationDate = trainingClassFilterDetail.LastEditDTO.modificationDate
+            };
+            finalDTO.review = new TrainingClassReview
+            {
+                reviewDate = DateTime.Now,
+                author = trainingClassFilterDetail.CreatedBy
+            };
+            finalDTO.admin = adminInClass;
+            finalDTO.trainer = detailTrainingClass;
+            finalDTO.location = trainingClassFilterDetail.LocationName;
+            finalDTO.fsu = trainingClassFilterDetail.Branch;
+            finalDTO.general = new GeneralTrainingClassDTO
+            {
+                class_date = new ClassDateDTO
                 {
-                    Attendee = trainingClasses.Attendee
-                };
-                CreatedByDTO createdByDTO = new CreatedByDTO()
-                {
-                    creationDate = trainingClasses.CreationDate,
-                    userName = trainingClasses.CreatedBy
-                };
-                TrainingProgramViewForTrainingClassDetail trainingProgramViewModel = new TrainingProgramViewForTrainingClassDetail()
-                {
-                    programId = trainingProgram.Id,
-                    programName = trainingProgram.ProgramName,
-                    programDuration = new DurationView
-                    {
-                        TotalHours = trainingProgram.Duration
-                    }
-
-                };
-                var syllabusDetail = await _unitOfWork.SyllabusRepository.FindAsync(x => x.Id == detailProgramSyllabus.SyllabusId);
-                foreach (Syllabus syllabus in syllabusDetail)
-                {
-                    var syllabusDTO = _mapper.Map<SyllabusViewForTrainingClassDetail>(syllabus);
-                    List<SyllabusViewForTrainingClassDetail> syllabusViewAllDTOs = new List<SyllabusViewForTrainingClassDetail>();
-                    syllabusViewAllDTOs.Add(syllabusDTO);
-                    finalDTO.syllabusDTO = syllabusViewAllDTOs;
+                    StartDate = trainingClassFilterDetail.StartDate,
+                    EndDate = trainingClassFilterDetail.EndDate,
                 }
-                finalDTO.TrainingClass = trainingClassDTO;
-                finalDTO.location = trainingClasses.LocationName;
-                finalDTO.FSU = trainingClasses.Branch;
-                finalDTO.general = new GeneralTrainingClassDTO
-                {
-                    class_date = new ClassDateDTO
-                    {
-                        StartDate = trainingClasses.StartDate,
-                        EndDate = trainingClasses.EndDate,
-                    }
-                };
-                finalDTO.attendeeDTO = attendeeDTO;
-                finalDTO.createdDTO = createdByDTO;
-                finalDTO.programModel = trainingProgramViewModel;
-            }
+            };
+            finalDTO.attendeesDetail = attendeeDTO;
+            finalDTO.created = createdByDTO;
+
 
             return finalDTO;
         }

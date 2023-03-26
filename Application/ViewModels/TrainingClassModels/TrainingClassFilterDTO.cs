@@ -21,5 +21,6 @@ namespace Application.ViewModels.TrainingClassModels
         public string Status { get; set; } = default!;
         public string Attendee { get; set; } = default!;
         public DurationView ClassDuration { get; set; } = default!;
+        public LastEditDTO LastEditDTO { get; set; } = default!;
     }
 }

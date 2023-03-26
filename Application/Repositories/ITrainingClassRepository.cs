@@ -1,4 +1,5 @@
 ﻿using Application.ViewModels.TrainingClassModels;
+using Application.ViewModels.TrainingProgramModels.TrainingProgramView;
 using Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -13,6 +14,7 @@ namespace Application.Repositories
         public List<TrainingClass> SearchClassByName(string name);
         public List<TrainingClassFilterDTO> GetTrainingClassesForFilter();
         public List<TrainingClassViewAllDTO> GetTrainingClasses();
-        TrainingProgram GetTrainingProgramByClassID(Guid id);
+        TrainingProgramViewForTrainingClassDetail GetTrainingProgramByClassID(Guid id);
+       TrainingClassFilterDTO GetTrainingClassFilterById(Guid id);
     }
 }

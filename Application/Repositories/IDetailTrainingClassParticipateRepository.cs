@@ -1,4 +1,5 @@
-﻿using Domain.Entities;
+﻿using Application.ViewModels.TrainingClassModels;
+using Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,5 +12,7 @@ namespace Application.Repositories
     {
         Task<DetailTrainingClassParticipate> GetDetailTrainingClassParticipateAsync(Guid userId, Guid classId);
        Guid GetDetailTrainingClassParticipateByClassID(Guid classID);
+        Task<List<ClassTrainerDTO>> GetDetailTrainingClassParticipatesByClassIDAsync(Guid classID);
+        Task<List<ClassAdminDTO>> GetAdminInClasssByClassIDAsync(Guid classID);
     }
 }
