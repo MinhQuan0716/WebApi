@@ -391,4 +391,31 @@ public class UserControllerTest : SetupTest
         Assert.NotNull(result);
         Assert.Equal(StatusCodes.Status204NoContent, result.StatusCode);
     }
+    [Fact]
+    public async Task Refresh_ShouldReturnOk() 
+    {
+        var token = _fixture.Build<Token>()
+                            .Create();
+        _userServiceMock.Setup(x => x.RefreshTokenV2(token.RefreshToken)).ReturnsAsync(token);
+
+        // Assert 
+        var result = await _userController.Refresh(token.RefreshToken);
+        result.Should().BeAssignableTo<OkObjectResult>();
+        var actualResult = result as OkObjectResult;
+        actualResult!.Value.Should().BeEquivalentTo(token);
+    }
+
+    [Fact]
+    public async Task Refresh_ShouldREturnBadRequest() 
+    {
+        var token = _fixture.Build<Token>()
+                            .Create();
+        var refreshToken = token.RefreshToken;
+        _userServiceMock.Setup(x => x.RefreshTokenV2(refreshToken))!.ReturnsAsync(token = null);
+
+        var result = await _userController.Refresh(refreshToken);
+        result.Should().BeAssignableTo<BadRequestObjectResult>();
+        var actualResult = result as BadRequestObjectResult;
+        actualResult!.Value.Should().BeEquivalentTo("Invalid RefreshToken");
+    }
 }

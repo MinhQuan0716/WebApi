@@ -46,5 +46,6 @@ public interface IUserService
     public Task<List<User>> ImportExcel(IFormFile file);
     public Task<List<UserViewModel>> SearchUsersWithFilter(string searchString, string? gender, int? role, string? level);
     public JwtDTO CheckToken(string accessToken);
+    Task<Token> RefreshTokenV2(string refreshToken);
 
 }

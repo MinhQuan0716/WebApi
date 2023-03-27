@@ -255,5 +255,14 @@ namespace WebAPI.Controllers
             if (result is not null) return Ok(result);
             else return BadRequest("Invalid Token");
         }
+        [HttpPost]
+        public async Task<IActionResult> Refresh(string refreshToken)
+        {
+            var result = await _userService.RefreshTokenV2(refreshToken);
+            if(result is not null) 
+            {
+                return Ok(result);
+            } else return BadRequest("Invalid RefreshToken");
+        }
     }
 }

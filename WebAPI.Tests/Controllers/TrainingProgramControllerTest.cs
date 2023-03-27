@@ -45,7 +45,7 @@ namespace WebAPI.Tests.Controllers
             var trainingProgram = _fixture.Build<TrainingProgram>().Without(x => x.DetailTrainingProgramSyllabus).Without(x => x.TrainingClasses).Create<TrainingProgram>();
             var trainingProgramId = trainingProgram.Id;
             var trainingProgramView = _mapperConfig.Map<TrainingProgramViewModel>(trainingProgram);
-            _trainingProgramServiceMock.Setup(tp => tp.GetTrainingProgramDetail(trainingProgramId)).ReturnsAsync(trainingProgramView = null);
+            _trainingProgramServiceMock.Setup(tp => tp.GetTrainingProgramDetail(trainingProgramId))!.ReturnsAsync(trainingProgramView = null);
             var result = await trainingProgramController.GetDetail(trainingProgram.Id);
             result.Should().BeOfType(typeof(BadRequestResult));
 
@@ -66,28 +66,29 @@ namespace WebAPI.Tests.Controllers
         {
             var createTrainingDTO = _fixture.Build<UpdateTrainingProgramDTO>().Create();
             var trainingProgram = _mapperConfig.Map<TrainingProgram>(createTrainingDTO = null);
-            var result = await trainingProgramController.Create(createTrainingDTO);
+            var result = await trainingProgramController.Create(createTrainingDTO!);
             result.Should().BeAssignableTo<BadRequestResult>();
         }
-/*        [Fact]
-        public async Task UpdateTrainingProgram_ShouldReturn204()
-        {
-            var updateProgramDTO = _fixture.Build<UpdateTrainingProgramDTO>().Create();
-            _trainingProgramServiceMock.Setup(m => m.UpdateTrainingProgram(It.IsAny<UpdateTrainingProgramDTO>())).ReturnsAsync(true);
+        /*        [Fact]
+                public async Task UpdateTrainingProgram_ShouldReturn204()
+                {
+                    var updateProgramDTO = _fixture.Build<UpdateTrainingProgramDTO>().Create();
+                    _trainingProgramServiceMock.Setup(m => m.UpdateTrainingProgram(It.IsAny<UpdateTrainingProgramDTO>())).ReturnsAsync(true);
 
-            var actualResult = await trainingProgramController.Update(updateProgramDTO);
-            actualResult.Should().BeAssignableTo<NoContentResult>();
-        }
-*/
-/*        [Fact]
-        public async Task UpdateTrainingProgram_ShouldReturn400()
-        {
-            var updateProgramDTO = _fixture.Build<UpdateTrainingProgramDTO>().Create();
-            _trainingProgramServiceMock.Setup(m => m.UpdateTrainingProgram(It.IsAny<UpdateTrainingProgramDTO>())).ReturnsAsync(false);
+                    var actualResult = await trainingProgramController.Update(updateProgramDTO);
+                    actualResult.Should().BeAssignableTo<NoContentResult>();
+                }
+        */
+        /*        [Fact]
+                public async Task UpdateTrainingProgram_ShouldReturn400()
+                {
+                    var updateProgramDTO = _fixture.Build<UpdateTrainingProgramDTO>().Create();
+                    _trainingProgramServiceMock.Setup(m => m.UpdateTrainingProgram(It.IsAny<UpdateTrainingProgramDTO>())).ReturnsAsync(false);
 
-            var actualResult = await trainingProgramController.Update(updateProgramDTO);
-            actualResult.Should().BeAssignableTo<BadRequestResult>();
-        }*/
+                    var actualResult = await trainingProgramController.Update(updateProgramDTO);
+                    actualResult.Should().BeAssignableTo<BadRequestResult>();
+                }*/
+        [Fact]
         public async Task SearchTrainingProgramWithFilter_ShouldReturnCorrectData()
         {
             //arrange
@@ -133,6 +134,29 @@ namespace WebAPI.Tests.Controllers
             _trainingProgramServiceMock.Setup(x => x.viewAllTrainingProgramDTOs()).ReturnsAsync(listTrainingProgram = null);
             var actualResult = await trainingProgramController.GetAllTrainingProgram();
             actualResult.Should().BeAssignableTo<BadRequestObjectResult>();
+        }
+        [Fact]
+        public async Task DuplicateTrainingProgram_ShouldReturn201()
+        {
+            var trainingProgram = _fixture.Build<TrainingProgram>()
+                                 .Without(x => x.TrainingClasses)
+                                 .Without(x => x.DetailTrainingProgramSyllabus)
+                                 .Create();
+            _trainingProgramServiceMock.Setup(x => x.DuplicateTrainingProgram(It.IsAny<Guid>())).ReturnsAsync(trainingProgram);
+            var result = await trainingProgramController.Duplicate(Guid.NewGuid());
+            result.Should().BeAssignableTo<CreatedAtActionResult>();
+            
+        }
+        [Fact]
+        public async Task DuplicateTrainingProgram_ShouldReturn400()
+        {
+            var trainingProgram = _fixture.Build<TrainingProgram>()
+                                 .Without(x => x.TrainingClasses)
+                                 .Without(x => x.DetailTrainingProgramSyllabus)
+                                 .Create();
+            _trainingProgramServiceMock.Setup(x => x.DuplicateTrainingProgram(It.IsAny<Guid>()))!.ReturnsAsync(trainingProgram = null);
+            var result = await trainingProgramController.Duplicate(Guid.NewGuid());
+            result.Should().BeAssignableTo<BadRequestObjectResult>();
         }
     }
 }

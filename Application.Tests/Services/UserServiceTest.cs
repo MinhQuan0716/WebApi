@@ -21,10 +21,11 @@ namespace Application.Tests.Services
         private readonly IUserService _userService;
         public UserServiceTest()
         {
+            Mock<IConfiguration> _mockConfig = new Mock<IConfiguration>();
+            var cache = new MemoryCache(new MemoryCacheOptions());
             _userService = new UserService(_unitOfWorkMock.Object,
-                                           _mapperConfig,
-                                           _currentTimeMock.Object,
-                                           _appConfigurationMock.Object);
+                _mapperConfig, _currentTimeMock.Object, _appConfigurationMock.Object,
+                _mockConfig.Object, cache, _sendMailMock.Object);
         }
 
         [Fact]
@@ -104,7 +105,6 @@ namespace Application.Tests.Services
             _sendMailMock.Setup(sm => sm.SendMailAsync(mockUser.Email, "ResetPassword", It.IsAny<string>())).ReturnsAsync(false);
             Mock<IConfiguration> _mockConfig = new Mock<IConfiguration>();
             var cache = new MemoryCache(new MemoryCacheOptions());
-            // Act
             IUserService newUserService = new UserService(_unitOfWorkMock.Object,
                 _mapperConfig, _currentTimeMock.Object, _appConfigurationMock.Object,
                 _mockConfig.Object, cache, _sendMailMock.Object);
@@ -691,7 +691,7 @@ namespace Application.Tests.Services
                 user.RoleName = ((RoleEnums)user.RoleId).ToString();
             _unitOfWorkMock.Setup(x => x.UserRepository.FindAsync
                 (u =>
-                    u.FullName.Contains("Gicungdc")
+                    u.FullName!.Contains("Gicungdc")
                 )).ReturnsAsync(mockUsers);
             //Act
             var result = await _userService.SearchUsersWithFilter("Gicungdc", null, null, null);
@@ -722,7 +722,7 @@ namespace Application.Tests.Services
                 user.RoleName = ((RoleEnums)user.RoleId).ToString();
             _unitOfWorkMock.Setup(x => x.UserRepository.FindAsync
                 (u =>
-                    u.FullName.Contains("ten")
+                    u.FullName!.Contains("ten")
                 )).ReturnsAsync(mockUsers);
             //Act
             var result = await _userService.SearchUsersWithFilter("ten", "Female", null, null);
@@ -753,7 +753,7 @@ namespace Application.Tests.Services
                 user.RoleName = ((RoleEnums)user.RoleId).ToString();
             _unitOfWorkMock.Setup(x => x.UserRepository.FindAsync
                 (u =>
-                    u.FullName.Contains("ten")
+                    u.FullName!.Contains("ten")
                 )).ReturnsAsync(mockUsers);
             //Act
             var result = await _userService.SearchUsersWithFilter("ten", "Female", 1, "SiuCapVjpPr0");
@@ -784,7 +784,7 @@ namespace Application.Tests.Services
                 user.RoleName = ((RoleEnums)user.RoleId).ToString();
             _unitOfWorkMock.Setup(x => x.UserRepository.FindAsync
                 (u =>
-                    u.FullName.Contains("ten")
+                    u.FullName!.Contains("ten")
                 )).ReturnsAsync(mockUsers);
             //Act
             var result = await _userService.SearchUsersWithFilter("ten", null, 1, null);
@@ -815,12 +815,14 @@ namespace Application.Tests.Services
                 user.RoleName = ((RoleEnums)user.RoleId).ToString();
             _unitOfWorkMock.Setup(x => x.UserRepository.FindAsync
                 (u =>
-                    u.FullName.Contains("ten")
+                    u.FullName!.Contains("ten")
                 )).ReturnsAsync(mockUsers);
             //Act
             var result = await _userService.SearchUsersWithFilter("ten", null, null, "SiuCapVjpPr0");
             //Assert
             result.Should().BeEquivalentTo(expected);
         }
+        
+
     }
 }

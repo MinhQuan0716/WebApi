@@ -1,4 +1,5 @@
-﻿using Application.Services;
+﻿using System.Linq.Expressions;
+using Application.Services;
 using Application.ViewModels.TrainingProgramModels;
 using Application.ViewModels.TrainingProgramModels.TrainingProgramView;
 using AutoFixture;
@@ -13,6 +14,7 @@ using System.Diagnostics.SymbolStore;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Application.Interfaces;
 
 namespace Application.Tests.Services
 {
@@ -50,7 +52,43 @@ namespace Application.Tests.Services
             var result = await trainingProgramService.GetTrainingProgramDetail(trainingProgramId);
             result.Should().BeNull();
         }
+        [Fact] 
+        public async void DuplicateTrainingProgram_ShouldReturnCorrectData()
+        {
+          
+            //Setup
+            var duplicateItem = _fixture.Build<TrainingProgram>()
+                                        .Without(x => x.TrainingClasses)
+                                        .Without(x => x.DetailTrainingProgramSyllabus)
+                                        .Create();
+            var duplicateDetailItem = _fixture.Build<DetailTrainingProgramSyllabus>()
+                                              .Without(x => x.Syllabus)
+                                              .Without(x => x.TrainingProgram)
+                                              .With(x => x.SyllabusId, Guid.NewGuid())
+                                              .CreateMany(2).ToList();
+            duplicateItem.DetailTrainingProgramSyllabus = (ICollection<DetailTrainingProgramSyllabus>)duplicateDetailItem;
+            _unitOfWorkMock.Setup(x => x.TrainingProgramRepository.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<Expression<Func<TrainingProgram, object>>[]>())).ReturnsAsync(duplicateItem);
+            _unitOfWorkMock.Setup(x => x.TrainingProgramRepository.AddAsync(It.IsAny<TrainingProgram>())).Verifiable();
+            _unitOfWorkMock.Setup(x => x.SaveChangeAsync()).ReturnsAsync(1);
+            _unitOfWorkMock.Setup(x => x.DetailTrainingProgramSyllabusRepository.AddRangeAsync(It.IsAny<List<DetailTrainingProgramSyllabus>>())).Verifiable();
+            var result = await trainingProgramService.DuplicateTrainingProgram(duplicateItem.Id);
+            result.Should().BeOfType<TrainingProgram>();
+            result.ProgramName.Should().BeEquivalentTo(duplicateItem.ProgramName);    
 
+        }
+        [Fact]
+        public async Task DuplicateTrainingProgram_NotFound_ShouldThrowException()
+        {
+            var duplicateItem = _fixture.Build<TrainingProgram>()
+                                        .Without(x => x.TrainingClasses)
+                                        .Without(x => x.DetailTrainingProgramSyllabus)
+                                        .Create();
+            Guid id = duplicateItem.Id;
+            _unitOfWorkMock.Setup(x => x.TrainingProgramRepository.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(duplicateItem = null);
+            Func<Task> act = async () => await trainingProgramService.DuplicateTrainingProgram(id);
+            await act.Should().ThrowAsync<Exception>().WithMessage("Not found or TrainingProgram has been deleted");
+
+        }
         [Fact]
         public async Task CreateTrainingProgram_ShouldReturnCorrectDate()
         {
@@ -67,7 +105,21 @@ namespace Application.Tests.Services
             var actualResult = await trainingProgramService.CreateTrainingProgram(createTrainingProgramDTO);
             actualResult.Should().NotBeNull();
         }
-
+        [Fact]
+        public async Task DuplicateTrainingProgram_SaveChangeFailed_ShouldThrowException()
+        {
+            var duplicateItem = _fixture.Build<TrainingProgram>()
+                                        .Without(x => x.TrainingClasses)
+                                        .Without(x => x.DetailTrainingProgramSyllabus)
+                                        .Create();
+            _unitOfWorkMock.Setup(x => x.TrainingProgramRepository.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<Expression<Func<TrainingProgram, object>>[]>())).ReturnsAsync(duplicateItem);
+            _unitOfWorkMock.Setup(x => x.TrainingProgramRepository.AddAsync(It.IsAny<TrainingProgram>())).Verifiable();
+            _unitOfWorkMock.Setup(x => x.SaveChangeAsync()).ReturnsAsync(-1);
+           
+            Func<Task> result = async () => await trainingProgramService.DuplicateTrainingProgram(duplicateItem.Id);
+            await result.Should().ThrowAsync<Exception>().WithMessage("Add Training Program Failed _ Save Change Failed!");
+            
+        }
         [Fact]
         public async Task CreateTrainingProgram_ShouldReturnNull()
         {
@@ -103,7 +155,7 @@ namespace Application.Tests.Services
         {
             var updateDTO = _fixture.Build<UpdateTrainingProgramDTO>().Without(x => x.SyllabusesId).Create();
             var trainingProg = _mapperConfig.Map<TrainingProgram>(updateDTO);
-            _unitOfWorkMock.Setup(m => m.TrainingProgramRepository.GetByIdAsync(updateDTO.Id.Value)).ReturnsAsync(trainingProg = null);
+            _unitOfWorkMock.Setup(m => m.TrainingProgramRepository.GetByIdAsync(updateDTO.Id!.Value)).ReturnsAsync(trainingProg = null);
 
             var actualResult = await trainingProgramService.UpdateTrainingProgram(updateDTO);
             actualResult.Should().BeFalse();
@@ -162,7 +214,7 @@ namespace Application.Tests.Services
                                                                         .CreateMany(3).ToList();
             var expected = _mapperConfig.Map<List<TrainingProgramViewModel>>(mockTrainingPrograms);
             foreach (var tp in expected)
-                tp.CreateByUserName = mockUsers.First().FullName;
+                tp.CreateByUserName = mockUsers.First().FullName!;
             _unitOfWorkMock.Setup(x => x.TrainingProgramRepository.GetAllAsync()).ReturnsAsync(mockTrainingPrograms);
             _unitOfWorkMock.Setup(x => x.UserRepository.GetAllAsync()).ReturnsAsync(mockUsers);
             //Act
@@ -198,7 +250,7 @@ namespace Application.Tests.Services
                                                                         .CreateMany(3).ToList();
             var expected = _mapperConfig.Map<List<TrainingProgramViewModel>>(mockTrainingPrograms);
             foreach (var tp in expected)
-                tp.CreateByUserName = mockUsers.First().FullName;
+                tp.CreateByUserName = mockUsers.First().FullName!;
             _unitOfWorkMock.Setup(x => x.TrainingProgramRepository.GetAllAsync()).ReturnsAsync(mockTrainingPrograms);
             _unitOfWorkMock.Setup(x => x.UserRepository.GetAllAsync()).ReturnsAsync(mockUsers);
             //Act
@@ -234,7 +286,7 @@ namespace Application.Tests.Services
                                                                         .CreateMany(3).ToList();
             var expected = _mapperConfig.Map<List<TrainingProgramViewModel>>(mockTrainingPrograms);
             foreach (var tp in expected)
-                tp.CreateByUserName = mockUsers.First().FullName;
+                tp.CreateByUserName = mockUsers.First().FullName!;
             _unitOfWorkMock.Setup(x => x.TrainingProgramRepository.GetAllAsync()).ReturnsAsync(mockTrainingPrograms);
             _unitOfWorkMock.Setup(x => x.UserRepository.GetAllAsync()).ReturnsAsync(mockUsers);
             //Act
@@ -270,7 +322,7 @@ namespace Application.Tests.Services
                                                                         .CreateMany(3).ToList();
             var expected = _mapperConfig.Map<List<TrainingProgramViewModel>>(mockTrainingPrograms);
             foreach (var tp in expected)
-                tp.CreateByUserName = mockUsers.First().FullName;
+                tp.CreateByUserName = mockUsers.First().FullName!;
             _unitOfWorkMock.Setup(x => x.TrainingProgramRepository.GetAllAsync()).ReturnsAsync(mockTrainingPrograms);
             _unitOfWorkMock.Setup(x => x.UserRepository.GetAllAsync()).ReturnsAsync(mockUsers);
             //Act
@@ -306,7 +358,7 @@ namespace Application.Tests.Services
                                                                         .CreateMany(3).ToList();
             var expected = _mapperConfig.Map<List<TrainingProgramViewModel>>(mockTrainingPrograms);
             foreach (var tp in expected)
-                tp.CreateByUserName = mockUsers.First().FullName;
+                tp.CreateByUserName = mockUsers.First().FullName!;
             _unitOfWorkMock.Setup(x => x.TrainingProgramRepository.GetAllAsync()).ReturnsAsync(mockTrainingPrograms);
             _unitOfWorkMock.Setup(x => x.UserRepository.GetAllAsync()).ReturnsAsync(mockUsers);
             //Act
@@ -342,7 +394,7 @@ namespace Application.Tests.Services
                                                                         .CreateMany(3).ToList();
             var expected = _mapperConfig.Map<List<TrainingProgramViewModel>>(mockTrainingPrograms);
             foreach (var tp in expected)
-                tp.CreateByUserName = mockUsers.First().FullName;
+                tp.CreateByUserName = mockUsers.First().FullName!;
             _unitOfWorkMock.Setup(x => x.TrainingProgramRepository.GetAllAsync()).ReturnsAsync(mockTrainingPrograms);
             _unitOfWorkMock.Setup(x => x.UserRepository.GetAllAsync()).ReturnsAsync(mockUsers);
             //Act
@@ -378,7 +430,7 @@ namespace Application.Tests.Services
                                                                         .CreateMany(3).ToList();
             var expected = _mapperConfig.Map<List<TrainingProgramViewModel>>(mockTrainingPrograms);
             foreach (var tp in expected)
-                tp.CreateByUserName = mockUsers.First().FullName;
+                tp.CreateByUserName = mockUsers.First().FullName!;
             _unitOfWorkMock.Setup(x => x.TrainingProgramRepository.GetAllAsync()).ReturnsAsync(mockTrainingPrograms);
             _unitOfWorkMock.Setup(x => x.UserRepository.GetAllAsync()).ReturnsAsync(mockUsers);
             //Act
@@ -413,7 +465,7 @@ namespace Application.Tests.Services
                                                                         .CreateMany(3).ToList();
             var expected = _mapperConfig.Map<List<TrainingProgramViewModel>>(mockTrainingPrograms);
             foreach (var tp in expected)
-                tp.CreateByUserName = mockUsers.First().FullName;
+                tp.CreateByUserName = mockUsers.First().FullName!;
             _unitOfWorkMock.Setup(x => x.TrainingProgramRepository.GetAllAsync()).ReturnsAsync(mockTrainingPrograms);
             _unitOfWorkMock.Setup(x => x.UserRepository.GetAllAsync()).ReturnsAsync(mockUsers);
             //Act
@@ -422,39 +474,6 @@ namespace Application.Tests.Services
             result.Should().BeEquivalentTo(expected);
         }
 
-/*        [Fact]
-        public async Task ViewAllTrainingProgram_ShouldBeReturnList()
-        {
-            var listViewTrainingProgram = _fixture.Build<ViewAllTrainingProgramDTO>().Without(x => x.Content).CreateMany(2);
-            var listTrainingProgram = _mapperConfig.Map<List<TrainingProgram>>(listViewTrainingProgram);
-            _unitOfWorkMock.Setup(a => a.TrainingProgramRepository.GetAllAsync()).ReturnsAsync(listTrainingProgram);
-            var listLoadAllProgramId = from a in listViewTrainingProgram
-                                             select new
-                                             {
-                                                 Id = a.Id
-                                             };
-            IList<ViewAllTrainingProgramDTO> resultOutputList=new List<ViewAllTrainingProgramDTO>();
-            var trainingProgram = _fixture.Build<TrainingProgram>()
-                .Without(x=>x.TrainingClasses)
-                .Without(x=>x.DetailTrainingProgramSyllabus)
-                .Create();
-            var mapperView = _mapperConfig.Map<ViewAllTrainingProgramDTO>(trainingProgram);
-            var syllabusMock = _fixture.Build<Syllabus>()
-                .Without(x=>x.User)
-                .Without(x=>x.Units)
-                .Without(x=>x.DetailTrainingProgramSyllabus)
-                .Create();
-            foreach (var a in listLoadAllProgramId)
-            {
-                _unitOfWorkMock.Setup(x => x.TrainingProgramRepository.GetByIdAsync(a.Id)).ReturnsAsync(trainingProgram);
-                if (trainingProgram is not null && trainingProgram.IsDeleted == false)
-                {
-                    var listGetSyllabusByProgramId = _mapperConfig.Map<ViewAllTrainingProgramDTO>(trainingProgram);
-                    listGetSyllabusByProgramId.Syllabuses = (ICollection<Syllabus>?)_unitOfWorkMock.Setup(x => x.SyllabusRepository.GetSyllabusByTrainingProgramId(listGetSyllabusByProgramId.Id));
-                    resultOutputList.Add(listGetSyllabusByProgramId);
-                }
-            }
-
-                }*/
+        
     }
 }

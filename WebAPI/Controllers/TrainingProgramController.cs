@@ -76,5 +76,17 @@ namespace WebAPI.Controllers
                 return Ok(obj);
             return NoContent();
         }
+
+        [HttpPost]
+        [Authorize]
+        [ClaimRequirement(nameof(PermissionItem.TrainingProgramPermission), nameof(PermissionEnum.Create))]
+        public async Task<IActionResult> Duplicate(Guid id) 
+        {
+            var result = await _trainingProgramService.DuplicateTrainingProgram(id);
+            if(result is not null) 
+            {
+               return CreatedAtAction(nameof(GetDetail), new {id = result.Id}, result);
+            } else return BadRequest("Duplicate Failed! Please try again later!");
+        }
     }
 }

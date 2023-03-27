@@ -184,5 +184,35 @@ namespace Application.Services
                 return result;
             }
         }
+        public async Task<TrainingProgram> DuplicateTrainingProgram(Guid TrainingProgramId)
+        {
+            var duplicateItem = await _unitOfWork.TrainingProgramRepository.GetByIdAsync(TrainingProgramId, x => x.DetailTrainingProgramSyllabus);
+            if(duplicateItem is not null) 
+            {
+                var createItem = new TrainingProgram 
+                {
+                    Id = Guid.NewGuid(),
+                    ProgramName = duplicateItem.ProgramName,
+                    Status = "Active"
+                };
+                await _unitOfWork.TrainingProgramRepository.AddAsync(createItem);
+                if(await _unitOfWork.SaveChangeAsync() > 0) 
+                {
+                    List<DetailTrainingProgramSyllabus> createdDetail = new List<DetailTrainingProgramSyllabus>();
+                    foreach(var item in duplicateItem.DetailTrainingProgramSyllabus) 
+                    {
+                        createdDetail.Add(new DetailTrainingProgramSyllabus{   TrainingProgramId = createItem.Id,
+                                                                                     SyllabusId = item.SyllabusId,
+                                                                                     Status = "Active"
+                                                                                 });
+                    }
+                    await _unitOfWork.DetailTrainingProgramSyllabusRepository.AddRangeAsync(createdDetail);
+                    if(await _unitOfWork.SaveChangeAsync() > 0) return createItem;
+                    else throw new Exception("Can not Insert DetailTrainingProgramSyllabuses!");
+                } else throw new Exception("Add Training Program Failed _ Save Change Failed!");
+
+            } else throw new Exception("Not found or TrainingProgram has been deleted");
+        
+        }
     }
 }
