@@ -125,10 +125,12 @@ try
 
     // call hangfire
     await app.StartAsync();
-    BackgroundJob.Enqueue<IAssignmentService>(a => a.AddProcedure());
-    RecurringJob.AddOrUpdate<ApplicationCronJob>(util => util.CheckAttendancesEveryDay(),
-        "0 0 22 ? * *", TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time"));
-    RecurringJob.AddOrUpdate<IAssignmentService>(a => a.CheckOverDue(), "* * * * *");
+    RecurringJob.AddOrUpdate<ApplicationCronJob>(util => util.CheckAttendancesEveryDay(), 
+        "0 22 * * *", TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time"));
+    RecurringJob.AddOrUpdate<IAssignmentService>(a => a.CheckOverDue(), 
+        "* * * * *", TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time"));
+    RecurringJob.AddOrUpdate<ApplicationCronJob>(a => a.ExtractGradingDataEveryDay(), 
+        "0 23 * * *", TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time"));
     await app.WaitForShutdownAsync();
 
 

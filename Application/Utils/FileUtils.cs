@@ -1,7 +1,9 @@
 ﻿using Domain.Entities;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.StaticFiles;
+using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -65,6 +67,23 @@ namespace Application.Utils
 
             return file;
         }
-       
+
+        public static MemoryStream? ExportExcel<T>(List<T> dataList)
+        {
+            var stream = new MemoryStream();
+
+            // If you use EPPlus in a noncommercial context
+            // according to the Polyform Noncommercial license:
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+            using (var package = new ExcelPackage(stream))
+            {
+                var workSheet = package.Workbook.Worksheets.Add("Sheet1");
+                workSheet.Cells.LoadFromCollection(dataList, true);
+                package.Save();
+            }
+            stream.Position = 0;
+            return stream;
+        }
+
     }
 }

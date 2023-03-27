@@ -334,7 +334,7 @@ namespace Application.Services
         }
 
 
-        public async Task<bool> AddGrading(Guid LectureID, Guid DetailTrainingClassParticipateId, int TotalMark)
+        public async Task<bool> AddGrading(Guid LectureID, Guid DetailTrainingClassParticipateId, double TotalMark)
         {
             Grading new_grading = new Grading()
             {

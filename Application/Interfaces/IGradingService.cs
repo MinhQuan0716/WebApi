@@ -18,4 +18,5 @@ public interface IGradingService
     List<MarkReportDto> GetMarkReportOfClass(Guid classID);
     List<MarkReportDto> GetMarkReportOfTrainee(Guid traineeId);
     Task<bool> AddToGrading(GradingModel gradingModel);
+    Task UpdateGradingReports();
 }

@@ -1,10 +1,13 @@
 ﻿using Application.Interfaces;
+using Application.Repositories;
 using Application.Services;
 using Application.Utils;
 using Application.ViewModels.AtttendanceModels;
+using Application.ViewModels.GradingModels;
 using AutoMapper;
 using Domain.Entities;
 using Domain.Enums;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -24,13 +27,17 @@ public class ApplicationCronJob
     private readonly IAttendanceService _attendanceService;
     private readonly ISendMailHelper _mailHelper;
     private readonly ICurrentTime _currentTime;
+    private readonly IGradingService _gradingService;
 
-    public ApplicationCronJob(IConfiguration configuration, IAttendanceService attendanceService, ISendMailHelper mailHelper, ICurrentTime currentTime)
+    public ApplicationCronJob(IConfiguration configuration, ICurrentTime currentTime,
+        ISendMailHelper mailHelper,
+        IAttendanceService attendanceService, IGradingService gradingService)
     {
         _configuration = configuration;
         _attendanceService = attendanceService;
         _mailHelper = mailHelper;
         _currentTime = currentTime;
+        _gradingService = gradingService;
     }
 
     public async Task CheckAttendancesEveryDay()
@@ -41,9 +48,6 @@ public class ApplicationCronJob
         foreach (var x in absentList)
         {
             var subject = "Confirm absence";
-            //var message = $"Dear trainee {x.FullName}," +
-            //    $"\nYou have absented today {_currentTime.GetCurrentTime().Date.ToString("dd/MM/yyyy")}, in class {x.ClassName}" +
-            //    $"\nTotal absented day: {x.NumOfAbsented}";
             //Get project's directory and fetch AbsentTemplate content from EmailTemplates
             string exePath = Environment.CurrentDirectory.ToString();
             if (exePath.Contains(@"\bin\Debug\net7.0"))
@@ -65,5 +69,10 @@ public class ApplicationCronJob
             MailText = MailText.Replace("[NumOfAbsented]", x.NumOfAbsented.ToString());
             await _mailHelper.SendMailAsync(x.Email, subject, MailText);
         }
+    }
+
+    public async Task ExtractGradingDataEveryDay()
+    {
+        await _gradingService.UpdateGradingReports();
     }
 }

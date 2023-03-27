@@ -9,7 +9,7 @@ namespace Application.ViewModels.GradingModels;
 
 public class GradingModel
 {
-    public GradingModel(Guid lectureId, Guid detailTrainingClassParticipateId, string? letterGrade, int? numericGrade)
+    public GradingModel(Guid lectureId, Guid detailTrainingClassParticipateId, string? letterGrade, double? numericGrade)
     {
         LectureId = lectureId;
         DetailTrainingClassParticipateId = detailTrainingClassParticipateId;
@@ -20,6 +20,6 @@ public class GradingModel
     public Guid LectureId { get; set; }
     public Guid DetailTrainingClassParticipateId { get; set; }
     public string? LetterGrade { get; set; }
-    public int? NumericGrade { get; set; }
+    public double? NumericGrade { get; set; }
 
 }

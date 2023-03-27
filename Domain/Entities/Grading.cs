@@ -9,7 +9,7 @@ namespace Domain.Entities;
 public class Grading : BaseEntity
 {
     public string? LetterGrade { get; set; }
-    public int? NumericGrade { get; set; }
+    public double? NumericGrade { get; set; }
     public Guid DetailTrainingClassParticipateId { get; set; }
 
     public virtual DetailTrainingClassParticipate DetailTrainingClassParticipate { get; set; }

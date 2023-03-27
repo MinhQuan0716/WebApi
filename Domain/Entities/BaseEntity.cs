@@ -7,7 +7,7 @@ namespace Domain.Entities
         [Key]
         public Guid Id { get; set; }
 
-        public DateTime CreationDate { get; set; }
+        public DateTime CreationDate { get; set; } = DateTime.Now;
 
         public Guid? CreatedBy { get; set; }
 
@@ -19,6 +19,6 @@ namespace Domain.Entities
 
         public Guid? DeleteBy { get; set; }
 
-        public bool IsDeleted { get; set; }
+        public bool IsDeleted { get; set; } = false;
     }
 }

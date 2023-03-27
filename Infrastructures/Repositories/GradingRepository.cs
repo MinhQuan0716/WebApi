@@ -3,12 +3,6 @@ using Application.Repositories;
 using Application.ViewModels.GradingModels;
 using Application.ViewModels.QuizModels;
 using Domain.Entities;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Infrastructures.Repositories;
 
@@ -20,55 +14,67 @@ public class GradingRepository : GenericRepository<Grading>, IGradingRepository
     {
         _context = context;
     }
-
+    public async Task UpdateGradingReports()
+    {
+        // sumary grading data
+        var result = from g in _context.Gradings
+                     join d in _context.DetailTrainingClassParticipates
+                            on g.DetailTrainingClassParticipateId equals d.Id
+                     join u in _context.Users
+                            on d.UserId equals u.Id
+                     join c in _context.TrainingClasses
+                             on d.TrainingClassID equals c.Id
+                     join l in _context.Lectures
+                            on g.LectureId equals l.Id                     
+                     select new GradingReport()
+                     {
+                         ClassId = c.Id,
+                         ClassName = c.Name,
+                         TraineeId = u.Id,
+                         Username = u.UserName,
+                         TraineeName = u.FullName,
+                         LectureName = l.LectureName,
+                         DeliveryType = l.DeliveryType,
+                         NumericGrade = g.NumericGrade.Value,
+                         LetterGrade = g.LetterGrade
+                     };
+        // update new grading report datas into database 
+        _context.GradingReports.RemoveRange(_context.GradingReports);
+        await _context.SaveChangesAsync();
+        await _context.GradingReports.AddRangeAsync(result);
+    }
 
 
     public List<MarkReportDto> GetMarkReportOfClass(Guid classID)
     {
-        var result = from g in _context.Gradings
-                     join d in _context.DetailTrainingClassParticipates
-                            on g.DetailTrainingClassParticipateId equals d.Id
-                     join u in _context.Users
-                            on d.UserId equals u.Id
-                     join c in _context.TrainingClasses
-                             on d.TrainingClassID equals c.Id
-                     join l in _context.Lectures
-                            on g.LectureId equals l.Id
-                     where c.Id == classID
-                     select new MarkReportDto()
-                     {
-                         ClassName = c.Name,
-                         Username = u.UserName,
-                         TraineeName = u.FullName,
-                         LectureName = l.LectureName,
-                         DeliveryType = l.DeliveryType,
-                         NumericGrade = g.NumericGrade.Value,
-                         LetterGrade = g.LetterGrade
-                     };
+        var result = _context.GradingReports
+            .Where(x => x.ClassId == classID)
+            .Select(x => new MarkReportDto()
+            {
+                ClassName = x.ClassName,
+                Username = x.Username,
+                TraineeName = x.TraineeName,
+                DeliveryType = x.DeliveryType,
+                LectureName = x.LectureName,
+                LetterGrade = x.LetterGrade,
+                NumericGrade = x.NumericGrade
+            });   
         return result.ToList();
     }
     public List<MarkReportDto> GetMarkReportOfTrainee(Guid traineeId)
     {
-        var result = from g in _context.Gradings
-                     join d in _context.DetailTrainingClassParticipates
-                            on g.DetailTrainingClassParticipateId equals d.Id
-                     join u in _context.Users
-                            on d.UserId equals u.Id
-                     join c in _context.TrainingClasses
-                             on d.TrainingClassID equals c.Id
-                     join l in _context.Lectures
-                            on g.LectureId equals l.Id
-                     where u.Id == traineeId
-                     select new MarkReportDto()
-                     {
-                         ClassName = c.Name,
-                         Username = u.UserName,
-                         TraineeName = u.FullName,
-                         LectureName = l.LectureName,
-                         DeliveryType = l.DeliveryType,
-                         NumericGrade = g.NumericGrade.Value,
-                         LetterGrade = g.LetterGrade
-                     };
+        var result = _context.GradingReports
+            .Where(x => x.TraineeId == traineeId)
+            .Select(x => new MarkReportDto()
+            {
+                ClassName = x.ClassName,
+                Username = x.Username,
+                TraineeName = x.TraineeName,
+                DeliveryType = x.DeliveryType,
+                LectureName = x.LectureName,
+                LetterGrade = x.LetterGrade,
+                NumericGrade = x.NumericGrade
+            });
         return result.ToList();
     }
     public List<ViewQuizAndMarkBelowDTO> GetAllMarkOfTrainee(Guid traineeId)

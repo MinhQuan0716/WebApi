@@ -47,7 +47,7 @@ namespace Infrastructures.Repositories
                    && (filter.Approved == x.Approved || filter.Approved == null)
                    && (filter.UserID == Guid.Empty || filter.UserID == x.UserId)
                    && (classId == Guid.Empty || classId == x.TrainingClassId)
-                   && ((filter.ByDateType.Equals(nameof(ApplicationFilterByEnum.CreationDate),StringComparison.OrdinalIgnoreCase) && filter.FromDate <= x.CreationDate && x.CreationDate <= filter.ToDate)
+                   && ((filter.ByDateType.Equals(nameof(ApplicationFilterByEnum.CreationDate), StringComparison.OrdinalIgnoreCase) && filter.FromDate <= x.CreationDate && x.CreationDate <= filter.ToDate)
                        || (filter.ByDateType.Equals(nameof(ApplicationFilterByEnum.RequestDate), StringComparison.OrdinalIgnoreCase) && filter.FromDate <= x.AbsentDateRequested && x.AbsentDateRequested <= filter.ToDate));
         }
 

@@ -89,10 +89,10 @@ public class GradingService : IGradingService
         return true;
     }
 
-    public async Task<int> ViewMarkQuizByQuizID(Guid LectureID)
+    public async Task<double> ViewMarkQuizByQuizID(Guid LectureID)
     {
         var grading_find = await _unitOfWork.GradingRepository.GetAllAsync();
-        return (int)grading_find.Find(x => x.LectureId == LectureID).NumericGrade;
+        return (double)grading_find.Find(x => x.LectureId == LectureID).NumericGrade;
     }
     public async Task<List<ViewQuizAndMarkBelowDTO>> ViewAllQuizMark()
     {
@@ -112,5 +112,10 @@ public class GradingService : IGradingService
         await _unitOfWork.GradingRepository.AddAsync(mapperGrading);
         return await _unitOfWork.SaveChangeAsync() > 0;
 
+    }
+    public async Task UpdateGradingReports()
+    {        
+        await _unitOfWork.GradingRepository.UpdateGradingReports();
+        await _unitOfWork.SaveChangeAsync();
     }
 }

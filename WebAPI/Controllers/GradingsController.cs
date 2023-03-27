@@ -26,6 +26,7 @@ public class GradingsController : BaseController
     {
         // query data from database  
         await Task.Yield();
+
         var dataList = _gradingService.GetMarkReportOfClass(classID);
 
         if (dataList.IsNullOrEmpty())
@@ -33,21 +34,8 @@ public class GradingsController : BaseController
             return NoContent();
         }
 
-        var stream = new MemoryStream();
-
-        // If you use EPPlus in a noncommercial context
-        // according to the Polyform Noncommercial license:
-        ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-        using (var package = new ExcelPackage(stream))
-        {
-            var workSheet = package.Workbook.Worksheets.Add("Sheet1");
-            workSheet.Cells.LoadFromCollection(dataList, true);
-            package.Save();
-        }
-        stream.Position = 0;
+        var stream = FileUtils.ExportExcel(dataList);
         string excelName = $"MarkReportOfClass-{DateTime.Now.ToString("yyyyMMddHHmmssfff")}.xlsx";
-
-        //return File(stream, "application/octet-stream", excelName);  
         return File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", excelName);
     }
 
@@ -63,21 +51,8 @@ public class GradingsController : BaseController
             return NoContent();
         }
 
-        var stream = new MemoryStream();
-
-        // If you use EPPlus in a noncommercial context
-        // according to the Polyform Noncommercial license:
-        ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-        using (var package = new ExcelPackage(stream))
-        {
-            var workSheet = package.Workbook.Worksheets.Add("Sheet1");
-            workSheet.Cells.LoadFromCollection(dataList, true);
-            package.Save();
-        }
-        stream.Position = 0;
+        var stream = FileUtils.ExportExcel(dataList);
         string excelName = $"MarkReportOfClass-{DateTime.Now.ToString("yyyyMMddHHmmssfff")}.xlsx";
-
-        //return File(stream, "application/octet-stream", excelName);  
         return File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", excelName);
     }
 }

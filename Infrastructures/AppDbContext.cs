@@ -52,6 +52,7 @@ namespace Infrastructures
               
         public DbSet<Assignment> Assignments { get; set; }
         public DbSet<AssignmentSubmission> AssignmentSubmissions { get; set; }
+        public DbSet<GradingReport> GradingReports { get; set; }        
         #endregion
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

@@ -15,4 +15,5 @@ public interface IGradingRepository : IGenericRepository<Grading>
     List<MarkReportDto> GetMarkReportOfTrainee(Guid traineeId);
 
     List<ViewQuizAndMarkBelowDTO> GetAllMarkOfTrainee(Guid traineeId);
+    Task UpdateGradingReports();
 }
