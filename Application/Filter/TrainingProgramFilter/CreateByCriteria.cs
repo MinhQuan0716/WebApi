@@ -3,21 +3,21 @@ using Domain.Entities;
 
 namespace Application.Filter.TrainingProgramFilter
 {
-    public class StatusCriteria : ICriterias<TrainingProgram>
+    public class CreateByCriteria : ICriterias<TrainingProgram>
     {
-        private string? searchCriteria;
-        public StatusCriteria(string? searchCriteria)
+        private Guid? searchCriteria;
+        public CreateByCriteria(Guid? searchCriteria)
         {
             this.searchCriteria = searchCriteria;
         }
         public List<TrainingProgram> MeetCriteria(List<TrainingProgram> trainingPrograms)
         {
-            if (searchCriteria != null)
+            if (searchCriteria != Guid.Empty)
             {
                 List<TrainingProgram> trainingProgramData = new List<TrainingProgram>();
                 foreach (TrainingProgram tp in trainingPrograms)
                 {
-                    if (tp.Status.ToLower().Equals(searchCriteria.ToLower()))
+                    if (tp.CreatedBy.Equals(searchCriteria))
                     {
                         trainingProgramData.Add(tp);
                     }

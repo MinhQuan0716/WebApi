@@ -459,56 +459,40 @@ public class UserService : IUserService
             throw new Exception("Excel file has invalid data");
         }
     }
-    public async Task<List<UserViewModel>> SearchUsers(UserSearchFilterModels.UserSearchModel userSearchModel)
+
+    public async Task<List<UserViewModel>> SearchUsersWithFilter(string? searchString, string? gender, int? role, string? level)
     {
-        var listAllUsers = await _unitOfWork.UserRepository.FindAsync(u => u.IsDeleted == false);
-        var mappedUsers = _mapper.Map<List<UserViewModel>>(listAllUsers);
-        if (userSearchModel.Keyword.IsNullOrEmpty())
+        //init filter
+        ICriterias<User> genderCriteria = new GenderCriteria(gender);
+        ICriterias<User> roleCriteria = new RoleCriteria(role);
+        ICriterias<User> levelCriteria = new LevelCriteria(level);
+        ICriterias<User> andCriteria = new AndUserCriteria(genderCriteria, roleCriteria, levelCriteria);
+        //search user with filter
+        if (searchString != null)
         {
-            var result = new List<UserViewModel>();
-            foreach (var user in mappedUsers)
-                if(user.UserName.Contains(userSearchModel.Keyword) || user.FullName.Contains(userSearchModel.Keyword))
-                {
-                    user.RoleName = ((RoleEnums)user.RoleId).ToString();
-                    result.Add(user);
-                }
+            var listUser = await _unitOfWork.UserRepository.FindAsync(u => u.FullName.Contains(searchString));
+            var result = _mapper.Map<List<UserViewModel>>(andCriteria.MeetCriteria(listUser));
+            foreach (var user in result)
+                user.RoleName = ((RoleEnums)user.RoleId).ToString();
             return result;
         }
-        //return all user if input is null
+        //using filter only (filter from all users)
+        else if (!gender.IsNullOrEmpty() || role != null || !level.IsNullOrEmpty())
+        {
+            var listUser = await _unitOfWork.UserRepository.GetAllAsync();
+            var result = _mapper.Map<List<UserViewModel>>(andCriteria.MeetCriteria(listUser));
+            foreach (var user in result)
+                user.RoleName = ((RoleEnums)user.RoleId).ToString();
+            return result;
+        }
+        //return all user if all input are null
         else
         {
-            foreach (var user in mappedUsers)
-                user.RoleName = ((RoleEnums)user.RoleId).ToString(); 
-            return mappedUsers;
+            var listUser = await _unitOfWork.UserRepository.GetAllAsync();
+            var result = _mapper.Map<List<UserViewModel>>(listUser);
+            foreach (var user in result)
+                user.RoleName = ((RoleEnums)user.RoleId).ToString();
+            return result;
         }
-            
-    }
-    public async Task<List<UserViewModel>> FilterUsers(UserSearchFilterModels.UserFilterModel userFilterModel)
-    {
-        var listUser = await _unitOfWork.UserRepository.FindAsync(u => u.IsDeleted == false);
-        if (listUser.Count > 0)
-        {
-            if (!userFilterModel.Gender.IsNullOrEmpty() || userFilterModel.Role == 0 || !userFilterModel.Level.IsNullOrEmpty())
-            {
-                ICriterias<User> genderCriteria = new GenderCriteria(userFilterModel.Gender);
-                ICriterias<User> roleCriteria = new RoleCriteria(userFilterModel.Role);
-                ICriterias<User> levelCriteria = new LevelCriteria(userFilterModel.Level);
-                ICriterias<User> andCriteria = new AndUserCriteria(genderCriteria, roleCriteria, levelCriteria);
-                var result = _mapper.Map<List<UserViewModel>>(andCriteria.MeetCriteria(listUser));
-                foreach (var user in result)
-                    user.RoleName = ((RoleEnums)user.RoleId).ToString();
-                return result;
-            }
-            //return all user if all input are null
-            else
-            {
-                var result = _mapper.Map<List<UserViewModel>>(listUser);
-                foreach (var user in result)
-                    user.RoleName = ((RoleEnums)user.RoleId).ToString();
-                return result;
-            }
-        }
-        else
-            return new List<UserViewModel>();
     }
 }

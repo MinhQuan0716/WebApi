@@ -12,12 +12,16 @@ namespace Application.Filter.UserFilter
         }
         public List<User> MeetCriteria(List<User> users)
         {
-            List<User> userData = new List<User>();
             if (searchCriteria != null)
             {
+                List<User> userData = new List<User>();
                 foreach (User user in users)
+                {
                     if (user.RoleId.Equals(searchCriteria))
+                    {
                         userData.Add(user);
+                    }
+                }
                 return userData;
             }
             else

@@ -88,25 +88,25 @@ namespace WebAPI.Tests.Controllers
                     var actualResult = await trainingProgramController.Update(updateProgramDTO);
                     actualResult.Should().BeAssignableTo<BadRequestResult>();
                 }*/
-        //[Fact]
-        //public async Task SearchTrainingProgramWithFilter_ShouldReturnCorrectData()
-        //{
-        //    //arrange
-        //    var mockTPs = _fixture.Build<TrainingProgramViewModel>().Without(u => u.TrainingProgramId)
-        //                                                            .Without(u => u.Modified)
-        //                                                            .Without(u => u.CreatedBy).Without(u => u.TrainingDuration)
-        //                                                            .Without(u => u.Contents)
-        //                                                            .CreateMany(3).ToList();
-        //    _trainingProgramServiceMock.Setup(x => x.SearchTrainingProgramWithFilter(mockTPs[1].TrainingTitle, mockTPs[1].TrainingStatus, mockTPs[1].CreateByUserName)).ReturnsAsync(mockTPs);
-        //    //act
-        //    var result = await trainingProgramController.Search(mockTPs[1].TrainingTitle, mockTPs[1].TrainingStatus, mockTPs[1].CreateByUserName) as OkObjectResult;
-        //    //assert
-        //    _trainingProgramServiceMock.Verify(x => x.SearchTrainingProgramWithFilter(mockTPs[1].TrainingTitle, mockTPs[1].TrainingStatus, mockTPs[1].CreateByUserName), Times.Once);
-        //    Assert.NotNull(result);
-        //    Assert.IsType<List<TrainingProgramViewModel>>(result.Value);
-        //    Assert.Equal(StatusCodes.Status200OK, result.StatusCode);
-        //    Assert.Equal(mockTPs, result.Value);
-        //}
+        [Fact]
+        public async Task SearchTrainingProgramWithFilter_ShouldReturnCorrectData()
+        {
+            //arrange
+            var mockTPs = _fixture.Build<TrainingProgramViewModel>().Without(u => u.TrainingProgramId)
+                                                                    .Without(u => u.Modified)
+                                                                    .Without(u => u.CreatedBy).Without(u => u.TrainingDuration)
+                                                                    .Without(u => u.Contents)
+                                                                    .CreateMany(3).ToList();
+            _trainingProgramServiceMock.Setup(x => x.SearchTrainingProgramWithFilter(mockTPs[1].TrainingTitle, mockTPs[1].TrainingStatus, mockTPs[1].CreateByUserName)).ReturnsAsync(mockTPs);
+            //act
+            var result = await trainingProgramController.Search(mockTPs[1].TrainingTitle, mockTPs[1].TrainingStatus, mockTPs[1].CreateByUserName) as OkObjectResult;
+            //assert
+            _trainingProgramServiceMock.Verify(x => x.SearchTrainingProgramWithFilter(mockTPs[1].TrainingTitle, mockTPs[1].TrainingStatus, mockTPs[1].CreateByUserName), Times.Once);
+            Assert.NotNull(result);
+            Assert.IsType<List<TrainingProgramViewModel>>(result.Value);
+            Assert.Equal(StatusCodes.Status200OK, result.StatusCode);
+            Assert.Equal(mockTPs, result.Value);
+        }
 
         [Fact]
         public async Task GetAllTrainingProgram_ShouldReturnOk()
@@ -116,16 +116,16 @@ namespace WebAPI.Tests.Controllers
             var actualResult = await trainingProgramController.GetAllTrainingProgram();
             actualResult.Should().BeAssignableTo<OkObjectResult>();
         }
-        //[Fact]
-        //public async Task SearchUserWithFilter_ShouldReturnNoContent_WhenIsNullOrEmpty()
-        //{
-        //    //act
-        //    var result = await trainingProgramController.Search("", "", "") as NoContentResult;
-        //    //assert
-        //    _trainingProgramServiceMock.Verify(x => x.SearchTrainingProgramWithFilter("", "", ""), Times.Once);
-        //    Assert.NotNull(result);
-        //    Assert.Equal(StatusCodes.Status204NoContent, result.StatusCode);
-        //}
+        [Fact]
+        public async Task SearchUserWithFilter_ShouldReturnNoContent_WhenIsNullOrEmpty()
+        {
+            //act
+            var result = await trainingProgramController.Search("", "", "") as NoContentResult;
+            //assert
+            _trainingProgramServiceMock.Verify(x => x.SearchTrainingProgramWithFilter("", "", ""), Times.Once);
+            Assert.NotNull(result);
+            Assert.Equal(StatusCodes.Status204NoContent, result.StatusCode);
+        }
 
         [Fact]
         public async Task GetAllTrainingProgram_ShouldReturnBadRequest()

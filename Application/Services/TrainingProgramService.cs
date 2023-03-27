@@ -2,10 +2,8 @@
 using Application.Interfaces;
 using Application.ViewModels.TrainingProgramModels;
 using Application.ViewModels.TrainingProgramModels.TrainingProgramView;
-using Application.ViewModels.UserViewModels;
 using AutoMapper;
 using Domain.Entities;
-using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -149,72 +147,42 @@ namespace Application.Services
 
 
         }
-        public async Task<List<TrainingProgramViewModel>> SearchTrainingProgram(TrainingProgramSearchFilterModels.SearchTrainingProgramModel searchTrainingProgramModel)
+        public async Task<List<TrainingProgramViewModel>> SearchTrainingProgramWithFilter(string? searchString, string? status, string? createBy)
         {
             //init filter
-            var listTP = await _unitOfWork.TrainingProgramRepository.FindAsync(u => u.IsDeleted == false);
+            var listTP = await _unitOfWork.TrainingProgramRepository.GetAllAsync();
             var listUsers = await _unitOfWork.UserRepository.GetAllAsync();
-            if (listUsers.Any() && listTP.Any())
+            var userId = Guid.Empty;
+            if (createBy != null)
+                userId = listUsers.Where(u => u.FullName.ToLower().Contains(createBy.ToLower())).First().Id;
+            ICriterias<TrainingProgram> statusCriteria = new StatusCriteria(status);
+            ICriterias<TrainingProgram> createByCriteria = new CreateByCriteria(userId);
+            ICriterias<TrainingProgram> andCriteria = new AndTrainingProgramCriteria(statusCriteria, createByCriteria);
+            //search training program with filter
+            if (searchString != null)
             {
-                if (!searchTrainingProgramModel.Keyword.IsNullOrEmpty())
-                {
-                    var searchList = new List<TrainingProgram>();
-                    foreach (var item in listTP)
-                    {
-                        if(item.ProgramName.ToLower().Contains(searchTrainingProgramModel.Keyword.ToLower()))
-                        {
-                            searchList.Add(item);
-                        }
-                    }
-                    var result = _mapper.Map<List<TrainingProgramViewModel>>(searchList);
-                    return LinkingName(result,listUsers);
-                }
-                //not inputting required field
-                else
-                {
-                    var result = _mapper.Map<List<TrainingProgramViewModel>>(listTP);
-                    return LinkingName(result,listUsers);
-                }
+                listTP = listTP.Where(tp => tp.ProgramName.ToLower().Contains(searchString.ToLower())).ToList();
+                var result = _mapper.Map<List<TrainingProgramViewModel>>(andCriteria.MeetCriteria(listTP));
+                foreach (var tp in result)
+                    tp.CreateByUserName = listUsers.Where(u => u.Id.Equals(tp.CreatedBy)).First().FullName;
+                return result;
             }
-            return new List<TrainingProgramViewModel>();
-        }
-        public async Task<List<TrainingProgramViewModel>> FilterTrainingProgram(TrainingProgramSearchFilterModels.FilterTrainingProgramModel filterTrainingProgramModel)
-        {
-            bool check = filterTrainingProgramModel.CreateBy.Equals("");
-            bool check2 = filterTrainingProgramModel.Status.Equals("");
-            var listTP = await _unitOfWork.TrainingProgramRepository.FindAsync(tp => tp.IsDeleted == false);
-            var listUsers = await _unitOfWork.UserRepository.FindAsync(u => u.IsDeleted == false);
-            if (!listUsers.IsNullOrEmpty() && !listTP.IsNullOrEmpty())
+            //using filter only (filter from all Training Program)
+            else if (status != null || createBy != null)
             {
-                if (check == false || check2 == false)
-                {
-                    ICriterias<TrainingProgram> statusCriteria = new StatusCriteria(filterTrainingProgramModel.Status);
-                    ICriterias<TrainingProgram> createByCriteria = new CreatedByCriteria(listUsers,filterTrainingProgramModel.CreateBy);
-                    ICriterias<TrainingProgram> andCriteria = new AndTrainingProgramCriteria(statusCriteria, createByCriteria);
-                    var result = _mapper.Map<List<TrainingProgramViewModel>>(andCriteria.MeetCriteria(listTP));
-                    return LinkingName(result, listUsers);
-                }
-                //not inputting required fields
-                else
-                {
-                    var result = _mapper.Map<List<TrainingProgramViewModel>>(listTP);
-                    return LinkingName(result, listUsers);
-                }
+                var result = _mapper.Map<List<TrainingProgramViewModel>>(andCriteria.MeetCriteria(listTP));
+                foreach (var tp in result)
+                    tp.CreateByUserName = listUsers.Where(u => u.Id.Equals(tp.CreatedBy)).First().FullName;
+                return result;
             }
+            //not inputting search or filter
             else
-                return new List<TrainingProgramViewModel>();
-        }
-        //Avoiding boilerplate code for Search and Filter function
-        private protected List<TrainingProgramViewModel> LinkingName(List<TrainingProgramViewModel> listTPs, List<User> listUsers)
-        {
-            foreach (var tp in listTPs)
-                foreach (var u in listUsers)
-                    if (tp.CreatedBy.Equals(u.Id))
-                    {
-                        tp.CreateByUserName = u.UserName;
-                        tp.CreateByUserFullname = u.FullName;
-                    }
-            return listTPs;
+            {
+                var result = _mapper.Map<List<TrainingProgramViewModel>>(listTP);
+                foreach (var tp in result)
+                    tp.CreateByUserName = listUsers.FindAll(u => u.Id == tp.CreatedBy).First().FullName;
+                return result;
+            }
         }
         public async Task<TrainingProgram> DuplicateTrainingProgram(Guid TrainingProgramId)
         {
