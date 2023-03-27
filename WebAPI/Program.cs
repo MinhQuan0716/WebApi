@@ -43,7 +43,7 @@ try
     builder.Services.AddSingleton(configuration);
     builder.Services.AddSwaggerGen(opt =>
     {
-        opt.SwaggerDoc("v1", new OpenApiInfo { Title = "MyAPI", Version = "v1" });
+        opt.SwaggerDoc("v1", new OpenApiInfo { Title = "Backend API", Version = "v1" });
 
         var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
         var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
@@ -92,10 +92,18 @@ try
     app.UseCors();
 
     // Configure the HTTP request pipeline.
-    app.UseSwagger();
-    app.UseSwaggerUI();
-    // add custom middlewares
+    if (app.Environment.IsDevelopment() || app.Environment.IsStaging())
+    {
+        app.UseSwagger();
+        app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Backend API"));
+    }
+    if (app.Environment.IsProduction())
+    {
+        app.UseSwagger();
+        app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Backend API"));
+    }
 
+    // add custom middlewares
 
 
 
