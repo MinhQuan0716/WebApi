@@ -13,10 +13,10 @@ namespace Application.Interfaces
     {
         Task<TrainingProgramViewModel> GetTrainingProgramDetail(Guid id);
         Task<TrainingProgram> CreateTrainingProgram(CreateTrainingProgramDTO createTrainingProgramDTO);
-
         Task<bool> UpdateTrainingProgram(UpdateTrainingProgramDTO updateProgramDTO);
         Task<bool> DeleteTrainingProgram(Guid trainingProgramId);
-        Task<List<TrainingProgramViewModel>> SearchTrainingProgramWithFilter(string? searchString, string? status, string? createBy);
+        Task<List<TrainingProgramViewModel>> SearchTrainingProgram(TrainingProgramSearchFilterModels.SearchTrainingProgramModel searchTrainingProgramModel);
+        Task<List<TrainingProgramViewModel>> FilterTrainingProgram(TrainingProgramSearchFilterModels.FilterTrainingProgramModel filterTrainingProgramModel);
         Task<IEnumerable<ViewAllTrainingProgramDTO>> viewAllTrainingProgramDTOs();
         Task<TrainingProgram> DuplicateTrainingProgram(Guid trainingProgramId);
 

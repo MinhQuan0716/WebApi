@@ -238,12 +238,20 @@ namespace WebAPI.Controllers
             }
             return BadRequest();
         }
-
         [Authorize]
-        [HttpGet]
-        public async Task<IActionResult> Search(string? searchString, string? gender, int? role, string? level)
+        [HttpPost]
+        public async Task<IActionResult> Search([FromBody] UserSearchFilterModels.UserSearchModel userSearchModel)
         {
-            IEnumerable<UserViewModel> obj = await _userService.SearchUsersWithFilter(searchString, gender, role,level);
+            var obj = await _userService.SearchUsers(userSearchModel);
+            if (obj != null && obj.Any())
+                return Ok(obj);
+            return NoContent();
+        }
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> Filter([FromBody] UserSearchFilterModels.UserFilterModel userFilterModel)
+        {
+            var obj = await _userService.FilterUsers(userFilterModel);
             if (obj != null && obj.Any())
                 return Ok(obj);
             return NoContent();

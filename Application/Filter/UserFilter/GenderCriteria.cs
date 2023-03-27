@@ -1,5 +1,6 @@
 ﻿using Application.Interfaces;
 using Domain.Entities;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Application.Filter.UserFilter
 {
@@ -12,16 +13,12 @@ namespace Application.Filter.UserFilter
         }
         public List<User> MeetCriteria(List<User> users)
         {
-            if (searchCriteria != null)
+            List<User> userData = new List<User>();
+            if (!searchCriteria.IsNullOrEmpty())
             {
-                List<User> userData = new List<User>();
                 foreach (User user in users)
-                {
-                    if (string.IsNullOrEmpty(user.Gender) ||user.Gender.ToLower().Equals(searchCriteria.ToLower()))
-                    {
+                    if (user.Gender.IsNullOrEmpty() || user.Gender.ToLower().Equals(searchCriteria.ToLower()))
                         userData.Add(user);
-                    }
-                }
                 return userData;
             }
             else
