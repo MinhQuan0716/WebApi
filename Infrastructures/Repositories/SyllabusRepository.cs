@@ -54,7 +54,7 @@ namespace Infrastructures.Repositories
         public async Task<List<SyllabusViewAllDTO>> SearchByName(string name)
         {
             var result = _dbContext.Syllabuses
-                .Where(x => x.SyllabusName.ToUpper().Contains(name))
+                .Where(x => x.SyllabusName.ToUpper().Contains(name)&&x.IsDeleted==false)
                 .Select(s => new SyllabusViewAllDTO
                 {
                     ID = s.Id,
