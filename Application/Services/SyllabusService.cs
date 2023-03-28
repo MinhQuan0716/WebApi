@@ -16,6 +16,8 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Application.ViewModels.SyllabusModels.ViewDetail;
 using Application.ViewModels.SyllabusModels.FixViewSyllabus;
 using Application.ViewModels.SyllabusModels.UpdateSyllabusModels.HotFix;
+using Microsoft.AspNetCore.Mvc;
+using Application.ViewModels.TrainingProgramModels.TrainingProgramView;
 
 namespace Application.Services
 {
@@ -329,6 +331,9 @@ namespace Application.Services
 
             FinalViewSyllabusDTO view = new FinalViewSyllabusDTO();
             var SyllabusInformation = await _unitOfWork.SyllabusRepository.GetByIdAsync(SyllabusID);
+
+            var user = await _unitOfWork.UserRepository.GetByIdAsync(SyllabusInformation.UserId);
+            string userName = user.FullName;
             if (SyllabusInformation.IsDeleted)
             {
                 return null;
@@ -336,14 +341,22 @@ namespace Application.Services
 
             var UnitInformation = await _unitOfWork.UnitRepository.FindAsync(x => x.SyllabusID == SyllabusID);
 
-            var generalInformation = _mapper.Map<GeneralInformationDTO>(SyllabusInformation);
+            //var generalInformation = _mapper.Map<GeneralInformationDTO>(SyllabusInformation);
+            var generalInformation = _mapper.Map<FinalViewSyllabusDTO>(SyllabusInformation);
 
+            //var generalSyllabus = _mapper.Map<ShowDetailSyllabusNewDTO>(SyllabusInformation);
 
-            var generalSyllabus = _mapper.Map<ShowDetailSyllabusNewDTO>(SyllabusInformation);
-            generalSyllabus.General = generalInformation;
+            //generalSyllabus.General = generalInformation;
             //generalSyllabus.General.Duration.TotalHours = 12;
-
-            view.General = generalSyllabus;
+            //generalInformation.Durations.TotalHours = 12;
+            //view.Durations.TotalHours = 12;
+            view.ID = SyllabusID;
+            view.CreateBy = userName;
+            view.Durations = new DurationView { TotalHours = SyllabusInformation.Duration };
+            view.ProgramName = generalInformation.ProgramName;
+            view.Status = generalInformation.Status;
+            view.General = generalInformation.General;
+            //view.General = generalSyllabus;
 
             //Process OutlinePart
             //List<Unit> ProcessPart = await _unitOfWork.UnitRepository.FindAsync(x => x.SyllabusID == SyllabusID);

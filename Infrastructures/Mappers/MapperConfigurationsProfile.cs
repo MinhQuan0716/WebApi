@@ -37,6 +37,7 @@ using Application.ViewModels.AssignmentModel;
 using Application.ViewModels.QuizModels;
 using Infrastructures.TypeConverter;
 using Application.ViewModels.SyllabusModels.UpdateSyllabusModels.HotFix;
+using System.Security.Cryptography.Xml;
 
 namespace Infrastructures.Mappers
 {
@@ -112,20 +113,32 @@ namespace Infrastructures.Mappers
                .ForMember(ss => ss.Status, ss => ss.MapFrom(src => "Active"))
                .ReverseMap();
 
-
-            CreateMap<Syllabus, GeneralInformationDTO>()
-                .ForMember(x => x.Id, s => s.MapFrom(src => src.Id))
-                .ForMember(x => x.CreatedOn, s => s.MapFrom(src => src.CreationDate))
-                .ForMember(x => x.ProgramName, s => s.MapFrom(src => src.SyllabusName))
-                .ForMember(x => x.CreatedBy, s => s.MapFrom(src => src.CreatedBy))
-               .ForPath(x => x.Duration.TotalHours, g => g.MapFrom(x => x.Duration))
+            CreateMap<FinalViewSyllabusDTO, Syllabus>()
+                .ForMember(x => x.SyllabusName, sf => sf.MapFrom(src => src.ProgramName))
+                .ForMember(x => x.Status, sf => sf.MapFrom(src => src.Status))
+                .ForMember(x => x.Level, sf => sf.MapFrom(src => src.General.Level))
+                .ForMember(x => x.TechRequirements, sf => sf.MapFrom(src => src.General.TechnicalRequirements))
+                .ForMember(x => x.CourseObjective, sf => sf.MapFrom(src => src.General.CourseObjectives))
+                .ForMember(x =>x.CreationDate,sf => sf.MapFrom(src => src.CreateOn))
+                .ForMember(x =>x.Id,sf => sf.MapFrom(src => src.ID))
+                .ForMember(x =>x.CreatedBy,sf => sf.MapFrom(src => src.CreateBy))
+                .AfterMap((src, dest) => {
+                    src.Durations = new DurationView { TotalHours = dest.Duration };
+                    })
                 .ReverseMap();
-            CreateMap<Syllabus, ShowDetailSyllabusNewDTO>()
-                .ForMember(x => x.Status, src => src.MapFrom(x => x.Status))
-                .ForMember(x => x.Level, src => src.MapFrom(x => x.Level))
-                .ForMember(x => x.CourseObjectives, src => src.MapFrom(x => x.CourseObjective))
-                .ForMember(x => x.TechnicalRequirements, src => src.MapFrom(x => x.TechRequirements))
-                .ReverseMap();
+            //CreateMap<Syllabus, GeneralInformationDTO>()
+            //    .ForMember(x => x.Id, s => s.MapFrom(src => src.Id))
+            //    .ForMember(x => x.CreatedOn, s => s.MapFrom(src => src.CreationDate))
+            //    .ForMember(x => x.ProgramName, s => s.MapFrom(src => src.SyllabusName))
+            //    .ForMember(x => x.CreatedBy, s => s.MapFrom(src => src.CreatedBy))
+            //   .ForPath(x => x.Duration.TotalHours, g => g.MapFrom(x => x.Duration))
+            //    .ReverseMap();
+            //CreateMap<Syllabus, ShowDetailSyllabusNewDTO>()
+            //    .ForMember(x => x.Status, src => src.MapFrom(x => x.Status))
+            //    .ForMember(x => x.Level, src => src.MapFrom(x => x.Level))
+            //    .ForMember(x => x.CourseObjectives, src => src.MapFrom(x => x.CourseObjective))
+            //    .ForMember(x => x.TechnicalRequirements, src => src.MapFrom(x => x.TechRequirements))
+            //    .ReverseMap();
             CreateMap<Syllabus, SyllabusViewAllDTO>()
                 .ForMember(x => x.ID, src => src.MapFrom(x => x.Id))
                 .ForMember(x => x.SyllabusName, src => src.MapFrom(x => x.SyllabusName))

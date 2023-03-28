@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 using static Domain.Enums.Application.ApplicationFilterByEnum;
 using static System.Net.Mime.MediaTypeNames;
 using FluentAssertions;
-using Application.Models.ApplicationModels;
+
 
 namespace Infrastructures.Tests.Repository
 {

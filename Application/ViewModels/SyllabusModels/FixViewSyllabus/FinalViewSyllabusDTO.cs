@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Application.ViewModels.TrainingProgramModels.TrainingProgramView;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,10 +9,23 @@ namespace Application.ViewModels.SyllabusModels.FixViewSyllabus
 {
     public class FinalViewSyllabusDTO
     {
-        public ShowDetailSyllabusNewDTO General { get; set; }
+        public Guid  ID { get; set; }
+        public string ProgramName { get; set; } = default!;
 
-        public OutlineSyllabusDTO outlineSyllabusDTO { get; set; }
+        public string Status { get; set; } = default!;
 
-        public OtherSyllabusDTO OtherSyllabusDTOOther { get; set; }
+
+        public DateTime CreateOn { get; set; }
+
+        public string CreateBy { get; set; } = default!;
+
+        public DurationView Durations { get; set; } = default!;
+
+
+        public ShowDetailSyllabusNewDTO General { get; set; } = default!;
+        
+        public OutlineSyllabusDTO outlineSyllabusDTO { get; set; } = default!;
+
+        public OtherSyllabusDTO OtherSyllabusDTOOther { get; set; } = default!;
     }
 }

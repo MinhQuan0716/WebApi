@@ -8,9 +8,6 @@ namespace Application.ViewModels.SyllabusModels.FixViewSyllabus
 {
     public class ShowDetailSyllabusNewDTO
     {
-        public GeneralInformationDTO General { get; set; } = default!;
-
-        public string Status { get; set; } = default!;
 
         public string Level { get; set; } = default!;
 
@@ -24,6 +21,8 @@ namespace Application.ViewModels.SyllabusModels.FixViewSyllabus
 
 
         public string CourseObjectives { get; set; } = default!;
+
+
 
     }
 }
