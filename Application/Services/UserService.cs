@@ -431,16 +431,16 @@ public class UserService : IUserService
                                 Email = worksheet.Cells[row, 5].Value.ToString().Trim(),
                                 DateOfBirth = DateTime.Parse(worksheet.Cells[row, 6].Value.ToString().Trim()),
                                 Gender = worksheet.Cells[row, 7].Value.ToString().Trim(),
-                              // LoginDate = DateTime.Parse(worksheet.Cells[row, 8].Value.ToString().Trim()),
-                                CreationDate = DateTime.Parse(worksheet.Cells[row, 9].Value.ToString().Trim()),
+                                //LoginDate = DateTime.Parse(worksheet.Cells[row, 8].Value.ToString().Trim()),
+                                CreationDate = DateTime.Parse(worksheet.Cells[row, 8].Value.ToString().Trim()),
                                 //CreatedBy = Guid.Parse(worksheet.Cells[row,10].Value.ToString().Trim()),
-                             //   ModificationDate = DateTime.Parse(worksheet.Cells[row, 11].Value.ToString().Trim()),
+                                //ModificationDate = DateTime.Parse(worksheet.Cells[row, 11].Value.ToString().Trim()),
                                 //ModificationBy = Guid.Parse(worksheet.Cells[row,12].Value.ToString().Trim()),
-                             //   DeletionDate = DateTime.Parse(worksheet.Cells[row, 13].Value.ToString().Trim()),
+                                //DeletionDate = DateTime.Parse(worksheet.Cells[row, 13].Value.ToString().Trim()),
                                 //DeleteBy = Guid.Parse(worksheet.Cells[row, 14].Value.ToString().Trim()),
-                                IsDeleted = bool.Parse(worksheet.Cells[row, 15].Value.ToString().Trim()),
-                                RoleId = int.Parse(worksheet.Cells[row, 16].Value.ToString().Trim()),
-                                AvatarUrl = worksheet.Cells[row, 19].Value.ToString().Trim(),
+                                //IsDeleted = bool.Parse(worksheet.Cells[row, 15].Value.ToString().Trim()),
+                                RoleId = int.Parse(worksheet.Cells[row, 9].Value.ToString().Trim()),
+                                //AvatarUrl = worksheet.Cells[row, 10].Value.ToString().Trim(),
                             });
                         }
                         catch (NullReferenceException)

@@ -1,5 +1,6 @@
 ﻿using Application.Commons;
 using Application.Interfaces;
+using Application.ViewModels.TrainingMaterialModels;
 using AutoMapper;
 using Domain.Entities;
 using Microsoft.AspNetCore.Http;
@@ -34,7 +35,7 @@ namespace Application.Services
             return file;
         }
 
-        public async Task<TrainingMaterial> Upload(IFormFile file, Guid lectureId, string blobUrl)
+        public async Task<TrainingMaterial> Upload(Guid id, IFormFile file, Guid lectureId, string blobUrl, string blobName)
         {
             using (var memoryStream = new MemoryStream())
             {
@@ -43,10 +44,12 @@ namespace Application.Services
                 {
                     material = new TrainingMaterial
                     {
+                        Id = id,
                         TMatName = file.FileName,
                         TMatType = System.IO.Path.GetExtension(file.FileName),
                         TMatURL = blobUrl,
                         lectureID = lectureId,
+                        BlobName = blobName,
                     };
 
                     await _unitOfWork.TrainingMaterialRepository.AddAsync(material);
@@ -90,7 +93,7 @@ namespace Application.Services
 
         }
 
-        public async Task<bool> UpdateTrainingMaterial(IFormFile file, Guid id)
+        public async Task<bool> UpdateTrainingMaterial(IFormFile file, Guid id, string blobUrl)
         {
             TrainingMaterial findTrainingMaterial = await _unitOfWork.TrainingMaterialRepository.GetByIdAsync(id);
             bool isUpdated = false;
@@ -104,8 +107,10 @@ namespace Application.Services
 
                         findTrainingMaterial.TMatName = file.FileName;
                         findTrainingMaterial.TMatType = System.IO.Path.GetExtension(file.FileName);
-                        //findTrainingMaterial.TMatContent = memoryStream.ToArray();
-                        findTrainingMaterial.lectureID = findTrainingMaterial.lectureID;
+                        findTrainingMaterial.TMatURL = blobUrl;
+                     /* findTrainingMaterial.lectureID = findTrainingMaterial.lectureID;
+
+                        findTrainingMaterial.BlobName = blobName;*/
 
 
                         _unitOfWork.TrainingMaterialRepository.Update(findTrainingMaterial);
@@ -114,7 +119,7 @@ namespace Application.Services
                     }
                     else
                     {
-                        throw new Exception("File not existed");
+                        throw new Exception("File not exist");
                         isUpdated = false;
                     }
 
@@ -122,6 +127,58 @@ namespace Application.Services
 
             }
             return isUpdated;
+        }
+
+        public async Task<List<string>> GetBlobNameWithLectureId(Guid lectureId)
+        {
+            List<TrainingMaterial> listTMat = await _unitOfWork.TrainingMaterialRepository.GetAllFileWithLectureId(lectureId);
+            List<string> blobName = new List<string>();
+            foreach (TrainingMaterial trainingMaterial in listTMat)
+            {         
+                blobName.Add(trainingMaterial.BlobName);
+            }
+
+            return blobName;
+        }
+
+        public async Task<string> GetBlobNameWithTMatId(Guid id)
+        {
+            TrainingMaterial findTrainingMaterial = await _unitOfWork.TrainingMaterialRepository.GetByIdAsync(id);
+            if(findTrainingMaterial != null)
+            {
+                var blobName = findTrainingMaterial.BlobName;
+                return blobName;
+            }
+            else
+            {
+                throw new Exception("File does not exist");
+            }
+        }
+
+        public async Task<string> GetFileNameWithTMatId(Guid id)
+        {
+            TrainingMaterial findTrainingMaterial = await _unitOfWork.TrainingMaterialRepository.GetByIdAsync(id);
+            if (findTrainingMaterial != null)
+            {
+                return findTrainingMaterial.TMatName;
+            }
+            else
+            {
+                throw new Exception("File does not exist");
+            }
+        }
+
+        public async Task<TrainingMaterialDTO> GetTrainingMaterial(Guid lectureId)
+        {
+            var trainingMaterialDTO = await _unitOfWork.TrainingMaterialRepository.GetTrainingMaterial(lectureId);
+            if (trainingMaterialDTO != null)
+            {
+                return trainingMaterialDTO;
+            }
+            else
+            {
+                throw new Exception("File does not exist");
+            }
         }
     }
 }

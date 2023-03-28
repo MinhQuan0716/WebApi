@@ -34,7 +34,6 @@ namespace Application.Services
         {
             var trainingClass = await _unitOfWork.TrainingClassRepository.GetByIdAsync(classId);
             var user = await _unitOfWork.UserRepository.GetByIdAsync(userId);
-     
 
             if (user.RoleId != 4) return null;
 

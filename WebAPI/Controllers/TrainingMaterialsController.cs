@@ -14,6 +14,7 @@ using Microsoft.Extensions.FileProviders;
 using System.Reflection.Metadata;
 using Domain.Entities;
 using Application.Services;
+using static System.Reflection.Metadata.BlobBuilder;
 
 namespace WebAPI.Controllers
 {
@@ -47,7 +48,7 @@ namespace WebAPI.Controllers
             return BadRequest();
         }
 
-        [HttpPut("EditFile")]
+        /*[HttpPut("EditFile")]
         [Authorize]
         [ClaimRequirement(nameof(PermissionItem.TrainingMaterialPermission), nameof(PermissionEnum.Modifed))]
         public async Task<IActionResult> UpdateTrainingMaterial(IFormFile file, Guid id)
@@ -58,7 +59,7 @@ namespace WebAPI.Controllers
                 return Ok();
             }
             return BadRequest();
-        }
+        }*/
 
         //===========================================
         private readonly BlobServiceClient _blobServiceClient;
@@ -87,13 +88,8 @@ namespace WebAPI.Controllers
             // Get a reference to the container
             var containerClient = _blobServiceClient.GetBlobContainerClient(_containerName);
 
-            // Create a unique name for the blob
-            /*            await foreach (BlobItem blobItem in containerClient.GetBlobsAsync())
-                        {
-                            DateTimeOffset? dateTimeOffset = blobItem.Properties.LastModified;
-                        }*/
-
-            var blobName = Guid.NewGuid().ToString() + "." + file.FileName/* + Path.GetExtension(file.FileName)*/;
+            Guid id = Guid.NewGuid();
+            var blobName = id.ToString() /*+ "." + file.FileName*/+ Path.GetExtension(file.FileName);
             //var blobName = "a5688551-bfdf-48e0-b440-e169d3f4321d.noelle.jpg";
 
             // Upload the file to the container
@@ -107,14 +103,15 @@ namespace WebAPI.Controllers
             var blobUrl = blobClient.Uri.AbsoluteUri;
 
             // Upload to database
-            await _trainingMaterialService.Upload(file, lectureId, blobUrl);
+            await  _trainingMaterialService.Upload(id, file, lectureId, blobUrl, blobName);
 
             return Ok(blobUrl);
         }
 
-        [HttpGet("{blobName}")]
-        public async Task<IActionResult> DownloadTestAzure(string blobName)
+        [HttpGet]
+        public async Task<IActionResult> DownloadTestAzure(Guid id)
         {
+            string blobName = await _trainingMaterialService.GetBlobNameWithTMatId(id);
             // Get a reference to the container
             var containerClient = _blobServiceClient.GetBlobContainerClient(_containerName);
 
@@ -125,8 +122,10 @@ namespace WebAPI.Controllers
             var stream = new MemoryStream();
             await blobClient.DownloadToAsync(stream);
 
-            // Get name without guid
-            var result = blobName.Substring(blobName.IndexOf('.') + 1);
+            // Get FileName
+            var result = await _trainingMaterialService.GetFileNameWithTMatId(id);
+            /*// Get name without guid
+            var result = blobName.Substring(blobName.IndexOf('.') + 1);*/
 
             // Reset the stream position to the beginning
             stream.Position = 0;
@@ -140,8 +139,10 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> EditTestAzure(string blobName, IFormFile file)
+        public async Task<IActionResult> EditTestAzure(Guid id, IFormFile file)
         {
+            string blobName = await _trainingMaterialService.GetBlobNameWithTMatId(id);
+
             // Verify that the file was provided
             if (file == null || file.Length == 0)
             {
@@ -165,7 +166,35 @@ namespace WebAPI.Controllers
 
             // Return the URL of the uploaded blob
             var blobUrl = blobClient.Uri.AbsoluteUri;
+            // Edit database
+            bool updateTrainingMaterial = await _trainingMaterialService.UpdateTrainingMaterial(file, id, blobUrl);
+            if (!updateTrainingMaterial)
+            {
+                return BadRequest();
+            }
             return Ok(blobUrl);
+        }
+
+        [HttpDelete]
+        public async Task<IActionResult> DeleteBlob(Guid id)
+        {
+            string blobName = await _trainingMaterialService.GetBlobNameWithTMatId(id);
+
+            // Delete from database
+            bool deleteTraingMaterial = await _trainingMaterialService.DeleteTrainingMaterial(id);
+            if (!deleteTraingMaterial)
+            {
+                return BadRequest();
+            }
+
+            // Get a reference to the container
+            var containerClient = _blobServiceClient.GetBlobContainerClient(_containerName);
+
+            var blobClient = containerClient.GetBlobClient(blobName);
+
+            await blobClient.DeleteAsync();
+
+            return Ok();
         }
     }
 }

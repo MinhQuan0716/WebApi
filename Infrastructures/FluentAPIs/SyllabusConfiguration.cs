@@ -19,6 +19,7 @@ namespace Infrastructures.FluentAPIs
             builder.Property(s => s.CreationDate).HasDefaultValueSql("getutcdate()");
             builder.HasOne(s => s.User).WithMany(u => u.Syllabuses).HasForeignKey(s => s.UserId);
             builder.HasMany(s => s.Units).WithOne(u => u.Syllabus);
+            builder.Property(x => x.Status).HasDefaultValueSql("null");
         }
     }
 }

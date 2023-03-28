@@ -1,5 +1,8 @@
 ﻿using Application.Interfaces;
 using Application.Repositories;
+using Application.ViewModels.TrainingClassModels;
+using Application.ViewModels.TrainingMaterialModels;
+using Application.ViewModels.TrainingProgramModels.TrainingProgramView;
 using Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -28,15 +31,28 @@ namespace Infrastructures.Repositories
             return false;
         }
 
-        public async Task<TrainingMaterial> GetFileWithName(string name)
+        public async Task<List<TrainingMaterial>> GetAllFileWithLectureId(Guid lectureId)
         {
-            var file = _dbContext.TrainingMaterials.SingleOrDefault(x => x.TMatName.Equals(name));
+            var file = _dbContext.TrainingMaterials.Where(x => x.lectureID == (lectureId)).ToList();
 
             if (file == null)
             {
                 throw new Exception("No file was found");
             }
             return file;
+        }
+
+        public async Task<TrainingMaterialDTO> GetTrainingMaterial(Guid lectureId)
+        {
+            var getTrainingMaterial = _dbContext.TrainingMaterials
+                                        .Where(x => x.IsDeleted == false && x.lectureID == (lectureId))
+                                     .Select(t => new TrainingMaterialDTO
+                                     {
+                                         blobName = t.BlobName,
+                                         createdBy = string.Join(",", _dbContext.Users.Where(x => x.Id == t.CreatedBy).Select(u => u.UserName)),
+                                         createdOn = t.CreationDate,
+                                     }).FirstOrDefault();
+            return getTrainingMaterial;
         }
     }
 }

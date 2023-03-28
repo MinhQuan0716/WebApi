@@ -19,5 +19,7 @@ namespace Domain.Entities
         public Guid lectureID { get; set; }
 
         public Lecture Lecture { get; set; }
+
+        public string BlobName { get; set; }
     }
 }

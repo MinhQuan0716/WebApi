@@ -14,11 +14,11 @@ namespace Infrastructures.FluentAPIs
         public void Configure(EntityTypeBuilder<TrainingMaterial> builder)
         {
             builder.HasKey(s => s.Id);
-            builder.Property(s => s.Id).HasDefaultValueSql("NEWID()");
             builder.Property(s => s.TMatName).HasDefaultValueSql("null");
             builder.Property(s => s.TMatType).HasDefaultValueSql("null");
             builder.Property(s => s.TMatDescription).HasDefaultValueSql("null");
             builder.Property(s => s.TMatURL).HasDefaultValueSql("null");
+            builder.Property(s => s.BlobName).HasDefaultValueSql("null");
             builder.HasOne(s => s.Lecture).WithMany(u => u.TrainingMaterials).HasForeignKey(s => s.lectureID);
         }
     }
