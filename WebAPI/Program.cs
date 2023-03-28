@@ -130,7 +130,7 @@ try
     RecurringJob.AddOrUpdate<IAssignmentService>(a => a.CheckOverDue(), 
         "* * * * *", TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time"));
     RecurringJob.AddOrUpdate<ApplicationCronJob>(a => a.ExtractGradingDataEveryDay(), 
-        "* * * * *", TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time"));
+        "0 23 * * *", TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time"));
     await app.WaitForShutdownAsync();
 
 
