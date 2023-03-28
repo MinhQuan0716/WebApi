@@ -11,7 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using WebAPI.Controllers;
 
-namespace WebAPI.Test.Controllers
+namespace WebAPI.Tests.Controllers
 {
     public class LocationsControllerTest : SetupTest
     {

@@ -4,11 +4,16 @@ using Application.ViewModels.SyllabusModels;
 using Application.ViewModels.TrainingClassModels;
 using Application.ViewModels.TrainingProgramModels;
 using Application.ViewModels.TrainingProgramModels.TrainingProgramView;
+using AutoMapper.Internal;
 using Domain.Entities;
+using Domain.Entities.TrainingClassRelated;
+using Domain.Enums;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -108,6 +113,103 @@ namespace Infrastructures.Repositories
             return nameClass;
         }
 
+        /// <summary>
+        /// GetByIdAsync return training class by id
+        /// </summary>
+        /// <param name="id">Training class id</param>
+        /// <returns>Training class</returns>
+        public async Task<TrainingClass?> GetByIdAsync(Guid id)
+        {
+            return await GetByIdAsync(id,
+                    x => x.TrainingClassAdmins,
+                    x => x.TrainingClassTrainers,
+                    x => x.TrainingClassTimeFrame.HighlightedDates,
+                    x => x.TrainingClassAttendee);
+        }
+
+        /// <summary>
+        /// AddAsync add new training class to db
+        /// </summary>
+        /// <param name="trainingClass">New training class</param>
+        /// <returns></returns>
+        public new async Task AddAsync(TrainingClass trainingClass)
+        {
+            // timeframe
+            if (trainingClass.TrainingClassTimeFrame != null)
+            {
+                trainingClass.TrainingClassTimeFrame.TrainingClassId = trainingClass.Id;
+                if (!trainingClass.TrainingClassTimeFrame.HighlightedDates.IsNullOrEmpty())
+                {
+                    foreach (var hilightDate in trainingClass.TrainingClassTimeFrame.HighlightedDates!)
+                    {
+                        hilightDate.TrainingClassTimeFrameId = trainingClass.TrainingClassTimeFrame.Id;
+                    }
+                }
+            }
+
+            // attendees
+            if (trainingClass.TrainingClassAttendee != null)
+            {
+                trainingClass.TrainingClassAttendee.TrainingClassId = trainingClass.Id;
+            }
+
+            await base.AddAsync(trainingClass);
+        }
+        public new async void Update(TrainingClass trainingClass)
+        {
+            if (!trainingClass.TrainingClassAdmins.IsNullOrEmpty())
+            {
+                List<TrainingClassAdmin> admins = new List<TrainingClassAdmin>();
+                foreach (var admin in trainingClass.TrainingClassAdmins)
+                {
+                    var duplicate = _dbContext.TrainingClassAdmins
+                        .Where(x => x.TrainingClassId == trainingClass.Id
+                        && x.AdminId == admin.AdminId
+                        && x.Id != admin.Id);
+                    if (duplicate.Any())
+                    {
+                        admins.TryAdd(admin);
+                    }
+                }
+                trainingClass.TrainingClassAdmins = trainingClass.TrainingClassAdmins.SkipWhile(admins.Contains).ToList();
+            }
+            if (!trainingClass.TrainingClassTrainers.IsNullOrEmpty())
+            {
+                List<TrainingClassTrainer> trainers = new List<TrainingClassTrainer>();
+                foreach (var trainer in trainingClass.TrainingClassTrainers)
+                {
+                    var duplicate = await _dbContext.TrainingClassTrainers
+                        .AnyAsync(x => x.TrainingClassId == trainingClass.Id
+                        && x.TrainerId == trainer.TrainerId
+                        && x.Id != trainer.Id);
+                    if (duplicate)
+                    {
+                        trainers.TryAdd(trainer);
+                    }
+                }
+                trainingClass.TrainingClassTrainers = trainingClass.TrainingClassTrainers.SkipWhile(trainers.Contains).ToList();
+            }
+            if (trainingClass.TrainingClassTimeFrame != null)
+            {
+                if (!trainingClass.TrainingClassTimeFrame.HighlightedDates.IsNullOrEmpty() && trainingClass.TrainingClassTimeFrame.HighlightedDates != null)
+                {
+                    List<HighlightedDates> duplicateDates = new List<HighlightedDates>();
+                    foreach (var highlightDates in trainingClass.TrainingClassTimeFrame.HighlightedDates)
+                    {
+                        var duplicate = _dbContext.HighlightedDates.AsEnumerable()
+                            .Any(x => x.TrainingClassTimeFrameId == trainingClass.TrainingClassTimeFrame.Id
+                            && (x.HighlightedDate - highlightDates.HighlightedDate).Days == 0
+                            && x.Id != highlightDates.Id);
+                        if (duplicate)
+                        {
+                            duplicateDates.TryAdd(highlightDates);
+                        }
+                    }
+                    trainingClass.TrainingClassTimeFrame.HighlightedDates = trainingClass.TrainingClassTimeFrame.HighlightedDates.SkipWhile(duplicateDates.Contains).ToList();
+                }
+            }
+            base.Update(trainingClass);
+        }
         public TrainingClassFilterDTO GetTrainingClassFilterById(Guid id)
         {
             var getAllTrainingClass = _dbContext.TrainingClasses

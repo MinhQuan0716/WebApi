@@ -65,8 +65,6 @@ namespace Infrastructures
             services.AddScoped<IGradingRepository, GradingRepository>();
             services.AddScoped<IDetailTrainingClassParticipateRepository, DetailTrainingClassParticipateRepository>();
 
-            services.AddScoped<IDetailTrainingClassParticipateRepository, DetailTrainingClassParticipateRepository>();
-
             services.AddScoped<IAuditSubmissionRepository, AuditSubmissionRepository>();
             services.AddScoped<IDetailAuditSubmissionRepository, DetailAuditSubmissionRepository>();
             services.AddScoped<IAuditSubmissionService, AuditSubmissionService>();

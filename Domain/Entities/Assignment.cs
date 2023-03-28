@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Domain.Entities
 {
-    public class Assignment:FileEntity
+    public class Assignment : FileEntity
     {
         public string? AssignmentName { get; set; }
         public string? Description { get; set; }
@@ -15,7 +15,7 @@ namespace Domain.Entities
         /// One assignmet must belong to one
         /// </summary>
         public Guid LectureID { get; set; }
-        public virtual Lecture Lecture { get; set;}
+        public virtual Lecture Lecture { get; set; }
 
 
         public DateTime DeadLine { get; set; }
@@ -25,7 +25,7 @@ namespace Domain.Entities
         //Set Relation to Assignment Submisstion
         public ICollection<AssignmentSubmission> AssignmentSubmissions { get; set; }
 
-        
+
 
     }
 }

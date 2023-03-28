@@ -13,10 +13,10 @@ using System.Threading.Tasks;
 
 namespace Infrastructures.Tests.Repository
 {
-    public class AssignmentRepositoryTest:SetupTest
+    public class AssignmentRepositoryTest : SetupTest
     {
         private readonly IAssignmentRepository _assignmentRepository;
-        public AssignmentRepositoryTest() 
+        public AssignmentRepositoryTest()
         {
             _assignmentRepository= new AssignmentRepository(_dbContext,_currentTimeMock.Object,_claimsServiceMock.Object);
         }
@@ -24,7 +24,7 @@ namespace Infrastructures.Tests.Repository
         [Fact]
         public async Task CheckOverdue_ShouldSaveChange()
         {
-           //Chịu Không biết viết
+            //Chịu Không biết viết
         }
     }
 }

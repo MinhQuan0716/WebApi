@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Application.ViewModels.TrainingClassModels
 {
-    public  class AttendeeDTO
+    public class AttendeeDTO
     {
         public string attendee { get; set; }
         public int plannedNumber { get; set; }

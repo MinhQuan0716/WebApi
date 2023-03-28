@@ -9,20 +9,33 @@ using Application.ViewModels.Location;
 using Application.ViewModels.FeedbackModels;
 
 using Application.ViewModels.ApplicationViewModels;
-using Application.ViewModels.AuditModels;
-using Application.ViewModels.AuditModels.ViewModels;
-using Application.ViewModels.TrainingProgramModels;
 using Application.ViewModels.AtttendanceModels;
 using Domain.Enums;
 using Application.ViewModels.GradingModels;
 using Application.ViewModels.AuditModels.AuditSubmissionModels.CreateModels;
-using Application.ViewModels.AuditModels.AuditSubmissionModels.ViewModels;
 using Application.ViewModels.AuditModels.AuditSubmissionModels.UpdateModels;
-using Application.ViewModels.TrainingProgramModels.TrainingProgramView;
-using Application.ViewModels.AssignmentModel;
+using Application.ViewModels.AuditModels.AuditSubmissionModels.ViewModels;
+using Application.ViewModels.AuditModels.ViewModels;
+using Application.ViewModels.FeedbackModels;
+using Application.ViewModels.GradingModels;
+using Application.ViewModels.Location;
+using Application.ViewModels.SyllabusModels;
 using Application.ViewModels.SyllabusModels.FixViewSyllabus;
-using Microsoft.AspNetCore.Routing.Constraints;
+using Application.ViewModels.SyllabusModels.UpdateSyllabusModels;
+using Application.ViewModels.TrainingClassModels;
+using Application.ViewModels.TrainingProgramModels;
+using Application.ViewModels.TrainingProgramModels.TrainingProgramView;
+using Application.ViewModels.UserViewModels;
+using Domain.Entities;
+using Domain.Entities.TrainingClassRelated;
+using Domain.Enums;
+using Microsoft.IdentityModel.Tokens;
+using System.Collections;
+using System.Collections.Generic;
+using Application.ViewModels.AuditModels;
+using Application.ViewModels.AssignmentModel;
 using Application.ViewModels.QuizModels;
+using Infrastructures.TypeConverter;
 using Application.ViewModels.SyllabusModels.UpdateSyllabusModels.HotFix;
 
 namespace Infrastructures.Mappers
@@ -99,7 +112,7 @@ namespace Infrastructures.Mappers
                .ForMember(ss => ss.Status, ss => ss.MapFrom(src => "Active"))
                .ReverseMap();
 
-   
+
             CreateMap<Syllabus, GeneralInformationDTO>()
                 .ForMember(x => x.Id, s => s.MapFrom(src => src.Id))
                 .ForMember(x => x.CreatedOn, s => s.MapFrom(src => src.CreationDate))
@@ -114,16 +127,16 @@ namespace Infrastructures.Mappers
                 .ForMember(x => x.TechnicalRequirements, src => src.MapFrom(x => x.TechRequirements))
                 .ReverseMap();
             CreateMap<Syllabus, SyllabusViewAllDTO>()
-                .ForMember(x=>x.ID,src=>src.MapFrom(x=>x.Id))
-                .ForMember(x=>x.SyllabusName,src=>src.MapFrom(x=>x.SyllabusName))
+                .ForMember(x => x.ID, src => src.MapFrom(x => x.Id))
+                .ForMember(x => x.SyllabusName, src => src.MapFrom(x => x.SyllabusName))
                 //.ForMember(x=>x.syllabusStatus,src=>src.MapFrom(x=>x.Status))
-                .ForMember(x=>x.Duration,src=>src.MapFrom(x=>x.Duration))
+                .ForMember(x => x.Duration, src => src.MapFrom(x => x.Duration))
                 .ReverseMap();
-            CreateMap<SyllabusViewForTrainingClassDetail,Syllabus>()
-                .ForMember(x=>x.Id,src=>src.MapFrom(s=>s.syllabus_id))
-                .ForMember(x=>x.SyllabusName,src=>src.MapFrom(s=>s.syllabus_name))
-                .ForMember(x=>x.Status,src=>src.MapFrom(s=>s.syllabus_status))
-                .ForMember(x=>x.Duration,src=>src.MapFrom(s=>s.syllabus_duration.TotalHours))
+            CreateMap<SyllabusViewForTrainingClassDetail, Syllabus>()
+                .ForMember(x => x.Id, src => src.MapFrom(s => s.syllabus_id))
+                .ForMember(x => x.SyllabusName, src => src.MapFrom(s => s.syllabus_name))
+                .ForMember(x => x.Status, src => src.MapFrom(s => s.syllabus_status))
+                .ForMember(x => x.Duration, src => src.MapFrom(s => s.syllabus_duration.TotalHours))
                 .ReverseMap();
 
             CreateMap<UnitDTO, Unit>()
@@ -140,30 +153,153 @@ namespace Infrastructures.Mappers
                     .ForMember(ll => ll.DeliveryType, ll => ll.MapFrom(src => src.DeliveryType))
                     .ForMember(ll => ll.Status, ll => ll.MapFrom(src => src.Status))
                     .ReverseMap();
-        
+
 
             CreateMap<User, LoginWithEmailDto>()
                 .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
                 .ReverseMap();
 
             //map training class
-            CreateMap<CreateTrainingClassDTO, TrainingClass>().ReverseMap();
-            CreateMap<UpdateTrainingCLassDTO, TrainingClass>().ReverseMap();
+            //Create class
+            CreateMap<CreateTrainingClassDTO, TrainingClass>()
+                .ForMember(x => x.TrainingClassAdmins, src => src.MapFrom(x => x.Admins))
+                .ForMember(x => x.TrainingClassTrainers, src => src.MapFrom(x => x.Trainers))
+                .ForMember(x => x.TrainingClassAttendee, src => src.MapFrom(x => x.Attendees))
+                .ForMember(x => x.TrainingClassTimeFrame, src => src.MapFrom(x => x.TimeFrame)).ReverseMap();
+            CreateMap<CreateTrainingClassDTO, Location>()
+                .ForMember(x => x.LocationName, src => src.MapFrom(x => x.LocationName)).ReverseMap();
+            CreateMap<CreateTrainingClassDTO2, CreateTrainingClassDTO>()
+                .ForMember(x => x.Name, src => src.MapFrom(x => x.ClassName))
+                .ForMember(x => x.Code, src => src.MapFrom(x => x.ClassCode))
+                .ForMember(x => x.Attendees, src => src.MapFrom(x => x.Attendees))
+                .ForMember(x => x.TimeFrame, src => src.MapFrom(x => x.TimeFrame))
+                .ForMember(x => x.StatusClassDetail, src => src.MapFrom(x => x.ClassStatus))
+                .ForMember(x => x.Admins, src => src.MapFrom(x => x.General.Admins))
+                .ForMember(x => x.Trainers, src => src.MapFrom(x => x.General.Trainers))
+                .ForMember(x => x.LocationName, src => src.MapFrom(x => x.General.Location))
+                .ForMember(x => x.Fsu, src => src.MapFrom(x => x.General.Fsu))
+                .ForMember(x => x.TrainingProgramId, src => src.MapFrom(x => x.TrainingPrograms.TrainingProgramId))
+                .ForMember(x => x.StartTime, src => src.MapFrom(x => x.General.ClassTime.StartTime))
+                .ForMember(x => x.EndTime, src => src.MapFrom(x => x.General.ClassTime.EndTime))
+                .ForMember(x => x.ReviewDate, src => src.MapFrom(x => x.General.Review!.Date))
+                .ForMember(x => x.ReviewAuthor, src => src.MapFrom(x => x.General.Review!.Author))
+                .ForMember(x => x.ApproveDate, src => src.MapFrom(x => x.General.Approve!.Date))
+                .ForMember(x => x.ApproveAuthor, src => src.MapFrom(x => x.General.Approve!.Author))
+                .ReverseMap();
+            CreateMap<TrainingProgramDTO, CreateTrainingClassDTO>()
+                .ForMember(x => x.TrainingProgramId, src => src.MapFrom(x => x.TrainingProgramId));
+            CreateMap<ClassTimeDTO, CreateTrainingClassDTO>()
+                .ForMember(x => x.StartTime, src => src.MapFrom(x => x.StartTime))
+                .ForMember(x => x.StartTime, src => src.MapFrom(x => x.EndTime));
+            CreateMap<GeneralDTO, CreateTrainingClassDTO>()
+                .ForMember(x => x.Admins, src => src.MapFrom(x => x.Admins))
+                .ForMember(x => x.Trainers, src => src.MapFrom(x => x.Trainers))
+                .ForMember(x => x.StartTime, src => src.MapFrom(x => x.ClassTime.StartTime))
+                .ForMember(x => x.EndTime, src => src.MapFrom(x => x.ClassTime.EndTime))
+                .ForMember(x => x.Fsu, src => src.MapFrom(x => x.Fsu))
+                .ForMember(x => x.ReviewDate, src => src.MapFrom(x => x.Review!.Date))
+                .ForMember(x => x.ReviewAuthor, src => src.MapFrom(x => x.Review!.Author))
+                .ForMember(x => x.ApproveDate, src => src.MapFrom(x => x.Approve!.Date))
+                .ForMember(x => x.ApproveAuthor, src => src.MapFrom(x => x.Approve!.Author))
+                .ForMember(x => x.LocationName, src => src.MapFrom(x => x.Location)).ReverseMap();
+            CreateMap<ReviewDTO, CreateTrainingClassDTO>()
+                .ForMember(x => x.ReviewDate, src => src.MapFrom(x => x.Date))
+                .ForMember(x => x.ReviewAuthor, src => src.MapFrom(x => x.Author));
+            CreateMap<ApproveDTO, CreateTrainingClassDTO>()
+                .ForMember(x => x.ApproveDate, src => src.MapFrom(x => x.Date))
+                .ForMember(x => x.ApproveAuthor, src => src.MapFrom(x => x.Author));
+            //Update class
+            CreateMap<UpdateTrainingClassDTO, TrainingClass>()
+                .ForMember(x => x.TrainingClassAdmins, src => src.MapFrom(x => x.Admins))
+                .ForMember(x => x.TrainingClassTrainers, src => src.MapFrom(x => x.Trainers))
+                .ForMember(x => x.TrainingClassAttendee, src => src.MapFrom(x => x.Attendees))
+                .ForMember(x => x.TrainingClassTimeFrame, src => src.MapFrom(x => x.TimeFrame))
+                .ReverseMap();
+            CreateMap<UpdateTrainingClassDTO, Location>()
+                .ForMember(x => x.LocationName, src => src.MapFrom(x => x.LocationName)).ReverseMap();
+            CreateMap<UpdateTrainingClassDTO2, UpdateTrainingClassDTO>()
+                .ForMember(x => x.Name, src => src.MapFrom(x => x.ClassName))
+                .ForMember(x => x.Code, src => src.MapFrom(x => x.ClassCode))
+                .ForMember(x => x.Attendees, src => src.MapFrom(x => x.Attendees))
+                .ForMember(x => x.TimeFrame, src => src.MapFrom(x => x.TimeFrame))
+                .ForMember(x => x.StatusClassDetail, src => src.MapFrom(x => x.ClassStatus))
+                .ForMember(x => x.Admins, src => src.MapFrom(x => x.General.Admins))
+                .ForMember(x => x.Trainers, src => src.MapFrom(x => x.General.Trainers))
+                .ForMember(x => x.LocationName, src => src.MapFrom(x => x.General.Location))
+                .ForMember(x => x.Fsu, src => src.MapFrom(x => x.General.Fsu))
+                .ForMember(x => x.StartTime, src => src.MapFrom(x => x.General.ClassTime.StartTime))
+                .ForMember(x => x.EndTime, src => src.MapFrom(x => x.General.ClassTime.EndTime))
+                .ForMember(x => x.TrainingProgramId, src => src.MapFrom(x => x.TrainingPrograms.TrainingProgramId))
+                .ForMember(x => x.ReviewDate, src => src.MapFrom(x => x.General.Review!.Date))
+                .ForMember(x => x.ReviewAuthor, src => src.MapFrom(x => x.General.Review!.Author))
+                .ForMember(x => x.ApproveDate, src => src.MapFrom(x => x.General.Approve!.Date))
+                .ForMember(x => x.ApproveAuthor, src => src.MapFrom(x => x.General.Approve!.Author))
+                .ReverseMap();
+            CreateMap<TrainingProgramDTO, UpdateTrainingClassDTO>()
+                .ForMember(x => x.TrainingProgramId, src => src.MapFrom(x => x.TrainingProgramId));
+            CreateMap<ClassTimeDTO, UpdateTrainingClassDTO>()
+                .ForMember(x => x.StartTime, src => src.MapFrom(x => x.StartTime))
+                .ForMember(x => x.StartTime, src => src.MapFrom(x => x.EndTime));
+            CreateMap<GeneralDTO, UpdateTrainingClassDTO>()
+                .ForMember(x => x.Admins, src => src.MapFrom(x => x.Admins))
+                .ForMember(x => x.Trainers, src => src.MapFrom(x => x.Trainers))
+                .ForMember(x => x.Fsu, src => src.MapFrom(x => x.Fsu))
+                .ForMember(x => x.StartTime, src => src.MapFrom(x => x.ClassTime.StartTime))
+                .ForMember(x => x.EndTime, src => src.MapFrom(x => x.ClassTime.EndTime))
+                .ForMember(x => x.LocationName, src => src.MapFrom(x => x.Location))
+                .ForMember(x => x.ReviewDate, src => src.MapFrom(x => x.Review!.Date))
+                .ForMember(x => x.ReviewAuthor, src => src.MapFrom(x => x.Review!.Author))
+                .ForMember(x => x.ApproveDate, src => src.MapFrom(x => x.Approve!.Date))
+                .ForMember(x => x.ApproveAuthor, src => src.MapFrom(x => x.Approve!.Author))
+                .ReverseMap();
+
+            CreateMap<ReviewDTO, UpdateTrainingClassDTO>()
+                .ForMember(x => x.ReviewDate, src => src.MapFrom(x => x.Date))
+                .ForMember(x => x.ReviewAuthor, src => src.MapFrom(x => x.Author));
+            CreateMap<ApproveDTO, UpdateTrainingClassDTO>()
+                .ForMember(x => x.ApproveDate, src => src.MapFrom(x => x.Date))
+                .ForMember(x => x.ApproveAuthor, src => src.MapFrom(x => x.Author));
+
             CreateMap<TrainingClass, TrainingClassViewModel>()
                 .ForMember(x => x._Id, src => src.MapFrom(x => x.Id))
-                .ForMember(x=>x.LocationName, src =>src.MapFrom(x=>x.Location.LocationName)).ReverseMap();
-            CreateMap< TrainingClassFilterDTO,TrainingClass>()
-                .ForMember(dest => dest.Duration, opt => opt.MapFrom(src=>src.ClassDuration.TotalHours))
+                .ForMember(x => x.LocationName, src => src.MapFrom(x => x.Location.LocationName))
+                .ForMember(x => x.Admins, src => src.MapFrom(x => x.TrainingClassAdmins))
+                .ForMember(x => x.Trainers, src => src.MapFrom(x => x.TrainingClassTrainers))
+                .ForMember(x => x.Attendees, src => src.MapFrom(x => x.TrainingClassAttendee))
+                .ForMember(x => x.TimeFrame, src => src.MapFrom(x => x.TrainingClassTimeFrame));
+            CreateMap<Location, TrainingClassViewModel>()
+                .ForMember(x => x.LocationName, src => src.MapFrom(x => x.LocationName));
+            //view class
+            CreateMap<AdminsDTO, TrainingClassAdmin>()
+                .ForMember(x => x.AdminId, src => src.MapFrom(x => x.AdminId)).ReverseMap();
+            CreateMap<TrainingClassFilterDTO, TrainingClass>()
+                .ForMember(dest => dest.Duration, opt => opt.MapFrom(src => src.ClassDuration.TotalHours))
                 .ReverseMap();
-            CreateMap<TrainingClassViewDetail,TrainingClass>()
-                .ForMember(x=>x.Id,src=>src.MapFrom(x=>x.classId))
-                .ForMember(x=>x.Name,src=>src.MapFrom(x=>x.className))
-                .ForMember(x=>x.StatusClassDetail,src=>src.MapFrom(x=>x.classStatus))
-                .ForMember(x=>x.Code,src=>src.MapFrom(x=>x.classCode))
-                .ForMember(x=>x.Duration,src=>src.MapFrom(x=>x.classDuration.TotalHours))
+            CreateMap<TrainerDTO, TrainingClassTrainer>()
+                .ForMember(x => x.TrainerId, src => src.MapFrom(x => x.TrainerId))
+                .ReverseMap();
+            CreateMap<TimeFrameDTO, TrainingClassTimeFrame>()
+                .AfterMap((s, d, context) => context.Mapper.Map(s.HighlightedDates, d.HighlightedDates))
+                .ReverseMap();
+            CreateMap<DateTime, HighlightedDates>()
+                .AfterMap((s, d, context) => context.Mapper.Map(s, d.HighlightedDate))
+                .ConvertUsing<HighLightDatesTypeConverter>();
+            CreateMap<HighlightedDates, DateTime>()
+                .AfterMap((s, d, context) => context.Mapper.Map(s.HighlightedDate, d))
+                .ConvertUsing<CustomDateTimeTypeConverter>();
+            CreateMap<AttendeesDTO, TrainingClassAttendees>().ReverseMap();
+            //CreateMap<TrainingClassDTO, TrainingClass>()
+            //    .ForMember(dest => dest.Duration, opt => opt.MapFrom(src => src.ClassDuration.TotalHours))
+            //    .ReverseMap();
+            CreateMap<TrainingClassViewDetail, TrainingClass>()
+                .ForMember(x => x.Id, src => src.MapFrom(x => x.classId))
+                .ForMember(x => x.Name, src => src.MapFrom(x => x.className))
+                .ForMember(x => x.StatusClassDetail, src => src.MapFrom(x => x.classStatus))
+                .ForMember(x => x.Code, src => src.MapFrom(x => x.classCode))
+                .ForMember(x => x.Duration, src => src.MapFrom(x => x.classDuration.TotalHours))
                 .ReverseMap();
             CreateMap<TrainingClassFilterDTO, TrainingClassViewAllDTO>()
-                .ForMember(v=>v.id,src=>src.MapFrom(x=>x.ClassID))
+                .ForMember(v => v.id, src => src.MapFrom(x => x.ClassID))
                 .ForMember(v => v.className, src => src.MapFrom(x => x.Name))
                 .ForMember(v => v.classCode, src => src.MapFrom(x => x.Code))
                 .ForMember(v => v.fsu, src => src.MapFrom(x => x.Branch))
@@ -275,12 +411,12 @@ namespace Infrastructures.Mappers
                 .ForMember(x => x.TechRequirements, src => src.MapFrom(x => x.General.TechnicalRequirements))
                 .ForMember(x => x.Code, src => src.MapFrom(x => x.Code))
                 .ForMember(x => x.Duration, src => src.Ignore())
-                .AfterMap((src,dest) =>
+                .AfterMap((src, dest) =>
                 {
                     src.General.CourseObjective = dest.CourseObjective;
                     src.General.Level = dest.Level;
                     src.General.TechnicalRequirements = dest.TechRequirements;
-                }) 
+                })
                 .ReverseMap();
 
             CreateMap<Unit, UpdateContentModel>()

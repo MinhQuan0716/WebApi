@@ -31,7 +31,7 @@ namespace Application.Interfaces
 
         public Task<AnswerQuizDetailTraineeDTO> ViewDetaildoneQuiz(Guid QuizID);
 
-        public  Task<bool> UpdateQuestion(Guid QuestionID, UpdateQuestionDTO createQuizIntoBankDTO);
+        public Task<bool> UpdateQuestion(Guid QuestionID, UpdateQuestionDTO createQuizIntoBankDTO);
 
         public Task<bool> RemoveQuestionInBank(Guid QuestionId);
 

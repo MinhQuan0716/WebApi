@@ -122,8 +122,6 @@ namespace Domains.Test
             _sendMailMock = new Mock<ISendMailHelper>();
 
             _trainingClassRepositoryMock = new Mock<ITrainingClassRepository>();
-
-            _trainingClassRepositoryMock = new Mock<ITrainingClassRepository>();
             _trainingClassServiceMock = new Mock<ITrainingClassService>();
             _locationRepositoryMock = new Mock<ILocationRepository>();
             _locationServiceMock = new Mock<ILocationService>();
@@ -153,14 +151,14 @@ namespace Domains.Test
             _gradingServiceMock = new Mock<IGradingService>();
             _auditPlanServiceMock = new Mock<IAuditPlanService>();
             _auditSubmissionServiceMock = new Mock<IAuditSubmissionService>();
-            _gradingRepositoryMock= new Mock<IGradingRepository>();
+            _gradingRepositoryMock = new Mock<IGradingRepository>();
 
-            _assigmentServiceMock=new Mock<IAssignmentService>();
-            _recurringJobManagerMock=new Mock<IRecurringJobManager>();
+            _assigmentServiceMock = new Mock<IAssignmentService>();
+            _recurringJobManagerMock = new Mock<IRecurringJobManager>();
 
             _assignmentSubmissionServiceMock = new Mock<IAssignmentSubmisstionService>();
 
-            _assignmentRepositoryMock=new Mock<IAssignmentRepository>();
+            _assignmentRepositoryMock = new Mock<IAssignmentRepository>();
             _assignmentSubmissionRepositoryMock = new Mock<IAssignmentSubmissionRepository>();
         }
 

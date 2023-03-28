@@ -385,7 +385,7 @@ public class UserControllerTest : SetupTest
     public async Task SearchUserWithFilter_ShouldReturnNoContent_WhenIsNullOrEmpty()
     {
         //act
-        var result = await _userController.Search("", "", 69,"") as NoContentResult;
+        var result = await _userController.Search("", "", 69, "") as NoContentResult;
         //assert
         _userServiceMock.Verify(x => x.SearchUsersWithFilter("", "", 69, ""), Times.Once);
         Assert.NotNull(result);

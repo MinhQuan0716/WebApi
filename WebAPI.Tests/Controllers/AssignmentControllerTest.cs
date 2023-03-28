@@ -68,7 +68,7 @@ namespace WebAPI.Tests.Controllers
         public async Task UpdateAssignment_ShouldReturnOk()
         {
             var updateModel = _fixture.Build<AssignmentUpdateModel>().Without(x => x.File).Create();
-            updateModel.File=formFile;
+            updateModel.File = formFile;
             _assigmentServiceMock.Setup(x => x.UpdateAssignment(updateModel)).ReturnsAsync(true);
 
             var actualResult = await _controller.UpdateAssignment(updateModel);
@@ -111,7 +111,7 @@ namespace WebAPI.Tests.Controllers
         public async Task DownloadAssignment_ShouldReturnFile()
         {
             var dirName = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location.Replace("bin\\Debug\\net7.0", string.Empty));
-            var fileName2 = dirName+"\\Resources\\Assignments\\ctgbate.jpg";
+            var fileName2 = dirName + "\\Resources\\Assignments\\ctgbate.jpg";
             var fileMock = fileName2.GetFileEntity();
 
             _assigmentServiceMock.Setup(x => x.DownLoad(idMock)).ReturnsAsync(fileMock);

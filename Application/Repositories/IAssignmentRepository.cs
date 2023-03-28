@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Application.Repositories
 {
-    public interface IAssignmentRepository: IGenericRepository<Assignment>
+    public interface IAssignmentRepository : IGenericRepository<Assignment>
     {
         Task CheckOverdue();
         Task AddProcedure();

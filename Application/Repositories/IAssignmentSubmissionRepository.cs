@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Application.Repositories
 {
-    public interface IAssignmentSubmissionRepository:IGenericRepository<AssignmentSubmission>
+    public interface IAssignmentSubmissionRepository : IGenericRepository<AssignmentSubmission>
     {
     }
 }

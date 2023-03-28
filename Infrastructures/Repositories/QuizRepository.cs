@@ -56,6 +56,6 @@ namespace Infrastructures.Repositories
             return listDto;
         }
 
-     
+
     }
 }

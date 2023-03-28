@@ -173,7 +173,7 @@ namespace Application.Tests.Services
             var assignmentSubmis = _fixture.Build<AssignmentSubmission>().Without(x => x.Assignment).Create();
             assignmentSubmis.IsDeleted = true;
             _unitOfWorkMock.Setup(x => x.AssignmentSubmissionRepository.GetByIdAsync(id)).ReturnsAsync(assignmentSubmis);
-            
+
             Func<Task> act = async () => await _assignmentSubmissionService.DownloadSubmiss(id);
             await act.Should().ThrowAsync<Exception>();
         }

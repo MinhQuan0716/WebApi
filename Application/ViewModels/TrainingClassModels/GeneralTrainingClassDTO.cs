@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace Application.ViewModels.TrainingClassModels
 {
-    public  class GeneralTrainingClassDTO
+    public class GeneralTrainingClassDTO
     {
-        public ClassDateDTO class_date { get; set; }    
+        public ClassDateDTO class_date { get; set; }
     }
 }

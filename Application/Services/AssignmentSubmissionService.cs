@@ -22,30 +22,30 @@ namespace Application.Services
 
         public async Task<bool> AddSubmisstion(Guid assignmentID, IFormFile file)
         {
-           var assignment= await _unitOfWork.AssignmentRepository
-                .FindAsync(a=>
-                a.Id==assignmentID &&
-                a.IsOverDue==false &&
-                a.IsDeleted == false);
+            var assignment = await _unitOfWork.AssignmentRepository
+                 .FindAsync(a =>
+                 a.Id == assignmentID &&
+                 a.IsOverDue == false &&
+                 a.IsDeleted == false);
             if (assignment == null) throw new Exception("Assignment is not existed!");
             var createdBy = _claimsService.GetCurrentUserId;
             //Check already submiss
             var checkSubmiss = await _unitOfWork.AssignmentSubmissionRepository
-                 .FindAsync(a => 
-                 a.AssignmentId==assignmentID &&
-                 a.IsDeleted==false &&
+                 .FindAsync(a =>
+                 a.AssignmentId == assignmentID &&
+                 a.IsDeleted == false &&
                  a.CreatedBy == createdBy
                  );
             if (checkSubmiss.Count > 0) throw new Exception("Submission has already existed!");
-            var dbPath = file.ImportFile("AssignmentSubmissions", 1,_claimsService.GetCurrentUserId);
+            var dbPath = file.ImportFile("AssignmentSubmissions", 1, _claimsService.GetCurrentUserId);
             var submission = new AssignmentSubmission
             {
-                FileName= dbPath,
-                Version=1,
-                AssignmentId= assignmentID,
+                FileName = dbPath,
+                Version = 1,
+                AssignmentId = assignmentID,
             };
             await _unitOfWork.AssignmentSubmissionRepository.AddAsync(submission);
-            var result = await _unitOfWork.SaveChangeAsync()>0;
+            var result = await _unitOfWork.SaveChangeAsync() > 0;
             return result;
         }
 
@@ -64,36 +64,36 @@ namespace Application.Services
             var submiss = await _unitOfWork.AssignmentSubmissionRepository.GetByIdAsync(assignmentSubmissId);
             if (submiss == null) throw new Exception("Submission is not existed!");
 
-            if (submiss.IsDeleted == true) { throw new Exception("Submission is also deleted!"); } 
+            if (submiss.IsDeleted == true) { throw new Exception("Submission is also deleted!"); }
             submiss.IsDeleted = true;
             _unitOfWork.AssignmentSubmissionRepository.Update(submiss);
-            var result= await _unitOfWork.SaveChangeAsync()>0;
+            var result = await _unitOfWork.SaveChangeAsync() > 0;
             return result;
         }
 
         public async Task<bool> EditSubmisstion(Guid assignmentID, IFormFile file)
         {
-            var submission = await _unitOfWork.AssignmentSubmissionRepository.GetByIdAsync(assignmentID,s=>s.Assignment);
+            var submission = await _unitOfWork.AssignmentSubmissionRepository.GetByIdAsync(assignmentID, s => s.Assignment);
             if (submission == null) throw new Exception("Submission is not existed!");
             if (submission.Assignment.IsOverDue == true) throw new Exception("Assignment is overdue!");
-            var dbPath = file.ImportFile("AssignmentSubmissions", submission.Version.Value + 1,_claimsService.GetCurrentUserId);
+            var dbPath = file.ImportFile("AssignmentSubmissions", submission.Version.Value + 1, _claimsService.GetCurrentUserId);
 
             submission.FileName = dbPath;
-            submission.Version = submission.Version.Value+ 1;
+            submission.Version = submission.Version.Value + 1;
 
             _unitOfWork.AssignmentSubmissionRepository.Update(submission);
             var result = await _unitOfWork.SaveChangeAsync() > 0;
-            
+
             return result;
         }
-          
+
         public async Task<Guid> GradingandReviewSubmission(Guid assignmentSubmissId, int numberGrade, string comment)
         {
-           
-            var findSumission=await _unitOfWork.AssignmentSubmissionRepository.GetByIdAsync(assignmentSubmissId,s=>s.Assignment);
+
+            var findSumission = await _unitOfWork.AssignmentSubmissionRepository.GetByIdAsync(assignmentSubmissId, s => s.Assignment);
             if (findSumission == null) throw new Exception("Submission Assignment is not exist!");
             findSumission.Grade = numberGrade;
-            findSumission.Comment=comment;
+            findSumission.Comment = comment;
             _unitOfWork.AssignmentSubmissionRepository.Update(findSumission);
             await _unitOfWork.SaveChangeAsync();
             return findSumission.Assignment.LectureID;

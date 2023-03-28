@@ -34,7 +34,7 @@ namespace WebAPI.Tests.Controllers
                 .ReturnsAsync(expected);
 
             //act
-            var result = await _trainingClassController.CreateTrainingClass(mock);
+            var result = await _trainingClassController.CreateTrainingClassAsync(mock);
 
             //assert
             _trainingClassServiceMock.Verify(x => x.CreateTrainingClassAsync(It.Is<CreateTrainingClassDTO>(x => x.Equals(mock))), Times.Once);
@@ -55,7 +55,7 @@ namespace WebAPI.Tests.Controllers
                 .ReturnsAsync(expected);
 
             //act
-            var result = await _trainingClassController.CreateTrainingClass(mock);
+            var result = await _trainingClassController.CreateTrainingClassAsync(mock);
 
             //assert
             _trainingClassServiceMock.Verify(x => x.CreateTrainingClassAsync(It.Is<CreateTrainingClassDTO>(x => x.Equals(mock))), Times.Once);
@@ -75,7 +75,7 @@ namespace WebAPI.Tests.Controllers
                 .ThrowsAsync(new Exception(exceptionMessage));
 
             //act
-            var result = await _trainingClassController.CreateTrainingClass(mock);
+            var result = await _trainingClassController.CreateTrainingClassAsync(mock);
 
             //assert
             _trainingClassServiceMock.Verify(x => x.CreateTrainingClassAsync(It.Is<CreateTrainingClassDTO>(x => x.Equals(mock))), Times.Once);
@@ -84,7 +84,24 @@ namespace WebAPI.Tests.Controllers
         }
 
         [Fact]
-        public async Task SoftRemoveTrainingClass_ShouldReturnOK_WhenSoftRemoveResultIsTrue()
+        public async Task CreateTrainingClassAsync_ShouldReturnCorrectData()
+        {
+            //arrange
+            var mockCreate = _fixture.Build<CreateTrainingClassDTO2>().Create();
+            TrainingClassViewModel expected = _fixture.Build<TrainingClassViewModel>().Create();
+            _trainingClassServiceMock.Setup(
+                x => x.CreateTrainingClassAsync(It.IsAny<CreateTrainingClassDTO>()))
+                .ReturnsAsync(expected);
+            //act
+            var result = await _trainingClassController.CreateTrainingClassAsync(mockCreate);
+
+            //assert
+            result.Should().BeOfType<OkObjectResult>();
+            result.Should().NotBeNull();
+        }
+
+        [Fact]
+        public async Task SoftRemoveTrainingClass_ShouldReturnNoContent_WhenSoftRemoveResultIsTrue()
         {
             //arrange
             var mockId = Guid.NewGuid();
@@ -99,8 +116,9 @@ namespace WebAPI.Tests.Controllers
             _trainingClassServiceMock.Verify(x => x.SoftRemoveTrainingClassAsync(
                 It.Is<string>(x => x.Equals(mockId.ToString()))
                 ), Times.Once);
-            Assert.IsType<OkObjectResult>(result);
-            (result as OkObjectResult)!.Value.Should().Be("SoftRemove class successfully");
+            Assert.IsType<NoContentResult>(result);
+            //Assert.IsType<OkObjectResult>(result);
+            //(result as OkObjectResult)!.Value.Should().Be("SoftRemove class successfully");
         }
 
         [Fact]
@@ -143,25 +161,26 @@ namespace WebAPI.Tests.Controllers
         }
 
         [Fact]
-        public async Task UpdateTrainingClass_ShouldReturnOK_WhenUpdateResultIsTrue()
+        public async Task UpdateTrainingClass_ShouldReturnNoContent_WhenUpdateResultIsTrue()
         {
             //arrange
             var mockId = Guid.NewGuid();
-            var mockUpdate = _fixture.Build<UpdateTrainingCLassDTO>().Create();
+            var mockUpdate = _fixture.Build<UpdateTrainingClassDTO>().Create();
             _trainingClassServiceMock
-                .Setup(x => x.UpdateTrainingClassAsync(It.IsAny<string>(), It.IsAny<UpdateTrainingCLassDTO>()))
+                .Setup(x => x.UpdateTrainingClassAsync(It.IsAny<string>(), It.IsAny<UpdateTrainingClassDTO>()))
                 .ReturnsAsync(true);
 
             //act
-            var result = await _trainingClassController.UpdateTrainingClass(mockId.ToString(), mockUpdate);
+            var result = await _trainingClassController.UpdateTrainingClassAsync(mockId.ToString(), mockUpdate);
 
             //assert
             _trainingClassServiceMock.Verify(x => x.UpdateTrainingClassAsync(
                 It.Is<string>(x => x.Equals(mockId.ToString())),
-                It.Is<UpdateTrainingCLassDTO>(x => x.Equals(mockUpdate))
+                It.Is<UpdateTrainingClassDTO>(x => x.Equals(mockUpdate))
                 ), Times.Once);
-            Assert.IsType<OkObjectResult>(result);
-            (result as OkObjectResult)!.Value.Should().Be("Update class successfully");
+            Assert.IsType<NoContentResult>(result);
+            //Assert.IsType<OkObjectResult>(result);
+            //(result as OkObjectResult)!.Value.Should().Be("Update class successfully");
         }
 
         [Fact]
@@ -169,18 +188,18 @@ namespace WebAPI.Tests.Controllers
         {
             //arrange
             var mockId = Guid.NewGuid();
-            var mockUpdate = _fixture.Build<UpdateTrainingCLassDTO>().Create();
+            var mockUpdate = _fixture.Build<UpdateTrainingClassDTO>().Create();
             _trainingClassServiceMock
-                .Setup(x => x.UpdateTrainingClassAsync(It.IsAny<string>(), It.IsAny<UpdateTrainingCLassDTO>()))
+                .Setup(x => x.UpdateTrainingClassAsync(It.IsAny<string>(), It.IsAny<UpdateTrainingClassDTO>()))
                 .ReturnsAsync(false);
 
             //act
-            var result = await _trainingClassController.UpdateTrainingClass(mockId.ToString(), mockUpdate);
+            var result = await _trainingClassController.UpdateTrainingClassAsync(mockId.ToString(), mockUpdate);
 
             //assert
             _trainingClassServiceMock.Verify(x => x.UpdateTrainingClassAsync(
                 It.Is<string>(x => x.Equals(mockId.ToString())),
-                It.Is<UpdateTrainingCLassDTO>(x => x.Equals(mockUpdate))
+                It.Is<UpdateTrainingClassDTO>(x => x.Equals(mockUpdate))
                 ), Times.Once);
             Assert.IsType<BadRequestObjectResult>(result);
             (result as BadRequestObjectResult)!.Value.Should().Be("Update class fail: Saving fail");
@@ -191,31 +210,50 @@ namespace WebAPI.Tests.Controllers
         {
             //arrange
             var mockId = Guid.NewGuid();
-            var mockUpdate = _fixture.Build<UpdateTrainingCLassDTO>().Create();
+            var mockUpdate = _fixture.Build<UpdateTrainingClassDTO>().Create();
             var exceptionMessage = "test message";
             _trainingClassServiceMock
-                .Setup(x => x.UpdateTrainingClassAsync(It.IsAny<string>(), It.IsAny<UpdateTrainingCLassDTO>()))
+                .Setup(x => x.UpdateTrainingClassAsync(It.IsAny<string>(), It.IsAny<UpdateTrainingClassDTO>()))
                 .ThrowsAsync(new Exception(exceptionMessage));
             //act
-            var result = await _trainingClassController.UpdateTrainingClass(mockId.ToString(), mockUpdate);
+            var result = await _trainingClassController.UpdateTrainingClassAsync(mockId.ToString(), mockUpdate);
 
             //assert
             _trainingClassServiceMock.Verify(x => x.UpdateTrainingClassAsync(
                 It.IsAny<string>(),
-                It.IsAny<UpdateTrainingCLassDTO>()
+                It.IsAny<UpdateTrainingClassDTO>()
                 ), Times.Once);
             Assert.IsType<BadRequestObjectResult>(result);
             (result as BadRequestObjectResult)!.Value.Should().Be("Update class fail: " + exceptionMessage);
         }
+
         [Fact]
-        public async  Task ViewDetailTrainingClass_ShouldOk_WhenFindSuccess()
+        public async Task UpdateTrainingClassAsync_ShouldReturnCorrectData()
+        {
+            //arrange
+            var mockId = Guid.NewGuid();
+            var mockUpdate = _fixture.Build<UpdateTrainingClassDTO2>().Create();
+            _trainingClassServiceMock
+                .Setup(x => x.UpdateTrainingClassAsync(It.IsAny<string>(), It.IsAny<UpdateTrainingClassDTO>()))
+                .ReturnsAsync(true);
+            //act
+            var result = await _trainingClassController.UpdateTrainingClassAsync(mockId.ToString(), mockUpdate);
+
+            //assert
+            result.Should().BeOfType<NoContentResult>();
+            //result.Should().BeOfType<OkObjectResult>();
+            //result.Should().NotBeNull();
+        }
+
+        [Fact]
+        public async Task ViewDetailTrainingClass_ShouldOk_WhenFindSuccess()
         {
             //Arrange
-            var mockData=_fixture.Create<FinalTrainingClassDTO>();
+            var mockData = _fixture.Create<FinalTrainingClassDTO>();
             Guid mockId = new Guid();
             _trainingClassServiceMock.Setup(s => s.GetFinalTrainingClassesAsync(mockId)).ReturnsAsync(mockData);
             //Act 
-            var result =await  _trainingClassController.GetTrainingClassDetail(mockId);
+            var result = await _trainingClassController.GetTrainingClassDetail(mockId);
             //Assert
             Assert.IsType<OkObjectResult>(result);
         }

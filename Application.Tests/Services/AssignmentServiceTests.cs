@@ -30,7 +30,7 @@ namespace Application.Tests.Services
 
         public AssignmentServiceTests()
         {
-            _assignmentService = new AssignmentService(_unitOfWorkMock.Object, _mapperConfig,_claimsServiceMock.Object);
+            _assignmentService = new AssignmentService(_unitOfWorkMock.Object, _mapperConfig, _claimsServiceMock.Object);
             //Mock File
             var dirName = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location.Replace("bin\\Debug\\net7.0", string.Empty));
             var filePath = dirName + "\\Resources\\Assignments\\ctgbate.jpg";
@@ -164,7 +164,7 @@ namespace Application.Tests.Services
         {
             var assignment = _fixture.Build<Assignment>().Without(x => x.DeadLine).Without(x => x.AssignmentSubmissions).Without(a => a.Lecture).Create();
             assignment.DeadLine = DateTime.Now.AddDays(1);
-            assignment.Version= 0;
+            assignment.Version = 0;
             assignment.CreatedBy = Guid.Empty;
             var assignmentUpdate = _fixture.Build<AssignmentUpdateModel>().Without(x => x.File).Create();
             assignmentUpdate.File = file.Object;
@@ -177,7 +177,7 @@ namespace Application.Tests.Services
             var actualResult = await _assignmentService.UpdateAssignment(assignmentUpdate);
 
             actualResult.Should().BeTrue();
-               
+
         }
 
         [Fact]
@@ -219,8 +219,8 @@ namespace Application.Tests.Services
         {
             var dirName = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location.Replace("bin\\Debug\\net7.0", string.Empty));
             var assignment = _fixture.Build<Assignment>().Without(x => x.AssignmentSubmissions).Without(a => a.Lecture).Create();
-            var fileName =dirName+ "\\Resources\\Assignments\\1_00000000-0000-0000-0000-000000000000_ctgbate.jpg";
-            assignment.FileName=fileName;
+            var fileName = dirName + "\\Resources\\Assignments\\1_00000000-0000-0000-0000-000000000000_ctgbate.jpg";
+            assignment.FileName = fileName;
             _unitOfWorkMock.Setup(x => x.AssignmentRepository.GetByIdAsync(assignment.Id)).ReturnsAsync(assignment);
             var actualResult = await _assignmentService.DownLoad(assignment.Id);
             actualResult.Should().BeOfType<FileEntity>();

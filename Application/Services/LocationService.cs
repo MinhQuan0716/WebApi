@@ -24,6 +24,10 @@ namespace Application.Services
         public async Task<LocationDTO> AddNewLocation(CreateLocationDTO createLocationDTO)
         {
             var location = _mapper.Map<Location>(createLocationDTO);
+            if (_unitOfWork.LocationRepository.GetByNameAsync(createLocationDTO.LocationName).Result != null)
+            {
+                return null;
+            }
 
             await _unitOfWork.LocationRepository.AddAsync(location);
 

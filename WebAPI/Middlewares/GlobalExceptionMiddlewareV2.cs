@@ -57,7 +57,7 @@ namespace WebAPI.Middlewares
                 _logger.LogError("Exception: ");
                 _logger.LogError(ex.ToString());
                 await context.Response.WriteAsync(ex.Message);
-             
+
 
             }
         }

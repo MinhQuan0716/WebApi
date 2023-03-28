@@ -39,7 +39,7 @@ namespace Infrastructures
 
         private readonly IGradingRepository _gradingRepository;
 
-    
+
         private readonly IAssignmentRepository _assignmentRepository;
         private readonly IAssignmentSubmissionRepository _assignmentSubmissionRepository;
         public IDetailTrainingClassParticipateRepository _detailTrainingClassParticipate;
@@ -88,7 +88,7 @@ namespace Infrastructures
             _auditSubmissionRepository = auditSubmissionRepository;
             _detailAuditSubmissionRepository = detailAuditSubmissionRepository;
             _auditPlanRepository = auditPlanRepository;
-            
+
         }
         public IUserRepository UserRepository => _userRepository;
         public ISyllabusRepository SyllabusRepository => _syllabusRepository;

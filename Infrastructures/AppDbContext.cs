@@ -1,5 +1,6 @@
 ﻿using Application.Interfaces;
 using Domain.Entities;
+using Domain.Entities.TrainingClassRelated;
 using Infrastructures.FluentAPIs;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
@@ -25,6 +26,11 @@ namespace Infrastructures
         public DbSet<Lecture> Lectures { get; set; }
         public DbSet<TrainingMaterial> TrainingMaterials { get; set; }
         public DbSet<TrainingClass> TrainingClasses { get; set; }
+        public DbSet<TrainingClassAdmin> TrainingClassAdmins { get; set; }
+        public DbSet<TrainingClassTrainer> TrainingClassTrainers { get; set; }
+        public DbSet<TrainingClassAttendees> TrainingClassAttendees { get; set; }
+        public DbSet<TrainingClassTimeFrame> TrainingClassTimeFrames { get; set; }
+        public DbSet<HighlightedDates> HighlightedDates { get; set; }
         public DbSet<Location> Locations { get; set; }
         public DbSet<DetailTrainingClassParticipate> DetailTrainingClassParticipates { get; set; }
         public DbSet<Attendance> Attendances { get; set; }
@@ -49,7 +55,7 @@ namespace Infrastructures
         public DbSet<SubmitQuiz> SubmitQuiz { get; set; }
 
         public DbSet<Grading> Gradings { get; set; }
-              
+
         public DbSet<Assignment> Assignments { get; set; }
         public DbSet<AssignmentSubmission> AssignmentSubmissions { get; set; }
         public DbSet<GradingReport> GradingReports { get; set; }        

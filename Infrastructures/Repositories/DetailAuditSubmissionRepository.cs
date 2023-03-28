@@ -46,7 +46,7 @@ namespace Infrastructures.Repositories
                                    .Select(auditSubmission => new DetailAuditSubmissionViewModel
                                    {
                                        Question = auditSubmission.DetailAuditQuestion.AuditQuestion.Description,
-                                       Answer = auditSubmission.Answer                                       
+                                       Answer = auditSubmission.Answer
                                    });
             return await result.ToListAsync();
 

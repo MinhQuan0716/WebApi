@@ -27,8 +27,9 @@ namespace Application.Tests.Services
         {
             //arrange
             var mock = _fixture.Build<CreateLocationDTO>().Create();
+            Location? duplicateLocation = null;
             _unitOfWorkMock.Setup(x => x.LocationRepository.AddAsync(It.IsAny<Location>())).Returns(Task.CompletedTask);
-
+            _unitOfWorkMock.Setup(x => x.LocationRepository.GetByNameAsync(It.IsAny<string>())).ReturnsAsync(duplicateLocation);
             _unitOfWorkMock.Setup(x => x.SaveChangeAsync()).ReturnsAsync(1);
 
             var expected = _mapperConfig.Map<LocationDTO>(
@@ -39,6 +40,7 @@ namespace Application.Tests.Services
 
             //assert
             _unitOfWorkMock.Verify(x => x.LocationRepository.AddAsync(It.IsAny<Location>()), Times.Once);
+            _unitOfWorkMock.Verify(x => x.LocationRepository.GetByNameAsync(It.IsAny<string>()), Times.Once);
             _unitOfWorkMock.Verify(x => x.SaveChangeAsync(), Times.Once);
             result.Should().BeEquivalentTo(expected);
 
@@ -48,7 +50,9 @@ namespace Application.Tests.Services
         {
             //arrange
             var mock = _fixture.Build<CreateLocationDTO>().Create();
+            Location? duplicateLocation = null;
             _unitOfWorkMock.Setup(x => x.LocationRepository.AddAsync(It.IsAny<Location>())).Returns(Task.CompletedTask);
+            _unitOfWorkMock.Setup(x => x.LocationRepository.GetByNameAsync(It.IsAny<string>())).ReturnsAsync(duplicateLocation);
 
             _unitOfWorkMock.Setup(x => x.SaveChangeAsync()).ReturnsAsync(0);
             //act
@@ -57,6 +61,27 @@ namespace Application.Tests.Services
             //assert
             _unitOfWorkMock.Verify(x => x.LocationRepository.AddAsync(It.IsAny<Location>()), Times.Once);
             _unitOfWorkMock.Verify(x => x.SaveChangeAsync(), Times.Once);
+            result.Should().BeNull();
+        }
+        [Fact]
+        public async Task AddNewLocation_ShouldReturnCorrectData_WhenDuplicate()
+        {
+            //arrange
+            var mock = _fixture.Build<CreateLocationDTO>().Create();
+            Location duplicateLocation = new Location()
+            {
+                LocationName = mock.LocationName,
+            };
+            _unitOfWorkMock.Setup(x => x.LocationRepository.AddAsync(It.IsAny<Location>())).Returns(Task.CompletedTask);
+            _unitOfWorkMock.Setup(x => x.LocationRepository.GetByNameAsync(It.IsAny<string>())).ReturnsAsync(duplicateLocation);
+
+            _unitOfWorkMock.Setup(x => x.SaveChangeAsync()).ReturnsAsync(0);
+            //act
+            var result = await _locationService.AddNewLocation(mock);
+
+            //assert
+            _unitOfWorkMock.Verify(x => x.LocationRepository.AddAsync(It.IsAny<Location>()), Times.Never);
+            _unitOfWorkMock.Verify(x => x.SaveChangeAsync(), Times.Never);
             result.Should().BeNull();
         }
         [Fact]

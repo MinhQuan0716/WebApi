@@ -1,4 +1,5 @@
 ﻿using Domain.Entities;
+using Domain.Entities.TrainingClassRelated;
 using Domain.Enums;
 using System;
 using System.Collections.Generic;
@@ -11,7 +12,7 @@ namespace Domain.Entities
     /// <summary>
     /// Training class
     /// </summary>
-    public class TrainingClass : BaseEntity
+    public partial class TrainingClass : BaseEntity
     {
         public string Name { get; set; } = null!;
 
@@ -24,9 +25,9 @@ namespace Domain.Entities
         public double Duration { get; set; }
 
 
-        public string Attendee { get; set; }
+        public string? Attendee { get; set; }
 
-        public string Branch { get; set; }
+        public string? Branch { get; set; }
 
         public Guid? LocationID { get; set; }
 
@@ -48,5 +49,17 @@ namespace Domain.Entities
 
         public ICollection<ClassSchedule> ClassSchedules { get; set; }
 
+    }
+    public partial class TrainingClass
+    {
+        public string? Fsu { get; set; } = default!;
+        public TrainingClassAttendees TrainingClassAttendee { get; set; } = default!;
+        public TrainingClassTimeFrame TrainingClassTimeFrame { get; set; } = default!;
+        public ICollection<TrainingClassTrainer> TrainingClassTrainers { get; set; }
+        public ICollection<TrainingClassAdmin> TrainingClassAdmins { get; set; }
+        public DateTime? ReviewDate { get; set; }
+        public string? ReviewAuthor { get; set; }
+        public DateTime? ApproveDate { get; set; }
+        public string? ApproveAuthor { get; set; }
     }
 }

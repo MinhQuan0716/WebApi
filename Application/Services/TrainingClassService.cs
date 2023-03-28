@@ -1,17 +1,19 @@
 ﻿using Application.Filter.ClassFilter;
 using Application.Interfaces;
-using Application.Utils;
 using Application.ViewModels.SyllabusModels;
 using Application.ViewModels.TrainingClassModels;
 using Application.ViewModels.TrainingProgramModels;
 using Application.ViewModels.TrainingProgramModels.TrainingProgramView;
 using AutoMapper;
 using Domain.Entities;
+using Domain.Entities.TrainingClassRelated;
+using Domain.Enums;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -97,36 +99,105 @@ namespace Application.Services
         /// <returns>Training class view model</returns>
         public async Task<TrainingClassViewModel?> CreateTrainingClassAsync(CreateTrainingClassDTO createTrainingClassDTO)
         {
-
             var trainingClassObj = _mapper.Map<TrainingClass>(createTrainingClassDTO);
+            trainingClassObj.Id = Guid.NewGuid();
+            //check location
+            var location = await _unitOfWork.LocationRepository.GetByNameAsync(createTrainingClassDTO.LocationName);
+            if (location == null)
+            {
+                //location = trainingClassObj.Location = new Location()
+                //{
+                //    LocationName = createTrainingClassDTO.LocationName,
+                //};
+                trainingClassObj.LocationID = null;
+            }
+            else
+            {
+                trainingClassObj.LocationID = location.Id;
+            }
+            //check training program
+            _ = await _unitOfWork.TrainingProgramRepository.GetByIdAsync(createTrainingClassDTO.TrainingProgramId) ?? throw new Exception("Invalid training program Id");
+            // admins
+            if (!trainingClassObj.TrainingClassAdmins.IsNullOrEmpty())
+            {
+                foreach (var user in trainingClassObj.TrainingClassAdmins)
+                {
+                    if (!CheckTrainingClassAdminsIdAsync(user).Result)
+                    {
+                        throw new Exception("Incorrect admin id!");
+                    }
+                }
+            }
+
+            //trainers
+            if (!trainingClassObj.TrainingClassTrainers.IsNullOrEmpty())
+            {
+                foreach (var user in trainingClassObj.TrainingClassTrainers)
+                {
+                    if (!CheckTrainingClassTrainersIdAsync(user).Result)
+                    {
+                        throw new Exception("Incorrect trainer id!");
+                    }
+                }
+            }
+            trainingClassObj.Duration = (createTrainingClassDTO.EndTime - createTrainingClassDTO.StartTime).TotalMinutes;
             await _unitOfWork.TrainingClassRepository.AddAsync(trainingClassObj);
 
-            //set location
-            trainingClassObj.Location = await _unitOfWork.LocationRepository.GetByIdAsync(createTrainingClassDTO.LocationID) ?? throw new Exception("Invalid location Id");
-
-            //set training program
-            trainingClassObj.TrainingProgram = await _unitOfWork.TrainingProgramRepository.GetByIdAsync(createTrainingClassDTO.TrainingProgramId) ?? throw new Exception("Invalid training program Id");
-
-            return (await _unitOfWork.SaveChangeAsync() > 0) ? _mapper.Map<TrainingClassViewModel>(trainingClassObj) : null;
+            var viewModel = _mapper.Map<TrainingClassViewModel>(trainingClassObj);
+            viewModel.LocationName = location?.LocationName!;
+            return (await _unitOfWork.SaveChangeAsync() > 0) ? viewModel : null;
         }
-
 
         /// <summary>
         /// UpdateTrainingClassAsync update training class based on its id
         /// </summary>
         /// <param className="trainingClassId">Training class ID</param>
-        /// <param className="updateTrainingCLassDTO">Update training class DTO</param>
+        /// <param className="updateTrainingClassDTO">Update training class DTO</param>
         /// <returns>True if save successfully, false if save fail</returns>
-        public async Task<bool> UpdateTrainingClassAsync(string trainingClassId, UpdateTrainingCLassDTO updateTrainingCLassDTO)
+        public async Task<bool> UpdateTrainingClassAsync(string trainingClassId, UpdateTrainingClassDTO updateTrainingClassDTO)
         {
             var trainingClassObj = await GetTrainingClassByIdAsync(trainingClassId);
-            _mapper.Map(updateTrainingCLassDTO, trainingClassObj);
-            //set location
-            trainingClassObj.Location = await _unitOfWork.LocationRepository.GetByIdAsync(updateTrainingCLassDTO.LocationID) ?? throw new NullReferenceException("Invalid location Id");
+            _mapper.Map(updateTrainingClassDTO, trainingClassObj);
+            //check location
+            var location = await _unitOfWork.LocationRepository.GetByNameAsync(updateTrainingClassDTO.LocationName);
+            if (location == null)
+            {
+                //trainingClassObj.Location = new Location()
+                //{
+                //    LocationName = updateTrainingClassDTO.LocationName,
+                //};
+                trainingClassObj.LocationID = null;
+            }
+            else
+            {
+                trainingClassObj.LocationID = location.Id;
+            }
 
-            //set training program
-            trainingClassObj.TrainingProgram = await _unitOfWork.TrainingProgramRepository.GetByIdAsync(updateTrainingCLassDTO.TrainingProgramId) ?? throw new NullReferenceException("Invalid training program Id");
+            //check training program
+            _ = await _unitOfWork.TrainingProgramRepository.GetByIdAsync(updateTrainingClassDTO.TrainingProgramId) ?? throw new NullReferenceException("Invalid training program Id");
+            // admins
+            if (!trainingClassObj.TrainingClassAdmins.IsNullOrEmpty())
+            {
+                foreach (var user in trainingClassObj.TrainingClassAdmins)
+                {
+                    if (!CheckTrainingClassAdminsIdAsync(user).Result)
+                    {
+                        throw new Exception("Incorrect admin id!");
+                    }
+                }
+            }
 
+            //trainers
+            if (!trainingClassObj.TrainingClassTrainers.IsNullOrEmpty())
+            {
+                foreach (var user in trainingClassObj.TrainingClassTrainers)
+                {
+                    if (!CheckTrainingClassTrainersIdAsync(user).Result)
+                    {
+                        throw new Exception("Incorrect trainer id!");
+                    }
+                }
+            }
             _unitOfWork.TrainingClassRepository.Update(trainingClassObj);
             return (await _unitOfWork.SaveChangeAsync() > 0);
         }
@@ -143,15 +214,11 @@ namespace Application.Services
             {
                 var _classId = _mapper.Map<Guid>(trainingClassId);
                 var trainingClassObj = await _unitOfWork.TrainingClassRepository.GetByIdAsync(_classId);
-                if (trainingClassObj == null)
-                {
-                    throw new NullReferenceException("Incorrect Id");
-                }
-                return trainingClassObj;
+                return trainingClassObj ?? throw new NullReferenceException($"Incorrect Id: The training class with id: {trainingClassId} doesn't exist or has been deleted!");
             }
             catch (AutoMapperMappingException)
             {
-                throw new AutoMapperMappingException("Id must be a guid");
+                throw new AutoMapperMappingException("Incorrect Id!");
             }
         }
 
@@ -197,13 +264,13 @@ namespace Application.Services
             var detailProgramSyllabus = _unitOfWork.DetailTrainingProgramSyllabusRepository.GetDetailByClassID(trainingProgram.programId);
             var detailTrainingClass = await _unitOfWork.DetailTrainingClassParticipate.GetDetailTrainingClassParticipatesByClassIDAsync(id);
             var adminInClass = await _unitOfWork.DetailTrainingClassParticipateRepository.GetAdminInClasssByClassIDAsync(id);
-         
+
             AttendeeDTO attendeeDTO = new AttendeeDTO()
             {
                 attendee = trainingClassFilterDetail.Attendee,
-                plannedNumber=50,
-                acceptedNumber=30,
-                actualNumber=20,
+                plannedNumber = 50,
+                acceptedNumber = 30,
+                actualNumber = 20,
             };
             CreatedByDTO createdByDTO = new CreatedByDTO()
             {
@@ -214,16 +281,16 @@ namespace Application.Services
             finalDTO.syllabuses = detailProgramSyllabus;
 
             finalDTO.classId = trainingClassFilterDetail.ClassID;
-            finalDTO.classCode= trainingClassFilterDetail.Code;
+            finalDTO.classCode = trainingClassFilterDetail.Code;
             finalDTO.classStatus = trainingClassFilterDetail.Status;
             finalDTO.className = trainingClassFilterDetail.Name;
             finalDTO.dateOrder = new DateOrderForViewDetail
             {
                 current = 10,
-                total=10*3
+                total = 10 * 3
             };
             finalDTO.classDuration = trainingClassFilterDetail.ClassDuration;
-         
+
             finalDTO.lastEdit = new LastEditDTO()
             {
                 modificationBy = trainingClassFilterDetail.LastEditDTO.modificationBy,
@@ -318,5 +385,36 @@ namespace Application.Services
                 throw new Exception("Excel file has invalid data");
             }
         }
+
+        /// <summary>
+        /// CheckTrainingClassAdminsIdAsync check if the trainingclass admin id is qualified
+        /// </summary>
+        /// <param name="user">Training class admin</param>
+        /// <returns>Return false if user doesn't exist or is not admin. Otherwise, return true</returns>
+        public async Task<bool> CheckTrainingClassAdminsIdAsync(TrainingClassAdmin user)
+        {
+            var databaseUser = await _unitOfWork.UserRepository.GetByIdAsync(user.AdminId);
+            if (databaseUser == null || databaseUser.RoleId != (int)RoleEnums.Admin)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// CheckTrainingClassTrainersIdAsync check if the trainingclass Trainer id is qualified
+        /// </summary>
+        /// <param name="user">Training class Trainer</param>
+        /// <returns>Return false if user doesn't exist or is not Trainer. Otherwise, return true</returns>
+        public async Task<bool> CheckTrainingClassTrainersIdAsync(TrainingClassTrainer user)
+        {
+            var databaseUser = await _unitOfWork.UserRepository.GetByIdAsync(user.TrainerId);
+            if (databaseUser == null || databaseUser.RoleId != (int)RoleEnums.Trainer)
+            {
+                return false;
+            }
+            return true;
+        }
     }
+
 }

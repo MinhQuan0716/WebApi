@@ -199,9 +199,9 @@ public class UserService : IUserService
 
     public async Task<bool> RegisterAsync(RegisterDTO userDto)
     {
-        var isExisted = await _unitOfWork.UserRepository.FindAsync(u=>u.UserName== userDto.UserName || u.Email==userDto.Email);
+        var isExisted = await _unitOfWork.UserRepository.FindAsync(u => u.UserName == userDto.UserName || u.Email == userDto.Email);
 
-        if (isExisted.Count()>0)
+        if (isExisted.Count() > 0)
         {
             throw new Exception("Account exited please try again");
         }

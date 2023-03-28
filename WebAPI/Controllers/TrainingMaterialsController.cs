@@ -107,7 +107,7 @@ namespace WebAPI.Controllers
             var blobUrl = blobClient.Uri.AbsoluteUri;
 
             // Upload to database
-           await  _trainingMaterialService.Upload(file, lectureId, blobUrl);
+            await _trainingMaterialService.Upload(file, lectureId, blobUrl);
 
             return Ok(blobUrl);
         }

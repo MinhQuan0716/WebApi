@@ -9,7 +9,7 @@ namespace Application.Filter.UserFilter
         private ICriterias<User> secondCriteria;
         private ICriterias<User> thirdCriteria;
 
-        public AndUserCriteria(ICriterias<User> firstCriteria, ICriterias<User> secondCriteria,ICriterias<User> thirdCriteria)
+        public AndUserCriteria(ICriterias<User> firstCriteria, ICriterias<User> secondCriteria, ICriterias<User> thirdCriteria)
         {
             this.firstCriteria = firstCriteria;
             this.secondCriteria = secondCriteria;

@@ -64,14 +64,14 @@ namespace WebAPI.Controllers
             }
             return StatusCode(StatusCodes.Status201Created);
         }
-       
-        
+
+
         [Authorize]
         [HttpGet]
         public async Task<IActionResult> DownloadAssignment(Guid assignmentID)
         {
             var result = await _assignmentService.DownLoad(assignmentID);
-            if(result == null)
+            if (result == null)
             {
                 return BadRequest();
             }

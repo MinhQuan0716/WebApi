@@ -26,6 +26,7 @@ namespace Infrastructures.FluentAPIs
             builder.HasOne(c => c.TrainingProgram)
             .WithMany(x => x.TrainingClasses)
             .HasForeignKey(c => c.TrainingProgramId);
+
         }
     }
 }

@@ -23,4 +23,8 @@ namespace Application.ViewModels.TrainingClassModels
         public DurationView ClassDuration { get; set; } = default!;
         public LastEditDTO LastEditDTO { get; set; } = default!;
     }
+    public partial class TrainingClassDTO : ExtendTrainingClassDTO
+    {
+
+    }
 }

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Application.ViewModels.TrainingClassModels
 {
-    public class TrainingClassViewModel : TrainingClassLocationDTO
+    public partial class TrainingClassViewModel : ExtendTrainingClassDTO
     {
         public string Name { get; set; } = default!;
         public DateTime StartTime { get; set; }
@@ -19,10 +19,7 @@ namespace Application.ViewModels.TrainingClassModels
 
         public DateTime? DeletionDate { get; set; }
         public string Branch { get; set; }
-    }
 
-    public class TrainingClassLocationDTO
-    {
         public string _Id { get; set; }
         public string LocationID { get; set; } = default!;
         public string LocationName { get; set; } = default!;

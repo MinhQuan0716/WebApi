@@ -49,17 +49,29 @@ namespace WebAPI.Controllers
             return BadRequest();
         }
 
-
-        [HttpPut]
+        /// <summary>
+        /// This method update training class
+        /// </summary>
+        /// <param name="trainingClassId">Training class id</param>
+        /// <param name="classInput">Update training class api</param>
+        /// <returns>Ok when class updated successfully; BadRequest when class updated fail or when there is error</returns>
+        [HttpPatch]
         [Authorize]
         [ClaimRequirement(nameof(PermissionItem.ClassPermission), nameof(PermissionEnum.Modifed))]
-        public async Task<IActionResult> UpdateTrainingClass(string trainingClassId, UpdateTrainingCLassDTO updateTrainingCLassDTO)
+        public async Task<IActionResult> UpdateTrainingClassAsync(string trainingClassId, UpdateTrainingClassDTO2 classInput)
+        {
+            var classDTO = _mapper.Map<UpdateTrainingClassDTO>(classInput);
+            return await UpdateTrainingClassAsync(trainingClassId, classDTO);
+        }
+        [NonAction]
+        public virtual async Task<IActionResult> UpdateTrainingClassAsync(string trainingClassId, UpdateTrainingClassDTO updateTrainingCLassDTO)
         {
             try
             {
                 if (await _trainingClassService.UpdateTrainingClassAsync(trainingClassId, updateTrainingCLassDTO))
                 {
-                    return Ok("Update class successfully");
+                    //return Ok("Update class successfully");
+                    return NoContent();
                 }
                 else
                 {
@@ -72,10 +84,21 @@ namespace WebAPI.Controllers
             }
         }
 
+        /// <summary>
+        /// This method create training class
+        /// </summary>
+        /// <param name="classInput">Create training class api</param>
+        /// <returns>Ok when new class saved successfully; BadRequest when new class saved fail or when there is error</returns>
         [HttpPost]
         [Authorize]
         [ClaimRequirement(nameof(PermissionItem.ClassPermission), nameof(PermissionEnum.Create))]
-        public async Task<IActionResult> CreateTrainingClass(CreateTrainingClassDTO classDTO)
+        public async Task<IActionResult> CreateTrainingClassAsync(CreateTrainingClassDTO2 classInput)
+        {
+            var classDTO = _mapper.Map<CreateTrainingClassDTO>(classInput);
+            return await CreateTrainingClassAsync(classDTO);
+        }
+        [NonAction]
+        public async Task<IActionResult> CreateTrainingClassAsync(CreateTrainingClassDTO classDTO)
         {
             try
             {
@@ -107,7 +130,7 @@ namespace WebAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> FilterResult(TrainingClassFilterModel trainingClassFilterModel)
         {
-            var fiterResult = await _trainingClassService.FilterLocation(trainingClassFilterModel.locationName, trainingClassFilterModel.branchName, trainingClassFilterModel.date1, trainingClassFilterModel.date2, trainingClassFilterModel.classStatus, trainingClassFilterModel.attendInClass,trainingClassFilterModel.trainer);
+            var fiterResult = await _trainingClassService.FilterLocation(trainingClassFilterModel.locationName, trainingClassFilterModel.branchName, trainingClassFilterModel.date1, trainingClassFilterModel.date2, trainingClassFilterModel.classStatus, trainingClassFilterModel.attendInClass, trainingClassFilterModel.trainer);
             if (fiterResult.IsNullOrEmpty())
             {
                 return NoContent();
@@ -117,7 +140,7 @@ namespace WebAPI.Controllers
         [HttpGet]
         public async Task<IActionResult> GetTrainingClassDetail(Guid id)
         {
-            var detailList=await _trainingClassService.GetFinalTrainingClassesAsync(id);
+            var detailList = await _trainingClassService.GetFinalTrainingClassesAsync(id);
             if (detailList != null)
             {
                 return Ok(detailList);
@@ -125,7 +148,12 @@ namespace WebAPI.Controllers
             return NotFound();
         }
 
-        [HttpPut]
+        /// <summary>
+        /// This method softly remove training class without delete it completely
+        /// </summary>
+        /// <param name="trainingClassId">Training class id</param>
+        /// <returns></returns>
+        [HttpPatch]
         [Authorize]
         [ClaimRequirement(nameof(PermissionItem.ClassPermission), nameof(PermissionEnum.Modifed))]
         public async Task<IActionResult> SoftRemoveTrainingClass(string trainingClassId)
@@ -134,7 +162,8 @@ namespace WebAPI.Controllers
             {
                 if (await _trainingClassService.SoftRemoveTrainingClassAsync(trainingClassId))
                 {
-                    return Ok("SoftRemove class successfully");
+                    //return Ok("SoftRemove class successfully");
+                    return NoContent();
                 }
                 else
                 {
@@ -146,9 +175,10 @@ namespace WebAPI.Controllers
                 return BadRequest("SoftRemove class fail: " + ex.Message);
             }
         }
+
         [HttpPost]
-      /*  [Authorize]
-        [ClaimRequirement(nameof(PermissionItem.ClassPermission), nameof(PermissionEnum.Create))]*/
+        /*  [Authorize]
+          [ClaimRequirement(nameof(PermissionItem.ClassPermission), nameof(PermissionEnum.Create))]*/
         public async Task<IActionResult> ImportTrainingClass(IFormFile file)
         {
             var addSuccess = await _trainingClassService.ImportExcel(file);

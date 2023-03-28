@@ -12,9 +12,12 @@ namespace Application.Repositories
     public interface ITrainingClassRepository : IGenericRepository<TrainingClass>
     {
         public List<TrainingClass> SearchClassByName(string name);
+        public Task<TrainingClass?> GetByIdAsync(Guid id);
+        public new Task AddAsync(TrainingClass trainingClass);
+        public void Update(TrainingClass trainingClass);
         public List<TrainingClassFilterDTO> GetTrainingClassesForFilter();
         public List<TrainingClassViewAllDTO> GetTrainingClasses();
         TrainingProgramViewForTrainingClassDetail GetTrainingProgramByClassID(Guid id);
-       TrainingClassFilterDTO GetTrainingClassFilterById(Guid id);
+        TrainingClassFilterDTO GetTrainingClassFilterById(Guid id);
     }
 }

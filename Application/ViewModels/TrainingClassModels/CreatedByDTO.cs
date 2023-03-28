@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Application.ViewModels.TrainingClassModels
 {
-    public  class CreatedByDTO
+    public class CreatedByDTO
     {
         public DateTime? creationDate { get; set; }
-        public string userName { get; set; }    
+        public string userName { get; set; }
     }
 }

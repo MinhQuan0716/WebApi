@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Application.ViewModels.TrainingClassModels
 {
-    public partial class CreateTrainingClassDTO
+    public partial class CreateTrainingClassDTO : ExtendTrainingClassDTO
     {
         public string Name { get; set; } = default!;
         public DateTime StartTime { get; set; }
@@ -19,34 +19,7 @@ namespace Application.ViewModels.TrainingClassModels
         public string? Attendee { get; set; }
         public string Branch { get; set; }
         // public Guid UserId { get; set; }
-    }
-    /// <summary>
-    /// bổ sung mới
-    /// </summary>
-    public partial class CreateTrainingClassDTO
-    {
-        public ICollection<AdminsDTO> Admins { get; set; }
-        public string fsu { get; set; }
-        //AttendeesDTO
-        public AttendeesDTO Attendees { get; set; }
-        //Time frame
-        public TimeFrameDTO TimeFrame { get; set; }
-    }
-    public class TimeFrameDTO
-    {
-        public DateOnly StartDate { get; set; }
-        public DateOnly EndDate { get; set; }
-        public ICollection<DateOnly>? HighlightedDates { get; set; }
-    }
-    public class AttendeesDTO
-    {
-        public int AttendeesPlannedNumber { get; set; }
-        public int AttendeesAcceptedNumber { get; set; }
-        public int AttendeesActualNumber { get; set; }
-
-    }
-    public class AdminsDTO
-    {
-        public Guid AdminID { get; set; }
+        public string LocationName { get; set; }
     }
 }
+

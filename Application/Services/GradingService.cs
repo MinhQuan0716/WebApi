@@ -100,14 +100,11 @@ public class GradingService : IGradingService
         return _unitOfWork.GradingRepository.GetAllMarkOfTrainee(user.Id);
     }
 
-    
-
-
     public async Task<bool> AddToGrading(GradingModel gradingModel)
     {
-        var checkLecture= await _unitOfWork.LectureRepository.GetByIdAsync(gradingModel.LectureId);
+        var checkLecture = await _unitOfWork.LectureRepository.GetByIdAsync(gradingModel.LectureId);
         var checkDetailTrainingID = await _unitOfWork.DetailTrainingClassParticipate.GetByIdAsync(gradingModel.DetailTrainingClassParticipateId);
-        var mapperGrading=_mapper.Map<Grading>(gradingModel);
+        var mapperGrading = _mapper.Map<Grading>(gradingModel);
         if (checkLecture == null || checkDetailTrainingID == null) return false;
         await _unitOfWork.GradingRepository.AddAsync(mapperGrading);
         return await _unitOfWork.SaveChangeAsync() > 0;

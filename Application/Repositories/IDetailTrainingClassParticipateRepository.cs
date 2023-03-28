@@ -11,7 +11,7 @@ namespace Application.Repositories
     public interface IDetailTrainingClassParticipateRepository : IGenericRepository<DetailTrainingClassParticipate>
     {
         Task<DetailTrainingClassParticipate> GetDetailTrainingClassParticipateAsync(Guid userId, Guid classId);
-       Guid GetDetailTrainingClassParticipateByClassID(Guid classID);
+        Guid GetDetailTrainingClassParticipateByClassID(Guid classID);
         Task<List<ClassTrainerDTO>> GetDetailTrainingClassParticipatesByClassIDAsync(Guid classID);
         Task<List<ClassAdminDTO>> GetAdminInClasssByClassIDAsync(Guid classID);
     }

@@ -10,7 +10,7 @@ namespace Application.Interfaces
 {
     public interface IAssignmentSubmisstionService
     {
-        Task<bool> AddSubmisstion(Guid assignmentID,IFormFile file);
+        Task<bool> AddSubmisstion(Guid assignmentID, IFormFile file);
         Task<bool> RemoveSubmisstion(Guid assignmentSubmissId);
         Task<bool> EditSubmisstion(Guid assignmentID, IFormFile file);
         Task<FileEntity> DownloadSubmiss(Guid assignmentSubmissId);

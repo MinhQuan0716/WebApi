@@ -579,7 +579,7 @@ namespace Application.Tests.Services
                 user.RoleName = ((RoleEnums)user.RoleId).ToString();
             _unitOfWorkMock.Setup(x => x.UserRepository.GetAllAsync()).ReturnsAsync(mockUsers);
             //Act
-            var result = await _userService.SearchUsersWithFilter(null, null, null,null);
+            var result = await _userService.SearchUsersWithFilter(null, null, null, null);
             //Assert
             result.Should().BeEquivalentTo(expected);
         }

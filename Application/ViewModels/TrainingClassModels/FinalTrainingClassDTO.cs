@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Application.ViewModels.TrainingClassModels
 {
-    public  class FinalTrainingClassDTO
+    public class FinalTrainingClassDTO
     {
         public Guid classId { get; set; }
         public DateOrderForViewDetail dateOrder { get; set; }

@@ -29,11 +29,11 @@ namespace Application.Services
 
         public async Task<bool> DeleteAssignment(Guid assignmentID)
         {
-            var assignment= await _unitOfWork.AssignmentRepository.GetByIdAsync(assignmentID);
+            var assignment = await _unitOfWork.AssignmentRepository.GetByIdAsync(assignmentID);
             if (assignment.IsDeleted == true) throw new Exception("Assignment is also deleted!");
-            assignment.IsDeleted= true;
+            assignment.IsDeleted = true;
             _unitOfWork.AssignmentRepository.Update(assignment);
-            var result = await _unitOfWork.SaveChangeAsync()>0;
+            var result = await _unitOfWork.SaveChangeAsync() > 0;
             return result;
         }
 
@@ -41,18 +41,18 @@ namespace Application.Services
         {
             var assignment = await _unitOfWork.AssignmentRepository.GetByIdAsync(assignmentUpdate.AssignmentID);
             if (assignment == null) throw new Exception("Assignment is not existed!");
-            assignment.AssignmentName=assignmentUpdate.AssignmentName;
-            assignment.Description=assignmentUpdate.Description;
+            assignment.AssignmentName = assignmentUpdate.AssignmentName;
+            assignment.Description = assignmentUpdate.Description;
             if (assignmentUpdate.File.Length < 0)
             {
                 throw new Exception("File length is null");
             }
-            var dbPath = assignmentUpdate.File.ImportFile("Assignments", assignment.Version.Value + 1,assignment.CreatedBy.Value);
-            assignment.FileName=dbPath;
+            var dbPath = assignmentUpdate.File.ImportFile("Assignments", assignment.Version.Value + 1, assignment.CreatedBy.Value);
+            assignment.FileName = dbPath;
             assignment.Version = assignment.Version.Value + 1;
-            if (assignment.DeadLine< assignmentUpdate.Deadline)
+            if (assignment.DeadLine < assignmentUpdate.Deadline)
             {
-                assignment.IsOverDue=false;
+                assignment.IsOverDue = false;
             }
             assignment.DeadLine = assignmentUpdate.Deadline;
             _unitOfWork.AssignmentRepository.Update(assignment);
@@ -63,14 +63,14 @@ namespace Application.Services
 
         public async Task<List<Assignment>> GetAllAssignmentByLectureID(Guid lectureID)
         {
-            var assignments= await _unitOfWork.AssignmentRepository.FindAsync(a=>a.LectureID==lectureID && a.IsDeleted==false && a.IsOverDue==false,a=>a.AssignmentSubmissions);
+            var assignments = await _unitOfWork.AssignmentRepository.FindAsync(a => a.LectureID == lectureID && a.IsDeleted == false && a.IsOverDue == false, a => a.AssignmentSubmissions);
             //var result = _mapper.Map<List<AssignmentViewModel>>(assignments);
             return assignments;
         }
 
         public async Task CheckOverDue()
         {
-          await _unitOfWork.AssignmentRepository.CheckOverdue();
+            await _unitOfWork.AssignmentRepository.CheckOverdue();
         }
 
         public async Task<bool> CreateAssignment(AssignmentViewModel assignmentViewModel)
@@ -82,14 +82,14 @@ namespace Application.Services
             {
                 throw new Exception("File length is null");
             }
-            var dbPath = assignmentViewModel.File.ImportFile("Assignments",1,_claimsService.GetCurrentUserId);
+            var dbPath = assignmentViewModel.File.ImportFile("Assignments", 1, _claimsService.GetCurrentUserId);
             if (dbPath.IsNullOrEmpty()) throw new Exception("Import File Fail");
             var assignment = _mapper.Map<Assignment>(assignmentViewModel);
             assignment.Id = Guid.NewGuid();
             assignment.FileName = dbPath;
-            assignment.Version = 1;   
+            assignment.Version = 1;
             await _unitOfWork.AssignmentRepository.AddAsync(assignment);
-            var result = await _unitOfWork.SaveChangeAsync()>0;
+            var result = await _unitOfWork.SaveChangeAsync() > 0;
             return result;
         }
 

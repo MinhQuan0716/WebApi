@@ -17,7 +17,7 @@ namespace Application.Filter.UserFilter
                 List<User> userData = new List<User>();
                 foreach (User user in users)
                 {
-                    if (string.IsNullOrEmpty(user.Gender) ||user.Gender.ToLower().Equals(searchCriteria.ToLower()))
+                    if (string.IsNullOrEmpty(user.Gender) || user.Gender.ToLower().Equals(searchCriteria.ToLower()))
                     {
                         userData.Add(user);
                     }

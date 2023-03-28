@@ -5,7 +5,7 @@
     using System.Linq;
     using System.Net;
     using Application.Utils.MoreLinq;
-    
+
 
     partial class StackTraceHtmlFragments : IStackTraceFormatter<string>
     {

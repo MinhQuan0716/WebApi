@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace Application.ViewModels.TrainingProgramModels.TrainingProgramView
 {
-    public  class TrainingProgramViewForTrainingClassDetail
+    public class TrainingProgramViewForTrainingClassDetail
     {
-        public Guid programId { get; set; } 
+        public Guid programId { get; set; }
         public string programName { get; set; }
         public DurationView programDuration { get; set; }
         public LastEditDTO lastEdit { get; set; }

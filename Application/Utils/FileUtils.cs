@@ -17,12 +17,12 @@ namespace Application.Utils
     public static class FileUtils
     {
 
-        public static String ImportFile(this IFormFile file,string folder,int version,Guid userID)
+        public static String ImportFile(this IFormFile file, string folder, int version, Guid userID)
         {
             var dirName = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location.Replace("bin\\Debug\\net7.0", string.Empty));
             var folderName = Path.Combine("Resources", folder);
             var pathToSave = Path.Combine(dirName, folderName);
-            var fileName =version+"_"+userID+"_"+ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
+            var fileName = version + "_" + userID + "_" + ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
             var fullPath = Path.Combine(pathToSave, fileName);
             var dbPath = Path.Combine(folderName, fileName);
             using (var stream = new FileStream(fullPath, FileMode.Create))
@@ -54,9 +54,9 @@ namespace Application.Utils
             };
         }
 
-        public static FileEntity GetFileEntity(this string fileName) 
+        public static FileEntity GetFileEntity(this string fileName)
         {
-            FileEntity file =new FileEntity();
+            FileEntity file = new FileEntity();
             if (!System.IO.File.Exists(fileName))
             {
                 throw new Exception("File is not existed!");

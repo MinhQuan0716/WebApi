@@ -373,13 +373,13 @@ namespace Application.Services
             {
                 return false;
             }
-       
-             _unitOfWork.QuestionRepository.SoftRemove(FindQuestion);
-                await _unitOfWork.SaveChangeAsync();
+
+            _unitOfWork.QuestionRepository.SoftRemove(FindQuestion);
+            await _unitOfWork.SaveChangeAsync();
             return true;
         }
 
-        public async Task<bool> UpdateQuestion(Guid QuestionID,UpdateQuestionDTO createQuizIntoBankDTO)
+        public async Task<bool> UpdateQuestion(Guid QuestionID, UpdateQuestionDTO createQuizIntoBankDTO)
         {
             var QuestionFind = await _unitOfWork.QuestionRepository.GetByIdAsync(QuestionID);
             if(QuestionFind is null)

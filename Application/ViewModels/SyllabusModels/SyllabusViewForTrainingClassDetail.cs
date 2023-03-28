@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Application.ViewModels.SyllabusModels
 {
-    public  class SyllabusViewForTrainingClassDetail
+    public class SyllabusViewForTrainingClassDetail
     {
         public Guid syllabus_id { get; set; }
         public ICollection<string> trainerAvatarsUrl { get; set; }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Application.ViewModels.TrainingClassModels
 {
-    public  class ClassDateDTO
+    public class ClassDateDTO
     {
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }

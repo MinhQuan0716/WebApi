@@ -14,13 +14,13 @@ using System.Threading.Tasks;
 
 namespace Application.Tests.Services
 {
-    public class GradingServiceTests:SetupTest
+    public class GradingServiceTests : SetupTest
     {
         private readonly IGradingService _gradingService;
         public GradingServiceTests()
         {
             //_gradingService = new GradingService(_unitOfWorkMock.Object,_mapperConfig,_currentTimeMock.Object,_appConfigurationMock.Object);
-            _gradingService = new GradingService(_unitOfWorkMock.Object, _mapperConfig, _currentTimeMock.Object, _appConfigurationMock.Object,_claimsServiceMock.Object);
+            _gradingService = new GradingService(_unitOfWorkMock.Object, _mapperConfig, _currentTimeMock.Object, _appConfigurationMock.Object, _claimsServiceMock.Object);
 
         }
 
@@ -28,32 +28,32 @@ namespace Application.Tests.Services
         public async Task AddToGrading_ShouldBeTrue()
         {
             var checkLecture = _fixture.Build<Lecture>()
-                .Without(x=>x.Assignments)
-                .Without(x=>x.DetailUnitLectures)
-                .Without(x=>x.TrainingMaterials)
-                .Without(x=>x.AuditPlans)
-                .Without(x=>x.Gradings)
-                .Without(x=>x.Quiz)
+                .Without(x => x.Assignments)
+                .Without(x => x.DetailUnitLectures)
+                .Without(x => x.TrainingMaterials)
+                .Without(x => x.AuditPlans)
+                .Without(x => x.Gradings)
+                .Without(x => x.Quiz)
                 .Create();
-            var grading=_fixture.Build<Grading>().Without(x=>x.DetailTrainingClassParticipate)
-                .Without(x=>x.Lecture)
+            var grading = _fixture.Build<Grading>().Without(x => x.DetailTrainingClassParticipate)
+                .Without(x => x.Lecture)
                 .Create();
-            var gradingMapper=_mapperConfig.Map<GradingModel>(grading);
+            var gradingMapper = _mapperConfig.Map<GradingModel>(grading);
             _unitOfWorkMock.Setup(x => x.LectureRepository.GetByIdAsync(grading.LectureId)).ReturnsAsync(checkLecture);
 
             var detailTrainingClass = _fixture.Build<DetailTrainingClassParticipate>()
                 .Without(x => x.TrainingClass)
-                //.Without(x => x.Location)
-                .Without(x=>x.User)
+                //.Without(x => x.LocationName)
+                .Without(x => x.User)
                 .Create();
             _unitOfWorkMock.Setup(x => x.DetailTrainingClassParticipate.GetByIdAsync(grading.DetailTrainingClassParticipateId))
                 .ReturnsAsync(detailTrainingClass);
-            
+
             _unitOfWorkMock.Setup(x => x.GradingRepository.AddAsync(grading)).Verifiable();
             _unitOfWorkMock.Setup(x => x.SaveChangeAsync()).ReturnsAsync(1);
 
             var actualResult = await _gradingService.AddToGrading(gradingMapper);
-            
+
 
             actualResult.Should().BeTrue();
         }
@@ -66,11 +66,11 @@ namespace Application.Tests.Services
                 .Without(x => x.Lecture)
                 .Create();
             var gradingMapper = _mapperConfig.Map<GradingModel>(grading);
-           _unitOfWorkMock.Setup(x => x.LectureRepository.GetByIdAsync(grading.LectureId)).ReturnsAsync(checkLecture);
+            _unitOfWorkMock.Setup(x => x.LectureRepository.GetByIdAsync(grading.LectureId)).ReturnsAsync(checkLecture);
 
             var detailTrainingClass = _fixture.Build<DetailTrainingClassParticipate>()
                 .Without(x => x.TrainingClass)
-               // .Without(x => x.Location)
+                // .Without(x => x.LocationName)
                 .Without(x => x.User)
                 .Create();
             _unitOfWorkMock.Setup(x => x.DetailTrainingClassParticipate.GetByIdAsync(grading.DetailTrainingClassParticipateId))
@@ -91,11 +91,11 @@ namespace Application.Tests.Services
                 .Without(x => x.Lecture)
                 .Create();
             var gradingMapper = _mapperConfig.Map<GradingModel>(grading);
-            _unitOfWorkMock.Setup(x => x.LectureRepository.GetByIdAsync(grading.LectureId)).ReturnsAsync(checkLecture=null);
+            _unitOfWorkMock.Setup(x => x.LectureRepository.GetByIdAsync(grading.LectureId)).ReturnsAsync(checkLecture = null);
 
             var detailTrainingClass = _fixture.Build<DetailTrainingClassParticipate>()
                 .Without(x => x.TrainingClass)
-                //.Without(x => x.Location)
+                //.Without(x => x.LocationName)
                 .Without(x => x.User)
                 .Create();
             _unitOfWorkMock.Setup(x => x.DetailTrainingClassParticipate.GetByIdAsync(grading.DetailTrainingClassParticipateId))
@@ -119,12 +119,12 @@ namespace Application.Tests.Services
 
             var detailTrainingClass = _fixture.Build<DetailTrainingClassParticipate>()
                 .Without(x => x.TrainingClass)
-                //.Without(x => x.Location)
+                //.Without(x => x.LocationName)
                 .Without(x => x.User)
                 .Create();
             _unitOfWorkMock.Setup(x => x.DetailTrainingClassParticipate.GetByIdAsync(grading.DetailTrainingClassParticipateId))
                 .ReturnsAsync(detailTrainingClass);
-            
+
             _unitOfWorkMock.Setup(x => x.GradingRepository.AddAsync(grading)).Verifiable();
             _unitOfWorkMock.Setup(x => x.SaveChangeAsync()).ReturnsAsync(0);
 
