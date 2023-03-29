@@ -20,5 +20,6 @@ namespace Application.Interfaces
         public Task<string> GetBlobNameWithTMatId(Guid id);
         public Task<string> GetFileNameWithTMatId(Guid id);
         public Task<TrainingMaterialDTO> GetTrainingMaterial(Guid lectureId);
+        public Task<bool> SoftRemoveTrainingMaterial(Guid TMatId);
     }
 }

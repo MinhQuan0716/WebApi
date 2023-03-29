@@ -39,6 +39,7 @@ namespace Application.Services
         {
             using (var memoryStream = new MemoryStream())
             {
+                await file.CopyToAsync(memoryStream);
                 var material = new TrainingMaterial();
                 if (memoryStream.Length > 0)
                 {
@@ -179,6 +180,13 @@ namespace Application.Services
             {
                 throw new Exception("File does not exist");
             }
+        }
+
+        public async Task<bool> SoftRemoveTrainingMaterial(Guid TMatId)
+        {
+            TrainingMaterial trainingMaterial = await _unitOfWork.TrainingMaterialRepository.GetByIdAsync(TMatId);
+            _unitOfWork.TrainingMaterialRepository.SoftRemove(trainingMaterial);
+            return (await _unitOfWork.SaveChangeAsync() > 0);
         }
     }
 }

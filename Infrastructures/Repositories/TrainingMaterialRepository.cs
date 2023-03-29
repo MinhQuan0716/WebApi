@@ -20,6 +20,7 @@ namespace Infrastructures.Repositories
         {
             _dbContext = context;
         }
+
         public async Task<bool> DeleteTrainingMaterial(Guid id)
         {
             TrainingMaterial resultFile = await GetByIdAsync(id);
@@ -33,7 +34,7 @@ namespace Infrastructures.Repositories
 
         public async Task<List<TrainingMaterial>> GetAllFileWithLectureId(Guid lectureId)
         {
-            var file = _dbContext.TrainingMaterials.Where(x => x.lectureID == (lectureId)).ToList();
+            var file = _dbContext.TrainingMaterials.Where(x => x.lectureID == (lectureId) && x.IsDeleted == false).ToList();
 
             if (file == null)
             {

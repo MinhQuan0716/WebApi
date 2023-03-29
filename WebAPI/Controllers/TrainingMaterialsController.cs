@@ -15,6 +15,7 @@ using System.Reflection.Metadata;
 using Domain.Entities;
 using Application.Services;
 using static System.Reflection.Metadata.BlobBuilder;
+using Azure;
 
 namespace WebAPI.Controllers
 {
@@ -103,7 +104,7 @@ namespace WebAPI.Controllers
             var blobUrl = blobClient.Uri.AbsoluteUri;
 
             // Upload to database
-            await  _trainingMaterialService.Upload(id, file, lectureId, blobUrl, blobName);
+            await _trainingMaterialService.Upload(id, file, lectureId, blobUrl, blobName);
 
             return Ok(blobUrl);
         }
@@ -157,32 +158,35 @@ namespace WebAPI.Controllers
             // Get a reference to the container
             var containerClient = _blobServiceClient.GetBlobContainerClient(_containerName);
 
-            // Upload the file to the container
             var blobClient = containerClient.GetBlobClient(blobName);
-            using (var stream = file.OpenReadStream())
-            {
-                await blobClient.UploadAsync(stream, true);
-            }
 
             // Return the URL of the uploaded blob
             var blobUrl = blobClient.Uri.AbsoluteUri;
+
             // Edit database
             bool updateTrainingMaterial = await _trainingMaterialService.UpdateTrainingMaterial(file, id, blobUrl);
             if (!updateTrainingMaterial)
             {
                 return BadRequest();
             }
+
+            // Upload the file to the container
+            using (var stream = file.OpenReadStream())
+            {
+                await blobClient.UploadAsync(stream, true);
+            }
+
             return Ok(blobUrl);
         }
 
         [HttpDelete]
-        public async Task<IActionResult> DeleteBlob(Guid id)
+        public async Task<IActionResult> RemoveBlob(Guid id)
         {
             string blobName = await _trainingMaterialService.GetBlobNameWithTMatId(id);
 
             // Delete from database
-            bool deleteTraingMaterial = await _trainingMaterialService.DeleteTrainingMaterial(id);
-            if (!deleteTraingMaterial)
+            bool removeTraingMaterial = await _trainingMaterialService.SoftRemoveTrainingMaterial(id);
+            if (!removeTraingMaterial)
             {
                 return BadRequest();
             }
@@ -195,6 +199,32 @@ namespace WebAPI.Controllers
             await blobClient.DeleteAsync();
 
             return Ok();
+        }
+
+        // Restore files on Azure, not database :>>>>
+        [HttpPost]
+        public void RestoreBlobsWithVersioning(string blobName)
+        {
+            // Get a reference to the container
+            var containerClient = _blobServiceClient.GetBlobContainerClient(_containerName);
+
+            // Get a reference to the blob
+            var blobClient = containerClient.GetBlobClient(blobName);
+            // List blobs in this container that match prefix.
+            // Include versions in listing.
+            Pageable<BlobItem> blobItems = containerClient.GetBlobs
+                            (BlobTraits.None, BlobStates.Version, prefix: blobClient.Name);
+
+            // Get the URI for the most recent version.
+            BlobUriBuilder blobVersionUri = new BlobUriBuilder(blobClient.Uri)
+            {
+                VersionId = blobItems
+                            .OrderByDescending(version => version.VersionId)
+                            .ElementAtOrDefault(0)?.VersionId
+            };
+
+            // Restore the most recently generated version by copying it to the base blob.
+            blobClient.StartCopyFromUri(blobVersionUri.ToUri());
         }
     }
 }
