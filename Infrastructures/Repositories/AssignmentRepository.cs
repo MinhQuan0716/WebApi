@@ -40,7 +40,7 @@ namespace Infrastructures.Repositories
         public async Task CheckOverdue()
         {
             await _dbContext.Database.ExecuteSqlRawAsync($"EXEC [Assignments_Update_Overdue];");
-       }
+        }
 
     }
 }

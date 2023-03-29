@@ -73,18 +73,17 @@ namespace Application.Services
 
         }
 
-        public async Task<Pagination<Applications>> GetAllApplication(Guid classId, ApplicationFilterDTO filter)
+        public async Task<Pagination<Applications>> GetAllApplication(Guid classId, ApplicationFilterDTO filter, int pageIndex = 0, int pageSize = 10)
         {
+            // null secure
+            filter ??= new();
 
-            if (filter == null)
-                filter = new();
-
-            if (filter.ByDateType.IsNotValidEnum(typeof(ApplicationFilterByEnum))) throw new InvalidEnumArgumentException($"ByDateType is not valid ");
+            filter.ByDateType.ThrowErrorIfNotValidEnum(typeof(ApplicationFilterByEnum), $"{nameof(filter.ByDateType)} is not valid");
 
             Expression<Func<Applications, bool>> expression = _unitOfWork.ApplicationRepository.GetFilterExpression(classId, filter);
-            var applications = await _unitOfWork.ApplicationRepository.ToPagination(expression, filter.PageNumber, filter.PageSize);
+            var applications = await _unitOfWork.ApplicationRepository.ToPagination(expression, pageIndex, pageSize);
 
-            return applications.TotalPagesCount>0? applications:null;
+            return applications.TotalPagesCount > 0 ? applications : null;
         }
 
     }

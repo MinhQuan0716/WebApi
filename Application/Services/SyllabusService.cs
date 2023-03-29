@@ -179,6 +179,47 @@ namespace Application.Services
 
         }
         #region PrivateUpdateMethod
+        private async Task<bool> UpdateUnit(Guid syllabusId, List<UpdateContentModel> updateUnit, int session)
+        {
+            var result = false;
+            var units = await _unitOfWork.UnitRepository.FindAsync(x => x.SyllabusID == syllabusId);
+            if (units.Count > 0)
+            {
+                _unitOfWork.UnitRepository.SoftRemoveRange(units);
+                if (await _unitOfWork.SaveChangeAsync() > 0)
+                {
+                    /*                    var updateUnits = _mapper.Map<List<Unit>>(updateUnit);
+                                        foreach (var item in updateUnits)
+                                        {
+                                            item.Id = Guid.NewGuid();
+                                            item.Session = session;
+                                            item.SyllabusID = syllabusId;
+                                            await _unitOfWork.UnitRepository.AddAsync(item);
+                                            if(await _unitOfWork.SaveChangeAsync() > 0)
+                                            {
+                                                UpdateLecture(unitId : item.Id, syllabusId, updateUnit.)
+                                            }
+                                        }*/
+                    foreach (var item in updateUnit)
+                    {
+                        var unit = _mapper.Map<Unit>(item);
+                        unit.Id = Guid.NewGuid();
+                        unit.Session = session;
+                        unit.SyllabusID = syllabusId;
+                        await _unitOfWork.UnitRepository.AddAsync(unit);
+                        if (await _unitOfWork.SaveChangeAsync() > 0)
+                        {
+                            await UpdateLecture(unitId: unit.Id, syllabusId, item.Lessons);
+                        }
+                    }
+                }
+                else throw new Exception("Save Changes Failed");
+                result = true;
+            }
+
+            return result;
+
+        }
         private async Task<bool> UpdateLecture(Guid unitId, Guid syllabusId, List<UpdateLessonModel> updateLecture)
         {
             var result = false;
@@ -207,46 +248,7 @@ namespace Application.Services
             } 
             return result;
         }
-        private async Task<bool> UpdateUnit(Guid syllabusId, List<UpdateContentModel> updateUnit, int session)
-        {
-            var result = false;
-            var units = await _unitOfWork.UnitRepository.FindAsync(x => x.SyllabusID == syllabusId);
-            if (units.Count > 0)
-            {
-                _unitOfWork.UnitRepository.SoftRemoveRange(units);
-                if(await _unitOfWork.SaveChangeAsync() > 0)
-                {
-                    /*                    var updateUnits = _mapper.Map<List<Unit>>(updateUnit);
-                                        foreach (var item in updateUnits)
-                                        {
-                                            item.Id = Guid.NewGuid();
-                                            item.Session = session;
-                                            item.SyllabusID = syllabusId;
-                                            await _unitOfWork.UnitRepository.AddAsync(item);
-                                            if(await _unitOfWork.SaveChangeAsync() > 0)
-                                            {
-                                                UpdateLecture(unitId : item.Id, syllabusId, updateUnit.)
-                                            }
-                                        }*/
-                    foreach (var item in updateUnit)
-                    {
-                        var unit = _mapper.Map<Unit>(item);
-                        unit.Id = Guid.NewGuid();
-                        unit.Session = session;
-                        unit.SyllabusID = syllabusId;
-                        await _unitOfWork.UnitRepository.AddAsync(unit);
-                        if(await _unitOfWork.SaveChangeAsync() > 0)
-                        {
-                            await UpdateLecture(unitId: unit.Id, syllabusId, item.Lessons);
-                        }
-                    }
-                } else throw new Exception("Save Changes Failed");
-                result = true;
-            }
-            
-            return result;
-          
-        }
+        
         #endregion
         public Task<List<SyllabusViewAllDTO>> GetByName(string name)
         {
@@ -255,13 +257,6 @@ namespace Application.Services
             return result;
         }
 
-        public async Task<Syllabus> GetSyllabusByID(Guid id)
-        {
-
-
-            throw new NotImplementedException();
-
-        }
 
         public async Task<List<SyllabusViewAllDTO>> GetAllSyllabus()
         {

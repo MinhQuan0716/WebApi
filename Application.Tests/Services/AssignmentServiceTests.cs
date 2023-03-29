@@ -25,16 +25,16 @@ namespace Application.Tests.Services
     public class AssignmentServiceTests : SetupTest
     {
         private readonly IAssignmentService _assignmentService;
-        private readonly Mock<IFormFile> file;
+        private readonly Mock<IFormFile> _file;
         private readonly Guid id = Guid.NewGuid();
 
         public AssignmentServiceTests()
         {
-            _assignmentService = new AssignmentService(_unitOfWorkMock.Object, _mapperConfig, _claimsServiceMock.Object);
+            _assignmentService = new AssignmentService(_unitOfWorkMock.Object, _mapperConfig, _claimsServiceMock.Object, _currentTimeMock.Object);
             //Mock File
             var dirName = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location.Replace("bin\\Debug\\net7.0", string.Empty));
             var filePath = dirName + "\\Resources\\Assignments\\ctgbate.jpg";
-            file = new Mock<IFormFile>();
+            _file = new Mock<IFormFile>();
             var sourceImg = File.OpenRead(filePath);
             var stream = new MemoryStream();
             var writer = new StreamWriter(stream);
@@ -42,9 +42,9 @@ namespace Application.Tests.Services
             writer.Flush();
             stream.Position = 0;
             var fileName = "ctgbate.jpg";
-            file.Setup(f => f.OpenReadStream()).Returns(stream);
-            file.Setup(f => f.FileName).Returns(fileName);
-            file.Setup(f => f.Length).Returns(stream.Length);
+            _file.Setup(f => f.OpenReadStream()).Returns(stream);
+            _file.Setup(f => f.FileName).Returns(fileName);
+            _file.Setup(f => f.Length).Returns(stream.Length);
             var contentType = "image/jpeg";
             string val = "form-data; name=";
 
@@ -55,8 +55,8 @@ namespace Application.Tests.Services
             val += "\"";
             val += "ctgbate.jpg";
             val += "\"";
-            file.Setup(f => f.ContentType).Returns(contentType);
-            file.Setup(f => f.ContentDisposition).Returns(val);
+            _file.Setup(f => f.ContentType).Returns(contentType);
+            _file.Setup(f => f.ContentDisposition).Returns(val);
         }
 
         [Fact]
@@ -67,7 +67,7 @@ namespace Application.Tests.Services
             _unitOfWorkMock.Setup(x => x.AssignmentRepository.FindAsync(x => x.LectureID == assignmentView.LectureID && x.IsDeleted == false && x.IsOverDue == false)).ReturnsAsync(listAssignment);
 
             assignmentView.DeadLine = DateTime.Today.AddDays(1);
-            assignmentView.File = file.Object;
+            assignmentView.File = _file.Object;
             var mapAssignment = _mapperConfig.Map<Assignment>(assignmentView);
             _unitOfWorkMock.Setup(x => x.AssignmentRepository.AddAsync(mapAssignment)).Verifiable();
             _unitOfWorkMock.Setup(x => x.SaveChangeAsync()).ReturnsAsync(1);
@@ -85,7 +85,7 @@ namespace Application.Tests.Services
             var assignment = _fixture.Build<AssignmentViewModel>().Without(x => x.File).Create();
             _unitOfWorkMock.Setup(x => x.AssignmentRepository.FindAsync(x => x.LectureID == assignment.LectureID && x.IsDeleted == false && x.IsOverDue == false)).ReturnsAsync(listAssignment);
             assignment.DeadLine = DateTime.Today.AddDays(1);
-            assignment.File = file.Object;
+            assignment.File = _file.Object;
             var mapAssignment = _mapperConfig.Map<Assignment>(assignment);
             _unitOfWorkMock.Setup(x => x.AssignmentRepository.AddAsync(mapAssignment)).Verifiable();
             _unitOfWorkMock.Setup(x => x.SaveChangeAsync()).ReturnsAsync(0);
@@ -106,20 +106,32 @@ namespace Application.Tests.Services
 
             Func<Task> act = async () => await _assignmentService.CreateAssignment(assignment);
 
-            await act.Should().ThrowAsync<Exception>();
-
+            await act.Should().ThrowAsync<Exception>().WithMessage("Deadline*Datetime*now");
         }
         [Fact]
         public async Task CreateAssignment_ThrowException_WhenAssignmentExisted()
         {
             var listAssignment = _fixture.Build<Assignment>().Without(x => x.Lecture).Without(x => x.AssignmentSubmissions).CreateMany(2).ToList();
             var assignment = _fixture.Build<AssignmentViewModel>().Without(x => x.File).Create();
+
             _unitOfWorkMock.Setup(x => x.AssignmentRepository.FindAsync(x => x.LectureID == assignment.LectureID && x.IsDeleted == false && x.IsOverDue == false)).ReturnsAsync(listAssignment);
 
             Func<Task> act = async () => await _assignmentService.CreateAssignment(assignment);
 
-            await act.Should().ThrowAsync<Exception>();
+            await act.Should().ThrowAsync<Exception>().WithMessage("Assignment*");
+        }
+        [Fact]
+        public async Task CreateAssignment_ThrowException_WhenFileEmpty()
+        {
+            var assignment = _fixture.Build<AssignmentViewModel>().With(x => x.DeadLine, DateTime.MaxValue).Without(x => x.File).Create();
+            assignment.File = _file.Object;
+            _file.Setup(x => x.Length).Returns(0);
+            List<Assignment> listAssignment = new();
+            _unitOfWorkMock.Setup(x => x.AssignmentRepository.FindAsync(x => x.LectureID == assignment.LectureID && x.IsDeleted == false && x.IsOverDue == false)).ReturnsAsync(listAssignment);
 
+            Func<Task> act = async () => await _assignmentService.CreateAssignment(assignment);
+
+            await act.Should().ThrowAsync<Exception>().WithMessage("*is null");
         }
         [Fact]
         public async Task DeleteAssignment_ReturnTrue()
@@ -140,11 +152,11 @@ namespace Application.Tests.Services
         {
             var assignment = _fixture.Build<Assignment>().Without(x => x.AssignmentSubmissions).Without(a => a.Lecture).Create();
             assignment.IsDeleted = true;
-            _unitOfWorkMock.Setup(x => x.AssignmentRepository.GetByIdAsync(id)).ReturnsAsync(assignment = null);
+            _unitOfWorkMock.Setup(x => x.AssignmentRepository.GetByIdAsync(id)).ReturnsAsync(assignment);
 
             Func<Task> act = async () => await _assignmentService.DeleteAssignment(id);
 
-            await act.Should().ThrowAsync<Exception>();
+            await act.Should().ThrowAsync<Exception>().WithMessage("Assignment*");
         }
         [Fact]
         public async Task DeleteAssignment_ReturnFalse_WhenSaveChangeFalse()
@@ -167,7 +179,7 @@ namespace Application.Tests.Services
             assignment.Version = 0;
             assignment.CreatedBy = Guid.Empty;
             var assignmentUpdate = _fixture.Build<AssignmentUpdateModel>().Without(x => x.File).Create();
-            assignmentUpdate.File = file.Object;
+            assignmentUpdate.File = _file.Object;
             _unitOfWorkMock.Setup(x => x.AssignmentRepository.GetByIdAsync(assignmentUpdate.AssignmentID)).ReturnsAsync(assignment);
 
             _unitOfWorkMock.Setup(x => x.AssignmentRepository.Update(assignment)).Verifiable();
@@ -188,7 +200,7 @@ namespace Application.Tests.Services
             assignment.Version = 0;
             assignment.CreatedBy = Guid.Empty;
             var assignmentUpdate = _fixture.Build<AssignmentUpdateModel>().Without(x => x.File).Create();
-            assignmentUpdate.File = file.Object;
+            assignmentUpdate.File = _file.Object;
             _unitOfWorkMock.Setup(x => x.AssignmentRepository.GetByIdAsync(assignmentUpdate.AssignmentID)).ReturnsAsync(assignment);
 
             _unitOfWorkMock.Setup(x => x.AssignmentRepository.Update(assignment)).Verifiable();
@@ -205,14 +217,27 @@ namespace Application.Tests.Services
         public async Task UpdateAssignment_ThrowException_WhenDeadlineSmallerthanToday()
         {
             var assignmentUpdate = _fixture.Build<AssignmentUpdateModel>().Without(x => x.File).Create();
-            assignmentUpdate.File = file.Object;
+            assignmentUpdate.File = _file.Object;
             Assignment checkAssignment = null;
             _unitOfWorkMock.Setup(x => x.AssignmentRepository.GetByIdAsync(assignmentUpdate.AssignmentID)).ReturnsAsync(checkAssignment);
             Func<Task> act = async () => await _assignmentService.UpdateAssignment(assignmentUpdate);
 
-            await act.Should().ThrowAsync<Exception>();
+            await act.Should().ThrowAsync<Exception>().WithMessage("Assignment*");
         }
+        [Fact]
+        public async Task UpdateAssignment_ThrowException_WhenSubmitIsEmpty()
+        {
+            var assignmentUpdate = _fixture.Build<AssignmentUpdateModel>().Without(x => x.File).Create();
+            assignmentUpdate.File = _file.Object;
+            Assignment checkAssignment = _fixture.Build<Assignment>().OmitAutoProperties().Create();
 
+            _file.Setup(f => f.Length).Returns(0);
+            _unitOfWorkMock.Setup(x => x.AssignmentRepository.GetByIdAsync(assignmentUpdate.AssignmentID)).ReturnsAsync(checkAssignment);
+
+            Func<Task> act = async () => await _assignmentService.UpdateAssignment(assignmentUpdate);
+
+            await act.Should().ThrowAsync<Exception>().WithMessage("*is null");
+        }
 
         [Fact]
         public async Task Download_ReturnFile()
@@ -260,5 +285,20 @@ namespace Application.Tests.Services
             _unitOfWorkMock.Verify(x => x.AssignmentRepository.CheckOverdue(), Times.Once);
         }
 
+        [Fact]
+        public async Task AddProcedure()
+        {
+            _unitOfWorkMock.Setup(x => x.AssignmentRepository.CheckExistedProcedure()).ReturnsAsync(false);
+            _unitOfWorkMock.Setup(x => x.AssignmentRepository.AddProcedure()).Verifiable();
+            await _assignmentService.AddProcedure();
+            _unitOfWorkMock.Verify(x => x.AssignmentRepository.AddProcedure(), Times.Once);
+        }
+        [Fact]
+        public async Task CheckExistedProcedure()
+        {
+            _unitOfWorkMock.Setup(x => x.AssignmentRepository.CheckExistedProcedure()).Verifiable();
+            await _assignmentService.CheckExistedProcedure();
+            _unitOfWorkMock.Verify(x => x.AssignmentRepository.CheckExistedProcedure(), Times.Once);
+        }
     }
 }

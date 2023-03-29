@@ -177,8 +177,8 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost]
-        /*  [Authorize]
-          [ClaimRequirement(nameof(PermissionItem.ClassPermission), nameof(PermissionEnum.Create))]*/
+        [Authorize]
+        [ClaimRequirement(nameof(PermissionItem.ClassPermission), nameof(PermissionEnum.Create))]
         public async Task<IActionResult> ImportTrainingClass(IFormFile file)
         {
             var addSuccess = await _trainingClassService.ImportExcel(file);

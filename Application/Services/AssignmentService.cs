@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,11 +20,13 @@ namespace Application.Services
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly IClaimsService _claimsService;
-        public AssignmentService(IUnitOfWork unitOfWork, IMapper mapper, IClaimsService claimsService)
+        private readonly ICurrentTime _current;
+        public AssignmentService(IUnitOfWork unitOfWork, IMapper mapper, IClaimsService claimsService, ICurrentTime current)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _claimsService = claimsService;
+            _current = current;
         }
 
 
@@ -43,7 +46,8 @@ namespace Application.Services
             if (assignment == null) throw new Exception("Assignment is not existed!");
             assignment.AssignmentName = assignmentUpdate.AssignmentName;
             assignment.Description = assignmentUpdate.Description;
-            if (assignmentUpdate.File.Length < 0)
+
+            if (assignmentUpdate.File.Length == 0)
             {
                 throw new Exception("File length is null");
             }
@@ -77,11 +81,11 @@ namespace Application.Services
         {
             var check = await _unitOfWork.AssignmentRepository.FindAsync(x => x.LectureID == assignmentViewModel.LectureID && x.IsDeleted == false && x.IsOverDue == false);
             if (check.Count() > 0) throw new Exception("Assignment has already existed!");
-            if (assignmentViewModel.DeadLine < DateTime.Now) throw new Exception("Deadline must higher than Datetime now");
-            if (assignmentViewModel.File.Length < 0)
-            {
+            if (assignmentViewModel.DeadLine <= _current.GetCurrentTime())
+                throw new Exception("Deadline must higher than Datetime now");
+            if (assignmentViewModel.File.Length == 0)
                 throw new Exception("File length is null");
-            }
+
             var dbPath = assignmentViewModel.File.ImportFile("Assignments", 1, _claimsService.GetCurrentUserId);
             if (dbPath.IsNullOrEmpty()) throw new Exception("Import File Fail");
             var assignment = _mapper.Map<Assignment>(assignmentViewModel);
@@ -103,12 +107,12 @@ namespace Application.Services
 
         public async Task AddProcedure()
         {
-            var isExisted= await CheckExistedProcedure();
-            if (isExisted==false) 
+            var isExisted = await CheckExistedProcedure();
+            if (isExisted == false)
             {
                 await _unitOfWork.AssignmentRepository.AddProcedure();
             }
-            
+
         }
 
         public async Task<bool> CheckExistedProcedure()

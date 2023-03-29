@@ -249,13 +249,53 @@ namespace WebAPI.Tests.Controllers
         public async Task ViewDetailTrainingClass_ShouldOk_WhenFindSuccess()
         {
             //Arrange
-            var mockData = _fixture.Create<FinalTrainingClassDTO>();
-            Guid mockId = new Guid();
-            _trainingClassServiceMock.Setup(s => s.GetFinalTrainingClassesAsync(mockId)).ReturnsAsync(mockData);
+            var mockData=_fixture.Create<FinalTrainingClassDTO>();
+            Guid mockId = Guid.NewGuid();
+            _trainingClassServiceMock.Setup(s => s.GetFinalTrainingClassesAsync(mockId)).ReturnsAsync(mockData);// setup return mockData
             //Act 
-            var result = await _trainingClassController.GetTrainingClassDetail(mockId);
+            var result_ok =await  _trainingClassController.GetTrainingClassDetail(mockId);
             //Assert
-            Assert.IsType<OkObjectResult>(result);
+            Assert.IsType<OkObjectResult>(result_ok);
+            result_ok.As<OkObjectResult>().Value.Should().Be(mockData);
+
+        }
+        [Fact]
+        public async Task ViewDetailTrainingClass_ShouldBeNotFound()
+        {
+            //Arrange
+            var mockData = _fixture.Create<FinalTrainingClassDTO>();
+            Guid mockId = Guid.NewGuid();
+            //Act 
+            // this shoule be return null
+            var result_notFound = await _trainingClassController.GetTrainingClassDetail(mockId);
+            //Assert
+            Assert.IsType<NotFoundResult>(result_notFound);
+        }
+        [Fact]
+        public async Task ImportTrainingClass_ShouldOk_WhenImportSuccess()
+        {
+            //Arrange
+            var mockData = _fixture.Build<TrainingClass>().OmitAutoProperties().CreateMany(2).ToList();
+            Mock<IFormFile> file = new Mock<IFormFile>();
+            //Act 
+            // this shoule be return null
+
+            _trainingClassServiceMock.Setup(s => s.ImportExcel(file.Object)).ReturnsAsync(mockData);// setup return mockData
+            var result_ok = await _trainingClassController.ImportTrainingClass(file.Object);
+            //Assert
+            Assert.IsType<OkResult>(result_ok);
+        }
+        [Fact]
+        public async Task ImportTrainingClass_ShouldBeBadRequest()
+        {
+            //Arrange
+            Mock<IFormFile> file = new Mock<IFormFile>();
+
+            //Act
+            var result_badRequest = await _trainingClassController.ImportTrainingClass(file.Object);
+            //Assert
+            Assert.IsType<BadRequestResult>(result_badRequest);
+
         }
     }
 }

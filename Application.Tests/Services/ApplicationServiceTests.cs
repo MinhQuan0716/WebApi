@@ -3,24 +3,12 @@ using Application.Interfaces;
 using Application.Models.ApplicationModels;
 using Application.Repositories;
 using Application.Services;
-using Application.ViewModels.AtttendanceModels;
 using AutoFixture;
 using Domain.Entities;
-using Domain.Enums;
 using Domains.Test;
 using FluentAssertions;
-using Infrastructures;
-using Infrastructures.Repositories;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
-using WebAPI.Controllers;
-using static Domain.Enums.Application.ApplicationFilterByEnum;
 namespace Application.Tests.Services
 {
     public class ApplicationServiceTests : SetupTest
@@ -44,20 +32,22 @@ namespace Application.Tests.Services
             ApplicationFilterDTO filter = new();
             Guid classId = default;
             var mockData_ListOf10 = _fixture.Build<Applications>().OmitAutoProperties().CreateMany(10).ToList();
+            int pageIndex = 0;
+            int pageSize = 10;
             Pagination<Applications> mockData = new()
             {
                 Items = mockData_ListOf10,
-                PageIndex = filter.PageNumber,
-                PageSize = 10,
-                TotalItemsCount = 100
+                TotalItemsCount = 100,
+                PageIndex = pageIndex,
+                PageSize = pageSize
             };
-            _applicationRepositoryMock.Setup(x => x.ToPagination(It.IsAny<Expression<Func<Applications, bool>>>(), filter.PageNumber, filter.PageSize)).ReturnsAsync(mockData);
+            _applicationRepositoryMock.Setup(x => x.ToPagination(It.IsAny<Expression<Func<Applications, bool>>>(), pageIndex, pageSize)).ReturnsAsync(mockData);
             // Act
-            Pagination<Applications> result = await _applicationService.GetAllApplication(classId, filter);
+            Pagination<Applications> result = await _applicationService.GetAllApplication(classId, filter,pageIndex,pageSize);
             // Assert
             result.Should().Be(mockData);
-            result.PageIndex.Should().Be(filter.PageNumber);
-            result.PageSize.Should().Be(filter.PageSize);
+            result.PageIndex.Should().Be(pageIndex);
+            result.PageSize.Should().Be(pageSize);
         }
     }
 }

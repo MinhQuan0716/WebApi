@@ -1,9 +1,11 @@
-﻿using Application.Repositories;
+﻿using Application.Commons;
+using Application.Repositories;
 using AutoFixture;
 using Domain.Entities;
 using Domains.Test;
 using FluentAssertions;
 using Infrastructures.Repositories;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -207,20 +209,34 @@ namespace Infrastructures.Tests.Repository
         [Fact]
         public async Task ToPagination_ShouldReturnCorrectValue()
         {
+            // Setup
             var mockData = _fixture.Build<User>().Without(u => u.Syllabuses)
                                                  .Without(u => u.Role)
                                                  .Without(u => u.DetailTrainingClassParticipate)
                                                  .Without(u => u.Applications)
                                                  .Without(u => u.Attendances)
+                                                 .Without(u => u.SubmitQuizzes)
                                                  .Without(u => u.Feedbacks).CreateMany(2).ToList();
             await _dbContext.Users.AddRangeAsync(mockData);
             await _dbContext.SaveChangesAsync();
 
+            var data_pageindex = mockData.OrderBy(x => x.CreationDate).First();
+            // Act
+            var result = await _genericRepository.ToPagination();
+            var result_pagecount =await  _genericRepository.ToPagination(0,1);
+            var result_pageindex =await _genericRepository.ToPagination(1,1);
 
-            _genericRepository.UpdateRange(mockData);
-            var result = await _dbContext.SaveChangesAsync();
+            // Assert
+            result.Should().BeOfType<Pagination<User>>();
+            result.TotalItemsCount.Should().Be(mockData.Count);
+            result.Items.Should().HaveCount(result.TotalItemsCount);
+            
+            result_pagecount.TotalPagesCount.Should().Be(2);
+            result_pagecount.Next.Should().BeTrue();
 
-            result.Should().Be(2);
+            result_pageindex.Next.Should().BeFalse();
+            result_pageindex.Previous.Should().BeTrue();
+            result_pageindex.Items.First().Should().BeEquivalentTo(data_pageindex);
         }
     }
 }

@@ -84,34 +84,14 @@ namespace Infrastructures.Repositories
             _dbSet.UpdateRange(entities);
         }
 
-        public async Task<Pagination<TEntity>> ToPagination(int pageIndex = 0, int pageSize = 10)
-        {
-            return await ToPagination(x => true, pageIndex, pageSize);
-        }
-        public async Task<Pagination<TEntity>> ToPagination(Expression<Func<TEntity, bool>> expression, int pageIndex = 0, int pageSize = 10)
-        {
-            var itemCount = await _dbSet.Where(expression).CountAsync();
-            var items = await _dbSet.Where(expression)
-                                    .OrderByDescending(x => x.CreationDate)
-                                    .Skip(pageIndex * pageSize)
-                                    .Take(pageSize)
-                                    .AsNoTracking()
-                                    .ToListAsync();
-
-            var result = new Pagination<TEntity>()
-            {
-                PageIndex = pageIndex,
-                PageSize = pageSize,
-                TotalItemsCount = itemCount,
-                Items = items,
-            };
-
-            return result;
-        }
+        public Task<Pagination<TEntity>> ToPagination(int pageIndex = 0, int pageSize = 10) 
+            => ToPagination(x => true, pageIndex, pageSize);
+        public Task<Pagination<TEntity>> ToPagination(Expression<Func<TEntity, bool>> expression, int pageIndex = 0, int pageSize = 10) 
+            => ToPagination(_dbSet, expression, pageIndex, pageSize);
         public async Task<Pagination<TEntity>> ToPagination(IQueryable<TEntity> value, Expression<Func<TEntity, bool>> expression, int pageIndex, int pageSize)
         {
-         
-            var itemCount = await _dbSet.Where(expression).CountAsync();
+
+            var itemCount = await value.Where(expression).CountAsync();
             var items = await value.Where(expression)
                                     .OrderByDescending(x => x.CreationDate)
                                     .Skip(pageIndex * pageSize)

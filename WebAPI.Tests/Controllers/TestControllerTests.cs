@@ -13,22 +13,22 @@ using WebAPI.Controllers;
 
 namespace WebAPI.Tests.Controllers
 {
-    public class QuizControllerTests : SetupTest
+    public class TestControllerTests : SetupTest
     {
-        public readonly TestController _questionController;
-        public QuizControllerTests()
+        public readonly TestController _testController;
+        public TestControllerTests()
         {
-            _questionController = new TestController(_questionServiceMock.Object);
+            _testController = new TestController(_testServiceMock.Object);
         }
         [Fact]
         public async Task AddQuestionIntoBank_ShouldReturnCorrectValue()
         {
             // Setup
-            _questionServiceMock.Setup(x => x.AddQuestionToBank(It.IsNotNull<CreateQuizIntoBankDTO>())).ReturnsAsync(true);
-            _questionServiceMock.Setup(x => x.AddQuestionToBank(It.Is<CreateQuizIntoBankDTO>(x => x == null))).ReturnsAsync(false);
+            _testServiceMock.Setup(x => x.AddQuestionToBank(It.IsNotNull<CreateQuizIntoBankDTO>())).ReturnsAsync(true);
+            _testServiceMock.Setup(x => x.AddQuestionToBank(It.Is<CreateQuizIntoBankDTO>(x => x == null))).ReturnsAsync(false);
             // Act
-            var result = await _questionController.AddQuestionIntoBank(new CreateQuizIntoBankDTO());
-            var result_badRequest = await _questionController.AddQuestionIntoBank(null);
+            var result = await _testController.AddQuestionIntoBank(new CreateQuizIntoBankDTO());
+            var result_badRequest = await _testController.AddQuestionIntoBank(null);
             // Assert
             result.Should().BeOfType<OkObjectResult>();
             result_badRequest.Should().BeOfType<BadRequestObjectResult>();
@@ -37,23 +37,24 @@ namespace WebAPI.Tests.Controllers
         public async Task CreateEmptyQuizTest_ShouldReturnCorrectValue()
         {
             // Setup
-            _questionServiceMock.Setup(x => x.CreateEmptyQuizTest(It.IsNotNull<CreateEmptyQuizDTO>())).ReturnsAsync(true);
-            _questionServiceMock.Setup(x => x.CreateEmptyQuizTest(It.Is<CreateEmptyQuizDTO>(x => x == null))).ReturnsAsync(false);
+            _testServiceMock.Setup(x => x.CreateEmptyQuizTest(It.IsNotNull<CreateEmptyQuizDTO>())).ReturnsAsync(true);
+            _testServiceMock.Setup(x => x.CreateEmptyQuizTest(It.Is<CreateEmptyQuizDTO>(x => x == null))).ReturnsAsync(false);
             // Act
-            var result = await _questionController.CreateEmptyQuizTest(new CreateEmptyQuizDTO());
-            var result_badRequest = await _questionController.CreateEmptyQuizTest(null);
+            var result = await _testController.CreateEmptyQuizTest(new CreateEmptyQuizDTO());
+            var result_badRequest = await _testController.CreateEmptyQuizTest(null);
             // Assert
             result.Should().BeOfType<OkObjectResult>();
             result_badRequest.Should().BeOfType<BadRequestObjectResult>();
         }
+        [Fact]
         public async Task AddQuestionToQuizTest_ShouldReturnCorrectValue()
         {
             // Setup
-            _questionServiceMock.Setup(x => x.AddQuestionToQuizTest(It.IsNotNull<AddQuestionToQuizTestDTO>())).ReturnsAsync(true);
-            _questionServiceMock.Setup(x => x.AddQuestionToQuizTest(It.Is<AddQuestionToQuizTestDTO>(x => x == null))).ReturnsAsync(false);
+            _testServiceMock.Setup(x => x.AddQuestionToQuizTest(It.IsNotNull<AddQuestionToQuizTestDTO>())).ReturnsAsync(true);
+            _testServiceMock.Setup(x => x.AddQuestionToQuizTest(It.Is<AddQuestionToQuizTestDTO>(x => x == null))).ReturnsAsync(false);
             // Act
-            var result = await _questionController.AddQuestionToQuizTest(new AddQuestionToQuizTestDTO());
-            var result_badRequest = await _questionController.AddQuestionToQuizTest(null);
+            var result = await _testController.AddQuestionToQuizTest(new AddQuestionToQuizTestDTO());
+            var result_badRequest = await _testController.AddQuestionToQuizTest(null);
             // Assert
             result.Should().BeOfType<OkObjectResult>();
             result_badRequest.Should().BeOfType<BadRequestObjectResult>();
@@ -62,11 +63,11 @@ namespace WebAPI.Tests.Controllers
         public async Task UpdateQuizTest_ShouldReturnCorrectValue()
         {
             // Setup
-            _questionServiceMock.Setup(x => x.UpdateQuizTest(It.IsAny<Guid>(), It.IsNotNull<UpdateQuizTestDTO>())).ReturnsAsync(true);
-            _questionServiceMock.Setup(x => x.UpdateQuizTest(It.IsAny<Guid>(), It.Is<UpdateQuizTestDTO>(x => x == null))).ReturnsAsync(false);
+            _testServiceMock.Setup(x => x.UpdateQuizTest(It.IsAny<Guid>(), It.IsNotNull<UpdateQuizTestDTO>())).ReturnsAsync(true);
+            _testServiceMock.Setup(x => x.UpdateQuizTest(It.IsAny<Guid>(), It.Is<UpdateQuizTestDTO>(x => x == null))).ReturnsAsync(false);
             // Act
-            var result = await _questionController.UpdateQuizTest(Guid.NewGuid(), new UpdateQuizTestDTO());
-            var result_badRequest = await _questionController.UpdateQuizTest(Guid.NewGuid(), null);
+            var result = await _testController.UpdateQuizTest(Guid.NewGuid(), new UpdateQuizTestDTO());
+            var result_badRequest = await _testController.UpdateQuizTest(Guid.NewGuid(), null);
             // Assert
             result.Should().BeOfType<OkObjectResult>();
             result_badRequest.Should().BeOfType<BadRequestObjectResult>();
@@ -75,11 +76,11 @@ namespace WebAPI.Tests.Controllers
         public async Task DeleteQuizTest_ShouldReturnCorrectValue()
         {
             // Setup
-            _questionServiceMock.Setup(x => x.DeleteQuizTest(It.IsAny<Guid>())).ReturnsAsync(true);
-            _questionServiceMock.Setup(x => x.DeleteQuizTest(It.Is<Guid>(x => x == Guid.Empty))).ReturnsAsync(false);
+            _testServiceMock.Setup(x => x.DeleteQuizTest(It.IsAny<Guid>())).ReturnsAsync(true);
+            _testServiceMock.Setup(x => x.DeleteQuizTest(It.Is<Guid>(x => x == Guid.Empty))).ReturnsAsync(false);
             // Act
-            var result = await _questionController.DeleteQuizTest(Guid.NewGuid());
-            var result_badRequest = await _questionController.DeleteQuizTest(Guid.Empty);
+            var result = await _testController.DeleteQuizTest(Guid.NewGuid());
+            var result_badRequest = await _testController.DeleteQuizTest(Guid.Empty);
             // Assert
             result.Should().BeOfType<OkObjectResult>();
             result_badRequest.Should().BeOfType<BadRequestObjectResult>();
@@ -90,12 +91,12 @@ namespace WebAPI.Tests.Controllers
         {
             // Setup
             var listName = new List<CreateQuizIntoBankDTO>();
-            _questionServiceMock.Setup(x => x.Search(It.IsAny<string>())).ReturnsAsync(null as List<CreateQuizIntoBankDTO>);
-            _questionServiceMock.Setup(x => x.Search(It.Is<string>(x => x == ""))).ReturnsAsync(listName);
+            _testServiceMock.Setup(x => x.Search(It.IsAny<string>())).ReturnsAsync(null as List<CreateQuizIntoBankDTO>);
+            _testServiceMock.Setup(x => x.Search(It.Is<string>(x => x == ""))).ReturnsAsync(listName);
 
             // Act
-            var result = await _questionController.SearchByName("");
-            var result_badRequest = await _questionController.SearchByName("comsuon");
+            var result = await _testController.SearchByName("");
+            var result_badRequest = await _testController.SearchByName("comsuon");
 
             // Assert
             result.Should().BeOfType<OkObjectResult>();
@@ -117,12 +118,12 @@ namespace WebAPI.Tests.Controllers
                 QuizTopic = null
             };
             var listName = new List<CreateQuizIntoBankDTO?>();
-            _questionServiceMock.Setup(x => x.Filter(filter.QuizTopic, filter.QuizType)).ReturnsAsync(listName);
-            _questionServiceMock.Setup(x => x.Filter(It.Is<List<Guid>>(x => x == null), It.Is<List<int>>(x => x == null))).ReturnsAsync(null as List<CreateQuizIntoBankDTO?>);
+            _testServiceMock.Setup(x => x.Filter(filter.QuizTopic, filter.QuizType)).ReturnsAsync(listName);
+            _testServiceMock.Setup(x => x.Filter(It.Is<List<Guid>>(x => x == null), It.Is<List<int>>(x => x == null))).ReturnsAsync(null as List<CreateQuizIntoBankDTO?>);
 
             // Act
-            var result = await _questionController.FilterQuizBank(filter);
-            var result_badRequest = await _questionController.FilterQuizBank(filter_badrequest);
+            var result = await _testController.FilterQuizBank(filter);
+            var result_badRequest = await _testController.FilterQuizBank(filter_badrequest);
 
             // Assert
             result.Should().BeOfType<OkObjectResult>();
@@ -134,12 +135,12 @@ namespace WebAPI.Tests.Controllers
         {
             // Setup
             var QuizView = new DoingQuizDTO();
-            _questionServiceMock.Setup(x => x.ViewDoingQuiz(It.IsAny<Guid>())).ReturnsAsync(QuizView);
-            _questionServiceMock.Setup(x => x.ViewDoingQuiz(It.Is<Guid>(x => x == Guid.Empty))).ReturnsAsync(null as DoingQuizDTO);
+            _testServiceMock.Setup(x => x.ViewDoingQuiz(It.IsAny<Guid>())).ReturnsAsync(QuizView);
+            _testServiceMock.Setup(x => x.ViewDoingQuiz(It.Is<Guid>(x => x == Guid.Empty))).ReturnsAsync(null as DoingQuizDTO);
 
             // Act
-            var result = await _questionController.ViewQuiz(Guid.NewGuid());
-            var result_badRequest = await _questionController.ViewQuiz(Guid.Empty);
+            var result = await _testController.ViewQuiz(Guid.NewGuid());
+            var result_badRequest = await _testController.ViewQuiz(Guid.Empty);
 
             // Assert
             result.Should().BeOfType<OkObjectResult>();
@@ -157,10 +158,10 @@ namespace WebAPI.Tests.Controllers
             };
             doingQuizDTOs.Add(quizDtos);
             var mark = 10;
-            _questionServiceMock.Setup(x => x.DoingQuizService(doingQuizDTOs)).ReturnsAsync(true);
-            _questionServiceMock.Setup(x => x.MarkQuiz(quizDtos.QuizID, It.IsAny<Guid>())).ReturnsAsync(mark);
+            _testServiceMock.Setup(x => x.DoingQuizService(doingQuizDTOs)).ReturnsAsync(true);
+            _testServiceMock.Setup(x => x.MarkQuiz(quizDtos.QuizID, It.IsAny<Guid>())).ReturnsAsync(mark);
             // Act
-            var result = await _questionController.DoingQuiz(doingQuizDTOs, Guid.NewGuid());
+            var result = await _testController.DoingQuiz(doingQuizDTOs, Guid.NewGuid());
 
             // Assert
             result.Should().BeOfType<OkObjectResult>();
@@ -171,9 +172,9 @@ namespace WebAPI.Tests.Controllers
         {
             // Setup
             var markDetails = new List<ViewDetailResultDTO>();
-            _questionServiceMock.Setup(x => x.ViewMarkDetail(It.IsAny<Guid>())).ReturnsAsync(markDetails);
+            _testServiceMock.Setup(x => x.ViewMarkDetail(It.IsAny<Guid>())).ReturnsAsync(markDetails);
             // Act
-            var result = await _questionController.ViewQuizDetail(Guid.NewGuid());
+            var result = await _testController.ViewQuizDetail(Guid.NewGuid());
 
             // Assert
             result.Should().BeOfType<OkObjectResult>();

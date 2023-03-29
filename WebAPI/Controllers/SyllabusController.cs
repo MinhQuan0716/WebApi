@@ -172,11 +172,11 @@ namespace WebAPI.Controllers
                 {
 
                     var unit = await _unitService.AddNewUnitHotFix(item1, item.Day, syllabus.Id);
-                    if (unit is null) return BadRequest("Add Unit Unsuccessfully");
+                    if (unit is null) return BadRequest($"Add Unit {item.Content.IndexOf(item1)+1} Unsuccessfully");
                     foreach (var item2 in item1.Lessons)
                     {
                         var lecture = await _lectureService.AddNewLectureHotFix(item2);
-                        if (lecture is null) return BadRequest("Add Unit Unsuccessfully");
+                        if (lecture is null) return BadRequest($"Add Lecture {item1.Lessons.IndexOf(item2)+1} Unsuccessfully");
                         await _lectureService.AddNewDetailLecture(lecture, unit);
                     }
                 }

@@ -19,7 +19,7 @@ namespace Application.Repositories
 
         Task<List<TEntity>> FindAsync(Expression<Func<TEntity, bool>> expression, params Expression<Func<TEntity, object>>[] includes);
         Task<Pagination<TEntity>> ToPagination(int pageIndex = 0, int pageSize = 10);
-        Task<Pagination<TEntity>> ToPagination(Expression<Func<TEntity, bool>> expression = null, int pageIndex = 0, int pageSize = 10);
+        Task<Pagination<TEntity>> ToPagination(Expression<Func<TEntity, bool>> expression , int pageIndex = 0, int pageSize = 10);
         Task<Pagination<TEntity>> ToPagination(IQueryable<TEntity> value, Expression<Func<TEntity, bool>> expression, int pageIndex, int pageSize);
     }
 }

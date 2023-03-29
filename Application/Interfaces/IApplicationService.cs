@@ -14,7 +14,7 @@ namespace Application.Interfaces
     public interface IApplicationService
     {
         public Task<bool> CreateApplication(ApplicationDTO applicationDTO);
-        Task<Pagination<Applications>> GetAllApplication(Guid classId, ApplicationFilterDTO filter);
+        Task<Pagination<Applications>> GetAllApplication(Guid classId, ApplicationFilterDTO filter,int pageindex = 0 ,int pagesize = 10);
         public Task<bool> UpdateStatus(Guid id, bool status);
     }
 }

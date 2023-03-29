@@ -62,7 +62,7 @@ namespace WebAPI.Tests.Controllers
             var actualResult = await _controller.CreateAssignment(assigment);
             actualResult.Should().BeOfType<NoContentResult>();
         }
-
+        
 
         [Fact]
         public async Task UpdateAssignment_ShouldReturnOk()

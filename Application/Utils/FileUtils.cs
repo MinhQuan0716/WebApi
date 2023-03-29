@@ -17,19 +17,19 @@ namespace Application.Utils
     public static class FileUtils
     {
 
-        public static String ImportFile(this IFormFile file, string folder, int version, Guid userID)
+        public static string ImportFile(this IFormFile file,string folder,int version,Guid userID)
         {
             var dirName = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location.Replace("bin\\Debug\\net7.0", string.Empty));
             var folderName = Path.Combine("Resources", folder);
             var pathToSave = Path.Combine(dirName, folderName);
             var fileName = version + "_" + userID + "_" + ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
             var fullPath = Path.Combine(pathToSave, fileName);
-            var dbPath = Path.Combine(folderName, fileName);
+            var dbPath = Path.Combine(folderName, fileName); 
             using (var stream = new FileStream(fullPath, FileMode.Create))
             {
                 file.CopyTo(stream);
             }
-            return dbPath;
+            return dbPath;//""
         }
 
         public static Dictionary<string, string> GetMimeTypes()
@@ -64,7 +64,6 @@ namespace Application.Utils
             file.FileName = fileName;
             file.FileType = System.IO.Path.GetExtension(file.FileName);
             file.FileData = System.IO.File.ReadAllBytes(fileName);
-
             return file;
         }
 

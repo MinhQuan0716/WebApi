@@ -13,7 +13,7 @@ namespace Application.Models.ApplicationModels
     /// </summary>
     public class ApplicationFilterDTO
     {
-        private string? _search = null;
+        private string? _search = "";
 
         /// <summary>
         /// filter with user id if provided. default Guid Empty
@@ -35,14 +35,7 @@ namespace Application.Models.ApplicationModels
         /// filter with searchString default = null
         /// </summary>
         public string Search { get => _search; set => _search = value.Trim(); }
-        /// <summary>
-        /// page number
-        /// </summary>
-        public int PageNumber { get; set; } = 0;
-        /// <summary>
-        /// page size
-        /// </summary>
-        public int PageSize { get; set; } = 10;
+        
         /// <summary>
         /// Filter by Request Date or Created Date default CreationDate
         /// </summary>
