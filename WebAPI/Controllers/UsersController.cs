@@ -243,7 +243,7 @@ namespace WebAPI.Controllers
         [HttpGet]
         public async Task<IActionResult> Search(string? searchString, string? gender, int? role, string? level)
         {
-            IEnumerable<UserViewModel> obj = await _userService.SearchUsersWithFilter(searchString, gender, role, level);
+            IEnumerable<SearchAndFilterUserViewModel> obj = await _userService.SearchUsersWithFilter(searchString, gender, role, level);
             if (obj != null && obj.Any())
                 return Ok(obj);
             return NoContent();

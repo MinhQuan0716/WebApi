@@ -459,8 +459,7 @@ public class UserService : IUserService
             throw new Exception("Excel file has invalid data");
         }
     }
-
-    public async Task<List<UserViewModel>> SearchUsersWithFilter(string? searchString, string? gender, int? role, string? level)
+    public async Task<List<SearchAndFilterUserViewModel>> SearchUsersWithFilter(string? searchString, string? gender, int? role, string? level)
     {
         //init filter
         ICriterias<User> genderCriteria = new GenderCriteria(gender);
@@ -471,28 +470,32 @@ public class UserService : IUserService
         if (searchString != null)
         {
             var listUser = await _unitOfWork.UserRepository.FindAsync(u => u.FullName.Contains(searchString));
-            var result = _mapper.Map<List<UserViewModel>>(andCriteria.MeetCriteria(listUser));
-            foreach (var user in result)
-                user.RoleName = ((RoleEnums)user.RoleId).ToString();
-            return result;
+            var result = _mapper.Map<List<SearchAndFilterUserViewModel>>(andCriteria.MeetCriteria(listUser));
+            return LinkingRoleName(listUser, result);
         }
         //using filter only (filter from all users)
         else if (!gender.IsNullOrEmpty() || role != null || !level.IsNullOrEmpty())
         {
             var listUser = await _unitOfWork.UserRepository.GetAllAsync();
-            var result = _mapper.Map<List<UserViewModel>>(andCriteria.MeetCriteria(listUser));
-            foreach (var user in result)
-                user.RoleName = ((RoleEnums)user.RoleId).ToString();
-            return result;
+            var result = _mapper.Map<List<SearchAndFilterUserViewModel>>(andCriteria.MeetCriteria(listUser));
+            return LinkingRoleName(listUser, result);
         }
         //return all user if all input are null
         else
         {
             var listUser = await _unitOfWork.UserRepository.GetAllAsync();
-            var result = _mapper.Map<List<UserViewModel>>(listUser);
-            foreach (var user in result)
-                user.RoleName = ((RoleEnums)user.RoleId).ToString();
-            return result;
+            var result = _mapper.Map<List<SearchAndFilterUserViewModel>>(listUser);
+            return LinkingRoleName(listUser, result);
         }
+    }
+    private protected List<SearchAndFilterUserViewModel> LinkingRoleName(List<User> listUser, List<SearchAndFilterUserViewModel> listUserFiltered)
+    {
+        foreach (var user in listUser)
+        {
+            foreach (var uf in listUserFiltered)
+                if (uf.Id.Equals(user.Id))
+                    uf.Type = ((RoleEnums)user.RoleId).ToString();
+        }
+        return listUserFiltered;
     }
 }

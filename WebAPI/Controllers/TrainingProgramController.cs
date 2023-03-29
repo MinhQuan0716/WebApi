@@ -71,7 +71,7 @@ namespace WebAPI.Controllers
         [HttpGet]
         public async Task<IActionResult> Search(string? searchString, string? status, string? createBy)
         {
-            IEnumerable<TrainingProgramViewModel> obj = await _trainingProgramService.SearchTrainingProgramWithFilter(searchString, status, createBy);
+            IEnumerable<SearchAndFilterTrainingProgramViewModel> obj = await _trainingProgramService.SearchTrainingProgramWithFilter(searchString, status, createBy);
             if (obj != null && obj.Any())
                 return Ok(obj);
             return NoContent();

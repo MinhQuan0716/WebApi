@@ -190,7 +190,7 @@ namespace Application.Tests.Services
         public async void SearchTrainingProgramWithFilter_ShouldReturnAllTrainingProgram()
         {
             //Arrange
-            var mockUsers = _fixture.Build<User>().Without(u => u.Id).Without(u => u.CreationDate)
+            var mockUsers = _fixture.Build<User>().With(u => u.Id, Guid.NewGuid()).Without(u => u.CreationDate)
                                                   .Without(u => u.CreatedBy).Without(u => u.ModificationDate)
                                                   .Without(u => u.ModificationBy).Without(u => u.DeletionDate)
                                                   .Without(u => u.DeleteBy).Without(u => u.UserName)
@@ -200,8 +200,7 @@ namespace Application.Tests.Services
                                                   .Without(u => u.Role).Without(u => u.Applications)
                                                   .Without(u => u.Attendances).Without(u => u.Syllabuses)
                                                   .Without(u => u.DetailTrainingClassParticipate).Without(u => u.Feedbacks)
-                                                  .Without(u => u.SubmitQuizzes)
-                                                  .With(u => u.IsDeleted, false)
+                                                  .With(u => u.IsDeleted, false).Without(u => u.SubmitQuizzes)
                                                   .With(u => u.FullName, "tenngdung").With(u => u.RoleId, 1).With(u => u.Gender, "Female")
                                                   .CreateMany(3).ToList();
             var mockTrainingPrograms = _fixture.Build<TrainingProgram>().Without(tp => tp.Id).Without(tp => tp.CreationDate)
@@ -212,9 +211,7 @@ namespace Application.Tests.Services
                                                                         .With(tp => tp.ProgramName, "CSS").With(tp => tp.Status, "Active")
                                                                         .With(tp => tp.CreatedBy, mockUsers.First().Id)
                                                                         .CreateMany(3).ToList();
-            var expected = _mapperConfig.Map<List<TrainingProgramViewModel>>(mockTrainingPrograms);
-            foreach (var tp in expected)
-                tp.CreateByUserName = mockUsers.First().FullName!;
+            var expected = _mapperConfig.Map<List<SearchAndFilterTrainingProgramViewModel>>(mockTrainingPrograms);
             _unitOfWorkMock.Setup(x => x.TrainingProgramRepository.GetAllAsync()).ReturnsAsync(mockTrainingPrograms);
             _unitOfWorkMock.Setup(x => x.UserRepository.GetAllAsync()).ReturnsAsync(mockUsers);
             //Act
@@ -226,8 +223,7 @@ namespace Application.Tests.Services
         public async void SearchTrainingProgramWithFilter_ShouldReturnAllTrainingProgram_WithCreateByFilter()
         {
             //Arrange
-            var mockUsers = _fixture.Build<User>().Without(u => u.Id)
-                                                  .Without(u => u.Id).Without(u => u.CreationDate)
+            var mockUsers = _fixture.Build<User>().With(u => u.Id, Guid.NewGuid()).Without(u => u.CreationDate)
                                                   .Without(u => u.CreatedBy).Without(u => u.ModificationDate)
                                                   .Without(u => u.ModificationBy).Without(u => u.DeletionDate)
                                                   .Without(u => u.DeleteBy).Without(u => u.UserName)
@@ -248,9 +244,7 @@ namespace Application.Tests.Services
                                                                         .With(tp => tp.ProgramName, "CSS").With(tp => tp.Status, "Active")
                                                                         .With(tp => tp.CreatedBy, mockUsers.First().Id)
                                                                         .CreateMany(3).ToList();
-            var expected = _mapperConfig.Map<List<TrainingProgramViewModel>>(mockTrainingPrograms);
-            foreach (var tp in expected)
-                tp.CreateByUserName = mockUsers.First().FullName!;
+            var expected = _mapperConfig.Map<List<SearchAndFilterTrainingProgramViewModel>>(mockTrainingPrograms);
             _unitOfWorkMock.Setup(x => x.TrainingProgramRepository.GetAllAsync()).ReturnsAsync(mockTrainingPrograms);
             _unitOfWorkMock.Setup(x => x.UserRepository.GetAllAsync()).ReturnsAsync(mockUsers);
             //Act
@@ -262,20 +256,19 @@ namespace Application.Tests.Services
         public async void SearchTrainingProgramWithFilter_ShouldReturnAllTrainingProgram_WithStatusFilter()
         {
             //Arrange
-            var mockUsers = _fixture.Build<User>().Without(u => u.Id)
-                                                  .Without(u => u.Id).Without(u => u.CreationDate)
-                                                  .Without(u => u.CreatedBy).Without(u => u.ModificationDate)
-                                                  .Without(u => u.ModificationBy).Without(u => u.DeletionDate)
-                                                  .Without(u => u.DeleteBy).Without(u => u.UserName)
-                                                  .Without(u => u.PasswordHash).Without(u => u.Email).Without(u => u.DateOfBirth)
-                                                  .Without(u => u.AvatarUrl).Without(u => u.RefreshToken)
-                                                  .Without(u => u.ExpireTokenTime).Without(u => u.LoginDate)
-                                                  .Without(u => u.Role).Without(u => u.Applications)
-                                                  .Without(u => u.Attendances).Without(u => u.Syllabuses)
-                                                  .Without(u => u.DetailTrainingClassParticipate).Without(u => u.Feedbacks)
-                                                  .With(u => u.IsDeleted, false).Without(u => u.SubmitQuizzes)
-                                                  .With(u => u.FullName, "tenngdung").With(u => u.RoleId, 1).With(u => u.Gender, "Female")
-                                                  .CreateMany(3).ToList();
+            var mockUsers = _fixture.Build<User>().With(u => u.Id, Guid.NewGuid()).Without(u => u.CreationDate)
+                                                              .Without(u => u.CreatedBy).Without(u => u.ModificationDate)
+                                                              .Without(u => u.ModificationBy).Without(u => u.DeletionDate)
+                                                              .Without(u => u.DeleteBy).Without(u => u.UserName)
+                                                              .Without(u => u.PasswordHash).Without(u => u.Email).Without(u => u.DateOfBirth)
+                                                              .Without(u => u.AvatarUrl).Without(u => u.RefreshToken)
+                                                              .Without(u => u.ExpireTokenTime).Without(u => u.LoginDate)
+                                                              .Without(u => u.Role).Without(u => u.Applications)
+                                                              .Without(u => u.Attendances).Without(u => u.Syllabuses)
+                                                              .Without(u => u.DetailTrainingClassParticipate).Without(u => u.Feedbacks)
+                                                              .With(u => u.IsDeleted, false).Without(u => u.SubmitQuizzes)
+                                                              .With(u => u.FullName, "tenngdung").With(u => u.RoleId, 1).With(u => u.Gender, "Female")
+                                                              .CreateMany(3).ToList();
             var mockTrainingPrograms = _fixture.Build<TrainingProgram>().Without(tp => tp.Id).Without(tp => tp.CreationDate)
                                                                         .Without(tp => tp.ModificationDate).Without(tp => tp.ModificationBy)
                                                                         .Without(tp => tp.DeletionDate).Without(tp => tp.DeleteBy)
@@ -284,9 +277,7 @@ namespace Application.Tests.Services
                                                                         .With(tp => tp.ProgramName, "CSS").With(tp => tp.Status, "Active")
                                                                         .With(tp => tp.CreatedBy, mockUsers.First().Id)
                                                                         .CreateMany(3).ToList();
-            var expected = _mapperConfig.Map<List<TrainingProgramViewModel>>(mockTrainingPrograms);
-            foreach (var tp in expected)
-                tp.CreateByUserName = mockUsers.First().FullName!;
+            var expected = _mapperConfig.Map<List<SearchAndFilterTrainingProgramViewModel>>(mockTrainingPrograms);
             _unitOfWorkMock.Setup(x => x.TrainingProgramRepository.GetAllAsync()).ReturnsAsync(mockTrainingPrograms);
             _unitOfWorkMock.Setup(x => x.UserRepository.GetAllAsync()).ReturnsAsync(mockUsers);
             //Act
@@ -298,20 +289,19 @@ namespace Application.Tests.Services
         public async void SearchTrainingProgramWithFilter_ShouldReturnAllTrainingProgram_WithStatusFilterAndCreateByFilter()
         {
             //Arrange
-            var mockUsers = _fixture.Build<User>().Without(u => u.Id)
-                                                  .Without(u => u.Id).Without(u => u.CreationDate)
-                                                  .Without(u => u.CreatedBy).Without(u => u.ModificationDate)
-                                                  .Without(u => u.ModificationBy).Without(u => u.DeletionDate)
-                                                  .Without(u => u.DeleteBy).Without(u => u.UserName)
-                                                  .Without(u => u.PasswordHash).Without(u => u.Email).Without(u => u.DateOfBirth)
-                                                  .Without(u => u.AvatarUrl).Without(u => u.RefreshToken)
-                                                  .Without(u => u.ExpireTokenTime).Without(u => u.LoginDate)
-                                                  .Without(u => u.Role).Without(u => u.Applications)
-                                                  .Without(u => u.Attendances).Without(u => u.Syllabuses)
-                                                  .Without(u => u.DetailTrainingClassParticipate).Without(u => u.Feedbacks)
-                                                  .With(u => u.IsDeleted, false).Without(u => u.SubmitQuizzes)
-                                                  .With(u => u.FullName, "tenngdung").With(u => u.RoleId, 1).With(u => u.Gender, "Female")
-                                                  .CreateMany(3).ToList();
+            var mockUsers = _fixture.Build<User>().With(u => u.Id, Guid.NewGuid()).Without(u => u.CreationDate)
+                                                              .Without(u => u.CreatedBy).Without(u => u.ModificationDate)
+                                                              .Without(u => u.ModificationBy).Without(u => u.DeletionDate)
+                                                              .Without(u => u.DeleteBy).Without(u => u.UserName)
+                                                              .Without(u => u.PasswordHash).Without(u => u.Email).Without(u => u.DateOfBirth)
+                                                              .Without(u => u.AvatarUrl).Without(u => u.RefreshToken)
+                                                              .Without(u => u.ExpireTokenTime).Without(u => u.LoginDate)
+                                                              .Without(u => u.Role).Without(u => u.Applications)
+                                                              .Without(u => u.Attendances).Without(u => u.Syllabuses)
+                                                              .Without(u => u.DetailTrainingClassParticipate).Without(u => u.Feedbacks)
+                                                              .With(u => u.IsDeleted, false).Without(u => u.SubmitQuizzes)
+                                                              .With(u => u.FullName, "tenngdung").With(u => u.RoleId, 1).With(u => u.Gender, "Female")
+                                                              .CreateMany(3).ToList();
             var mockTrainingPrograms = _fixture.Build<TrainingProgram>().Without(tp => tp.Id).Without(tp => tp.CreationDate)
                                                                         .Without(tp => tp.ModificationDate).Without(tp => tp.ModificationBy)
                                                                         .Without(tp => tp.DeletionDate).Without(tp => tp.DeleteBy)
@@ -320,9 +310,7 @@ namespace Application.Tests.Services
                                                                         .With(tp => tp.ProgramName, "CSS").With(tp => tp.Status, "Active")
                                                                         .With(tp => tp.CreatedBy, mockUsers.First().Id)
                                                                         .CreateMany(3).ToList();
-            var expected = _mapperConfig.Map<List<TrainingProgramViewModel>>(mockTrainingPrograms);
-            foreach (var tp in expected)
-                tp.CreateByUserName = mockUsers.First().FullName!;
+            var expected = _mapperConfig.Map<List<SearchAndFilterTrainingProgramViewModel>>(mockTrainingPrograms);
             _unitOfWorkMock.Setup(x => x.TrainingProgramRepository.GetAllAsync()).ReturnsAsync(mockTrainingPrograms);
             _unitOfWorkMock.Setup(x => x.UserRepository.GetAllAsync()).ReturnsAsync(mockUsers);
             //Act
@@ -334,20 +322,19 @@ namespace Application.Tests.Services
         public async void SearchTrainingProgramWithFilter_ShouldReturnAllTrainingProgram_WithValidString()
         {
             //Arrange
-            var mockUsers = _fixture.Build<User>().Without(u => u.Id)
-                                                  .Without(u => u.Id).Without(u => u.CreationDate)
-                                                  .Without(u => u.CreatedBy).Without(u => u.ModificationDate)
-                                                  .Without(u => u.ModificationBy).Without(u => u.DeletionDate)
-                                                  .Without(u => u.DeleteBy).Without(u => u.UserName)
-                                                  .Without(u => u.PasswordHash).Without(u => u.Email).Without(u => u.DateOfBirth)
-                                                  .Without(u => u.AvatarUrl).Without(u => u.RefreshToken)
-                                                  .Without(u => u.ExpireTokenTime).Without(u => u.LoginDate)
-                                                  .Without(u => u.Role).Without(u => u.Applications)
-                                                  .Without(u => u.Attendances).Without(u => u.Syllabuses)
-                                                  .Without(u => u.DetailTrainingClassParticipate).Without(u => u.Feedbacks)
-                                                  .With(u => u.IsDeleted, false).Without(u => u.SubmitQuizzes)
-                                                  .With(u => u.FullName, "tenngdung").With(u => u.RoleId, 1).With(u => u.Gender, "Female")
-                                                  .CreateMany(3).ToList();
+            var mockUsers = _fixture.Build<User>().With(u => u.Id, Guid.NewGuid()).Without(u => u.CreationDate)
+                                                              .Without(u => u.CreatedBy).Without(u => u.ModificationDate)
+                                                              .Without(u => u.ModificationBy).Without(u => u.DeletionDate)
+                                                              .Without(u => u.DeleteBy).Without(u => u.UserName)
+                                                              .Without(u => u.PasswordHash).Without(u => u.Email).Without(u => u.DateOfBirth)
+                                                              .Without(u => u.AvatarUrl).Without(u => u.RefreshToken)
+                                                              .Without(u => u.ExpireTokenTime).Without(u => u.LoginDate)
+                                                              .Without(u => u.Role).Without(u => u.Applications)
+                                                              .Without(u => u.Attendances).Without(u => u.Syllabuses)
+                                                              .Without(u => u.DetailTrainingClassParticipate).Without(u => u.Feedbacks)
+                                                              .With(u => u.IsDeleted, false).Without(u => u.SubmitQuizzes)
+                                                              .With(u => u.FullName, "tenngdung").With(u => u.RoleId, 1).With(u => u.Gender, "Female")
+                                                              .CreateMany(3).ToList();
             var mockTrainingPrograms = _fixture.Build<TrainingProgram>().Without(tp => tp.Id).Without(tp => tp.CreationDate)
                                                                         .Without(tp => tp.ModificationDate).Without(tp => tp.ModificationBy)
                                                                         .Without(tp => tp.DeletionDate).Without(tp => tp.DeleteBy)
@@ -356,9 +343,7 @@ namespace Application.Tests.Services
                                                                         .With(tp => tp.ProgramName, "CSS").With(tp => tp.Status, "Active")
                                                                         .With(tp => tp.CreatedBy, mockUsers.First().Id)
                                                                         .CreateMany(3).ToList();
-            var expected = _mapperConfig.Map<List<TrainingProgramViewModel>>(mockTrainingPrograms);
-            foreach (var tp in expected)
-                tp.CreateByUserName = mockUsers.First().FullName!;
+            var expected = _mapperConfig.Map<List<SearchAndFilterTrainingProgramViewModel>>(mockTrainingPrograms);
             _unitOfWorkMock.Setup(x => x.TrainingProgramRepository.GetAllAsync()).ReturnsAsync(mockTrainingPrograms);
             _unitOfWorkMock.Setup(x => x.UserRepository.GetAllAsync()).ReturnsAsync(mockUsers);
             //Act
@@ -370,20 +355,19 @@ namespace Application.Tests.Services
         public async void SearchTrainingProgramWithFilter_ShouldReturnAllTrainingProgram_WithValidStringAndCreateByFilter()
         {
             //Arrange
-            var mockUsers = _fixture.Build<User>().Without(u => u.Id)
-                                                  .Without(u => u.Id).Without(u => u.CreationDate)
-                                                  .Without(u => u.CreatedBy).Without(u => u.ModificationDate)
-                                                  .Without(u => u.ModificationBy).Without(u => u.DeletionDate)
-                                                  .Without(u => u.DeleteBy).Without(u => u.UserName)
-                                                  .Without(u => u.PasswordHash).Without(u => u.Email).Without(u => u.DateOfBirth)
-                                                  .Without(u => u.AvatarUrl).Without(u => u.RefreshToken)
-                                                  .Without(u => u.ExpireTokenTime).Without(u => u.LoginDate)
-                                                  .Without(u => u.Role).Without(u => u.Applications)
-                                                  .Without(u => u.Attendances).Without(u => u.Syllabuses)
-                                                  .Without(u => u.DetailTrainingClassParticipate).Without(u => u.Feedbacks)
-                                                  .With(u => u.IsDeleted, false).Without(u => u.SubmitQuizzes)
-                                                  .With(u => u.FullName, "tenngdung").With(u => u.RoleId, 1).With(u => u.Gender, "Female")
-                                                  .CreateMany(3).ToList();
+            var mockUsers = _fixture.Build<User>().With(u => u.Id, Guid.NewGuid()).Without(u => u.CreationDate)
+                                                              .Without(u => u.CreatedBy).Without(u => u.ModificationDate)
+                                                              .Without(u => u.ModificationBy).Without(u => u.DeletionDate)
+                                                              .Without(u => u.DeleteBy).Without(u => u.UserName)
+                                                              .Without(u => u.PasswordHash).Without(u => u.Email).Without(u => u.DateOfBirth)
+                                                              .Without(u => u.AvatarUrl).Without(u => u.RefreshToken)
+                                                              .Without(u => u.ExpireTokenTime).Without(u => u.LoginDate)
+                                                              .Without(u => u.Role).Without(u => u.Applications)
+                                                              .Without(u => u.Attendances).Without(u => u.Syllabuses)
+                                                              .Without(u => u.DetailTrainingClassParticipate).Without(u => u.Feedbacks)
+                                                              .With(u => u.IsDeleted, false).Without(u => u.SubmitQuizzes)
+                                                              .With(u => u.FullName, "tenngdung").With(u => u.RoleId, 1).With(u => u.Gender, "Female")
+                                                              .CreateMany(3).ToList();
             var mockTrainingPrograms = _fixture.Build<TrainingProgram>().Without(tp => tp.Id).Without(tp => tp.CreationDate)
                                                                         .Without(tp => tp.ModificationDate).Without(tp => tp.ModificationBy)
                                                                         .Without(tp => tp.DeletionDate).Without(tp => tp.DeleteBy)
@@ -392,9 +376,7 @@ namespace Application.Tests.Services
                                                                         .With(tp => tp.ProgramName, "CSS").With(tp => tp.Status, "Active")
                                                                         .With(tp => tp.CreatedBy, mockUsers.First().Id)
                                                                         .CreateMany(3).ToList();
-            var expected = _mapperConfig.Map<List<TrainingProgramViewModel>>(mockTrainingPrograms);
-            foreach (var tp in expected)
-                tp.CreateByUserName = mockUsers.First().FullName!;
+            var expected = _mapperConfig.Map<List<SearchAndFilterTrainingProgramViewModel>>(mockTrainingPrograms);
             _unitOfWorkMock.Setup(x => x.TrainingProgramRepository.GetAllAsync()).ReturnsAsync(mockTrainingPrograms);
             _unitOfWorkMock.Setup(x => x.UserRepository.GetAllAsync()).ReturnsAsync(mockUsers);
             //Act
@@ -406,20 +388,19 @@ namespace Application.Tests.Services
         public async void SearchTrainingProgramWithFilter_ShouldReturnAllTrainingProgram_WithValidStringAndStatusFilter()
         {
             //Arrange
-            var mockUsers = _fixture.Build<User>().Without(u => u.Id)
-                                                  .Without(u => u.Id).Without(u => u.CreationDate)
-                                                  .Without(u => u.CreatedBy).Without(u => u.ModificationDate)
-                                                  .Without(u => u.ModificationBy).Without(u => u.DeletionDate)
-                                                  .Without(u => u.DeleteBy).Without(u => u.UserName)
-                                                  .Without(u => u.PasswordHash).Without(u => u.Email).Without(u => u.DateOfBirth)
-                                                  .Without(u => u.AvatarUrl).Without(u => u.RefreshToken)
-                                                  .Without(u => u.ExpireTokenTime).Without(u => u.LoginDate)
-                                                  .Without(u => u.Role).Without(u => u.Applications)
-                                                  .Without(u => u.Attendances).Without(u => u.Syllabuses)
-                                                  .Without(u => u.DetailTrainingClassParticipate).Without(u => u.Feedbacks)
-                                                  .With(u => u.IsDeleted, false).Without(u => u.SubmitQuizzes)
-                                                  .With(u => u.FullName, "tenngdung").With(u => u.RoleId, 1).With(u => u.Gender, "Female")
-                                                  .CreateMany(3).ToList();
+            var mockUsers = _fixture.Build<User>().With(u => u.Id, Guid.NewGuid()).Without(u => u.CreationDate)
+                                                              .Without(u => u.CreatedBy).Without(u => u.ModificationDate)
+                                                              .Without(u => u.ModificationBy).Without(u => u.DeletionDate)
+                                                              .Without(u => u.DeleteBy).Without(u => u.UserName)
+                                                              .Without(u => u.PasswordHash).Without(u => u.Email).Without(u => u.DateOfBirth)
+                                                              .Without(u => u.AvatarUrl).Without(u => u.RefreshToken)
+                                                              .Without(u => u.ExpireTokenTime).Without(u => u.LoginDate)
+                                                              .Without(u => u.Role).Without(u => u.Applications)
+                                                              .Without(u => u.Attendances).Without(u => u.Syllabuses)
+                                                              .Without(u => u.DetailTrainingClassParticipate).Without(u => u.Feedbacks)
+                                                              .With(u => u.IsDeleted, false).Without(u => u.SubmitQuizzes)
+                                                              .With(u => u.FullName, "tenngdung").With(u => u.RoleId, 1).With(u => u.Gender, "Female")
+                                                              .CreateMany(3).ToList();
             var mockTrainingPrograms = _fixture.Build<TrainingProgram>().Without(tp => tp.Id).Without(tp => tp.CreationDate)
                                                                         .Without(tp => tp.ModificationDate).Without(tp => tp.ModificationBy)
                                                                         .Without(tp => tp.DeletionDate).Without(tp => tp.DeleteBy)
@@ -428,9 +409,7 @@ namespace Application.Tests.Services
                                                                         .With(tp => tp.ProgramName, "CSS").With(tp => tp.Status, "Active")
                                                                         .With(tp => tp.CreatedBy, mockUsers.First().Id)
                                                                         .CreateMany(3).ToList();
-            var expected = _mapperConfig.Map<List<TrainingProgramViewModel>>(mockTrainingPrograms);
-            foreach (var tp in expected)
-                tp.CreateByUserName = mockUsers.First().FullName!;
+            var expected = _mapperConfig.Map<List<SearchAndFilterTrainingProgramViewModel>>(mockTrainingPrograms);
             _unitOfWorkMock.Setup(x => x.TrainingProgramRepository.GetAllAsync()).ReturnsAsync(mockTrainingPrograms);
             _unitOfWorkMock.Setup(x => x.UserRepository.GetAllAsync()).ReturnsAsync(mockUsers);
             //Act
@@ -442,19 +421,19 @@ namespace Application.Tests.Services
         public async void SearchTrainingProgramWithFilter_ShouldReturnAllTrainingProgram_WithValidStringAndStatusFilterAndCreateByFilter()
         {
             //Arrange
-            var mockUsers = _fixture.Build<User>().Without(u => u.Id).Without(u => u.CreationDate)
-                                                  .Without(u => u.CreatedBy).Without(u => u.ModificationDate)
-                                                  .Without(u => u.ModificationBy).Without(u => u.DeletionDate)
-                                                  .Without(u => u.DeleteBy).Without(u => u.UserName)
-                                                  .Without(u => u.PasswordHash).Without(u => u.Email).Without(u => u.DateOfBirth)
-                                                  .Without(u => u.AvatarUrl).Without(u => u.RefreshToken)
-                                                  .Without(u => u.ExpireTokenTime).Without(u => u.LoginDate)
-                                                  .Without(u => u.Role).Without(u => u.Applications)
-                                                  .Without(u => u.Attendances).Without(u => u.Syllabuses)
-                                                  .Without(u => u.DetailTrainingClassParticipate).Without(u => u.Feedbacks)
-                                                  .With(u => u.IsDeleted, false).Without(u => u.SubmitQuizzes)
-                                                  .With(u => u.FullName, "tenngdung").With(u => u.RoleId, 1).With(u => u.Gender, "Female")
-                                                  .CreateMany(3).ToList();
+            var mockUsers = _fixture.Build<User>().With(u => u.Id, Guid.NewGuid()).Without(u => u.CreationDate)
+                                                              .Without(u => u.CreatedBy).Without(u => u.ModificationDate)
+                                                              .Without(u => u.ModificationBy).Without(u => u.DeletionDate)
+                                                              .Without(u => u.DeleteBy).Without(u => u.UserName)
+                                                              .Without(u => u.PasswordHash).Without(u => u.Email).Without(u => u.DateOfBirth)
+                                                              .Without(u => u.AvatarUrl).Without(u => u.RefreshToken)
+                                                              .Without(u => u.ExpireTokenTime).Without(u => u.LoginDate)
+                                                              .Without(u => u.Role).Without(u => u.Applications)
+                                                              .Without(u => u.Attendances).Without(u => u.Syllabuses)
+                                                              .Without(u => u.DetailTrainingClassParticipate).Without(u => u.Feedbacks)
+                                                              .With(u => u.IsDeleted, false).Without(u => u.SubmitQuizzes)
+                                                              .With(u => u.FullName, "tenngdung").With(u => u.RoleId, 1).With(u => u.Gender, "Female")
+                                                              .CreateMany(3).ToList();
             var mockTrainingPrograms = _fixture.Build<TrainingProgram>().Without(tp => tp.Id).Without(tp => tp.CreationDate)
                                                                         .Without(tp => tp.ModificationDate).Without(tp => tp.ModificationBy)
                                                                         .Without(tp => tp.DeletionDate).Without(tp => tp.DeleteBy)
@@ -463,9 +442,7 @@ namespace Application.Tests.Services
                                                                         .With(tp => tp.ProgramName, "CSS").With(tp => tp.Status, "Active")
                                                                         .With(tp => tp.CreatedBy, mockUsers.First().Id)
                                                                         .CreateMany(3).ToList();
-            var expected = _mapperConfig.Map<List<TrainingProgramViewModel>>(mockTrainingPrograms);
-            foreach (var tp in expected)
-                tp.CreateByUserName = mockUsers.First().FullName!;
+            var expected = _mapperConfig.Map<List<SearchAndFilterTrainingProgramViewModel>>(mockTrainingPrograms);
             _unitOfWorkMock.Setup(x => x.TrainingProgramRepository.GetAllAsync()).ReturnsAsync(mockTrainingPrograms);
             _unitOfWorkMock.Setup(x => x.UserRepository.GetAllAsync()).ReturnsAsync(mockUsers);
             //Act
@@ -474,6 +451,6 @@ namespace Application.Tests.Services
             result.Should().BeEquivalentTo(expected);
         }
 
-        
+
     }
 }

@@ -445,6 +445,19 @@ namespace Infrastructures.Mappers
                 .ForMember(x => x.DeliveryType, src => src.MapFrom(x => x.DeliveryType))
                 .ReverseMap();
             #endregion
+            #region Mapping for SearchAndFilter User and TrainingProgram
+            CreateMap<SearchAndFilterUserViewModel, User>()
+                .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.Fullname))
+                .ReverseMap();
+            CreateMap<SearchAndFilterTrainingProgramViewModel, TrainingProgram>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.ProgramName, opt => opt.MapFrom(src => src.TrainingTitle))
+                .ForMember(dest => dest.CreationDate, opt => opt.MapFrom(src => src.CreationDate))
+                .ForMember(dest => dest.CreatedBy, opt => opt.MapFrom(src => src.CreatedBy))
+                .ForMember(dest => dest.Duration, opt => opt.MapFrom(src => src.Durations.TotalHours))
+                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status))
+                .ReverseMap();
+            #endregion
         }
     }
 }
