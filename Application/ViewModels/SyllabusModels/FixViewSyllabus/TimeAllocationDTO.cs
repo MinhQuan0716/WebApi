@@ -8,15 +8,15 @@ namespace Application.ViewModels.SyllabusModels.FixViewSyllabus
 {
     public class TimeAllocationDTO
     {
-        public int AssignmentPercent { get; set; }
+        public int AssignmentPercent { get; set; } = 13;
 
-        public int ConceptPercent { get; set; }
+        public int ConceptPercent { get; set; } = 24;
 
-        public int GuidePercent { get; set; }
+        public int GuidePercent { get; set; } = 34;
 
-        public int TestPercent { get; set; }
+        public int TestPercent { get; set; } = 23;
 
-        public int ExamPercent { get; set; }
+        public int ExamPercent { get; set; } = 12;
 
 
     }

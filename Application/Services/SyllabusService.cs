@@ -264,61 +264,61 @@ namespace Application.Services
             return syllabusList;
         }
 
-        public async Task<SyllabusShowDetailDTO> ViewDetailSyllabus(Guid SyllabusID)
-        {
-            SyllabusShowDetailDTO viewDTO = new SyllabusShowDetailDTO();
+        //public async Task<SyllabusShowDetailDTO> ViewDetailSyllabus(Guid SyllabusID)
+        //{
+        //    SyllabusShowDetailDTO viewDTO = new SyllabusShowDetailDTO();
 
-            Syllabus syllabusDetail = await _unitOfWork.SyllabusRepository.GetByIdAsync(SyllabusID);
+        //    Syllabus syllabusDetail = await _unitOfWork.SyllabusRepository.GetByIdAsync(SyllabusID);
 
-            //if (!syllabusDetail.IsDeleted)
-            //{
-            //    return null;
-            //}
+        //    //if (!syllabusDetail.IsDeleted)
+        //    //{
+        //    //    return null;
+        //    //}
 
-            SyllabusGeneralDTO syllabusGeneralDTO = new SyllabusGeneralDTO()
-            {
+        //    SyllabusGeneralDTO syllabusGeneralDTO = new SyllabusGeneralDTO()
+        //    {
 
-                Code = syllabusDetail!.Code,
-                CourseObject = syllabusDetail.CourseObjective,
-                Duration = syllabusDetail.Duration,
-                SyllabusName = syllabusDetail.SyllabusName,
-                TechRequirements = syllabusDetail.TechRequirements
-            };
-
-
-            viewDTO.SyllabusBase = syllabusGeneralDTO;
-            //viewDTO.SyllabusBase.SyllabusName = syllabusDetail.SyllabusName;
-            //viewDTO.SyllabusBase.Code = syllabusDetail.Code;
-            //viewDTO.SyllabusBase.CourseObject = syllabusDetail.CourseObjective;
-            //viewDTO.SyllabusBase.TechRequirements = syllabusDetail.TechRequirements;
-            //viewDTO.SyllabusBase.Duration = syllabusDetail.Duration;
-            var unitList = await _unitOfWork.UnitRepository.FindAsync(x => x.SyllabusID == SyllabusID);
-
-            foreach (var unit in unitList)
-            {
-
-                List<LectureDTO> lectures = new List<LectureDTO>();
-                var lectureList = _unitOfWork.DetailUnitLectureRepository.GetByUnitID(unit.Id);
-                foreach (var lecture in lectureList)
-                {
-                    lectures.Add(lecture);
-                }
-                var unitAdd = new UnitDetailDTO()
-                {
-                    UnitName = unit.UnitName,
-                    Session = unit.Session,
-                    TotalTime = (float)unit.TotalTime,
-                    Lectures = lectures
-                };
-                List<UnitDetailDTO> units = new List<UnitDetailDTO>();
-                units.Add(unitAdd);
-                viewDTO.Units = units;
+        //        Code = syllabusDetail!.Code,
+        //        CourseObject = syllabusDetail.CourseObjective,
+        //        Duration = syllabusDetail.Duration,
+        //        SyllabusName = syllabusDetail.SyllabusName,
+        //        TechRequirements = syllabusDetail.TechRequirements
+        //    };
 
 
+        //    viewDTO.SyllabusBase = syllabusGeneralDTO;
+        //    //viewDTO.SyllabusBase.SyllabusName = syllabusDetail.SyllabusName;
+        //    //viewDTO.SyllabusBase.Code = syllabusDetail.Code;
+        //    //viewDTO.SyllabusBase.CourseObject = syllabusDetail.CourseObjective;
+        //    //viewDTO.SyllabusBase.TechRequirements = syllabusDetail.TechRequirements;
+        //    //viewDTO.SyllabusBase.Duration = syllabusDetail.Duration;
+        //    var unitList = await _unitOfWork.UnitRepository.FindAsync(x => x.SyllabusID == SyllabusID);
 
-            }
-            return viewDTO;
-        }
+        //    foreach (var unit in unitList)
+        //    {
+
+        //        List<LectureDTO> lectures = new List<LectureDTO>();
+        //        var lectureList = _unitOfWork.DetailUnitLectureRepository.GetByUnitID(unit.Id);
+        //        foreach (var lecture in lectureList)
+        //        {
+        //            lectures.Add(lecture);
+        //        }
+        //        var unitAdd = new UnitDetailDTO()
+        //        {
+        //            UnitName = unit.UnitName,
+        //            Session = unit.Session,
+        //            TotalTime = (float)unit.TotalTime,
+        //            Lectures = lectures
+        //        };
+        //        List<UnitDetailDTO> units = new List<UnitDetailDTO>();
+        //        units.Add(unitAdd);
+        //        viewDTO.Units = units;
+
+
+
+        //    }
+        //    return viewDTO;
+        //}
 
 
         public async Task<FinalViewSyllabusDTO> FinalViewSyllabusDTO(Guid SyllabusID)
@@ -327,34 +327,40 @@ namespace Application.Services
             FinalViewSyllabusDTO view = new FinalViewSyllabusDTO();
             var SyllabusInformation = await _unitOfWork.SyllabusRepository.GetByIdAsync(SyllabusID);
 
+            TimeAllocationDTO timeAllocationDTO = new TimeAllocationDTO {
+                TestPercent = 12,
+                GuidePercent = 12,
+                 ExamPercent = 12,
+                  ConceptPercent= 12,
+                  AssignmentPercent = 12 
+            
+            };
+            view.timeAllocationDTO = timeAllocationDTO;
             var user = await _unitOfWork.UserRepository.GetByIdAsync(SyllabusInformation.UserId);
-            string userName = user.FullName;
+            string userName = "Nguyễn Văn Tèo";
             if (SyllabusInformation.IsDeleted)
             {
                 return null;
             }
 
-            var UnitInformation = await _unitOfWork.UnitRepository.FindAsync(x => x.SyllabusID == SyllabusID);
+            var UnitInformation = await _unitOfWork.UnitRepository.FindAsync(x => x.SyllabusID == SyllabusID && x.IsDeleted == false);
 
-            //var generalInformation = _mapper.Map<GeneralInformationDTO>(SyllabusInformation);
+  
             var generalInformation = _mapper.Map<FinalViewSyllabusDTO>(SyllabusInformation);
 
-            //var generalSyllabus = _mapper.Map<ShowDetailSyllabusNewDTO>(SyllabusInformation);
 
-            //generalSyllabus.General = generalInformation;
-            //generalSyllabus.General.Duration.TotalHours = 12;
-            //generalInformation.Durations.TotalHours = 12;
-            //view.Durations.TotalHours = 12;
             view.ID = SyllabusID;
             view.CreateBy = userName;
             view.Durations = new DurationView { TotalHours = SyllabusInformation.Duration };
+            if(view.Durations.TotalDate == 0)
+            {
+                view.Durations.TotalHours = 12;
+            }
             view.ProgramName = generalInformation.ProgramName;
             view.Status = generalInformation.Status;
             view.General = generalInformation.General;
-            //view.General = generalSyllabus;
+       
 
-            //Process OutlinePart
-            //List<Unit> ProcessPart = await _unitOfWork.UnitRepository.FindAsync(x => x.SyllabusID == SyllabusID);
             List<int> ListSession = new List<int>();
             List<SyllabusOutlineDTO> lst = new List<SyllabusOutlineDTO>();
             foreach (var item in UnitInformation)
@@ -365,12 +371,8 @@ namespace Application.Services
 
             for (int i = 0; i < ListSession.Count; i++)
             {
-                //List<LessonDTO> lessonDTOs = new List<LessonDTO>();
 
-                //SyllabusOutlineDTO syllabusOutlineDTO = await _unitOfWork.SyllabusRepository.GetBySession(ListSession[i], SyllabusID);
-
-                //lay nhung unit co session 
-                var unit_have_session = await _unitOfWork.UnitRepository.FindAsync(x => x.Session == ListSession[i]);
+                var unit_have_session = await _unitOfWork.UnitRepository.FindAsync(x => x.Session == ListSession[i] && x.IsDeleted == false && x.SyllabusID == SyllabusID);
 
                 //trong tung unit co nhieu lesson 
                 foreach (var item in unit_have_session)
@@ -410,13 +412,11 @@ namespace Application.Services
                 TestPercent = 1
             };
 
-            //view.outlineSyllabusDTO.timeAllocationDTO = allocationDTO;
-            //view.outlineSyllabusDTO.outlineDTOs = lst;
+
 
             OutlineSyllabusDTO viewOutline = new OutlineSyllabusDTO()
             {
                 outlineDTOs = lst,
-                timeAllocationDTO = allocationDTO
             };
             view.outlineSyllabusDTO = viewOutline;
 

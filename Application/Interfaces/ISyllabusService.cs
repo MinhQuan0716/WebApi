@@ -24,8 +24,6 @@ namespace Application.Interfaces
         public Task<List<SyllabusViewAllDTO>> GetByName(string name);
         public Task<bool> UpdateSyllabus(Guid syllabusId, UpdateSyllabusModel updateItem);
 
-        public Task<SyllabusShowDetailDTO> ViewDetailSyllabus(Guid SyllabusID);
-
         public Task<FinalViewSyllabusDTO> FinalViewSyllabusDTO(Guid SyllabusID);
         public Task<int> SaveChangesAsync();
 

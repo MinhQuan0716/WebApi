@@ -131,22 +131,22 @@ namespace WebAPI.Controllers
             else return BadRequest("Update Failed");
         }
 
+        //[HttpGet]
+        //[Authorize]
+        //public async Task<IActionResult> ViewDetail(Guid SyllabusId)
+        //{
+        //    var result = await _syllabusService.ViewDetailSyllabus(SyllabusId);
+        //    if (result != null)
+        //    {
+        //        return Ok(result);
+        //    }
+        //    return BadRequest();
+        //}
+
+
         [HttpGet]
         [Authorize]
         public async Task<IActionResult> ViewDetail(Guid SyllabusId)
-        {
-            var result = await _syllabusService.ViewDetailSyllabus(SyllabusId);
-            if (result != null)
-            {
-                return Ok(result);
-            }
-            return BadRequest();
-        }
-
-
-        [HttpGet]
-        [Authorize]
-        public async Task<IActionResult> ViewDetailFormat(Guid SyllabusId)
         {
             var result = await _syllabusService.FinalViewSyllabusDTO(SyllabusId);
             if (result != null)

@@ -10,7 +10,7 @@ namespace Application.ViewModels.SyllabusModels
     {
         public string SyllabusName { get; set; }
 
-        public string Code { get; set; }
+        public string Code { get; set; } = "NPL";
 
         public string CourseObject { get; set; }
 

@@ -152,7 +152,7 @@ namespace Infrastructures.Repositories
             var lessonDTOs = (from unit in _dbContext.Units
                               join detaillecture in _dbContext.DetailUnitLecture on unit.Id equals detaillecture.UnitId
                               join lecture in _dbContext.Lectures on detaillecture.LectureID equals lecture.Id
-                              where unit.Id == unitID
+                              where unit.Id == unitID  && unit.IsDeleted == false
                               select new LessonDTO
                               {
 

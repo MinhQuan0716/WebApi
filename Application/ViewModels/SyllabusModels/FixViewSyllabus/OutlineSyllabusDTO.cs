@@ -10,6 +10,5 @@ namespace Application.ViewModels.SyllabusModels.FixViewSyllabus
     {
         public List<SyllabusOutlineDTO> outlineDTOs { get; set; }
 
-        public TimeAllocationDTO timeAllocationDTO { get; set; }
     }
 }

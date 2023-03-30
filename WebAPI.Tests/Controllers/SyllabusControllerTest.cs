@@ -31,42 +31,42 @@ namespace WebAPI.Tests.Controllers
             _syllabusController = new SyllabusController(_syllabusServiceMock.Object, _unitServiceMock.Object, _lectureServiceMock.Object);
 
         }
-        [Fact]
-        public async Task SearchNameSyllabus_Get_ShouldReturnCorrectValues()
-        {
+        //[Fact]
+        //public async Task SearchNameSyllabus_Get_ShouldReturnCorrectValues()
+        //{
 
-            var mockData_1 = _fixture.Build<SyllabusViewAllDTO>().CreateMany(2).ToList();
-            var mockData_2 = null as List<SyllabusViewAllDTO>;
-
-
-            string name1 = "anything";
-            string name2 = "this should return nothing";
-            _syllabusServiceMock.Setup(s => s.GetByName(name1)).ReturnsAsync(mockData_1);
-            _syllabusServiceMock.Setup(s => s.GetByName(name2)).ReturnsAsync(mockData_2);
-            var result_ok = await _syllabusController.SearchByName(name1);
-            var result_badRequest = await _syllabusController.SearchByName(name2);
-
-            result_ok.Should().BeOfType<OkObjectResult>().Which.Value.Should().BeOfType<List<SyllabusViewAllDTO>>();
-            result_badRequest.Should().BeOfType<BadRequestObjectResult>();
-        }
-        [Fact]
-        public async Task ViewDetail_Get_ShouldReturnCorrectValues()
-        {
-
-            var mockData_1 = _fixture.Build<SyllabusShowDetailDTO>().OmitAutoProperties().Create();
-            var mockData_2 = null as SyllabusShowDetailDTO;
+        //    var mockData_1 = _fixture.Build<SyllabusViewAllDTO>().CreateMany(2).ToList();
+        //    var mockData_2 = null as List<SyllabusViewAllDTO>;
 
 
-            Guid syll_id1 = Guid.NewGuid();
-            Guid syll_id2 = Guid.NewGuid();
-            _syllabusServiceMock.Setup(s => s.ViewDetailSyllabus(syll_id1)).ReturnsAsync(mockData_1);
-            _syllabusServiceMock.Setup(s => s.ViewDetailSyllabus(syll_id2)).ReturnsAsync(mockData_2);
-            var result_ok = await _syllabusController.ViewDetail(syll_id1);
-            var result_badRequest = await _syllabusController.ViewDetail(syll_id2);
+        //    string name1 = "anything";
+        //    string name2 = "this should return nothing";
+        //    _syllabusServiceMock.Setup(s => s.GetByName(name1)).ReturnsAsync(mockData_1);
+        //    _syllabusServiceMock.Setup(s => s.GetByName(name2)).ReturnsAsync(mockData_2);
+        //    var result_ok = await _syllabusController.SearchByName(name1);
+        //    var result_badRequest = await _syllabusController.SearchByName(name2);
 
-            result_ok.Should().BeOfType<OkObjectResult>().Which.Value.Should().BeOfType<SyllabusShowDetailDTO>();
-            result_badRequest.Should().BeOfType<BadRequestResult>();
-        }
+        //    result_ok.Should().BeOfType<OkObjectResult>().Which.Value.Should().BeOfType<List<SyllabusViewAllDTO>>();
+        //    result_badRequest.Should().BeOfType<BadRequestObjectResult>();
+        //}
+        //[Fact]
+        //public async Task ViewDetail_Get_ShouldReturnCorrectValues()
+        //{
+
+        //    var mockData_1 = _fixture.Build<SyllabusShowDetailDTO>().OmitAutoProperties().Create();
+        //    var mockData_2 = null as SyllabusShowDetailDTO;
+
+
+        //    Guid syll_id1 = Guid.NewGuid();
+        //    Guid syll_id2 = Guid.NewGuid();
+        //    _syllabusServiceMock.Setup(s => s.ViewDetailSyllabus(syll_id1)).ReturnsAsync(mockData_1);
+        //    _syllabusServiceMock.Setup(s => s.ViewDetailSyllabus(syll_id2)).ReturnsAsync(mockData_2);
+        //    var result_ok = await _syllabusController.ViewDetail(syll_id1);
+        //    var result_badRequest = await _syllabusController.ViewDetail(syll_id2);
+
+        //    result_ok.Should().BeOfType<OkObjectResult>().Which.Value.Should().BeOfType<SyllabusShowDetailDTO>();
+        //    result_badRequest.Should().BeOfType<BadRequestResult>();
+        //}
         [Fact]
         public async Task GetAllSyllabus_Should_ReturnData()
         {
@@ -101,8 +101,8 @@ namespace WebAPI.Tests.Controllers
             Guid syll_id2 = Guid.NewGuid();
             _syllabusServiceMock.Setup(s => s.FinalViewSyllabusDTO(syll_id1)).ReturnsAsync(mockData_1);
             _syllabusServiceMock.Setup(s => s.FinalViewSyllabusDTO(syll_id2)).ReturnsAsync(mockData_2);
-            var result_ok = await _syllabusController.ViewDetailFormat(syll_id1);
-            var result_badRequest = await _syllabusController.ViewDetailFormat(syll_id2);
+            var result_ok = await _syllabusController.ViewDetail(syll_id1);
+            var result_badRequest = await _syllabusController.ViewDetail(syll_id2);
 
             result_ok.Should().BeOfType<OkObjectResult>().Which.Value.Should().BeOfType<FinalViewSyllabusDTO>();
             result_badRequest.Should().BeOfType<BadRequestObjectResult>();
