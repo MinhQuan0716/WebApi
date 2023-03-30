@@ -1,10 +1,12 @@
 ﻿using Application.Commons;
+using Application.Utils;
 using Application.ViewModels.TokenModels;
 using Application.ViewModels.UserViewModels;
 using AutoFixture;
 using Domain.Entities;
 using Domains.Test;
 using FluentAssertions;
+using Google.Apis.Auth;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -20,11 +22,14 @@ namespace WebAPI.Tests.Controllers;
 public class UserControllerTest : SetupTest
 {
     private readonly UsersController _userController;
+    private readonly Mock<IExternalAuthUtils> _externalAuthUtilsMock;
+
     public UserControllerTest()
     {
+        _externalAuthUtilsMock = new Mock<IExternalAuthUtils>();
         _userController = new UsersController(_userServiceMock.Object,
                                               _claimsServiceMock.Object,
-                                              new Application.Utils.ExternalAuthUtils(_config.Object),
+                                              _externalAuthUtilsMock.Object,
                                               _mapperMock.Object);
     }
 
@@ -139,7 +144,49 @@ public class UserControllerTest : SetupTest
         result.Should().BeOfType<BadRequestResult>();
 
     }
+    [Fact]
+    public async Task ForgotPassword_ReturnNoContentResult()
+    {
+        //Arrange
+        var email = _fixture.Create<string>();
+        _userServiceMock.Setup(u => u.SendResetPassword(email)).ReturnsAsync(email);
+        //Act
+        var result = await _userController.ForgotPassword(email);
+        //Assert
+        result.Should().BeOfType<OkResult>();
+    }
+    [Fact]
+    public async Task ForgotPassword_ReturnBadRequestResult()
+    {
+        //Arrange
+        var email = _fixture.Create<string>();
+        //Act
+        var result = await _userController.ForgotPassword(email);
+        //Assert
+        result.Should().BeOfType<BadRequestObjectResult>();
 
+    }
+    [Fact]
+    public async Task ResetPassword_ReturnNoContentResult()
+    {
+        //Arrange
+        var email = _fixture.Create<ResetPasswordDTO>();
+        _userServiceMock.Setup(u => u.ResetPassword(email)).ReturnsAsync(true);
+        //Act
+        var result = await _userController.ResetPassword(email);
+        //Assert
+        result.Should().BeOfType<OkObjectResult>().Which.Value.Should().Be(true);
+    }
+    [Fact]
+    public async Task ResetPassword_ReturnBadRequestResult()
+    {
+        //Arrange
+        var email = _fixture.Create<ResetPasswordDTO>();
+        //Act
+        var result = await _userController.ResetPassword(email);
+        //Assert
+        result.Should().BeOfType<BadRequestResult>();
+    }
     [Fact]
     public async Task GetAllUserAsync_ShouldReturnCorrectData()
     {
@@ -314,7 +361,41 @@ public class UserControllerTest : SetupTest
         var result = await _userController.ChangeUserRole(updateDTO);
         Assert.IsType<BadRequestResult>(result);
     }
+    [Fact]
+    public async Task LoginWithGoogle_ShouldReturnBadRequest()
+    {
+        //Arrange
+        ExternalAuthDto externalAuthDto = _fixture.Build<ExternalAuthDto>().Create();
 
+        //Act
+        var result = await _userController.LoginWithGoogle(externalAuthDto);
+
+        //Assert
+        result.Should().BeOfType<BadRequestObjectResult>();
+    }
+
+    [Fact]
+    public async Task LoginWithGoogle_ShouldReturnOk()
+    {
+        // Arrange
+        ExternalAuthDto externalAuthDto = _fixture.Build<ExternalAuthDto>().Create();
+        var payload = _fixture.Build<GoogleJsonWebSignature.Payload>().Create();
+        var token = _fixture.Create<Token>();
+        var users = _fixture.Build<UserViewModel>().Without(x => x.Syllabuses).CreateMany(0).ToList();
+        // Setup
+        _externalAuthUtilsMock.Setup(eau => eau.VerifyGoogleToken(It.IsAny<ExternalAuthDto>())).ReturnsAsync(payload);
+        _userServiceMock.Setup(us => us.GetAllAsync()).ReturnsAsync(users);
+        _userServiceMock.Setup(us => us.AddUserAsync(It.IsAny<User>()));
+        _userServiceMock.Setup(us => us.LoginWithEmail(It.IsAny<LoginWithEmailDto>())).ReturnsAsync(token);
+        _userServiceMock.Setup(us => us.AddUserAsync(It.IsAny<User>())).Callback((User user) => users.Add(_mapperConfig.Map<UserViewModel>(user)));
+        // Act
+        var result = await _userController.LoginWithGoogle(externalAuthDto);
+        var result_user = await _userController.LoginWithGoogle(externalAuthDto);
+
+        // Assert
+        result.Should().BeOfType<OkObjectResult>().Which.Value.Should().Be(token);
+        result_user.Should().BeOfType<OkObjectResult>().Which.Value.Should().Be(token);
+    }
     [Fact]
     public async Task Logout_ReturnNoContentResult()
     {
@@ -358,6 +439,28 @@ public class UserControllerTest : SetupTest
         Assert.NotNull(actual);
     }
     [Fact]
+    public async Task ImportExcel_ReturnNoContentResult()
+    {
+        //Arrange
+        var fileMock = new Mock<IFormFile>();
+        var users = _fixture.Build<User>().OmitAutoProperties().CreateMany(10).ToList();
+        _userServiceMock.Setup(u => u.ImportExcel(fileMock.Object)).ReturnsAsync(users);
+        //Act
+        var result = await _userController.ImportExcel(fileMock.Object);
+        //Assert
+        result.Should().BeOfType<OkResult>();
+    }
+    [Fact]
+    public async Task ImportExcel_ReturnBadRequestResult()
+    {
+        //Arrange
+        var fileMock = new Mock<IFormFile>();
+        //Act
+        var result = await _userController.ImportExcel(fileMock.Object);
+        //Assert
+        result.Should().BeOfType<BadRequestResult>();
+    }
+    [Fact]
     public async Task SearchUserWithFilter_ShouldReturnCorrectData()
     {
         //arrange
@@ -388,7 +491,29 @@ public class UserControllerTest : SetupTest
         Assert.Equal(StatusCodes.Status204NoContent, result.StatusCode);
     }
     [Fact]
-    public async Task Refresh_ShouldReturnOk() 
+    public void VerifyToken_ReturnNoContentResult()
+    {
+        //Arrange
+        var token = _fixture.Create<string>();
+        var jwtDto = _fixture.Build<JwtDTO>().Create();
+        _userServiceMock.Setup(u => u.CheckToken(token)).Returns(jwtDto);
+        //Act
+        var result = _userController.VerifyToken(token);
+        //Assert
+        result.Should().BeOfType<OkObjectResult>();
+    }
+    [Fact]
+    public void VerifyToken_ReturnBadRequestResult()
+    {
+        //Arrange
+        var token = _fixture.Create<string>();
+        //Act
+        var result = _userController.VerifyToken(token);
+        //Assert
+        result.Should().BeOfType<BadRequestObjectResult>();
+    }
+    [Fact]
+    public async Task Refresh_ShouldReturnOk()
     {
         var token = _fixture.Build<Token>()
                             .Create();
@@ -402,7 +527,7 @@ public class UserControllerTest : SetupTest
     }
 
     [Fact]
-    public async Task Refresh_ShouldREturnBadRequest() 
+    public async Task Refresh_ShouldReturnBadRequest()
     {
         var token = _fixture.Build<Token>()
                             .Create();

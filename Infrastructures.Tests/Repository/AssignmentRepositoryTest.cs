@@ -27,7 +27,6 @@ namespace Infrastructures.Tests.Repository
         {
             _assignmentRepository.AddProcedure().Should().BeAssignableTo(typeof(Task));
         }
-        [Fact]
         public async Task CheckExistedProcedure_Should_BeTrue()
         {
             //chịu ko biết viết

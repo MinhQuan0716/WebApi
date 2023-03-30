@@ -29,7 +29,7 @@ namespace Application.Tests.Services
         private readonly IAttendanceService _attendanceService;
         public AttendanceServiceTests()
         {
-            _attendanceService = new AttendanceService(_unitOfWorkMock.Object, _mapperConfig, configuration, _currentTimeMock.Object);
+            _attendanceService = new AttendanceService(_unitOfWorkMock.Object, _mapperConfig, _appConfiguration, _currentTimeMock.Object);
             _unitOfWorkMock.Setup(x => x.AttendanceRepository).Returns(_attendanceRepositoryMock.Object);
             _unitOfWorkMock.Setup(x => x.ApplicationRepository).Returns(_applicationRepositoryMock.Object);
             _unitOfWorkMock.Setup(x => x.TrainingClassRepository).Returns(_trainingClassRepositoryMock.Object);
@@ -132,11 +132,10 @@ namespace Application.Tests.Services
             Pagination<Attendance> mockData_empty = null;
 
             // Setup & Act
-            _attendanceRepositoryMock.Setup(x => x.GetAllAttendanceWithFilter(It.IsAny<Expression<Func<Attendance, bool>>>(), It.IsAny<int>(), It.IsAny<int>())).ReturnsAsync(mockData);
             DateTime dateTime = new DateTime();
-            var result_dto = await _attendanceService.GetAllAttendanceWithFilter(classId, search, by, containApplication, dateTime, dateTime, pageIndex, pageSize);
-            _attendanceRepositoryMock.Setup(x => x.GetAllAttendanceWithFilter(It.IsAny<Expression<Func<Attendance, bool>>>(), It.IsAny<int>(), It.IsAny<int>())).ReturnsAsync(mockData_empty);
             var result_empty = await _attendanceService.GetAllAttendanceWithFilter(classId, search, by, containApplication, dateTime, dateTime, pageIndex, pageSize);
+            _attendanceRepositoryMock.Setup(x => x.GetAllAttendanceWithFilter(It.IsAny<Expression<Func<Attendance, bool>>>(), It.IsAny<int>(), It.IsAny<int>())).ReturnsAsync(mockData);
+            var result_dto = await _attendanceService.GetAllAttendanceWithFilter(classId, search, by, containApplication, dateTime, dateTime, pageIndex, pageSize);
             // Assert
             var result = _mapperConfig.Map<Pagination<Attendance>>(result_dto);
             Assert.Equal(mockData_Item, result.Items);
@@ -147,9 +146,9 @@ namespace Application.Tests.Services
         public async void GetAllAttendanceWithFilter_ShouldThrowEnumException()
         {
             // Act
-            var result_throw = () => _attendanceService.GetAllAttendanceWithFilter(Guid.Empty, default, "this should throw", null, null, null, default);
+            var result_throw = async () => await _attendanceService.GetAllAttendanceWithFilter(Guid.Empty, default, "this should throw", null, null, null, default);
             // Assert
-            result_throw.Should().ThrowAsync<InvalidEnumArgumentException>();
+            await result_throw.Should().ThrowAsync<InvalidEnumArgumentException>();
         }
     }
 }

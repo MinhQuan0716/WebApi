@@ -63,7 +63,7 @@ namespace WebAPI.Controllers
         [Authorize]
         public async Task<IActionResult> GetAllTrainingProgram()
         {
-            var result = await _trainingProgramService.viewAllTrainingProgramDTOs();
+            var result = await _trainingProgramService.ViewAllTrainingProgramDTOs();
             if (result is not null) return Ok(result);
             else return BadRequest("Missing required fields");
         }

@@ -18,7 +18,7 @@ namespace Application.Repositories
         public Task<List<SyllabusViewAllDTO>> SearchByName(string name);
 
         Task<Syllabus> AddSyllabusAsync(SyllabusGeneralDTO syllabusDTO);
-        Task<IEnumerable<Syllabus>> GetSyllabusByTrainingProgramId(Guid trainingProgramId);
+        Task<List<Syllabus>> GetSyllabusByTrainingProgramId(Guid trainingProgramId);
 
         Task<SyllabusOutlineDTO> GetBySession(int Session, Guid syllabusID);
 

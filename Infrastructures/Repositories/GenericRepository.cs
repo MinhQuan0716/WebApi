@@ -29,7 +29,10 @@ namespace Infrastructures.Repositories
            .Where(x => x.IsDeleted == false)
            .ToListAsync();
         }
-
+        public Task<TEntity?> GetByIdAsync(Guid id)
+        {
+            return this.GetByIdAsync(id, Array.Empty<Expression<Func<TEntity, object>>>());
+        }
         public async Task<TEntity?> GetByIdAsync(Guid id, params Expression<Func<TEntity, object>>[] includes)
         {
             //var result = await _dbSet.FirstOrDefaultAsync(x => x.Id == id);
@@ -84,9 +87,9 @@ namespace Infrastructures.Repositories
             _dbSet.UpdateRange(entities);
         }
 
-        public Task<Pagination<TEntity>> ToPagination(int pageIndex = 0, int pageSize = 10) 
+        public Task<Pagination<TEntity>> ToPagination(int pageIndex = 0, int pageSize = 10)
             => ToPagination(x => true, pageIndex, pageSize);
-        public Task<Pagination<TEntity>> ToPagination(Expression<Func<TEntity, bool>> expression, int pageIndex = 0, int pageSize = 10) 
+        public Task<Pagination<TEntity>> ToPagination(Expression<Func<TEntity, bool>> expression, int pageIndex = 0, int pageSize = 10)
             => ToPagination(_dbSet, expression, pageIndex, pageSize);
         public async Task<Pagination<TEntity>> ToPagination(IQueryable<TEntity> value, Expression<Func<TEntity, bool>> expression, int pageIndex, int pageSize)
         {
@@ -124,5 +127,7 @@ namespace Infrastructures.Repositories
            .Aggregate(_dbSet.AsQueryable(),
                (entity, property) => entity.Include(property))
            .Where(expression).Where(x => x.IsDeleted == false).ToListAsync();
+
+
     }
 }

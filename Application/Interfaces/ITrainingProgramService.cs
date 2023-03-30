@@ -17,7 +17,7 @@ namespace Application.Interfaces
         Task<bool> UpdateTrainingProgram(UpdateTrainingProgramDTO updateProgramDTO);
         Task<bool> DeleteTrainingProgram(Guid trainingProgramId);
         Task<List<SearchAndFilterTrainingProgramViewModel>> SearchTrainingProgramWithFilter(string? searchString, string? status, string? createBy);
-        Task<IEnumerable<ViewAllTrainingProgramDTO>> viewAllTrainingProgramDTOs();
+        Task<List<ViewAllTrainingProgramDTO>> ViewAllTrainingProgramDTOs();
         Task<TrainingProgram> DuplicateTrainingProgram(Guid trainingProgramId);
 
 

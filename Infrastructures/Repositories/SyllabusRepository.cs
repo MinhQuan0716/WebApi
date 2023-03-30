@@ -40,7 +40,7 @@ namespace Infrastructures.Repositories
             return result;
         }
 
-        public async Task<IEnumerable<Syllabus>> GetSyllabusByTrainingProgramId(Guid trainingProgramId)
+        public async Task<List<Syllabus>> GetSyllabusByTrainingProgramId(Guid trainingProgramId)
         {
             var syllabusList = from s in _dbContext.Syllabuses
                                join d in _dbContext.DetailTrainingProgramSyllabuses

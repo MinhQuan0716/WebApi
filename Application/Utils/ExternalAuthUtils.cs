@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Application.Utils;
 
-public class ExternalAuthUtils
+public class ExternalAuthUtils : IExternalAuthUtils
 {
     private readonly IConfiguration _configuration;
     private readonly string _googleClientId;
@@ -22,18 +22,16 @@ public class ExternalAuthUtils
 
     public async Task<GoogleJsonWebSignature.Payload> VerifyGoogleToken(ExternalAuthDto externalAuth)
     {
-        try
-        {
             var settings = new GoogleJsonWebSignature.ValidationSettings()
             {
                 Audience = new List<string>() { _googleClientId }
             };
             var payload = await GoogleJsonWebSignature.ValidateAsync(externalAuth.IdToken, settings);
             return payload;
-        }
-        catch (Exception ex)
-        {
-            throw new Exception(ex.Message);
-        }
     }
+}
+
+public interface IExternalAuthUtils
+{
+    public Task<GoogleJsonWebSignature.Payload> VerifyGoogleToken(ExternalAuthDto externalAuth);
 }

@@ -357,7 +357,6 @@ namespace Application.Services
             var Quiz = await _unitOfWork.QuizRepository.GetByIdAsync(QuizID);
             if (Quiz is null) {
                 throw new NullReferenceException("You Haven't Do the Test before");
-                
             }
             object_answer.QuizName = Quiz.QuizName;
             object_answer.NumberOfQuiz = Quiz.NumberOfQuiz;

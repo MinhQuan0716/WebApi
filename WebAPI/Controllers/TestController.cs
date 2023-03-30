@@ -165,7 +165,7 @@ namespace WebAPI.Controllers
 
         [HttpPost]
         [Authorize(Roles = "SuperAdmin,Admin,Trainer,Mentor")]
-        public async Task<IActionResult> UpgradeQuestion(Guid QuestionID, UpdateQuestionDTO createQuizIntoBankDTO)
+        public async Task<IActionResult> UpdateQuestion(Guid QuestionID, UpdateQuestionDTO createQuizIntoBankDTO)
         {
             bool check = await _quizService.UpdateQuestion(QuestionID, createQuizIntoBankDTO);
             if (check)

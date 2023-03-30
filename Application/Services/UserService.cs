@@ -114,8 +114,8 @@ public class UserService : IUserService
         var expireRefreshTokenTime = DateTime.Now.AddHours(24);
 
         user.RefreshToken = refreshToken;
-        
-        _memoryCache.Set(refreshToken, user.Id, DateTimeOffset.Now.AddDays(1)); 
+
+        _memoryCache.Set(refreshToken, user.Id, DateTimeOffset.Now.AddDays(1));
         user.ExpireTokenTime = expireRefreshTokenTime;
         _unitOfWork.UserRepository.Update(user);
         await _unitOfWork.SaveChangeAsync();
@@ -129,10 +129,11 @@ public class UserService : IUserService
     }
     public JwtDTO CheckToken(string accessToken)
     {
-        if(accessToken.IsNullOrEmpty())
+        if (accessToken.IsNullOrEmpty())
         {
             throw new Exception("Invalid Token");
-        }else
+        }
+        else
         {
             var principal = accessToken.VerifyToken(_configuration.JWTSecretKey);
             if (principal is not null) return principal;
@@ -140,20 +141,20 @@ public class UserService : IUserService
         }
     }
 
-    public async Task<Token> RefreshTokenV2(string refreshToken) 
+    public async Task<Token> RefreshTokenV2(string refreshToken)
     {
         _ = _memoryCache.TryGetValue(refreshToken, out Guid? userId);
-        if(userId is not null) 
+        if (userId is not null)
         {
             var user = await _unitOfWork.UserRepository.GetByIdAsync(userId.Value, x => x.Role);
-            if(user is not null) 
+            if (user is not null)
             {
 
                 var newAccessToken = user.GenerateJsonWebToken(_configuration.JWTSecretKey, _currentTime.GetCurrentTime());
                 var newRefreshToken = RefreshTokenString.GetRefreshToken();
                 user.RefreshToken = newRefreshToken;
                 _unitOfWork.UserRepository.Update(user);
-                _memoryCache.Set(newRefreshToken, user.Id, DateTimeOffset.Now.AddDays(1)); 
+                _memoryCache.Set(newRefreshToken, user.Id, DateTimeOffset.Now.AddDays(1));
                 await _unitOfWork.SaveChangeAsync();
                 return new Token
                 {
@@ -161,10 +162,12 @@ public class UserService : IUserService
                     AccessToken = newAccessToken,
                     RefreshToken = newRefreshToken
                 };
-            } else throw new Exception("Can not found any user with that Id");
-        } else throw new Exception("Not exist any userId with that RefreshToken");
-        
-        
+            }
+            else throw new Exception("Can not found any user with that Id");
+        }
+        else throw new Exception("Not exist any userId with that RefreshToken");
+
+
     }
     public async Task<Token> RefreshToken(string accessToken, string refreshToken)
     {
@@ -273,13 +276,12 @@ public class UserService : IUserService
             //Replace [emailaddress] = email
             MailText = MailText.Replace("[emailaddress]", email);
             var result = await _sendMailHelper.SendMailAsync(email, "ResetPassword", MailText);
-            if (result)
-            {
-                _memoryCache.Set(key, email, DateTimeOffset.Now.AddMinutes(10));
-                return key;
-            }
+            if (!result) return string.Empty;
 
-            return string.Empty;
+            _memoryCache.Set(key, email, DateTimeOffset.Now.AddMinutes(10));
+            return key;
+
+
         }
         else
         {

@@ -157,7 +157,7 @@ namespace Application.Tests.Services
             _mockConfig.Object, cache, _sendMailMock.Object);
 
             Func<Task> act = async () => await newUserService.ResetPassword(ResetPassDTO);
-            act.Should().ThrowAsync<Exception>();
+            await act.Should().ThrowAsync<Exception>();
         }
         /*        [Fact]
                 public async Task ResetPassword_ConfirmFalse_ShouldThrowException()
@@ -210,7 +210,7 @@ namespace Application.Tests.Services
             UpdateDTO mockData = null;
             //Get Return Exception
             Func<Task> act = async () => await _userService.UpdateUserInformation(mockData);
-            act.Should().ThrowAsync<Exception>();
+            await act.Should().ThrowAsync<Exception>();
         }
 
         [Fact]
@@ -237,8 +237,8 @@ namespace Application.Tests.Services
                                                  .Without(u => u.Feedbacks).CreateMany(1).ToList();
             var mockData = _fixture.Build<RegisterDTO>().Create();
             _unitOfWorkMock.Setup(um => um.UserRepository.FindAsync(u => u.UserName == mockData.UserName || u.Email == mockData.Email)).ReturnsAsync(listUser);
-            Func<Task> act = async () => await _userService.RegisterAsync(mockData);
-            act.Should().ThrowAsync<Exception>();
+            Func<Task> act =  () =>  _userService.RegisterAsync(mockData);
+            await act.Should().ThrowAsync<Exception>();
         }
 
         [Fact]
@@ -271,10 +271,10 @@ namespace Application.Tests.Services
             _unitOfWorkMock.Setup(u => u.UserRepository.GetUserByEmailAsync(mockUser.Email)).ReturnsAsync(mockUser);
 
             //Act
-            Func<Task> act = async () => await _userService.LoginAsync(loginDTO);
+            Func<Task> act =  () =>  _userService.LoginAsync(loginDTO);
             //Assert
 
-            act.Should().ThrowAsync<Exception>();
+            await act.Should().ThrowAsync<Exception>();
         }
 
         [Fact]
@@ -321,7 +321,7 @@ namespace Application.Tests.Services
             Func<Task> act = async () => await _userService.RefreshToken(token.AccessToken, token.RefreshToken);
 
             //Assert
-            act.Should().ThrowAsync<Exception>();
+            await act.Should().ThrowAsync<Exception>();
         }
         [Fact]
         public async Task RefreshToken_ReturnNull_WhenRefreshTokenInCorrect()
@@ -553,7 +553,7 @@ namespace Application.Tests.Services
             //Act
             Func<Task> act = async () => await _userService.LogoutAsync();
             //Assert
-            act.Should().ThrowAsync<Exception>();
+            await act.Should().ThrowAsync<Exception>();
         }
         [Fact]
         public async void SearchUserWithFilter_ShouldReturnAllUser()

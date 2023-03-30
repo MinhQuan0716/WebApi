@@ -44,7 +44,7 @@ namespace Domains.Test
         protected readonly Mock<IApplicationService> _applicationServiceMock;
 
         protected readonly Mock<IQuestionRepository> _questionRepositoryMock;
-        protected readonly Mock<IQuestionService> _testServiceMock;
+        protected readonly Mock<IQuestionService> _quizServiceMock;
 
 
         protected readonly Mock<IUserRepository> _userRepository;
@@ -57,9 +57,7 @@ namespace Domains.Test
         protected readonly Mock<IFeedbackService> _feedbackServiceMock;
         protected readonly Mock<IFeedbackRepository> _feedbackRepositoryMock;
 
-
-
-        protected readonly AppConfiguration configuration;
+        protected readonly AppConfiguration _appConfiguration;
         protected readonly AppDbContext _dbContext;
         protected readonly Mock<AppConfiguration> _appConfigurationMock;
         protected readonly Mock<ISendMailHelper> _sendMailMock;
@@ -67,6 +65,7 @@ namespace Domains.Test
         protected readonly Mock<IMapper> _mapperMock;
 
         protected readonly Mock<ITrainingProgramService> _trainingProgramServiceMock;
+        protected readonly Mock<ITrainingProgramRepository> _trainingProgramRepositoryMock;
 
         protected readonly Mock<ILectureService> _lectureServiceMock;
         protected readonly Mock<ILectureRepository> _lectureRepositoryMock;
@@ -79,7 +78,7 @@ namespace Domains.Test
 
         protected readonly Mock<IAssignmentService> _assigmentServiceMock;
         protected readonly Mock<IRecurringJobManager> _recurringJobManagerMock;
-        protected Mock<IQuestionService> QuestionServiceMock => _testServiceMock;
+        protected Mock<IQuestionService> QuestionServiceMock => _quizServiceMock;
 
         protected Mock<IQuestionRepository> QuestionRepositoryMock => _questionRepositoryMock;
 
@@ -114,7 +113,7 @@ namespace Domains.Test
             _lectureServiceMock = new Mock<ILectureService>();
             _lectureRepositoryMock = new Mock<ILectureRepository>();
 
-            _testServiceMock = new Mock<IQuestionService>();
+            _quizServiceMock = new Mock<IQuestionService>();
             _questionRepositoryMock = new Mock<IQuestionRepository>();
 
 
@@ -136,13 +135,14 @@ namespace Domains.Test
                 .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
                 .Options;
             _dbContext = new AppDbContext(options);
-            configuration = new AppConfiguration();
+            _appConfiguration = new AppConfiguration();
             _currentTimeMock.Setup(x => x.GetCurrentTime()).Returns(DateTime.UtcNow);
             _claimsServiceMock.Setup(x => x.GetCurrentUserId).Returns(Guid.Empty);
             _appConfigurationMock = new Mock<AppConfiguration>();
             _config = new Mock<IConfiguration>();
             _mapperMock = new Mock<IMapper>();
             _trainingProgramServiceMock = new Mock<ITrainingProgramService>();
+            _trainingProgramRepositoryMock = new Mock<ITrainingProgramRepository>();
             _trainingClassRepositoryMock = new Mock<ITrainingClassRepository>();
             _trainingClassServiceMock = new Mock<ITrainingClassService>();
 

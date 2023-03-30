@@ -53,7 +53,7 @@ namespace Application.Services
                 trainingProgram.Status = "Active";
                 await _unitOfWork.TrainingProgramRepository.AddAsync(trainingProgram);
                 await _unitOfWork.SaveChangeAsync();
-               
+
                 // Create Training Program Detail (Syllabuses - TrainingProgram)
                 foreach (var syllabusId in syllabusesId)
                 {
@@ -122,16 +122,16 @@ namespace Application.Services
 
 
 
-        public async Task<IEnumerable<ViewAllTrainingProgramDTO>> viewAllTrainingProgramDTOs()
+        public async Task<List<ViewAllTrainingProgramDTO>> ViewAllTrainingProgramDTOs()
         {
             var allTrainingProgram = await _unitOfWork.TrainingProgramRepository.GetAllAsync();
             var mapViewTrainingProgram = _mapper.Map<List<ViewAllTrainingProgramDTO>>(allTrainingProgram);
             var listAll = from a in mapViewTrainingProgram
                           select new
                           {
-                              Id = a.Id,
+                              a.Id,
                           };
-            IList<ViewAllTrainingProgramDTO> viewAllTraining = new List<ViewAllTrainingProgramDTO>();
+            var viewAllTraining = new List<ViewAllTrainingProgramDTO>();
             foreach (var a in listAll)
             {
                 var result = await _unitOfWork.TrainingProgramRepository.GetByIdAsync(a.Id);
@@ -139,11 +139,11 @@ namespace Application.Services
                 {
                     //viet ham lay syllabusid by trainingprogramid
                     var trainingProgramView = _mapper.Map<ViewAllTrainingProgramDTO>(result);
-                    trainingProgramView.Content = (ICollection<Syllabus>?)await _unitOfWork.SyllabusRepository.GetSyllabusByTrainingProgramId(trainingProgramView.Id);
+                    trainingProgramView.Content = await _unitOfWork.SyllabusRepository.GetSyllabusByTrainingProgramId(trainingProgramView.Id);
                     viewAllTraining.Add(trainingProgramView);
                 }
             }
-            return viewAllTraining;
+            return viewAllTraining.Count > 0 ? viewAllTraining : null;
 
 
         }
@@ -184,32 +184,36 @@ namespace Application.Services
         public async Task<TrainingProgram> DuplicateTrainingProgram(Guid TrainingProgramId)
         {
             var duplicateItem = await _unitOfWork.TrainingProgramRepository.GetByIdAsync(TrainingProgramId, x => x.DetailTrainingProgramSyllabus);
-            if(duplicateItem is not null) 
+            if (duplicateItem is not null)
             {
-                var createItem = new TrainingProgram 
+                var createItem = new TrainingProgram
                 {
                     Id = Guid.NewGuid(),
                     ProgramName = duplicateItem.ProgramName,
                     Status = "Active"
                 };
                 await _unitOfWork.TrainingProgramRepository.AddAsync(createItem);
-                if(await _unitOfWork.SaveChangeAsync() > 0) 
+                if (await _unitOfWork.SaveChangeAsync() > 0)
                 {
                     List<DetailTrainingProgramSyllabus> createdDetail = new List<DetailTrainingProgramSyllabus>();
-                    foreach(var item in duplicateItem.DetailTrainingProgramSyllabus) 
+                    foreach (var item in duplicateItem.DetailTrainingProgramSyllabus)
                     {
-                        createdDetail.Add(new DetailTrainingProgramSyllabus{   TrainingProgramId = createItem.Id,
-                                                                                     SyllabusId = item.SyllabusId,
-                                                                                     Status = "Active"
-                                                                                 });
+                        createdDetail.Add(new DetailTrainingProgramSyllabus
+                        {
+                            TrainingProgramId = createItem.Id,
+                            SyllabusId = item.SyllabusId,
+                            Status = "Active"
+                        });
                     }
                     await _unitOfWork.DetailTrainingProgramSyllabusRepository.AddRangeAsync(createdDetail);
-                    if(await _unitOfWork.SaveChangeAsync() > 0) return createItem;
+                    if (await _unitOfWork.SaveChangeAsync() > 0) return createItem;
                     else throw new Exception("Can not Insert DetailTrainingProgramSyllabuses!");
-                } else throw new Exception("Add Training Program Failed _ Save Change Failed!");
+                }
+                else throw new Exception("Add Training Program Failed _ Save Change Failed!");
 
-            } else throw new Exception("Not found or TrainingProgram has been deleted");
-        
+            }
+            else throw new Exception("Not found or TrainingProgram has been deleted");
+
         }
     }
 }

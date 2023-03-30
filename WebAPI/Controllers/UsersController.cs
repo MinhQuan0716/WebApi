@@ -19,10 +19,10 @@ namespace WebAPI.Controllers
     {
         private readonly IUserService _userService;
         private readonly IClaimsService _claimsService;
-        private readonly ExternalAuthUtils _externalAuthUtils;
+        private readonly IExternalAuthUtils _externalAuthUtils;
         private readonly IMapper _mapper;
 
-        public UsersController(IUserService userService, IClaimsService claimsService, ExternalAuthUtils externalAuthUtils, IMapper mapper)
+        public UsersController(IUserService userService, IClaimsService claimsService, IExternalAuthUtils externalAuthUtils, IMapper mapper)
         {
             _userService = userService;
             _claimsService = claimsService;
@@ -101,7 +101,7 @@ namespace WebAPI.Controllers
             {
                 return Ok();
             }
-            else return BadRequest("Can Not found User");
+            else return BadRequest("Cannot found User");
         }
 
         [HttpPost]
@@ -188,7 +188,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> LoginWithGoogle([FromBody] ExternalAuthDto externalAuthDto)
+        public async Task<IActionResult> LoginWithGoogle(ExternalAuthDto externalAuthDto)
         {
             var payload = await _externalAuthUtils.VerifyGoogleToken(externalAuthDto);
             if (payload == null)
@@ -202,7 +202,7 @@ namespace WebAPI.Controllers
                 UserName = payload.Email,
                 AvatarUrl = payload.Picture
             };
-            var user = (await _userService.GetAllAsync()).SingleOrDefault(u => u.Email == newUser.Email);
+            var user = _userService.GetAllAsync().Result.SingleOrDefault(u => u.Email == newUser.Email);
             if (user == null)
             {
                 await _userService.AddUserAsync(newUser);
