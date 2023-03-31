@@ -51,7 +51,7 @@ namespace Application.Services
         /// </summary>
         /// <param className="className">Training class name</param>
         /// <returns>List of training classes<TrainingClass></returns>
-        public async Task<List<TrainingClass>> SearchClassByNameAsync(string className)
+        public async Task<List<TrainingClassViewAllDTO>> SearchClassByNameAsync(string className)
         {
             var listClass = _unitOfWork.TrainingClassRepository.SearchClassByName(className);
             return listClass;
@@ -259,11 +259,12 @@ namespace Application.Services
         public async Task<FinalTrainingClassDTO> GetFinalTrainingClassesAsync(Guid id)
         {
             FinalTrainingClassDTO finalDTO = new FinalTrainingClassDTO();
-            var trainingClassFilterDetail = _unitOfWork.TrainingClassRepository.GetTrainingClassFilterById(id);
+            var trainingClassFilterDetail = _unitOfWork.TrainingClassRepository.GetTrainingClassForViewDetailById(id);
             var trainingProgram = _unitOfWork.TrainingClassRepository.GetTrainingProgramByClassID(id);
             var detailProgramSyllabus = _unitOfWork.DetailTrainingProgramSyllabusRepository.GetDetailByClassID(trainingProgram.programId);
-            var detailTrainingClass = await _unitOfWork.DetailTrainingClassParticipate.GetDetailTrainingClassParticipatesByClassIDAsync(id);
+            var detailTrainingClass = await _unitOfWork.DetailTrainingClassParticipateRepository.GetDetailTrainingClassParticipatesByClassIDAsync(id);
             var adminInClass = await _unitOfWork.DetailTrainingClassParticipateRepository.GetAdminInClasssByClassIDAsync(id);
+         
 
             AttendeeDTO attendeeDTO = new AttendeeDTO()
             {
@@ -281,16 +282,19 @@ namespace Application.Services
             finalDTO.syllabuses = detailProgramSyllabus;
 
             finalDTO.classId = trainingClassFilterDetail.ClassID;
+            finalDTO.classCode= trainingClassFilterDetail.Code;
             finalDTO.classCode = trainingClassFilterDetail.Code;
             finalDTO.classStatus = trainingClassFilterDetail.Status;
             finalDTO.className = trainingClassFilterDetail.Name;
             finalDTO.dateOrder = new DateOrderForViewDetail
             {
                 current = 10,
-                total = 10 * 3
+                total=10*3
             };
             finalDTO.classDuration = trainingClassFilterDetail.ClassDuration;
+         
 
+           
             finalDTO.lastEdit = new LastEditDTO()
             {
                 modificationBy = trainingClassFilterDetail.LastEditDTO.modificationBy,
@@ -369,9 +373,10 @@ namespace Application.Services
                                     IsDeleted = bool.Parse(worksheet.Cells[row, 14].Value.ToString().Trim()),
                                 });
                             }
-                            catch (NullReferenceException)
+                            catch (NullReferenceException ex)
                             {
                                 throw new Exception("Excel file is missing some data");
+
                             }
                         }
                         await _unitOfWork.TrainingClassRepository.AddRangeAsync(list);
@@ -380,7 +385,7 @@ namespace Application.Services
                     return list;
                 }
             }
-            catch (Exception)
+            catch (ArgumentException)
             {
                 throw new Exception("Excel file has invalid data");
             }

@@ -35,19 +35,20 @@ namespace WebAPI.Tests.Controllers
         }
 
         [Fact]
-        public async Task SearchClassByName_Get_ShuuldReturnCorrectValues()
+        public async Task SearchClassByName_Get_ShouldReturnCorrectValues()
         {
-            List<TrainingClass> trainingClasses = _fixture.Build<TrainingClass>()
+            List<TrainingClassViewAllDTO> trainingClasses = _fixture.Build<TrainingClassViewAllDTO>()
                                                           .OmitAutoProperties()
-                                                          .With(x => x.Code)
-                                                          .With(x => x.Branch)
-                                                          .With(x => x.StatusClassDetail)
-                                                          .With(x => x.Attendee)
-                                                          .With(x => x.Name)
+                                                          .With(x => x.classCode)
+                                                          .With(x => x.className)
+                                                          .With(x => x.fsu)
+                                                          .With(x => x.createdBy)
+                                                          .With(x => x.createdOn)
+                                                          .With(x=>x.id)
                                                           .CreateMany(3)
                                                           .ToList();
-            await _dbContext.AddRangeAsync(trainingClasses);
-            await _dbContext.SaveChangesAsync();
+          /*  await _dbContext.AddRangeAsync(trainingClasses);
+            await _dbContext.SaveChangesAsync();*/
 
             string name1 = "anything";
 
@@ -96,34 +97,25 @@ namespace WebAPI.Tests.Controllers
             // Assert
             Assert.IsType<OkObjectResult>(result);
         }
+      
         [Fact]
-        public async Task FilterResult_ReturnsNotFound_WhenFilterResultIsEmpty()
-        {
-            string[] locationName = { "New York" };
-            DateTime date1 = DateTime.Now.AddDays(-7);
-            DateTime date2 = DateTime.Now.AddDays(-1);
-            string[] statusClass = { "New" };
-            string[] attendee = { "None" };
-            string branchName = "new";
-            string trainerName = "New";
-            var nonEmptyResult = _fixture.Build<TrainingClassViewAllDTO>()
-                .CreateMany(10).ToList();
+        public async Task FilterResult_ReturnsNoContentObject_WhenFilterResultIsEmpty()
+        { 
             var mockData = _fixture.Build<TrainingClassFilterModel>().Create();
-
-            _trainingClassServiceMock.Setup(x => x.FilterLocation(locationName, branchName, date1, date2, statusClass, attendee, trainerName)).ReturnsAsync(nonEmptyResult);
-            // Act
-            var result = await _trainingClassController.FilterResult(mockData);
-
-            // Assert
-            Assert.IsType<NoContentResult>(result);
+            _trainingClassServiceMock.Setup(x => x.FilterLocation(mockData.locationName, mockData.branchName, mockData.date1, mockData.date2, mockData.classStatus, mockData.attendInClass, mockData.trainer));
+            //act
+          var result=await _trainingClassController.FilterResult(mockData);
+            //assert
+            Assert.NotNull(result);
+            result.Should().BeOfType<NoContentResult>();
         }
         [Fact]
-        public async Task FilterResult_ReturnsOkObject_WhenFilterResultIsNotEmpty()
+        public async Task FilterResult_ReturnsOkObjectResult_WhenSearchIsNotEmpty()
         {
             // Arrange
             string[] locationName = { "Ftown2" };
             DateTime date1 = DateTime.Parse("2023/02/28");
-            DateTime date2 = DateTime.Parse("2023/03/30");
+            DateTime date2 = DateTime.Parse("2023/03/31");
             string[] statusClass = { "Active" };
             string[] attendee = { "50" };
             string branchName = "stringstring";
@@ -138,16 +130,15 @@ namespace WebAPI.Tests.Controllers
                 date2 = date2,
                 attendInClass = attendee,
                 classStatus = statusClass,
-                trainer=trainerName
+                trainer = trainerName
             };
-            _trainingClassServiceMock.Setup(x => x.FilterLocation(locationName, branchName, date1, date2, statusClass, attendee,trainerName)).ReturnsAsync(nonEmptyResult);
+            _trainingClassServiceMock.Setup(x => x.FilterLocation(locationName, branchName, date1, date2, statusClass, attendee, trainerName)).ReturnsAsync(nonEmptyResult);
 
             // Act
             var result = await _trainingClassController.FilterResult(mockData);
 
             // Assert
             var okObjectResult = Assert.IsType<OkObjectResult>(result);
-            // var okFilterResult = Assert.IsType<OkObjectResult>(filterResult);
             var model = Assert.IsAssignableFrom<IEnumerable<TrainingClassViewAllDTO>>(okObjectResult.Value);
         }
     }

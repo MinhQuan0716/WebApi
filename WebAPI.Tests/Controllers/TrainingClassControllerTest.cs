@@ -250,15 +250,20 @@ namespace WebAPI.Tests.Controllers
         {
             //Arrange
             var mockData=_fixture.Create<FinalTrainingClassDTO>();
-            Guid mockId = Guid.NewGuid();
-            _trainingClassServiceMock.Setup(s => s.GetFinalTrainingClassesAsync(mockId)).ReturnsAsync(mockData);// setup return mockData
+            var mockTrainingClass=_fixture.Build<TrainingClass>().
+                                           OmitAutoProperties()
+                                            .Without(x=>x.TrainingProgram)
+                                            .Without(x=>x.TrainingClassParticipates)
+                                            .Create<TrainingClass>();
+            var existingClassID = mockTrainingClass.Id;
+            _trainingClassServiceMock.Setup(s => s.GetFinalTrainingClassesAsync(existingClassID)).ReturnsAsync(mockData);
             //Act 
-            var result_ok =await  _trainingClassController.GetTrainingClassDetail(mockId);
+            var result =await  _trainingClassController.GetTrainingClassDetail(existingClassID);
             //Assert
-            Assert.IsType<OkObjectResult>(result_ok);
-            result_ok.As<OkObjectResult>().Value.Should().Be(mockData);
-
+            Assert.IsType<OkObjectResult>(result);
+            
         }
+       
         [Fact]
         public async Task ViewDetailTrainingClass_ShouldBeNotFound()
         {

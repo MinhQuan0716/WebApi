@@ -27,7 +27,7 @@ namespace Application.Filter.ClassFilter
                 {
                     foreach (TrainingClassFilterDTO item in classList)
                     {
-                        if (attendInClass[i].ToLower().Equals(item.Status.ToLower()))
+                        if (attendInClass[i].ToLower().Equals(item.Attendee.ToLower()))
                         {
                             classData.Add(item);
                         }

@@ -12,7 +12,7 @@ namespace Application.Interfaces
 {
     public interface ITrainingClassService
     {
-        public Task<List<TrainingClass>> SearchClassByNameAsync(string name);
+        public Task<List<TrainingClassViewAllDTO>> SearchClassByNameAsync(string name);
         public Task<bool> DuplicateClassAsync(Guid id);
         public Task<bool> SoftRemoveTrainingClassAsync(string traingingClassId);
         public Task<bool> UpdateTrainingClassAsync(string trainingClassId, UpdateTrainingClassDTO updateTrainingCLassDTO);

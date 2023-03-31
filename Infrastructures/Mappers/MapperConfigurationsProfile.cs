@@ -276,10 +276,12 @@ namespace Infrastructures.Mappers
             CreateMap<TrainingClass, TrainingClassViewModel>()
                 .ForMember(x => x._Id, src => src.MapFrom(x => x.Id))
                 .ForMember(x => x.LocationName, src => src.MapFrom(x => x.Location.LocationName))
+                .ForMember(x => x.LocationName, src => src.MapFrom(x => x.Location.LocationName))
                 .ForMember(x => x.Admins, src => src.MapFrom(x => x.TrainingClassAdmins))
                 .ForMember(x => x.Trainers, src => src.MapFrom(x => x.TrainingClassTrainers))
                 .ForMember(x => x.Attendees, src => src.MapFrom(x => x.TrainingClassAttendee))
                 .ForMember(x => x.TimeFrame, src => src.MapFrom(x => x.TrainingClassTimeFrame));
+              
             CreateMap<Location, TrainingClassViewModel>()
                 .ForMember(x => x.LocationName, src => src.MapFrom(x => x.LocationName));
             //view class
@@ -322,7 +324,22 @@ namespace Infrastructures.Mappers
                 .ForMember(v => v.createdBy, src => src.MapFrom(x => x.CreatedBy))
                 .ForMember(v => v.createdOn, src => src.MapFrom(x => x.CreationDate))
                 .ReverseMap();
-
+            CreateMap<TrainingClassViewAllDTO, TrainingClass>()
+                .ForMember(t => t.Id, src => src.MapFrom(x => x.id))
+                .ForMember(t => t.Code, src => src.MapFrom(x => x.classCode))
+                .ForMember(t=>t.Name,src=>src.MapFrom(x=>x.className))
+                .ForMember(t=>t.CreationDate,src=>src.MapFrom(x=>x.createdOn))
+                .ForMember(t=>t.Branch,src=>src.MapFrom(x=>x.fsu))
+                .ForMember(t=>t.Attendee,src=>src.MapFrom(x=>x.attendee))
+                .ForMember(t=>t.Duration,src=>src.MapFrom(x=>x.classDuration.TotalHours))
+                .ReverseMap();
+            CreateMap<TrainingClassFilterDTO, TrainingClass>()
+              .ForMember(dest => dest.Duration, opt => opt.MapFrom(src => src.ClassDuration.TotalHours))
+              .ForMember(dest => dest.StartTime, opt => opt.MapFrom(x => x.StartDate))
+              .ForMember(dest => dest.EndTime, opt => opt.MapFrom(x => x.EndDate))
+              .ForMember(dest => dest.StatusClassDetail, opt => opt.MapFrom(x => x.Status))
+              .ForMember(dest => dest.Branch, opt => opt.MapFrom(x => x.Branch))
+              .ReverseMap();
             //map location
             CreateMap<CreateLocationDTO, Location>();
             CreateMap<Location, LocationDTO>()

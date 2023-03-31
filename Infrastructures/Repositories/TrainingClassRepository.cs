@@ -22,10 +22,10 @@ namespace Infrastructures.Repositories
     /// <summary>
     /// Training class repository
     /// </summary>
-    public class TraingClassRepository : GenericRepository<TrainingClass>, ITrainingClassRepository
+    public class TrainingClassRepository : GenericRepository<TrainingClass>, ITrainingClassRepository
     {
         private readonly AppDbContext _dbContext;
-        public TraingClassRepository(AppDbContext context, ICurrentTime timeService, IClaimsService claimsService)
+        public TrainingClassRepository(AppDbContext context, ICurrentTime timeService, IClaimsService claimsService)
             : base(context, timeService, claimsService)
         {
             _dbContext = context;
@@ -83,6 +83,9 @@ namespace Infrastructures.Repositories
         public List<TrainingClassViewAllDTO> GetTrainingClasses()
         {
             var getAllTrainingClass = _dbContext.TrainingClasses
+                                       .Include(t=>t.TrainingClassParticipates)
+                                       .ThenInclude(participate=>participate.User)
+                                       .Where(t=>t.IsDeleted==false)
                                      .Select(t => new TrainingClassViewAllDTO
                                      {
                                          id = t.Id,
@@ -96,7 +99,7 @@ namespace Infrastructures.Repositories
                                          {
                                              TotalHours = t.Duration
                                          },
-                                         createdBy = string.Join(",", _dbContext.Users.Where(x => x.Id == t.CreatedBy).Select(u => u.UserName))
+                                         createdBy = string.Join(",", t.TrainingClassParticipates.Select(parti=>parti.User).Select(u=>u.UserName))
                                      }).ToList();
             return getAllTrainingClass;
         }
@@ -107,10 +110,26 @@ namespace Infrastructures.Repositories
         /// </summary>
         /// <param name="name">name of a training class</param>
         /// <returns>List of training classes</returns>
-        public List<TrainingClass> SearchClassByName(string name)
+        public List<TrainingClassViewAllDTO> SearchClassByName(string name)
         {
-            var nameClass = _dbContext.TrainingClasses.Where(x => x.Name.ToLower().Equals(name.ToLower())).ToList();
-            return nameClass;
+            var classByName=_dbContext.TrainingClasses
+                             .Where(t=>t.Name.ToLower().Contains(name.ToLower())&&t.IsDeleted==false)
+                             .Select(t => new TrainingClassViewAllDTO
+                              {
+                                  id = t.Id,
+                                  className = t.Name,
+                                  location = t.Location.LocationName,
+                                  createdOn = t.CreationDate,
+                                  classCode = t.Code,
+                                  fsu = t.Branch,
+                                  attendee = t.Attendee,
+                                  classDuration = new DurationView
+                                  {
+                                      TotalHours = t.Duration
+                                  },
+                                  createdBy = string.Join(",", _dbContext.Users.Where(x => x.Id == t.CreatedBy).Select(u => u.UserName))
+                              }).ToList();
+            return classByName;
         }
 
         /// <summary>
@@ -210,7 +229,7 @@ namespace Infrastructures.Repositories
             }
             base.Update(trainingClass);
         }
-        public TrainingClassFilterDTO GetTrainingClassFilterById(Guid id)
+        public TrainingClassFilterDTO GetTrainingClassForViewDetailById(Guid id)
         {
             var getAllTrainingClass = _dbContext.TrainingClasses
                              .Where(x => x.IsDeleted == false && x.Id == id)

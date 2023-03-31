@@ -20,7 +20,7 @@ namespace Infrastructures.Tests.Repository
 
         public TrainingClassRepositoryTest()
         {
-            _trainingClassRepository = new TraingClassRepository(
+            _trainingClassRepository = new TrainingClassRepository(
                 _dbContext,
                 _currentTimeMock.Object,
                 _claimsServiceMock.Object);

@@ -16,9 +16,9 @@ namespace Domain.Entities
     {
         public string Name { get; set; } = null!;
 
-        public DateTime StartTime { get; set; }
+        public DateTime StartTime { get; set; } = default!;
 
-        public DateTime EndTime { get; set; }
+        public DateTime EndTime { get; set; }=default!;
 
         public string Code { get; set; }
 

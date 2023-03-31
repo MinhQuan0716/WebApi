@@ -51,7 +51,7 @@ namespace Application.Filter.ClassFilter
                 List<TrainingClassFilterDTO> trainingClassDTOs = new List<TrainingClassFilterDTO>();
                 foreach (TrainingClassFilterDTO item in classList)
                 {
-                    if (date1 <= item.StartDate)
+                    if (item.EndDate <= date2)
                     {
                         trainingClassDTOs.Add(item);
                     }

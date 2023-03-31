@@ -27,7 +27,7 @@ namespace Infrastructures
             services.AddScoped<ILectureRepository, LectureRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IDetailUnitLectureRepository, DetailUnitLectureRepository>();
-            services.AddScoped<ITrainingClassRepository, TraingClassRepository>();
+            services.AddScoped<ITrainingClassRepository, TrainingClassRepository>();
             services.AddScoped<ILocationRepository, LocationRepository>();
             services.AddSingleton<ICurrentTime, CurrentTime>();
             services.AddScoped<IAssignmentRepository,AssignmentRepository>();
@@ -40,7 +40,7 @@ namespace Infrastructures
             services.AddScoped<IAttendanceRepository, AttendanceRepository>();
             services.AddSingleton<ExternalAuthUtils>();
             services.AddScoped<IApplicationService, ApplicationService>();
-            services.AddScoped<ITrainingClassRepository, TraingClassRepository>();
+            services.AddScoped<ITrainingClassRepository, TrainingClassRepository>();
             services.AddScoped<ILocationRepository, LocationRepository>();
             services.AddScoped<ITrainingProgramRepository, TrainingProgramRepository>();
             services.AddScoped<ITrainingProgramService, TrainingProgramService>();

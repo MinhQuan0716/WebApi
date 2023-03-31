@@ -10,10 +10,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Xunit;
 
 namespace Application.Tests.Utils
 {
-    public class ExternalAuthUtilsTests:SetupTest
+    public class ExternalAuthUtilsTests : SetupTest
     {
         private readonly IExternalAuthUtils _externalAuthUtils;
 
@@ -38,8 +39,10 @@ namespace Application.Tests.Utils
         public async Task VerifyGoogleToken_Should()
         {
 
-            var result =async ()=> await _externalAuthUtils.VerifyGoogleToken(_fixture.Create<ExternalAuthDto>());
+            var result = async () => await _externalAuthUtils.VerifyGoogleToken(_fixture.Create<ExternalAuthDto>());
             await result.Should().ThrowAsync<InvalidJwtException>();
         }
     }
+
 }
+
