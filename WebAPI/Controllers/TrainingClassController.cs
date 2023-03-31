@@ -36,7 +36,7 @@ namespace WebAPI.Controllers
             return NoContent();
         }
 
-        [HttpGet]
+        [HttpPost]
         [Authorize]
         [ClaimRequirement(nameof(PermissionItem.ClassPermission), nameof(PermissionEnum.Create))]
         public async Task<IActionResult> DuplicateClass(Guid id)
