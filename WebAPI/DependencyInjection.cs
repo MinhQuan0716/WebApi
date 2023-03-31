@@ -35,7 +35,7 @@ namespace WebAPI
             services.AddSingleton<PerformanceMiddleware>();
             services.AddSingleton<Stopwatch>();
             services.AddScoped<ILectureService, LectureService>();
-
+            services.AddScoped<IExternalAuthUtils, ExternalAuthUtils>();
             services.AddScoped<IClaimsService, ClaimsService>();
             services.AddScoped<IAttendanceService, AttendanceService>();
             services.AddScoped<IUserService, UserService>();
