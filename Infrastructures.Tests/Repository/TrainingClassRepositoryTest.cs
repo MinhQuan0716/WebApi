@@ -6,6 +6,7 @@ using Domain.Enums;
 using Domains.Test;
 using FluentAssertions;
 using Infrastructures.Repositories;
+using NuGet.Packaging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -93,21 +94,38 @@ namespace Infrastructures.Tests.Repository
         {
             //arrange
             var mockData = _fixture.Build<TrainingClass>()
-                .Without(x => x.TrainingClassParticipates)
-                .Without(x => x.Applications)
-                .Without(x => x.Attendances)
-                .Without(x => x.Feedbacks)
-                .Without(x => x.TrainingProgram)
-                .Without(x => x.Location)
-                .Without(x => x.ClassSchedules)
-                .With(x => x.TrainingClassAdmins)//1
-                .With(x => x.TrainingClassTrainers)//1
-                .With(x => x.TrainingClassTimeFrame)//1
-                .Without(x => x.TrainingClassAttendee)
-                .Create();//1
+                .OmitAutoProperties()
+                .With(x => x.Code)
+                .With(x => x.Name)
+                .With(x => x.StatusClassDetail)
+                .With(x => x.TrainingClassAdmins)
+                .With(x => x.TrainingClassTrainers)
+                .With(x => x.TrainingClassTimeFrame)
+                .Create();
+            //duplicate mock
+            var mockAdmins = _fixture.Build<TrainingClassAdmin>()
+                .OmitAutoProperties()
+                .With(x => x.AdminId, mockData.TrainingClassAdmins.First().AdminId)
+                .With(x => x.TrainingClassId, mockData.TrainingClassAdmins.First().TrainingClassId)
+                .Create();
+            var mockTrainers = _fixture.Build<TrainingClassTrainer>()
+                .OmitAutoProperties()
+                .With(x => x.TrainerId, mockData.TrainingClassTrainers.First().TrainerId)
+                .With(x => x.TrainingClassId, mockData.TrainingClassTrainers.First().TrainingClassId)
+                .Create();
+            var mockHighlightDates = _fixture.Build<HighlightedDates>()
+                .OmitAutoProperties()
+                .With(x => x.HighlightedDate, mockData.TrainingClassTimeFrame.HighlightedDates?.First().HighlightedDate)
+                .With(x => x.TrainingClassTimeFrameId, mockData.TrainingClassTimeFrame.Id)
+                .Create();
             //act
             await _dbContext.TrainingClasses.AddAsync(mockData);
             await _dbContext.SaveChangesAsync();
+
+            mockData.TrainingClassAdmins.Add(mockAdmins);
+            mockData.TrainingClassTrainers.Add(mockTrainers);
+            mockData.TrainingClassTimeFrame.HighlightedDates.Add(mockHighlightDates);
+
             _trainingClassRepository.Update(mockData);
             var result = await _dbContext.SaveChangesAsync();
             //assert

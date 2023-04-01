@@ -36,22 +36,22 @@ namespace Infrastructures.Repositories
         {
             var getAllTrainingProgram = _dbContext.TrainingClasses
                                        .Include(x => x.TrainingProgram)
-                                       
+
                                        .Where(x => x.Id == id)
                                       .Select(x => new TrainingProgramViewForTrainingClassDetail()
-                                       {
-                                        programId = x.TrainingProgram.Id,
-                                        programName = x.TrainingProgram.ProgramName,
-                                        programDuration = new DurationView
-                                        {
-                                        TotalHours = x.TrainingProgram.Duration
-                                        },
-                                        lastEdit =new LastEditDTO
-                                        {
-                                            modificationBy=_dbContext.Users.Where(u=>u.Id==x.TrainingProgram.ModificationBy).Select(u=>u.UserName).FirstOrDefault(),
-                                            modificationDate=x.TrainingProgram.ModificationDate
-                                        }
-                                   }).FirstOrDefault();
+                                      {
+                                          programId = x.TrainingProgram.Id,
+                                          programName = x.TrainingProgram.ProgramName,
+                                          programDuration = new DurationView
+                                          {
+                                              TotalHours = x.TrainingProgram.Duration
+                                          },
+                                          lastEdit = new LastEditDTO
+                                          {
+                                              modificationBy = _dbContext.Users.Where(u => u.Id == x.TrainingProgram.ModificationBy).Select(u => u.UserName).FirstOrDefault(),
+                                              modificationDate = x.TrainingProgram.ModificationDate
+                                          }
+                                      }).FirstOrDefault();
             return getAllTrainingProgram;
 
         }
@@ -178,7 +178,7 @@ namespace Infrastructures.Repositories
         {
             if (!trainingClass.TrainingClassAdmins.IsNullOrEmpty())
             {
-                List<TrainingClassAdmin> admins = new List<TrainingClassAdmin>();
+                List<TrainingClassAdmin> admins = new();
                 foreach (var admin in trainingClass.TrainingClassAdmins)
                 {
                     var duplicate = _dbContext.TrainingClassAdmins
@@ -190,11 +190,11 @@ namespace Infrastructures.Repositories
                         admins.TryAdd(admin);
                     }
                 }
-                trainingClass.TrainingClassAdmins = trainingClass.TrainingClassAdmins.SkipWhile(admins.Contains).ToList();
+                admins.ForEach(x => trainingClass.TrainingClassAdmins.Remove(x));
             }
             if (!trainingClass.TrainingClassTrainers.IsNullOrEmpty())
             {
-                List<TrainingClassTrainer> trainers = new List<TrainingClassTrainer>();
+                List<TrainingClassTrainer> trainers = new();
                 foreach (var trainer in trainingClass.TrainingClassTrainers)
                 {
                     var duplicate = await _dbContext.TrainingClassTrainers
@@ -206,14 +206,14 @@ namespace Infrastructures.Repositories
                         trainers.TryAdd(trainer);
                     }
                 }
-                trainingClass.TrainingClassTrainers = trainingClass.TrainingClassTrainers.SkipWhile(trainers.Contains).ToList();
+                trainers.ForEach(x => trainingClass.TrainingClassTrainers.Remove(x));
             }
             if (trainingClass.TrainingClassTimeFrame != null)
             {
-                if (!trainingClass.TrainingClassTimeFrame.HighlightedDates.IsNullOrEmpty() && trainingClass.TrainingClassTimeFrame.HighlightedDates != null)
+                if (!trainingClass.TrainingClassTimeFrame.HighlightedDates.IsNullOrEmpty())
                 {
                     List<HighlightedDates> duplicateDates = new List<HighlightedDates>();
-                    foreach (var highlightDates in trainingClass.TrainingClassTimeFrame.HighlightedDates)
+                    foreach (var highlightDates in trainingClass.TrainingClassTimeFrame.HighlightedDates!)
                     {
                         var duplicate = _dbContext.HighlightedDates.AsEnumerable()
                             .Any(x => x.TrainingClassTimeFrameId == trainingClass.TrainingClassTimeFrame.Id
@@ -224,7 +224,7 @@ namespace Infrastructures.Repositories
                             duplicateDates.TryAdd(highlightDates);
                         }
                     }
-                    trainingClass.TrainingClassTimeFrame.HighlightedDates = trainingClass.TrainingClassTimeFrame.HighlightedDates.SkipWhile(duplicateDates.Contains).ToList();
+                    duplicateDates.ForEach(x => trainingClass.TrainingClassTimeFrame.HighlightedDates.Remove(x));
                 }
             }
             base.Update(trainingClass);

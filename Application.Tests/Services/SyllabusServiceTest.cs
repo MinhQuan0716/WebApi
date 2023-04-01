@@ -34,7 +34,14 @@ namespace Application.Tests.Services
         {
             var updateSyllabusDTO = _fixture.Create<UpdateSyllabusModel>();
             var syllabus = _mapperConfig.Map<Syllabus>(updateSyllabusDTO);
-            var units = syllabus.Units = _fixture.Build<Unit>().CreateMany(1).ToList();
+            var detailUnitLecture = _fixture.Build<DetailUnitLecture>()
+                .With(x => x.Lecture, new Lecture())
+                .With(x => x.Unit, new Unit())
+                .CreateMany(1).ToList();
+            var units = syllabus.Units = _fixture.Build<Unit>()
+                .With(x => x.Syllabus, syllabus)
+                .With(x => x.DetailUnitLectures, detailUnitLecture)
+                .CreateMany(1).ToList();
             syllabus.Id = Guid.NewGuid();
             //Act
             var result_false = await _syllabusService.UpdateSyllabus(syllabus.Id, updateSyllabusDTO);

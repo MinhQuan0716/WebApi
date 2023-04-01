@@ -35,9 +35,10 @@ using System.Collections.Generic;
 using Application.ViewModels.AuditModels;
 using Application.ViewModels.AssignmentModel;
 using Application.ViewModels.QuizModels;
-using Infrastructures.TypeConverter;
 using Application.ViewModels.SyllabusModels.UpdateSyllabusModels.HotFix;
 using System.Security.Cryptography.Xml;
+using Infrastructures.Mappers.TypeConverter;
+using Infrastructures.Mappers.ValueConverters;
 
 namespace Infrastructures.Mappers
 {
@@ -119,12 +120,13 @@ namespace Infrastructures.Mappers
                 .ForMember(x => x.Level, sf => sf.MapFrom(src => src.General.Level))
                 .ForMember(x => x.TechRequirements, sf => sf.MapFrom(src => src.General.TechnicalRequirements))
                 .ForMember(x => x.CourseObjective, sf => sf.MapFrom(src => src.General.CourseObjectives))
-                .ForMember(x =>x.CreationDate,sf => sf.MapFrom(src => src.CreateOn))
-                .ForMember(x =>x.Id,sf => sf.MapFrom(src => src.ID))
-                .ForMember(x =>x.CreatedBy,sf => sf.MapFrom(src => src.CreateBy))
-                .AfterMap((src, dest) => {
+                .ForMember(x => x.CreationDate, sf => sf.MapFrom(src => src.CreateOn))
+                .ForMember(x => x.Id, sf => sf.MapFrom(src => src.ID))
+                .ForMember(x => x.CreatedBy, sf => sf.MapFrom(src => src.CreateBy))
+                .AfterMap((src, dest) =>
+                {
                     src.Durations = new DurationView { TotalHours = dest.Duration };
-                    })
+                })
                 .ReverseMap();
             //CreateMap<Syllabus, GeneralInformationDTO>()
             //    .ForMember(x => x.Id, s => s.MapFrom(src => src.Id))
@@ -173,110 +175,85 @@ namespace Infrastructures.Mappers
                 .ReverseMap();
 
             //map training class
+            CreateMap<ExtendTrainingClassDTO2, ExtendTrainingClassDTO>()
+                .ForMember(x => x.Attendees, src => src.MapFrom(x => x.Attendees))
+                .ForMember(x => x.TimeFrame, src => src.MapFrom(x => x.TimeFrame))
+                .IncludeMembers(x => x.General)
+                .ReverseMap();
+            CreateMap<GeneralDTO, ExtendTrainingClassDTO>()
+                .ForMember(x => x.Admins, src => src.MapFrom(x => x.Admins))
+                .ForMember(x => x.Trainers, src => src.MapFrom(x => x.Trainers))
+                .ForMember(x => x.Fsu, src => src.MapFrom(x => x.Fsu))
+                .IncludeMembers(x => x.Review, x => x.Approve)
+                .ReverseMap();
+            CreateMap<ReviewDTO, ExtendTrainingClassDTO>()
+                .ForMember(x => x.ReviewDate, src => src.MapFrom(x => x.Date))
+                .ForMember(x => x.ReviewAuthor, src => src.MapFrom(x => x.Author))
+                .ReverseMap();
+            CreateMap<ApproveDTO, ExtendTrainingClassDTO>()
+                .ForMember(x => x.ApproveDate, src => src.MapFrom(x => x.Date))
+                .ForMember(x => x.ApproveAuthor, src => src.MapFrom(x => x.Author))
+                .ReverseMap();
             //Create class
             CreateMap<CreateTrainingClassDTO, TrainingClass>()
                 .ForMember(x => x.TrainingClassAdmins, src => src.MapFrom(x => x.Admins))
                 .ForMember(x => x.TrainingClassTrainers, src => src.MapFrom(x => x.Trainers))
                 .ForMember(x => x.TrainingClassAttendee, src => src.MapFrom(x => x.Attendees))
-                .ForMember(x => x.TrainingClassTimeFrame, src => src.MapFrom(x => x.TimeFrame)).ReverseMap();
+                .ForMember(x => x.TrainingClassTimeFrame, src => src.MapFrom(x => x.TimeFrame))
+                .ForPath(x => x.Location!.LocationName, src => src.MapFrom(x => x.LocationName))
+                .ReverseMap();
             CreateMap<CreateTrainingClassDTO, Location>()
                 .ForMember(x => x.LocationName, src => src.MapFrom(x => x.LocationName)).ReverseMap();
             CreateMap<CreateTrainingClassDTO2, CreateTrainingClassDTO>()
                 .ForMember(x => x.Name, src => src.MapFrom(x => x.ClassName))
                 .ForMember(x => x.Code, src => src.MapFrom(x => x.ClassCode))
-                .ForMember(x => x.Attendees, src => src.MapFrom(x => x.Attendees))
-                .ForMember(x => x.TimeFrame, src => src.MapFrom(x => x.TimeFrame))
                 .ForMember(x => x.StatusClassDetail, src => src.MapFrom(x => x.ClassStatus))
-                .ForMember(x => x.Admins, src => src.MapFrom(x => x.General.Admins))
-                .ForMember(x => x.Trainers, src => src.MapFrom(x => x.General.Trainers))
-                .ForMember(x => x.LocationName, src => src.MapFrom(x => x.General.Location))
-                .ForMember(x => x.Fsu, src => src.MapFrom(x => x.General.Fsu))
-                .ForMember(x => x.TrainingProgramId, src => src.MapFrom(x => x.TrainingPrograms.TrainingProgramId))
-                .ForMember(x => x.StartTime, src => src.MapFrom(x => x.General.ClassTime.StartTime))
-                .ForMember(x => x.EndTime, src => src.MapFrom(x => x.General.ClassTime.EndTime))
-                .ForMember(x => x.ReviewDate, src => src.MapFrom(x => x.General.Review!.Date))
-                .ForMember(x => x.ReviewAuthor, src => src.MapFrom(x => x.General.Review!.Author))
-                .ForMember(x => x.ApproveDate, src => src.MapFrom(x => x.General.Approve!.Date))
-                .ForMember(x => x.ApproveAuthor, src => src.MapFrom(x => x.General.Approve!.Author))
+                .IncludeMembers(x => x.General, x => x.TrainingPrograms)
+                .IncludeBase<ExtendTrainingClassDTO2, ExtendTrainingClassDTO>()
                 .ReverseMap();
             CreateMap<TrainingProgramDTO, CreateTrainingClassDTO>()
-                .ForMember(x => x.TrainingProgramId, src => src.MapFrom(x => x.TrainingProgramId));
+                .ForMember(x => x.TrainingProgramId, src => src.MapFrom(x => x.TrainingProgramId))
+                .ReverseMap();
             CreateMap<ClassTimeDTO, CreateTrainingClassDTO>()
                 .ForMember(x => x.StartTime, src => src.MapFrom(x => x.StartTime))
-                .ForMember(x => x.StartTime, src => src.MapFrom(x => x.EndTime));
+                .ForMember(x => x.EndTime, src => src.MapFrom(x => x.EndTime))
+                .ReverseMap();
             CreateMap<GeneralDTO, CreateTrainingClassDTO>()
-                .ForMember(x => x.Admins, src => src.MapFrom(x => x.Admins))
-                .ForMember(x => x.Trainers, src => src.MapFrom(x => x.Trainers))
-                .ForMember(x => x.StartTime, src => src.MapFrom(x => x.ClassTime.StartTime))
-                .ForMember(x => x.EndTime, src => src.MapFrom(x => x.ClassTime.EndTime))
-                .ForMember(x => x.Fsu, src => src.MapFrom(x => x.Fsu))
-                .ForMember(x => x.ReviewDate, src => src.MapFrom(x => x.Review!.Date))
-                .ForMember(x => x.ReviewAuthor, src => src.MapFrom(x => x.Review!.Author))
-                .ForMember(x => x.ApproveDate, src => src.MapFrom(x => x.Approve!.Date))
-                .ForMember(x => x.ApproveAuthor, src => src.MapFrom(x => x.Approve!.Author))
-                .ForMember(x => x.LocationName, src => src.MapFrom(x => x.Location)).ReverseMap();
-            CreateMap<ReviewDTO, CreateTrainingClassDTO>()
-                .ForMember(x => x.ReviewDate, src => src.MapFrom(x => x.Date))
-                .ForMember(x => x.ReviewAuthor, src => src.MapFrom(x => x.Author));
-            CreateMap<ApproveDTO, CreateTrainingClassDTO>()
-                .ForMember(x => x.ApproveDate, src => src.MapFrom(x => x.Date))
-                .ForMember(x => x.ApproveAuthor, src => src.MapFrom(x => x.Author));
+                .IncludeMembers(x => x.ClassTime)
+                .ForMember(x => x.LocationName, src => src.MapFrom(x => x.Location))
+                .ReverseMap();
             //Update class
             CreateMap<UpdateTrainingClassDTO, TrainingClass>()
                 .ForMember(x => x.TrainingClassAdmins, src => src.MapFrom(x => x.Admins))
                 .ForMember(x => x.TrainingClassTrainers, src => src.MapFrom(x => x.Trainers))
                 .ForMember(x => x.TrainingClassAttendee, src => src.MapFrom(x => x.Attendees))
                 .ForMember(x => x.TrainingClassTimeFrame, src => src.MapFrom(x => x.TimeFrame))
+                .ForPath(x => x.Location!.LocationName, src => src.MapFrom(x => x.LocationName))
                 .ReverseMap();
             CreateMap<UpdateTrainingClassDTO, Location>()
                 .ForMember(x => x.LocationName, src => src.MapFrom(x => x.LocationName)).ReverseMap();
             CreateMap<UpdateTrainingClassDTO2, UpdateTrainingClassDTO>()
                 .ForMember(x => x.Name, src => src.MapFrom(x => x.ClassName))
                 .ForMember(x => x.Code, src => src.MapFrom(x => x.ClassCode))
-                .ForMember(x => x.Attendees, src => src.MapFrom(x => x.Attendees))
-                .ForMember(x => x.TimeFrame, src => src.MapFrom(x => x.TimeFrame))
                 .ForMember(x => x.StatusClassDetail, src => src.MapFrom(x => x.ClassStatus))
-                .ForMember(x => x.Admins, src => src.MapFrom(x => x.General.Admins))
-                .ForMember(x => x.Trainers, src => src.MapFrom(x => x.General.Trainers))
-                .ForMember(x => x.LocationName, src => src.MapFrom(x => x.General.Location))
-                .ForMember(x => x.Fsu, src => src.MapFrom(x => x.General.Fsu))
-                .ForMember(x => x.StartTime, src => src.MapFrom(x => x.General.ClassTime.StartTime))
-                .ForMember(x => x.EndTime, src => src.MapFrom(x => x.General.ClassTime.EndTime))
-                .ForMember(x => x.TrainingProgramId, src => src.MapFrom(x => x.TrainingPrograms.TrainingProgramId))
-                .ForMember(x => x.ReviewDate, src => src.MapFrom(x => x.General.Review!.Date))
-                .ForMember(x => x.ReviewAuthor, src => src.MapFrom(x => x.General.Review!.Author))
-                .ForMember(x => x.ApproveDate, src => src.MapFrom(x => x.General.Approve!.Date))
-                .ForMember(x => x.ApproveAuthor, src => src.MapFrom(x => x.General.Approve!.Author))
+                .IncludeMembers(x => x.General, x => x.TrainingPrograms)
+                .IncludeBase<ExtendTrainingClassDTO2, ExtendTrainingClassDTO>()
                 .ReverseMap();
             CreateMap<TrainingProgramDTO, UpdateTrainingClassDTO>()
-                .ForMember(x => x.TrainingProgramId, src => src.MapFrom(x => x.TrainingProgramId));
+                .ForMember(x => x.TrainingProgramId, src => src.MapFrom(x => x.TrainingProgramId))
+                .ReverseMap();
             CreateMap<ClassTimeDTO, UpdateTrainingClassDTO>()
                 .ForMember(x => x.StartTime, src => src.MapFrom(x => x.StartTime))
-                .ForMember(x => x.StartTime, src => src.MapFrom(x => x.EndTime));
-            CreateMap<GeneralDTO, UpdateTrainingClassDTO>()
-                .ForMember(x => x.Admins, src => src.MapFrom(x => x.Admins))
-                .ForMember(x => x.Trainers, src => src.MapFrom(x => x.Trainers))
-                .ForMember(x => x.Fsu, src => src.MapFrom(x => x.Fsu))
-                .ForMember(x => x.StartTime, src => src.MapFrom(x => x.ClassTime.StartTime))
-                .ForMember(x => x.EndTime, src => src.MapFrom(x => x.ClassTime.EndTime))
-                .ForMember(x => x.LocationName, src => src.MapFrom(x => x.Location))
-                .ForMember(x => x.ReviewDate, src => src.MapFrom(x => x.Review!.Date))
-                .ForMember(x => x.ReviewAuthor, src => src.MapFrom(x => x.Review!.Author))
-                .ForMember(x => x.ApproveDate, src => src.MapFrom(x => x.Approve!.Date))
-                .ForMember(x => x.ApproveAuthor, src => src.MapFrom(x => x.Approve!.Author))
+                .ForMember(x => x.EndTime, src => src.MapFrom(x => x.EndTime))
                 .ReverseMap();
-
-            CreateMap<ReviewDTO, UpdateTrainingClassDTO>()
-                .ForMember(x => x.ReviewDate, src => src.MapFrom(x => x.Date))
-                .ForMember(x => x.ReviewAuthor, src => src.MapFrom(x => x.Author));
-            CreateMap<ApproveDTO, UpdateTrainingClassDTO>()
-                .ForMember(x => x.ApproveDate, src => src.MapFrom(x => x.Date))
-                .ForMember(x => x.ApproveAuthor, src => src.MapFrom(x => x.Author));
+            CreateMap<GeneralDTO, UpdateTrainingClassDTO>()
+                .IncludeMembers(x => x.ClassTime)
+                .ForMember(x => x.LocationName, src => src.MapFrom(x => x.Location))
+                .ReverseMap();
 
             CreateMap<TrainingClass, TrainingClassViewModel>()
                 .ForMember(x => x._Id, src => src.MapFrom(x => x.Id))
-                .ForMember(x => x.LocationName, src => src.MapFrom(x => x.Location.LocationName))
-                .ForMember(x => x.LocationName, src => src.MapFrom(x => x.Location.LocationName))
+                .IncludeMembers(x => x.Location)
                 .ForMember(x => x.Admins, src => src.MapFrom(x => x.TrainingClassAdmins))
                 .ForMember(x => x.Trainers, src => src.MapFrom(x => x.TrainingClassTrainers))
                 .ForMember(x => x.Attendees, src => src.MapFrom(x => x.TrainingClassAttendee))
@@ -286,7 +263,8 @@ namespace Infrastructures.Mappers
                 .ForMember(x => x.LocationName, src => src.MapFrom(x => x.LocationName));
             //view class
             CreateMap<AdminsDTO, TrainingClassAdmin>()
-                .ForMember(x => x.AdminId, src => src.MapFrom(x => x.AdminId)).ReverseMap();
+                .ForMember(x => x.AdminId, src => src.MapFrom(x => x.AdminId))
+                .ReverseMap();
             CreateMap<TrainingClassFilterDTO, TrainingClass>()
                 .ForMember(dest => dest.Duration, opt => opt.MapFrom(src => src.ClassDuration.TotalHours))
                 .ReverseMap();
@@ -294,15 +272,21 @@ namespace Infrastructures.Mappers
                 .ForMember(x => x.TrainerId, src => src.MapFrom(x => x.TrainerId))
                 .ReverseMap();
             CreateMap<TimeFrameDTO, TrainingClassTimeFrame>()
-                .AfterMap((s, d, context) => context.Mapper.Map(s.HighlightedDates, d.HighlightedDates))
-                .ReverseMap();
+                .ForMember(x => x.HighlightedDates, src => src.ConvertUsing(new HighLightDatesValueConverter()))
+                //.AfterMap((s, d, context) => context.Mapper.Map(s.HighlightedDates, d.HighlightedDates))
+                .ReverseMap()
+                .ForMember(src => src.HighlightedDates, x => x.ConvertUsing(new CustomDateTimeValueConverter()));
             CreateMap<DateTime, HighlightedDates>()
-                .AfterMap((s, d, context) => context.Mapper.Map(s, d.HighlightedDate))
+                //.AfterMap((s, d, context) => context.Mapper.Map(s, d.HighlightedDate))
                 .ConvertUsing<HighLightDatesTypeConverter>();
             CreateMap<HighlightedDates, DateTime>()
-                .AfterMap((s, d, context) => context.Mapper.Map(s.HighlightedDate, d))
+                //.AfterMap((s, d, context) => context.Mapper.Map(s.HighlightedDate, d))
                 .ConvertUsing<CustomDateTimeTypeConverter>();
-            CreateMap<AttendeesDTO, TrainingClassAttendees>().ReverseMap();
+            CreateMap<AttendeesDTO, TrainingClassAttendees>()
+                .ForMember(x => x.AttendeesActualNumber, src => src.MapFrom(x => x.AttendeesActualNumber))
+                .ForMember(x => x.AttendeesPlannedNumber, src => src.MapFrom(x => x.AttendeesPlannedNumber))
+                .ForMember(x => x.AttendeesAcceptedNumber, src => src.MapFrom(x => x.AttendeesAcceptedNumber))
+                .ReverseMap();
             //CreateMap<TrainingClassDTO, TrainingClass>()
             //    .ForMember(dest => dest.Duration, opt => opt.MapFrom(src => src.ClassDuration.TotalHours))
             //    .ReverseMap();

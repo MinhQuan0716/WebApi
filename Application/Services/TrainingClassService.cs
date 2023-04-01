@@ -144,7 +144,6 @@ namespace Application.Services
             await _unitOfWork.TrainingClassRepository.AddAsync(trainingClassObj);
 
             var viewModel = _mapper.Map<TrainingClassViewModel>(trainingClassObj);
-            viewModel.LocationName = location?.LocationName!;
             return (await _unitOfWork.SaveChangeAsync() > 0) ? viewModel : null;
         }
 

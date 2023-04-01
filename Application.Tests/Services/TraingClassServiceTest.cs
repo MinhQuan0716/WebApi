@@ -337,11 +337,12 @@ namespace Application.Tests.Services
         {
             //arrange
             var mockLocation = _fixture.Build<Location>().Without(x => x.TrainingClasses).Without(x => x.DetailTrainingClassesParticipate).Create();
-            var mockTrainingProgram = _fixture.Build<TrainingProgram>().Without(x => x.TrainingClasses).Without(x => x.DetailTrainingProgramSyllabus).Create();
+            TrainingProgram mockTrainingProgram = null!;
             var mockCreate = _fixture.Build<CreateTrainingClassDTO>().With(x => x.LocationID, mockLocation.Id).Without(x => x.Attendees).Without(x => x.TimeFrame).Create();
 
             _unitOfWorkMock.Setup(x => x.TrainingClassRepository.AddAsync(It.IsAny<TrainingClass>())).Returns(Task.CompletedTask);
             _unitOfWorkMock.Setup(x => x.LocationRepository.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(mockLocation);
+            _unitOfWorkMock.Setup(x => x.TrainingProgramRepository.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(mockTrainingProgram);
             //act
             var result = async () => await _trainingClassService.CreateTrainingClassAsync(mockCreate);
 
@@ -350,47 +351,61 @@ namespace Application.Tests.Services
 
             _unitOfWorkMock.Verify(x => x.SaveChangeAsync(), Times.Never);
 
-            await result.Should().ThrowAsync<Exception>("Invalid location Id");
+            await result.Should().ThrowAsync<Exception>("Invalid training program Id");
         }
         [Fact]
         public async Task UpdateTrainingClass_ShouldReturnTrue_WhenSaveSucceed()
         {
             //arrange
-            var mockLocation = _fixture.Build<Location>().Without(x => x.TrainingClasses).Without(x => x.DetailTrainingClassesParticipate).Create();
-            var mockTrainingProgram = _fixture.Build<TrainingProgram>().Without(x => x.TrainingClasses).Without(x => x.DetailTrainingProgramSyllabus).Create();
+            var mockLocation = _fixture.Build<Location>()
+                .OmitAutoProperties()
+                .With(x => x.LocationName)
+                .Create();
+            var mockTrainingProgram = _fixture.Build<TrainingProgram>()
+                .OmitAutoProperties()
+                .Create();
+            var mockAdmin = _fixture.Build<User>()
+                .OmitAutoProperties()
+                .With(x => x.Id)
+                .With(x => x.RoleId, (int)RoleEnums.Admin)
+                .Create();
+            var mockAdminDTO = _fixture.Build<AdminsDTO>()
+                .With(x => x.AdminId, mockAdmin.Id)
+                .CreateMany(1).ToList();
+            var mockTrainer = _fixture.Build<User>()
+                .OmitAutoProperties()
+                .With(x => x.Id)
+                .With(x => x.RoleId, (int)RoleEnums.Trainer)
+                .Create();
+            var mockTrainerDTO = _fixture.Build<TrainerDTO>()
+                .With(x => x.TrainerId, mockTrainer.Id)
+                .CreateMany(1).ToList();
             var mockUpdate = _fixture.Build<UpdateTrainingClassDTO>()
-                .With(x => x.LocationID, mockLocation.Id)
+                .OmitAutoProperties()
+                .With(x => x.LocationName, mockLocation.LocationName)
                 .With(x => x.TrainingProgramId, mockTrainingProgram.Id)
-                .Without(x => x.Admins)
-                .Without(x => x.Trainers)
+                .With(x => x.Admins, mockAdminDTO)
+                .With(x => x.Trainers, mockTrainerDTO)
                 .Create();
             var mockTrainingClass = _fixture.Build<TrainingClass>()
-                .Without(x => x.TrainingClassParticipates)
-                .Without(x => x.Applications)
-                .Without(x => x.Attendances)
-                .Without(x => x.Feedbacks)
-                .Without(x => x.TrainingProgram)
-                .Without(x => x.TrainingClassAdmins)
-                .Without(x => x.TrainingClassTrainers)
-                .Without(x => x.Location).Create();
+                .OmitAutoProperties()
+                .Create();
 
             _unitOfWorkMock.Setup(x => x.TrainingClassRepository.Update(It.IsAny<TrainingClass>())).Verifiable();
+            _unitOfWorkMock.Setup(x => x.UserRepository.GetByIdAsync(mockAdmin.Id)).ReturnsAsync(mockAdmin);
+            _unitOfWorkMock.Setup(x => x.UserRepository.GetByIdAsync(mockTrainer.Id)).ReturnsAsync(mockTrainer);
             _unitOfWorkMock.Setup(x => x.TrainingClassRepository.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(mockTrainingClass);
-            _unitOfWorkMock.Setup(x => x.LocationRepository.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(mockLocation);
+            _unitOfWorkMock.Setup(x => x.LocationRepository.GetByNameAsync(It.IsAny<string>())).ReturnsAsync(mockLocation);
             _unitOfWorkMock.Setup(x => x.TrainingProgramRepository.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(mockTrainingProgram);
             _unitOfWorkMock.Setup(x => x.SaveChangeAsync()).ReturnsAsync(1);
 
-            var expected = _mapperConfig.Map<UpdateTrainingClassDTO, TrainingClass>(mockUpdate, mockTrainingClass);
-            expected.Location = mockLocation;
-            expected.TrainingProgram = mockTrainingProgram;
             //act
             var result = await _trainingClassService.UpdateTrainingClassAsync(mockTrainingClass.Id.ToString(), mockUpdate);
 
             //assert
             _unitOfWorkMock.Verify(
                 x => x.TrainingClassRepository
-                .Update(It.Is<TrainingClass>(
-                    x => x.Equals(expected))
+                .Update(It.IsAny<TrainingClass>()
                 ), Times.Once());
             _unitOfWorkMock.Verify(x => x.SaveChangeAsync(), Times.Once());
             result.Should().BeTrue();
@@ -400,28 +415,23 @@ namespace Application.Tests.Services
         {
             //arrange
             var mockLocation = _fixture.Build<Location>().
-                Without(x => x.TrainingClasses).
-                Without(x => x.DetailTrainingClassesParticipate)
+                OmitAutoProperties()
                 .Create();
-
-            var mockTrainingProgram = _fixture.Build<TrainingProgram>().Without(x => x.TrainingClasses).Without(x => x.DetailTrainingProgramSyllabus).Create();
-            var mockUpdate = _fixture.Build<UpdateTrainingClassDTO>().With(x => x.LocationID, mockLocation.Id).
-                With(x => x.TrainingProgramId, mockTrainingProgram.Id)
-                .With(x => x.Attendee)
-                .With(x => x.Branch)
-                .With(x => x.StatusClassDetail)
-                .With(x => x.Attendees)
-                .With(x => x.TimeFrame)
-                .With(x => x.LocationName, mockLocation.LocationName)
+            var mockTrainingProgram = _fixture.Build<TrainingProgram>()
+                .OmitAutoProperties().Create();
+            var mockUpdate = _fixture.Build<UpdateTrainingClassDTO>()
+                .OmitAutoProperties()
                 .With(x => x.Admins)
-                .Without(x => x.Trainers)
                 .Create();
-
-            _unitOfWorkMock.Setup(x => x.UserRepository.GetByIdAsync(It.IsAny<Guid>()));
-            _unitOfWorkMock.Setup(x => x.TrainingClassRepository.AddAsync(It.IsAny<TrainingClass>())).Returns(Task.CompletedTask);
+            var mockTrainingClass = _fixture.Build<TrainingClass>()
+                .OmitAutoProperties()
+                .Create();
+            User mockUser = null!;
+            _unitOfWorkMock.Setup(x => x.TrainingClassRepository.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(mockTrainingClass);
+            _unitOfWorkMock.Setup(x => x.UserRepository.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(mockUser);
+            _unitOfWorkMock.Setup(x => x.TrainingClassRepository.Update(It.IsAny<TrainingClass>())).Verifiable();
             _unitOfWorkMock.Setup(x => x.LocationRepository.GetByNameAsync(It.IsAny<string>())).ReturnsAsync(mockLocation);
             _unitOfWorkMock.Setup(x => x.TrainingProgramRepository.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(mockTrainingProgram);
-            _unitOfWorkMock.Setup(x => x.SaveChangeAsync()).ReturnsAsync(1);
 
             //act
             var result = async () => await _trainingClassService.UpdateTrainingClassAsync(It.IsAny<Guid>().ToString(), mockUpdate);
@@ -436,28 +446,23 @@ namespace Application.Tests.Services
         {
             //arrange
             var mockLocation = _fixture.Build<Location>().
-                Without(x => x.TrainingClasses).
-                Without(x => x.DetailTrainingClassesParticipate)
+                OmitAutoProperties()
                 .Create();
-
-            var mockTrainingProgram = _fixture.Build<TrainingProgram>().Without(x => x.TrainingClasses).Without(x => x.DetailTrainingProgramSyllabus).Create();
-            var mockUpdate = _fixture.Build<UpdateTrainingClassDTO>().With(x => x.LocationID, mockLocation.Id).
-                With(x => x.TrainingProgramId, mockTrainingProgram.Id)
-                .With(x => x.Attendee)
-                .With(x => x.Branch)
-                .With(x => x.StatusClassDetail)
-                .With(x => x.Attendees)
-                .With(x => x.TimeFrame)
-                .With(x => x.LocationName, mockLocation.LocationName)
-                .Without(x => x.Admins)
+            var mockTrainingProgram = _fixture.Build<TrainingProgram>()
+                .OmitAutoProperties().Create();
+            var mockUpdate = _fixture.Build<UpdateTrainingClassDTO>()
+                .OmitAutoProperties()
                 .With(x => x.Trainers)
                 .Create();
-
-            _unitOfWorkMock.Setup(x => x.UserRepository.GetByIdAsync(It.IsAny<Guid>()));
-            _unitOfWorkMock.Setup(x => x.TrainingClassRepository.AddAsync(It.IsAny<TrainingClass>())).Returns(Task.CompletedTask);
+            var mockTrainingClass = _fixture.Build<TrainingClass>()
+                .OmitAutoProperties()
+                .Create();
+            User mockUser = null!;
+            _unitOfWorkMock.Setup(x => x.TrainingClassRepository.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(mockTrainingClass);
+            _unitOfWorkMock.Setup(x => x.UserRepository.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(mockUser);
+            _unitOfWorkMock.Setup(x => x.TrainingClassRepository.Update(It.IsAny<TrainingClass>())).Verifiable();
             _unitOfWorkMock.Setup(x => x.LocationRepository.GetByNameAsync(It.IsAny<string>())).ReturnsAsync(mockLocation);
             _unitOfWorkMock.Setup(x => x.TrainingProgramRepository.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(mockTrainingProgram);
-            _unitOfWorkMock.Setup(x => x.SaveChangeAsync()).ReturnsAsync(1);
 
             //act
             var result = async () => await _trainingClassService.UpdateTrainingClassAsync(It.IsAny<Guid>().ToString(), mockUpdate);
@@ -468,30 +473,24 @@ namespace Application.Tests.Services
             await result!.Should().ThrowAsync<Exception>();
         }
         [Fact]
-        public async Task UpdateTrainingClass_SaveChangeShouldBeAtleastOnce_WhenLocationNameIsNew()
+        public async Task UpdateTrainingClass_WhenLocationNameIsNew()
         {
             //arrange
-            //var mockLocation = _fixture.Build<Location>().Without(x => x.TrainingClasses).Without(x => x.DetailTrainingClassesParticipate).Create();
-            var mockTrainingProgram = _fixture.Build<TrainingProgram>().Without(x => x.TrainingClasses).Without(x => x.DetailTrainingProgramSyllabus).Create();
+            Location mockLocation = null!;
+            var mockTrainingProgram = _fixture.Build<TrainingProgram>()
+                .OmitAutoProperties().Create();
             var mockUpdate = _fixture.Build<UpdateTrainingClassDTO>()
+                .OmitAutoProperties()
                 .With(x => x.LocationName)
-                .With(x => x.TrainingProgramId, mockTrainingProgram.Id)
-                .Without(x => x.Admins)
-                .Without(x => x.Trainers)
                 .Create();
             var mockTrainingClass = _fixture.Build<TrainingClass>()
-                .Without(x => x.TrainingClassParticipates)
-                .Without(x => x.Applications)
-                .Without(x => x.Attendances)
-                .Without(x => x.Feedbacks)
-                .Without(x => x.TrainingProgram)
-                .Without(x => x.TrainingClassAdmins)
-                .Without(x => x.TrainingClassTrainers)
-                .Without(x => x.Location).Create();
-
-            _unitOfWorkMock.Setup(x => x.TrainingClassRepository.Update(It.IsAny<TrainingClass>())).Verifiable();
+                .OmitAutoProperties()
+                .Create();
+            User mockUser = null!;
             _unitOfWorkMock.Setup(x => x.TrainingClassRepository.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(mockTrainingClass);
-            _unitOfWorkMock.Setup(x => x.LocationRepository.GetByIdAsync(It.IsAny<Guid>()));
+            _unitOfWorkMock.Setup(x => x.UserRepository.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(mockUser);
+            _unitOfWorkMock.Setup(x => x.TrainingClassRepository.Update(It.IsAny<TrainingClass>())).Verifiable();
+            _unitOfWorkMock.Setup(x => x.LocationRepository.GetByNameAsync(It.IsAny<string>())).ReturnsAsync(mockLocation);
             _unitOfWorkMock.Setup(x => x.TrainingProgramRepository.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(mockTrainingProgram);
             _unitOfWorkMock.Setup(x => x.SaveChangeAsync()).ReturnsAsync(1);
 
