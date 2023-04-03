@@ -263,64 +263,70 @@ namespace Application.Services
             var detailProgramSyllabus = _unitOfWork.DetailTrainingProgramSyllabusRepository.GetDetailByClassID(trainingProgram.programId);
             var detailTrainingClass = await _unitOfWork.DetailTrainingClassParticipateRepository.GetDetailTrainingClassParticipatesByClassIDAsync(id);
             var adminInClass = await _unitOfWork.DetailTrainingClassParticipateRepository.GetAdminInClasssByClassIDAsync(id);
-         
-
-            AttendeeDTO attendeeDTO = new AttendeeDTO()
+            if (trainingClassFilterDetail == null)
             {
-                attendee = trainingClassFilterDetail.Attendee,
-                plannedNumber = 50,
-                acceptedNumber = 30,
-                actualNumber = 20,
-            };
-            CreatedByDTO createdByDTO = new CreatedByDTO()
+                return null;
+            }
+            else
             {
-                creationDate = trainingClassFilterDetail.CreationDate,
-                userName = trainingClassFilterDetail.CreatedBy
-            };
-            finalDTO.trainingPrograms = trainingProgram;
-            finalDTO.syllabuses = detailProgramSyllabus;
-
-            finalDTO.classId = trainingClassFilterDetail.ClassID;
-            finalDTO.classCode= trainingClassFilterDetail.Code;
-            finalDTO.classCode = trainingClassFilterDetail.Code;
-            finalDTO.classStatus = trainingClassFilterDetail.Status;
-            finalDTO.className = trainingClassFilterDetail.Name;
-            finalDTO.dateOrder = new DateOrderForViewDetail
-            {
-                current = 10,
-                total=10*3
-            };
-            finalDTO.classDuration = trainingClassFilterDetail.ClassDuration;
-         
-
-           
-            finalDTO.lastEdit = new LastEditDTO()
-            {
-                modificationBy = trainingClassFilterDetail.LastEditDTO.modificationBy,
-                modificationDate = trainingClassFilterDetail.LastEditDTO.modificationDate
-            };
-            finalDTO.review = new TrainingClassReview
-            {
-                reviewDate = DateTime.Now,
-                author = trainingClassFilterDetail.CreatedBy
-            };
-            finalDTO.admin = adminInClass;
-            finalDTO.trainer = detailTrainingClass;
-            finalDTO.location = trainingClassFilterDetail.LocationName;
-            finalDTO.fsu = trainingClassFilterDetail.Branch;
-            finalDTO.general = new GeneralTrainingClassDTO
-            {
-                class_date = new ClassDateDTO
+                AttendeeDTO attendeeDTO = new AttendeeDTO()
                 {
-                    StartDate = trainingClassFilterDetail.StartDate,
-                    EndDate = trainingClassFilterDetail.EndDate,
-                }
-            };
-            finalDTO.attendeesDetail = attendeeDTO;
-            finalDTO.created = createdByDTO;
+                    attendee = trainingClassFilterDetail.Attendee,
+                    plannedNumber = 50,
+                    acceptedNumber = 30,
+                    actualNumber = 20,
+                };
+                CreatedByDTO createdByDTO = new CreatedByDTO()
+                {
+                    creationDate = trainingClassFilterDetail.CreationDate,
+                    userName = trainingClassFilterDetail.CreatedBy
+                };
+                finalDTO.trainingPrograms = trainingProgram;
+                finalDTO.syllabuses = detailProgramSyllabus;
+
+                finalDTO.classId = trainingClassFilterDetail.ClassID;
+                finalDTO.classCode = trainingClassFilterDetail.Code;
+                finalDTO.classCode = trainingClassFilterDetail.Code;
+                finalDTO.classStatus = trainingClassFilterDetail.Status;
+                finalDTO.className = trainingClassFilterDetail.Name;
+                finalDTO.dateOrder = new DateOrderForViewDetail
+                {
+                    current = 10,
+                    total = 10 * 3
+                };
+                finalDTO.classDuration = trainingClassFilterDetail.ClassDuration;
 
 
-            return finalDTO;
+
+                finalDTO.lastEdit = new LastEditDTO()
+                {
+                    modificationBy = trainingClassFilterDetail.LastEditDTO.modificationBy,
+                    modificationDate = trainingClassFilterDetail.LastEditDTO.modificationDate
+                };
+                finalDTO.review = new TrainingClassReview
+                {
+                    reviewDate = DateTime.Now,
+                    author = trainingClassFilterDetail.CreatedBy
+                };
+                finalDTO.admin = adminInClass;
+                finalDTO.trainer = detailTrainingClass;
+                finalDTO.location = trainingClassFilterDetail.LocationName;
+                finalDTO.fsu = trainingClassFilterDetail.Branch;
+                finalDTO.general = new GeneralTrainingClassDTO
+                {
+                    class_date = new ClassDateDTO
+                    {
+                        StartDate = trainingClassFilterDetail.StartDate,
+                        EndDate = trainingClassFilterDetail.EndDate,
+                    }
+                };
+                finalDTO.attendeesDetail = attendeeDTO;
+                finalDTO.created = createdByDTO;
+
+
+                return finalDTO;
+            }
+           
         }
 
         public async Task<List<TrainingClass>> ImportExcel(IFormFile file)

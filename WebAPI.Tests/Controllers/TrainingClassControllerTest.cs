@@ -274,7 +274,7 @@ namespace WebAPI.Tests.Controllers
             // this shoule be return null
             var result_notFound = await _trainingClassController.GetTrainingClassDetail(mockId);
             //Assert
-            Assert.IsType<NotFoundResult>(result_notFound);
+            Assert.IsType<NoContentResult>(result_notFound);
         }
         [Fact]
         public async Task ImportTrainingClass_ShouldOk_WhenImportSuccess()

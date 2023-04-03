@@ -112,6 +112,11 @@ namespace Infrastructures.Repositories
         /// <returns>List of training classes</returns>
         public List<TrainingClassViewAllDTO> SearchClassByName(string name)
         {
+            if (name.IsNullOrEmpty())
+            {
+                var searchClass =  GetTrainingClasses();
+                return searchClass;
+            }
             var classByName=_dbContext.TrainingClasses
                              .Where(t=>t.Name.ToLower().Contains(name.ToLower())&&t.IsDeleted==false)
                              .Select(t => new TrainingClassViewAllDTO

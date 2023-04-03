@@ -29,7 +29,7 @@ namespace WebAPI.Controllers
         public async Task<IActionResult> SearchClassByName(string name)
         {
             var result = await _trainingClassService.SearchClassByNameAsync(name);
-            if (result != null)
+            if (!result.IsNullOrEmpty())
             {
                 return Ok(result);
             }
@@ -117,6 +117,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> GetAllTraningClass()
         {
             var listResult = await _trainingClassService.GetAllTrainingClassesAsync();
@@ -141,11 +142,11 @@ namespace WebAPI.Controllers
         public async Task<IActionResult> GetTrainingClassDetail(Guid id)
         {
             var detailList = await _trainingClassService.GetFinalTrainingClassesAsync(id);
-            if (detailList != null)
+            if (detailList!=null)
             {
                 return Ok(detailList);
             }
-            return NotFound();
+            return NoContent();
         }
 
         /// <summary>
