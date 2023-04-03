@@ -86,12 +86,10 @@ namespace Application.Services
             };
         }
 
-        public async Task<bool> DeleteTrainingMaterial(Guid id)
+        public async Task<bool> DeleteTrainingMaterial(string blobName)
         {
-            bool isDelete = await _unitOfWork.TrainingMaterialRepository.DeleteTrainingMaterial(id);
-            await _unitOfWork.SaveChangeAsync();
-            return isDelete;
-
+            await _unitOfWork.TrainingMaterialRepository.DeleteTrainingMaterial(blobName);
+            return await _unitOfWork.SaveChangeAsync()>0;         
         }
 
         public async Task<bool> UpdateTrainingMaterial(IFormFile file, Guid id, string blobUrl)
@@ -180,6 +178,12 @@ namespace Application.Services
             {
                 throw new Exception("File does not exist");
             }
+        }
+
+        public async Task<List<string>> CheckDeleted()
+        {
+            var listTrainingMaterial = await _unitOfWork.TrainingMaterialRepository.GetAllDeletedTrainingMaterialNames();
+            return listTrainingMaterial;
         }
 
         public async Task<bool> SoftRemoveTrainingMaterial(Guid TMatId)

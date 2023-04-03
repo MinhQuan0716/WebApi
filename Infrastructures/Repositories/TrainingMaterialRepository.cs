@@ -4,6 +4,7 @@ using Application.ViewModels.TrainingClassModels;
 using Application.ViewModels.TrainingMaterialModels;
 using Application.ViewModels.TrainingProgramModels.TrainingProgramView;
 using Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,15 +22,15 @@ namespace Infrastructures.Repositories
             _dbContext = context;
         }
 
-        public async Task<bool> DeleteTrainingMaterial(Guid id)
+        public async Task DeleteTrainingMaterial(string blobName)
         {
-            TrainingMaterial resultFile = await GetByIdAsync(id);
+            TrainingMaterial resultFile = await _dbContext.TrainingMaterials.Where(x => x.BlobName == blobName).FirstOrDefaultAsync();
             if (resultFile != null)
             {
                 _dbContext.TrainingMaterials.Remove(resultFile);
-                return true;
+              
             }
-            return false;
+            
         }
 
         public async Task<List<TrainingMaterial>> GetAllFileWithLectureId(Guid lectureId)
@@ -54,6 +55,15 @@ namespace Infrastructures.Repositories
                                          createdOn = t.CreationDate,
                                      }).FirstOrDefault();
             return getTrainingMaterial;
+        }
+
+        public async Task<List<string>> GetAllDeletedTrainingMaterialNames()
+        {
+            var getList = _dbContext.TrainingMaterials
+                .Where(x => x.IsDeleted == true)
+                .Select(t => t.BlobName)
+                .ToList();
+            return getList;
         }
     }
 }

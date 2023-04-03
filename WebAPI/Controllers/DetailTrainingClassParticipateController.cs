@@ -1,4 +1,5 @@
 ﻿using Application.Interfaces;
+using Application.Services;
 using Domain.Entities;
 using Domain.Enums;
 using Microsoft.AspNetCore.Mvc;
@@ -49,6 +50,20 @@ namespace WebAPI.Controllers
             }
             return BadRequest();
         }
-     
+
+        [HttpGet]
+        public async Task<IActionResult> SendInviteLink(string invLink, Guid classId)
+        {
+            try
+            {
+                await _detailTrainingClassParticipateService.SendInvitelink(invLink, classId);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
     }
 }

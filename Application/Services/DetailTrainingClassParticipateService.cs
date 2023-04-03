@@ -1,5 +1,7 @@
 ﻿using Application.Commons;
 using Application.Interfaces;
+using Application.Utils;
+using Application.ViewModels.FeedbackModels;
 using Application.ViewModels.TrainingClassModels;
 using Application.ViewModels.TrainingProgramModels;
 using AutoMapper;
@@ -20,14 +22,16 @@ namespace Application.Services
         private readonly ICurrentTime _currentTime;
         private readonly AppConfiguration _configuration;
         private readonly IClaimsService _claimsService;
+        private readonly ISendMailHelper _mailHelper;
 
-        public DetailTrainingClassParticipateService(IUnitOfWork unitOfWork, IMapper mapper, ICurrentTime currentTime, AppConfiguration configuration, IClaimsService claims)
+        public DetailTrainingClassParticipateService(IUnitOfWork unitOfWork, IMapper mapper, ICurrentTime currentTime, AppConfiguration configuration, IClaimsService claims, ISendMailHelper mailHelper)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _currentTime = currentTime;
             _configuration = configuration;
             _claimsService = claims;
+            _mailHelper = mailHelper;
         }
 
         public async Task<Guid?> CheckJoinClass(Guid userId, Guid classId)
@@ -65,6 +69,34 @@ namespace Application.Services
                 isTraining = true;
             }
             return isTraining;
+        }
+
+        public async Task<bool> SendInvitelink(string invLink, Guid classId)
+        {
+            var emailsList = _unitOfWork.DetailTrainingClassParticipateRepository.GetTraineeEmailsOfClass(classId);
+            TrainingClass trainingClass = await _unitOfWork.TrainingClassRepository.GetByIdAsync(classId);
+
+            var className = trainingClass.Code;
+            if (emailsList != null)
+            {
+                //Get project's directory and fetch FeedbackTemplate content from EmailTemplates
+                string exePath = Environment.CurrentDirectory.ToString();
+                if (exePath.Contains(@"\bin\Debug\net7.0"))
+                    exePath = exePath.Remove(exePath.Length - (@"\bin\Debug\net7.0").Length);
+                string FilePath = exePath + @"\EmailTemplates\FeedbackTemplate.html";
+                StreamReader streamreader = new StreamReader(FilePath);
+                string MailText = streamreader.ReadToEnd();
+                streamreader.Close();
+                //Replace [resetpasswordkey] = key
+                MailText = MailText.Replace("[invitelink]", $"{invLink}");
+                string Subject = $"Invite link to class: {className}";
+                await _mailHelper.SendMailAsync(emailsList, Subject, MailText);
+                return true;
+            }
+            else
+            {
+                throw new Exception("There is no trainee in this class.");
+            }
         }
     }
 }

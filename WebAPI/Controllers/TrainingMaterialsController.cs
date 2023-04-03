@@ -16,6 +16,7 @@ using Domain.Entities;
 using Application.Services;
 using static System.Reflection.Metadata.BlobBuilder;
 using Azure;
+using System.Linq;
 
 namespace WebAPI.Controllers
 {
@@ -36,18 +37,16 @@ namespace WebAPI.Controllers
             return Ok();
         }*/
 
-        [HttpDelete("DeleteFile")]
-        [Authorize]
-        [ClaimRequirement(nameof(PermissionItem.TrainingMaterialPermission), nameof(PermissionEnum.Modifed))]
-        public async Task<IActionResult> DeleteTrainingMaterial(Guid id)
+        /*[HttpDelete("DeleteFile")]
+        public async Task<IActionResult> DeleteTrainingMaterial(string blobName)
         {
-            bool deleteTraingMaterial = await _trainingMaterialService.DeleteTrainingMaterial(id);
+            bool deleteTraingMaterial = await _trainingMaterialService.DeleteTrainingMaterial(blobName);
             if (deleteTraingMaterial)
             {
                 return Ok();
             }
             return BadRequest();
-        }
+        }*/
 
         /*[HttpPut("EditFile")]
         [Authorize]
@@ -78,6 +77,8 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost]
+        [Authorize]
+        [ClaimRequirement(nameof(PermissionItem.TrainingMaterialPermission), nameof(PermissionEnum.Create))]
         public async Task<IActionResult> UploadTestAzure(IFormFile file, Guid lectureId)
         {
             // Verify that the file was provided
@@ -140,6 +141,8 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost]
+        [Authorize]
+        [ClaimRequirement(nameof(PermissionItem.TrainingMaterialPermission), nameof(PermissionEnum.Modifed))]
         public async Task<IActionResult> EditTestAzure(Guid id, IFormFile file)
         {
             string blobName = await _trainingMaterialService.GetBlobNameWithTMatId(id);
@@ -180,6 +183,8 @@ namespace WebAPI.Controllers
         }
 
         [HttpDelete]
+        [Authorize]
+        [ClaimRequirement(nameof(PermissionItem.TrainingMaterialPermission), nameof(PermissionEnum.Modifed))]
         public async Task<IActionResult> RemoveBlob(Guid id)
         {
             string blobName = await _trainingMaterialService.GetBlobNameWithTMatId(id);
@@ -203,6 +208,8 @@ namespace WebAPI.Controllers
 
         // Restore files on Azure, not database :>>>>
         [HttpPost]
+        [Authorize]
+        [ClaimRequirement(nameof(PermissionItem.TrainingMaterialPermission), nameof(PermissionEnum.Create))]
         public void RestoreBlobsWithVersioning(string blobName)
         {
             // Get a reference to the container
@@ -226,5 +233,51 @@ namespace WebAPI.Controllers
             // Restore the most recently generated version by copying it to the base blob.
             blobClient.StartCopyFromUri(blobVersionUri.ToUri());
         }
+
+        /*[HttpPost]
+        public async Task<IActionResult> CheckFilesEveryday()
+        {
+            List<string> list = await _trainingMaterialService.CheckDeleted();
+
+            // Get a reference to the container
+            var containerClient = _blobServiceClient.GetBlobContainerClient(_containerName);
+
+            List<string> blobNames = new List<string>();
+
+            bool deleteTraingMaterial = false;
+
+            var blobHierarchyItems = containerClient.GetBlobsByHierarchyAsync(BlobTraits.None, BlobStates.None, "/");
+
+            await foreach (var blobHierarchyItem in blobHierarchyItems)
+            {
+                //check if the blob is a virtual directory.
+                if (blobHierarchyItem.IsPrefix)
+                {
+                    // You can also access files under nested folders in this way,
+                    // of course you will need to create a function accordingly (you can do a recursive function)
+                    // var prefix = blobHierarchyItem.Name;
+                    // blobHierarchyItem.Name = "folderA\"
+                    // var blobHierarchyItems= container.GetBlobsByHierarchyAsync(BlobTraits.None, BlobStates.None, "/", prefix);     
+                }
+                else
+                {
+                    blobNames.Add(blobHierarchyItem.Blob.Name);
+                }
+            }
+
+            var listDelete = list.Except(blobNames).ToList();
+
+            foreach(var delete in listDelete)
+            {
+                deleteTraingMaterial = await _trainingMaterialService.DeleteTrainingMaterial(delete);
+                
+            }
+
+            if (deleteTraingMaterial)
+            {
+                return Ok();
+            }
+            return BadRequest();
+        }*/
     }
 }

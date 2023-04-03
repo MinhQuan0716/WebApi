@@ -129,8 +129,10 @@ try
         "0 22 * * *", TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time"));
     RecurringJob.AddOrUpdate<IAssignmentService>(a => a.CheckOverDue(), 
         "* * * * *", TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time"));
-    RecurringJob.AddOrUpdate<ApplicationCronJob>(a => a.ExtractGradingDataEveryDay(), 
+    RecurringJob.AddOrUpdate<ApplicationCronJob>(a => a.ExtractGradingDataEveryDay(),
         "0 23 * * *", TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time"));
+    RecurringJob.AddOrUpdate<ApplicationCronJob>(a => a.CheckFilesEveryday(),
+        "0 0 * * *", TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time"));
     await app.WaitForShutdownAsync();
 
 

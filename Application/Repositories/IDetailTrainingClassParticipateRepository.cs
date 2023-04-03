@@ -14,5 +14,6 @@ namespace Application.Repositories
        Guid GetDetailTrainingClassParticipateByClassID(Guid classID);
         Task<List<ClassTrainerDTO>> GetDetailTrainingClassParticipatesByClassIDAsync(Guid classID);
         Task<List<ClassAdminDTO>> GetAdminInClasssByClassIDAsync(Guid classID);
+        List<string> GetTraineeEmailsOfClass(Guid classId);
     }
 }

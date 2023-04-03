@@ -76,5 +76,20 @@ namespace Infrastructures.Repositories
                         }).ToListAsync();
             return result;
         }
+
+        public List<string> GetTraineeEmailsOfClass(Guid classId)
+        {
+            var detailTraineeClass = _dbContext.DetailTrainingClassParticipates.Include("User").Where(x => x.TrainingClassID == classId).ToList();
+            List<string> emailList = null;
+            foreach (var d in detailTraineeClass)
+            {
+                if (emailList == null)
+                {
+                    emailList = new List<string>();
+                }
+                emailList.Add(d.User.Email);
+            }
+            return emailList;
+        }
     }
 }

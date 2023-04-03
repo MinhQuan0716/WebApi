@@ -10,8 +10,9 @@ namespace Application.Repositories
 {
     public interface ITrainingMaterialRepository : IGenericRepository<TrainingMaterial>
     {
-        Task<bool> DeleteTrainingMaterial(Guid id);
+        Task DeleteTrainingMaterial(string blobName);
         Task<List<TrainingMaterial>> GetAllFileWithLectureId(Guid lectureId);
         Task<TrainingMaterialDTO> GetTrainingMaterial(Guid lectureId);
+        Task<List<string>> GetAllDeletedTrainingMaterialNames();
     }
 }
