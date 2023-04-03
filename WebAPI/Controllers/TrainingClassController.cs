@@ -153,7 +153,7 @@ namespace WebAPI.Controllers
         /// </summary>
         /// <param name="trainingClassId">Training class id</param>
         /// <returns></returns>
-        [HttpPatch]
+        [HttpDelete]
         [Authorize]
         [ClaimRequirement(nameof(PermissionItem.ClassPermission), nameof(PermissionEnum.Modifed))]
         public async Task<IActionResult> SoftRemoveTrainingClass(string trainingClassId)
