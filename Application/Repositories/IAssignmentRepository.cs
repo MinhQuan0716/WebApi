@@ -9,8 +9,5 @@ namespace Application.Repositories
 {
     public interface IAssignmentRepository : IGenericRepository<Assignment>
     {
-        Task CheckOverdue();
-        Task AddProcedure();
-        Task<bool> CheckExistedProcedure();
     }
 }

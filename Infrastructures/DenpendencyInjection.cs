@@ -19,7 +19,7 @@ namespace Infrastructures
     {
         public static IServiceCollection AddInfrastructuresService(this IServiceCollection services, string databaseConnection)
         {
-            services.AddTransient<ISendMailHelper, SendMailHelper>();
+            services.AddSingleton<ISendMailHelper, SendMailHelper>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IUnitRepository, UnitRepository>();
             services.AddScoped<IAttendanceRepository, AttendanceRepository>();
@@ -39,43 +39,32 @@ namespace Infrastructures
             services.AddScoped<ISyllabusService, SyllabusService>();
             services.AddScoped<IAttendanceRepository, AttendanceRepository>();
             services.AddSingleton<ExternalAuthUtils>();
-            services.AddScoped<IApplicationService, ApplicationService>();
-            services.AddScoped<ITrainingClassRepository, TrainingClassRepository>();
-            services.AddScoped<ILocationRepository, LocationRepository>();
+            services.AddScoped<IApplicationService, ApplicationService>();      
             services.AddScoped<ITrainingProgramRepository, TrainingProgramRepository>();
             services.AddScoped<ITrainingProgramService, TrainingProgramService>();
-            services.AddScoped<IDetailTrainingProgramSyllabusRepository, DetailTrainingProgramSyllabusRepository>();
+            services.AddScoped<IDetailTrainingProgramSyllabusRepository, DetailTrainingProgramSyllabusRepository>();       
             services.AddScoped<IAuditPlanRepository, AuditPlanRepository>();
             services.AddScoped<IAuditQuestionRepository, AuditQuestionRepository>();
             services.AddScoped<IDetailAuditQuestionRepository, DetailAuditQuestionRepository>();
             services.AddScoped<IAuditPlanService, AuditPlanService>();
 
-
             services.AddScoped<IFeedbackRepository, FeedbackRepository>();
             services.AddScoped<IGradingService, GradingService>();
             services.AddScoped<IGradingRepository, GradingRepository>();
-
             services.AddScoped<IQuestionService, QuestionService>();
             services.AddScoped<IQuestionRepository, QuestionRepository>();
             services.AddScoped<IQuizRepository, QuizRepository>();
             services.AddScoped<IDetailQuizQuestionRepository, DetailQuizQuestionRepository>();
-            services.AddScoped<ITopicRepository, TopicRepository>();
-            services.AddScoped<IFeedbackRepository, FeedbackRepository>();
-            services.AddScoped<IGradingService, GradingService>();
-            services.AddScoped<IGradingRepository, GradingRepository>();
+            services.AddScoped<ITopicRepository, TopicRepository>();    
             services.AddScoped<IDetailTrainingClassParticipateRepository, DetailTrainingClassParticipateRepository>();
-
             services.AddScoped<IAuditSubmissionRepository, AuditSubmissionRepository>();
             services.AddScoped<IDetailAuditSubmissionRepository, DetailAuditSubmissionRepository>();
             services.AddScoped<IAuditSubmissionService, AuditSubmissionService>();
             // ATTENTION: if you do migration please check file README.md
             services.AddDbContext<AppDbContext>(option => option.UseSqlServer(databaseConnection).EnableSensitiveDataLogging());
-
             // this configuration just use in-memory for fast develop
             //services.AddDbContext<AppDbContext>(option => option.UseInMemoryDatabase("test"));
-
             services.AddAutoMapper(typeof(MapperConfigurationsProfile).Assembly);
-
             return services;
         }
     }

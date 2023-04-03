@@ -28,7 +28,7 @@ namespace Infrastructures.Tests.Repository
         }
 
         [Fact]
-        public async Task GenericRepository_GetAllAsync_ShouldReturnCorrectData()
+        public async Task GenericRepository_GetaAllAsync_ShouldReturnCorrectData()
         {
             var mockData = _fixture.Build<User>()
                 .Without(x => x.Applications)

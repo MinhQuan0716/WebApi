@@ -30,13 +30,21 @@ namespace Application.Services
             _claimsService = claims;
         }
 
+        public async Task<Guid?> CheckJoinClass(Guid userId, Guid classId)
+        {
+            Guid? result = null;
+            var item = (await _unitOfWork.DetailTrainingClassParticipateRepository.FindAsync(x => x.UserId == userId && x.TrainingClassID == classId)).FirstOrDefault();
+            if(item is not null) 
+            {
+                result = item.Id;
+            }
+            return result;
+        }
+
         public async Task<DetailTrainingClassParticipate> CreateTrainingClassParticipate(Guid userId, Guid classId)
         {
             var trainingClass = await _unitOfWork.TrainingClassRepository.GetByIdAsync(classId);
             var user = await _unitOfWork.UserRepository.GetByIdAsync(userId);
-
-            if (user.RoleId != 4) return null;
-
             var newDetailTrainingClassParticipate = new DetailTrainingClassParticipate { UserId = user.Id, TrainingClassID = trainingClass.Id, TraineeParticipationStatus = nameof(TraineeParticipationStatusEnum.NotJoined) };
             await _unitOfWork.DetailTrainingClassParticipateRepository.AddAsync(newDetailTrainingClassParticipate);
             await _unitOfWork.SaveChangeAsync();

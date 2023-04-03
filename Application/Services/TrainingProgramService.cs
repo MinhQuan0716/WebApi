@@ -74,17 +74,17 @@ namespace Application.Services
 
         public async Task<bool> UpdateTrainingProgram(UpdateTrainingProgramDTO updateProgramDTO)
         {
-            var updateProgram = await _unitOfWork.TrainingProgramRepository.GetByIdAsync(updateProgramDTO.Id.Value);
+            var updateProgram = await _unitOfWork.TrainingProgramRepository.GetByIdAsync(updateProgramDTO.Id!.Value);
             if (updateProgram is not null)
             {
-                updateProgram = _mapper.Map<TrainingProgram>(updateProgramDTO);
+                _ = _mapper.Map(updateProgram, updateProgramDTO, typeof(UpdateTrainingProgramDTO), typeof(TrainingProgram));
                 updateProgram.Status = "Active";
                 if (updateProgram is not null) _unitOfWork.TrainingProgramRepository.Update(updateProgram);
                 var detailProgramSyllbuses = await _unitOfWork.DetailTrainingProgramSyllabusRepository.FindAsync(x => x.TrainingProgramId == updateProgram.Id);
                 if (detailProgramSyllbuses is not null) _unitOfWork.DetailTrainingProgramSyllabusRepository.SoftRemoveRange(detailProgramSyllbuses);
 
                 var syllabusesId = updateProgramDTO.SyllabusesId;
-                foreach (var syllabusId in syllabusesId)
+                foreach (var syllabusId in syllabusesId!)
                 {
                     var syllabus = await _unitOfWork.SyllabusRepository.GetByIdAsync(syllabusId);
                     if (syllabus is not null)

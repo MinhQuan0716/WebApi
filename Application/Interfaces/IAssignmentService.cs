@@ -18,10 +18,8 @@ namespace Application.Interfaces
 
         Task CheckOverDue();
 
-        Task<bool> CreateAssignment(AssignmentViewModel assignmentViewModel);
+        Task<Guid> CreateAssignment(AssignmentViewModel assignmentViewModel);
         Task<FileEntity> DownLoad(Guid assignmentID);
 
-        Task AddProcedure();
-        Task<bool> CheckExistedProcedure();
     }
 }

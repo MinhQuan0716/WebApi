@@ -76,16 +76,18 @@ namespace Application.Services
         {
             var auditSubmissionViewList = new List<AuditSubmissionViewModel>();
             var auditSubmissions = await _unitOfWork.AuditSubmissionRepository.FindAsync(x => x.AuditPlanId == auditPlanId);
+            if(auditSubmissions.Count() <= 0) throw new Exception("Not have any AuditSubmission");
             foreach (var auditSubmission in auditSubmissions)
             {
                 var auditSubmissionView = _mapper.Map<AuditSubmissionViewModel>(auditSubmission);
-                if (auditSubmissionView is not null)
+                var auditSubmissionDetail = await _unitOfWork.DetailAuditSubmissionRepository.GetDetailView(auditSubmission.Id);
+                if(auditSubmissionDetail is not null && auditSubmissionDetail.Count() > 0) 
                 {
-                    auditSubmissionView.DetailAuditSubmisisonViewModel = await _unitOfWork.DetailAuditSubmissionRepository.GetDetailView(auditSubmission.Id);
+                    auditSubmissionView.DetailAuditSubmisisonViewModel = auditSubmissionDetail;
                     if (auditSubmissionView.DetailAuditSubmisisonViewModel is not null) auditSubmissionViewList.Add(auditSubmissionView);
-                    else throw new Exception("Not have any detail submission");
                 }
-                else throw new Exception("Can not find any Submission");
+                
+                    else throw new Exception("Not have any detail submission");                
             }
             return auditSubmissionViewList;
         }

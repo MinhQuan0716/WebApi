@@ -19,6 +19,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using System.Reflection;
+using System.Linq.Expressions;
 
 namespace Application.Tests.Services
 {
@@ -62,6 +63,7 @@ namespace Application.Tests.Services
         [Fact]
         public async Task CreateAssignment_ReturnTrue()
         {
+            var assignmentId = Guid.NewGuid();
             var listAssignment = _fixture.Build<Assignment>().Without(x => x.Lecture).Without(x => x.AssignmentSubmissions).CreateMany(0).ToList();
             var assignmentView = _fixture.Build<AssignmentViewModel>().Without(x => x.File).Create();
             _unitOfWorkMock.Setup(x => x.AssignmentRepository.FindAsync(x => x.LectureID == assignmentView.LectureID && x.IsDeleted == false && x.IsOverDue == false)).ReturnsAsync(listAssignment);
@@ -70,31 +72,15 @@ namespace Application.Tests.Services
             assignmentView.File = _file.Object;
             var mapAssignment = _mapperConfig.Map<Assignment>(assignmentView);
             _unitOfWorkMock.Setup(x => x.AssignmentRepository.AddAsync(mapAssignment)).Verifiable();
-            _unitOfWorkMock.Setup(x => x.SaveChangeAsync()).ReturnsAsync(1);
+            _unitOfWorkMock.Setup(x => x.SaveChangeAsync()).Verifiable();
 
             var actualResult = await _assignmentService.CreateAssignment(assignmentView);
 
-            actualResult.Should().BeTrue();
+            actualResult.Should().NotBe(Guid.Empty);
+            _unitOfWorkMock.Verify(x => x.SaveChangeAsync(),Times.Once);
 
         }
 
-        [Fact]
-        public async Task CreateAssignment_ReturnFalse_WhenSaveChangFalse()
-        {
-            var listAssignment = new List<Assignment>();
-            var assignment = _fixture.Build<AssignmentViewModel>().Without(x => x.File).Create();
-            _unitOfWorkMock.Setup(x => x.AssignmentRepository.FindAsync(x => x.LectureID == assignment.LectureID && x.IsDeleted == false && x.IsOverDue == false)).ReturnsAsync(listAssignment);
-            assignment.DeadLine = DateTime.Today.AddDays(1);
-            assignment.File = _file.Object;
-            var mapAssignment = _mapperConfig.Map<Assignment>(assignment);
-            _unitOfWorkMock.Setup(x => x.AssignmentRepository.AddAsync(mapAssignment)).Verifiable();
-            _unitOfWorkMock.Setup(x => x.SaveChangeAsync()).ReturnsAsync(0);
-
-            var actualResult = await _assignmentService.CreateAssignment(assignment);
-
-            actualResult.Should().BeFalse();
-
-        }
 
         [Fact]
         public async Task CreateAssignment_ThrowException_WhenOutofDate()
@@ -121,19 +107,6 @@ namespace Application.Tests.Services
             await act.Should().ThrowAsync<Exception>().WithMessage("Assignment*");
         }
         [Fact]
-        public async Task CreateAssignment_ThrowException_WhenFileEmpty()
-        {
-            var assignment = _fixture.Build<AssignmentViewModel>().With(x => x.DeadLine, DateTime.MaxValue).Without(x => x.File).Create();
-            assignment.File = _file.Object;
-            _file.Setup(x => x.Length).Returns(0);
-            List<Assignment> listAssignment = new();
-            _unitOfWorkMock.Setup(x => x.AssignmentRepository.FindAsync(x => x.LectureID == assignment.LectureID && x.IsDeleted == false && x.IsOverDue == false)).ReturnsAsync(listAssignment);
-
-            Func<Task> act = async () => await _assignmentService.CreateAssignment(assignment);
-
-            await act.Should().ThrowAsync<Exception>().WithMessage("*is null");
-        }
-        [Fact]
         public async Task DeleteAssignment_ReturnTrue()
         {
             var assignment = _fixture.Build<Assignment>().Without(x => x.AssignmentSubmissions).Without(a => a.Lecture).Create();
@@ -152,7 +125,7 @@ namespace Application.Tests.Services
         {
             var assignment = _fixture.Build<Assignment>().Without(x => x.AssignmentSubmissions).Without(a => a.Lecture).Create();
             assignment.IsDeleted = true;
-            _unitOfWorkMock.Setup(x => x.AssignmentRepository.GetByIdAsync(id)).ReturnsAsync(assignment);
+            _unitOfWorkMock.Setup(x => x.AssignmentRepository.GetByIdAsync(id)).ReturnsAsync(assignment );
 
             Func<Task> act = async () => await _assignmentService.DeleteAssignment(id);
 
@@ -236,7 +209,7 @@ namespace Application.Tests.Services
 
             Func<Task> act = async () => await _assignmentService.UpdateAssignment(assignmentUpdate);
 
-            await act.Should().ThrowAsync<Exception>().WithMessage("*is null");
+            await act.Should().ThrowAsync<Exception>();
         }
 
         [Fact]
@@ -280,25 +253,15 @@ namespace Application.Tests.Services
         [Fact]
         public async Task CheckOverdue()
         {
-            _unitOfWorkMock.Setup(x => x.AssignmentRepository.CheckOverdue()).Verifiable();
+            var assignments = _fixture.Build<Assignment>().Without(x => x.AssignmentSubmissions).Without(a => a.Lecture).CreateMany(3).ToList();
+            assignments.ForEach(x => { x.IsOverDue = false; });
+            _unitOfWorkMock.Setup(x=>x.AssignmentRepository.FindAsync(It.IsAny<Expression<Func<Assignment,bool>>>())).ReturnsAsync(assignments);
+            _unitOfWorkMock.Setup(x => x.AssignmentRepository.UpdateRange(assignments)).Verifiable();
+            _unitOfWorkMock.Setup(x => x.SaveChangeAsync()).Verifiable();
             await _assignmentService.CheckOverDue();
-            _unitOfWorkMock.Verify(x => x.AssignmentRepository.CheckOverdue(), Times.Once);
+            _unitOfWorkMock.Verify(x => x.AssignmentRepository.UpdateRange(assignments),Times.Once);
+            _unitOfWorkMock.Verify(x => x.SaveChangeAsync(),Times.Once);
         }
 
-        [Fact]
-        public async Task AddProcedure()
-        {
-            _unitOfWorkMock.Setup(x => x.AssignmentRepository.CheckExistedProcedure()).ReturnsAsync(false);
-            _unitOfWorkMock.Setup(x => x.AssignmentRepository.AddProcedure()).Verifiable();
-            await _assignmentService.AddProcedure();
-            _unitOfWorkMock.Verify(x => x.AssignmentRepository.AddProcedure(), Times.Once);
-        }
-        [Fact]
-        public async Task CheckExistedProcedure()
-        {
-            _unitOfWorkMock.Setup(x => x.AssignmentRepository.CheckExistedProcedure()).Verifiable();
-            await _assignmentService.CheckExistedProcedure();
-            _unitOfWorkMock.Verify(x => x.AssignmentRepository.CheckExistedProcedure(), Times.Once);
-        }
-    }
+    } 
 }

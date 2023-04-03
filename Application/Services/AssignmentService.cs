@@ -46,11 +46,6 @@ namespace Application.Services
             if (assignment == null) throw new Exception("Assignment is not existed!");
             assignment.AssignmentName = assignmentUpdate.AssignmentName;
             assignment.Description = assignmentUpdate.Description;
-
-            if (assignmentUpdate.File.Length == 0)
-            {
-                throw new Exception("File length is null");
-            }
             var dbPath = assignmentUpdate.File.ImportFile("Assignments", assignment.Version.Value + 1, assignment.CreatedBy.Value);
             assignment.FileName = dbPath;
             assignment.Version = assignment.Version.Value + 1;
@@ -74,18 +69,17 @@ namespace Application.Services
 
         public async Task CheckOverDue()
         {
-            await _unitOfWork.AssignmentRepository.CheckOverdue();
+            var assignmentsOverdue = await _unitOfWork.AssignmentRepository.FindAsync(x => x.DeadLine < _current.GetCurrentTime() && x.IsOverDue==false);
+            assignmentsOverdue.ForEach(assignment => { assignment.IsOverDue = true; });
+            _unitOfWork.AssignmentRepository.UpdateRange(assignmentsOverdue);
+            await _unitOfWork.SaveChangeAsync();
         }
 
-        public async Task<bool> CreateAssignment(AssignmentViewModel assignmentViewModel)
+        public async Task<Guid> CreateAssignment(AssignmentViewModel assignmentViewModel)
         {
             var check = await _unitOfWork.AssignmentRepository.FindAsync(x => x.LectureID == assignmentViewModel.LectureID && x.IsDeleted == false && x.IsOverDue == false);
             if (check.Count() > 0) throw new Exception("Assignment has already existed!");
-            if (assignmentViewModel.DeadLine <= _current.GetCurrentTime())
-                throw new Exception("Deadline must higher than Datetime now");
-            if (assignmentViewModel.File.Length == 0)
-                throw new Exception("File length is null");
-
+            if (assignmentViewModel.DeadLine < DateTime.Now) throw new Exception("Deadline must higher than Datetime now");
             var dbPath = assignmentViewModel.File.ImportFile("Assignments", 1, _claimsService.GetCurrentUserId);
             if (dbPath.IsNullOrEmpty()) throw new Exception("Import File Fail");
             var assignment = _mapper.Map<Assignment>(assignmentViewModel);
@@ -93,8 +87,8 @@ namespace Application.Services
             assignment.FileName = dbPath;
             assignment.Version = 1;
             await _unitOfWork.AssignmentRepository.AddAsync(assignment);
-            var result = await _unitOfWork.SaveChangeAsync() > 0;
-            return result;
+            await _unitOfWork.SaveChangeAsync();
+            return assignment.Id;
         }
 
         public async Task<FileEntity> DownLoad(Guid assignmentID)
@@ -105,21 +99,6 @@ namespace Application.Services
             return fileEntity;
         }
 
-        public async Task AddProcedure()
-        {
-            var isExisted = await CheckExistedProcedure();
-            if (isExisted == false)
-            {
-                await _unitOfWork.AssignmentRepository.AddProcedure();
-            }
-
-        }
-
-        public async Task<bool> CheckExistedProcedure()
-        {
-            return await _unitOfWork.AssignmentRepository.CheckExistedProcedure();
-        }
+ 
     }
-
-
 }

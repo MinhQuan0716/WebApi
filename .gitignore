@@ -225,7 +225,11 @@ AppPackages/
 # .NET Core build folders
 bin/
 obj/
-
+Tests/
+Infrastructures.Tests/TestResults/
+Domains.Test/TestResults/
+Application.Test/TestResults/
+WebAPI.Test/TestResults/
 
 # Common node modules locations
 /node_modules

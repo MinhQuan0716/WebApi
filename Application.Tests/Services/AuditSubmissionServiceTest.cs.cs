@@ -1,4 +1,5 @@
-﻿using Application.Services;
+﻿using System.Linq.Expressions;
+using Application.Services;
 using Application.ViewModels.AuditModels.AuditSubmissionModels.CreateModels;
 using Application.ViewModels.AuditModels.AuditSubmissionModels.UpdateModels;
 using Application.ViewModels.AuditModels.AuditSubmissionModels.ViewModels;
@@ -171,6 +172,52 @@ namespace Application.Tests.Services
             result.Should().BeFalse();
         }
 
+        [Fact]
+        public async Task GetAuditSubmmissionByAuditPlan_ShouldReturnCorrectData()
+        {
+            var auditSubmission = _fixture.Build<AuditSubmission>()
+                                          .Without(x => x.AuditPlan)
+                                          .Without(x => x.DetailAuditSubmissions)
+                                          .CreateMany(1).ToList();
+            var detailAuditSubmission = _fixture.Build<DetailAuditSubmissionViewModel>()
+                                                    .CreateMany(2);
+            _unitOfWorkMock.Setup(x => x.AuditSubmissionRepository.FindAsync(It.IsAny<Expression<Func<AuditSubmission, bool>>>())).ReturnsAsync(auditSubmission);
+            _unitOfWorkMock.Setup(x => x.DetailAuditSubmissionRepository.GetDetailView(It.IsAny<Guid>())).ReturnsAsync(detailAuditSubmission);
+            var result = await auditSubmissionSerivce.GetAllAuditSubmissionByAuditPlan(auditSubmission.First().AuditPlanId);
+            result.Count().Should().BeGreaterThanOrEqualTo(1);
+        } 
 
+        [Fact]
+        public async Task GetAuditSubmmissionByAuditPlan_NotFoundSubmission_ShouldThrowException()
+        {
+            var auditSubmission = _fixture.Build<AuditSubmission>()
+                                          .Without(x => x.AuditPlan)
+                                          .Without(x => x.DetailAuditSubmissions)
+                                          .CreateMany(0).ToList();
+
+            _unitOfWorkMock.Setup(x => x.AuditSubmissionRepository.FindAsync(It.IsAny<Expression<Func<AuditSubmission, bool>>>()))!.ReturnsAsync(auditSubmission);
+            
+            Func<Task> act = async() => await auditSubmissionSerivce.GetAllAuditSubmissionByAuditPlan(It.IsAny<Guid>());
+            await act.Should().ThrowAsync<Exception>().WithMessage("Not have any AuditSubmission");
+        }
+
+        [Fact]
+        public async Task GetAuditSubmissionByAuditPlan_NotHaveAnyDetail_ShouldThrowException()
+        {
+            var auditSubmission = _fixture.Build<AuditSubmission>()
+                                          .Without(x => x.AuditPlan)
+                                          
+                                          .Without(x => x.DetailAuditSubmissions)
+                                          .CreateMany(1).ToList();
+            var detailAuditSubmission = _fixture.Build<DetailAuditSubmission>()
+                                                .Without(x => x.AuditSubmission)
+                                                .Without(x => x.DetailAuditQuestion)
+                                                .With(x => x.AuditSubmissionId, auditSubmission.First()!.Id)
+                                                .CreateMany(2).ToList();
+            _unitOfWorkMock.Setup(x => x.AuditSubmissionRepository.FindAsync(It.IsAny<Expression<Func<AuditSubmission, bool>>>())).ReturnsAsync(auditSubmission);
+            _unitOfWorkMock.Setup(x => x.DetailAuditSubmissionRepository.FindAsync(It.IsAny<Expression<Func<DetailAuditSubmission, bool>>>()))!.ReturnsAsync(detailAuditSubmission = null);
+            Func<Task> act = async () => await auditSubmissionSerivce.GetAllAuditSubmissionByAuditPlan(It.IsAny<Guid>());
+            await act.Should().ThrowAsync<Exception>().WithMessage("Not have any detail submission");
+        }
     }
 }

@@ -23,13 +23,11 @@ namespace WebAPI.Tests.Controllers
     public class AssignmentSubmissionControllerTest : SetupTest
     {
         private readonly AssignmentSubmissionController _controller;
-        private readonly Mock<IBackgroundJobClient> _backgroundJobClientMock;
         private readonly Guid idMock = Guid.NewGuid();
         private readonly IFormFile formFile;
         public AssignmentSubmissionControllerTest()
         {
-            _backgroundJobClientMock = new Mock<IBackgroundJobClient>();
-            _controller = new AssignmentSubmissionController(_assignmentSubmissionServiceMock.Object, _gradingServiceMock.Object, _backgroundJobClientMock.Object);
+            _controller = new AssignmentSubmissionController(_claimsServiceMock.Object,_assignmentSubmissionServiceMock.Object, _gradingServiceMock.Object);
             //Setup mock file using a memory stream
             var content = "Hello World from a Fake File";
             var fileName = "test.pdf";
@@ -46,19 +44,20 @@ namespace WebAPI.Tests.Controllers
         [Fact]
         public async Task SubmissAssignment_ShouldReturn201()
         {
-            _assignmentSubmissionServiceMock.Setup(a => a.AddSubmisstion(idMock, formFile)).ReturnsAsync(true);
+            var classId=Guid.NewGuid();
+            _assignmentSubmissionServiceMock.Setup(a => a.AddSubmisstion(idMock,classId, formFile)).ReturnsAsync(Guid.NewGuid());
 
-            var actualResult = await _controller.SubmissAssignment(idMock, formFile);
-            var code = (actualResult as StatusCodeResult).StatusCode;
-            code.Should().Be(201);
+            var actualResult = await _controller.SubmissAssignment(idMock,classId, formFile);
+            actualResult.Should().BeOfType<CreatedAtActionResult>();
         }
 
         [Fact]
         public async Task SubmissAssignment_ShouldReturnNoContent()
         {
-            _assignmentSubmissionServiceMock.Setup(a => a.AddSubmisstion(idMock, formFile)).ReturnsAsync(false);
+            var classId = Guid.NewGuid();
+            _assignmentSubmissionServiceMock.Setup(a => a.AddSubmisstion(idMock, classId, formFile)).ReturnsAsync(Guid.Empty);
 
-            var actualResult = await _controller.SubmissAssignment(idMock, formFile);
+            var actualResult = await _controller.SubmissAssignment(idMock,classId, formFile);
 
             actualResult.Should().BeOfType<NoContentResult>();
         }
@@ -129,15 +128,13 @@ namespace WebAPI.Tests.Controllers
         [Fact]
         public async Task GradingReview_ShouldReturnOk()
         {
-
+            Guid submisstionId=Guid.NewGuid();
             Guid lectureIdReturn = Guid.NewGuid();
-            _assignmentSubmissionServiceMock.Setup(x => x.GradingandReviewSubmission(idMock, 3, "Bad")).ReturnsAsync(lectureIdReturn);
-            _gradingServiceMock.Setup(x => x.AddToGrading(new GradingModel(lectureIdReturn, Guid.Empty, "Three", 3))).Verifiable();
+            _assignmentSubmissionServiceMock.Setup(x => x.GradingandReviewSubmission(submisstionId, 3, "Bad")).ReturnsAsync(lectureIdReturn);
+            _gradingServiceMock.Setup(x => x.AddToGrading(new GradingModel(lectureIdReturn, Guid.Empty, "A", 3))).Verifiable();
 
-            _backgroundJobClientMock.Setup(x => x.Create(It.IsAny<Job>(), It.IsAny<EnqueuedState>()));
 
-            var actualResult = await _controller.GradingReview(idMock, 3, "Three", "Bad", Guid.Empty);
-            _backgroundJobClientMock.Verify(x => x.Create(It.IsAny<Job>(), It.IsAny<EnqueuedState>()), Times.Once);
+            var actualResult = await _controller.GradingReview(submisstionId, 3, "A", "Bad", Guid.Empty);
             actualResult.Should().BeOfType<OkResult>();
         }
 
@@ -147,7 +144,6 @@ namespace WebAPI.Tests.Controllers
 
             Guid lectureIdReturn = Guid.NewGuid();
             _assignmentSubmissionServiceMock.Setup(x => x.GradingandReviewSubmission(idMock, 3, "Bad")).ReturnsAsync(Guid.Empty);
-
             var actualResult = await _controller.GradingReview(idMock, 3, "Three", "Bad", Guid.Empty);
             actualResult.Should().BeOfType<BadRequestResult>();
         }

@@ -11,8 +11,9 @@ namespace Application.ViewModels.UserViewModels
         public Guid UserID { get; set; }
         public int RoleID { get; set; }
     }
-    public class UpdateDTO : UpdateRoleDTO
+    public class UpdateDTO 
     {
+        public Guid UserId { get; set; }
         public string Email { get; set; }
         public string FullName { get; set; }
 

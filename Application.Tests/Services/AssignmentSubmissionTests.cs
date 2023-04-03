@@ -5,13 +5,18 @@ using AutoFixture;
 using Domain.Entities;
 using Domains.Test;
 using FluentAssertions;
+using Infrastructures;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Azure;
 using Moq;
+using OfficeOpenXml.FormulaParsing.ExpressionGraph;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Net.WebSockets;
 using System.Reflection;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using WebAPI.Services;
@@ -54,7 +59,7 @@ namespace Application.Tests.Services
             file.Setup(f => f.ContentDisposition).Returns(val);
         }
 
-        [Fact]
+        /*[Fact]
         public async Task AddSubmission_ThorwExcpetion_WhenNullAssign()
         {
             var assignment = new List<Assignment>();//null assignment return false
@@ -117,8 +122,8 @@ namespace Application.Tests.Services
             var result = await _assignmentSubmissionService.AddSubmisstion(fakeID, file.Object);
             result.Should().BeTrue();
         }
-
-        [Fact]
+        */
+/*        [Fact]
         public async Task AddSubmission_ShouldFasle_WhenSaveChangesFalse()
         {
             var fakeID = Guid.Empty;
@@ -142,6 +147,107 @@ namespace Application.Tests.Services
             _unitOfWorkMock.Setup(x => x.SaveChangeAsync()).ReturnsAsync(0);
             var result = await _assignmentSubmissionService.AddSubmisstion(fakeID, file.Object);
             result.Should().BeFalse();
+        }*/
+        
+        [Fact]
+        public async Task AddSubmission_ThrowException_WhenCheckJoinClassisZero()
+        {
+            Guid fakeUserId = Guid.NewGuid();
+            Guid fakeClassId = Guid.NewGuid();
+            _claimsServiceMock.Setup(x=>x.GetCurrentUserId).Returns(fakeUserId);
+            //list user join class
+            List<DetailTrainingClassParticipate> detailTrainingClassParticipates = new List<DetailTrainingClassParticipate>();
+            _unitOfWorkMock.Setup(x=>x.DetailTrainingClassParticipate.FindAsync(p=>p.TrainingClassID==fakeClassId && p.UserId==fakeUserId)).ReturnsAsync(detailTrainingClassParticipates);
+
+            Func<Task> act = async () => await _assignmentSubmissionService.AddSubmisstion(id, fakeClassId, file.Object);
+            await act.Should().ThrowAsync<Exception>().WithMessage("User not join in class!");
+        }
+        [Fact]
+        public async Task AddSubmission_ThrowException_WhenIsOverDueisTrue()
+        {
+            Guid fakeUserId = Guid.NewGuid();
+            Guid fakeClassId = Guid.NewGuid();
+            _claimsServiceMock.Setup(x => x.GetCurrentUserId).Returns(fakeUserId);
+            //list user join class
+            DetailTrainingClassParticipate detailTrainingClassParticipate = new DetailTrainingClassParticipate
+            {
+                UserId= fakeUserId,
+                TrainingClassID=fakeClassId,
+            };
+            List<DetailTrainingClassParticipate> detailTrainingClassParticipates = new List<DetailTrainingClassParticipate> { detailTrainingClassParticipate };
+           
+            _unitOfWorkMock.Setup(x => x.DetailTrainingClassParticipate.FindAsync(p => p.TrainingClassID == fakeClassId && p.UserId == fakeUserId)).ReturnsAsync(detailTrainingClassParticipates);
+
+            var assignmentList = _fixture.Build<Assignment>()
+                .Without(x=>x.AssignmentSubmissions)
+                .Without(x => x.Lecture)
+                .CreateMany(1)
+                .ToList();
+            assignmentList.First().IsOverDue= true;
+            _unitOfWorkMock.Setup(x => x.AssignmentRepository.FindAsync(It.IsAny<Expression<Func<Assignment, bool>>>())).ReturnsAsync(assignmentList);
+
+
+            Func<Task> act = async () => await _assignmentSubmissionService.AddSubmisstion(id, fakeClassId, file.Object);
+            await act.Should().ThrowAsync<Exception>().WithMessage("Assignment is overdue!");
+        }
+        [Fact]
+        public async Task AddSubmission_ThrowException_WhenExistedSubmission()
+        {
+            Guid fakeUserId = Guid.NewGuid();
+            Guid fakeClassId = Guid.NewGuid();
+            _claimsServiceMock.Setup(x => x.GetCurrentUserId).Returns(fakeUserId);
+            //list user join class
+            DetailTrainingClassParticipate detailTrainingClassParticipate = new DetailTrainingClassParticipate
+            {
+                UserId = fakeUserId,
+                TrainingClassID = fakeClassId,
+            };
+            List<DetailTrainingClassParticipate> detailTrainingClassParticipates = new List<DetailTrainingClassParticipate> { detailTrainingClassParticipate };
+
+            _unitOfWorkMock.Setup(x => x.DetailTrainingClassParticipate.FindAsync(p => p.TrainingClassID == fakeClassId && p.UserId == fakeUserId)).ReturnsAsync(detailTrainingClassParticipates);
+
+            List<Assignment> assignmentList = new List<Assignment>();
+            _unitOfWorkMock.Setup(x => x.AssignmentRepository.FindAsync(It.IsAny<Expression<Func<Assignment, bool>>>())).ReturnsAsync(assignmentList);
+
+            var submissionExisted = _fixture.Build<AssignmentSubmission>()
+                                            .Without(x=>x.Assignment)
+                                            .CreateMany(1).ToList();
+            submissionExisted.First().AssignmentId = id;
+            submissionExisted.First().IsDeleted = false;
+            submissionExisted.First().CreatedBy = fakeUserId;
+
+            _unitOfWorkMock.Setup(x => x.AssignmentSubmissionRepository.FindAsync(It.IsAny<Expression<Func<AssignmentSubmission, bool>>>())).ReturnsAsync(submissionExisted);
+            Func<Task> act = async () => await _assignmentSubmissionService.AddSubmisstion(id, fakeClassId, file.Object);
+            await act.Should().ThrowAsync<Exception>().WithMessage("Submission has already existed!");
+        }
+        [Fact]
+        public async Task AddSubmission_ShouldReturnSubmissionId()
+        {
+            Guid fakeUserId = Guid.NewGuid();
+            Guid fakeClassId = Guid.NewGuid();
+            _claimsServiceMock.Setup(x => x.GetCurrentUserId).Returns(fakeUserId);
+            //list user join class
+            DetailTrainingClassParticipate detailTrainingClassParticipate = new DetailTrainingClassParticipate
+            {
+                UserId = fakeUserId,
+                TrainingClassID = fakeClassId,
+            };
+            List<DetailTrainingClassParticipate> detailTrainingClassParticipates = new List<DetailTrainingClassParticipate> { detailTrainingClassParticipate };
+
+            _unitOfWorkMock.Setup(x => x.DetailTrainingClassParticipate.FindAsync(p => p.TrainingClassID == fakeClassId && p.UserId == fakeUserId)).ReturnsAsync(detailTrainingClassParticipates);
+
+            List<Assignment> assignmentList = new List<Assignment>();
+            _unitOfWorkMock.Setup(x => x.AssignmentRepository.FindAsync(It.IsAny<Expression<Func<Assignment, bool>>>())).ReturnsAsync(assignmentList);
+
+            //var submissionExisted = _fixture.Build<AssignmentSubmission>()
+            //                                .Without(x => x.Assignment)
+            //                                .CreateMany(1).ToList();
+            List<AssignmentSubmission> submissionExisted = new List<AssignmentSubmission>();
+
+            _unitOfWorkMock.Setup(x => x.AssignmentSubmissionRepository.FindAsync(It.IsAny<Expression<Func<AssignmentSubmission, bool>>>())).ReturnsAsync(submissionExisted);
+            _unitOfWorkMock.Setup(x => x.AssignmentSubmissionRepository.AddAsync(new AssignmentSubmission())).Verifiable();
+            var actualResult= await _assignmentSubmissionService.AddSubmisstion(id, fakeClassId, file.Object);
+            actualResult.Should().NotBe(Guid.Empty);
         }
         [Fact]
         public async Task DownloadSubmission_ReturnFile()

@@ -17,16 +17,6 @@ namespace Infrastructures.Tests.Repository
             _assignmentRepository = new AssignmentRepository(_dbContext, _currentTimeMock.Object, _claimsServiceMock.Object);
         }
 
-        [Fact]
-        public async Task CheckOverdue_Should_Success()
-        {
-            _assignmentRepository.CheckOverdue().Should().BeAssignableTo(typeof(Task));
-        }
-        [Fact]
-        public async Task AddProcedure_Should_Success()
-        {
-            _assignmentRepository.AddProcedure().Should().BeAssignableTo(typeof(Task));
-        }
         public async Task CheckExistedProcedure_Should_BeTrue()
         {
             //chịu ko biết viết

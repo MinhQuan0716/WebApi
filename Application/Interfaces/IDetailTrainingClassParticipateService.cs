@@ -13,5 +13,6 @@ namespace Application.Interfaces
         public Task<bool> UpdateTrainingStatus(Guid classId);
 
         public Task<DetailTrainingClassParticipate> CreateTrainingClassParticipate(Guid userId, Guid classId);
+        public Task<Guid?> CheckJoinClass(Guid userId, Guid classId);
     }
 }

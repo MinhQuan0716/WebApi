@@ -85,12 +85,13 @@ namespace WebAPI.Controllers
         [HttpPut]
         public async Task<IActionResult> UpdateUser(UpdateDTO updateObject)
         {
-            var result = await _userService.UpdateUserInformation(updateObject);
-            if (result)
+            if(_claimsService.GetCurrentUserId.Equals(updateObject.UserId))
             {
-                return NoContent();
-            }
-            return BadRequest();
+                var result = await _userService.UpdateUserInformation(updateObject);
+                if (result) return NoContent();
+                else return BadRequest("Something went wrong");
+            } else return BadRequest("Can not update different account");
+            
         }
 
         [HttpGet]

@@ -1,4 +1,5 @@
 ﻿using Application.ViewModels.GradingModels;
+using Application.ViewModels.QuizModels;
 using Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -19,4 +20,6 @@ public interface IGradingService
     List<MarkReportDto> GetMarkReportOfTrainee(Guid traineeId);
     Task<bool> AddToGrading(GradingModel gradingModel);
     Task UpdateGradingReports();
+    Task<List<ViewQuizAndMarkBelowDTO>> ViewAllQuizMark();
+    Task<double> ViewMarkQuizByQuizID(Guid LectureID);
 }

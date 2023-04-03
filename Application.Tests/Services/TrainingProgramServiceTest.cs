@@ -507,7 +507,39 @@ namespace Application.Tests.Services
             //Assert
             result.Should().BeEquivalentTo(expected);
         }
+        [Fact]
+        public async Task ViewAllTrainingProgramDTOs_ShouldReturnView()
+        {
+            var allTrainingProgramMock = _fixture.Build<TrainingProgram>()
+                                                    .Without(x=>x.DetailTrainingProgramSyllabus)
+                                                    .Without(x=>x.TrainingClasses)
+                                                    .CreateMany(1).ToList();
+            var allTrainingProgram = _unitOfWorkMock.Setup(x => x.TrainingProgramRepository.GetAllAsync()).ReturnsAsync(allTrainingProgramMock);
+            var mapViewTrainingProgram = _mapperConfig.Map<List<ViewAllTrainingProgramDTO>>(allTrainingProgramMock);
+            
+            IList<ViewAllTrainingProgramDTO> viewAllTraining= new List<ViewAllTrainingProgramDTO>();
+            foreach(var a in mapViewTrainingProgram)
+            {
+                var resultMock= _fixture.Build<TrainingProgram>()
+                                        .Without(x=>x.DetailTrainingProgramSyllabus)
+                                        .Without(x=>x.TrainingClasses)
+                                        .Create();
+                _unitOfWorkMock.Setup(x=>x.TrainingProgramRepository.GetByIdAsync(a.Id)).ReturnsAsync(resultMock);
 
+                var trainingProgramView=_mapperConfig.Map<ViewAllTrainingProgramDTO>(resultMock);
+                var syllabusMock = _fixture.Build<Syllabus>()
+                                            .Without(x=>x.Units)
+                                            .Without(x=>x.DetailTrainingProgramSyllabus)
+                                            .Without(x=>x.User)
+                                            .CreateMany(1).ToList();
+                _unitOfWorkMock.Setup(x => x.SyllabusRepository.GetSyllabusByTrainingProgramId(trainingProgramView.Id)).ReturnsAsync(syllabusMock);  
+                trainingProgramView.Content = (ICollection<Syllabus>?)syllabusMock;
+                viewAllTraining.Add(trainingProgramView);
 
+                var actualResult = await _trainingProgramService.ViewAllTrainingProgramDTOs();
+
+                actualResult.Should().BeOfType<List<ViewAllTrainingProgramDTO>>();
+            }
+        }
     }
 }

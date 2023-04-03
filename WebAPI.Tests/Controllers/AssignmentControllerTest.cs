@@ -47,18 +47,16 @@ namespace WebAPI.Tests.Controllers
         {
             var assigment = _fixture.Build<AssignmentViewModel>().Without(x => x.File).Create();
             assigment.File = formFile;
-            _assigmentServiceMock.Setup(x => x.CreateAssignment(assigment)).ReturnsAsync(true);
+            _assigmentServiceMock.Setup(x => x.CreateAssignment(assigment)).ReturnsAsync(Guid.NewGuid());
             var actualResult = await _controller.CreateAssignment(assigment);
-            var code = (actualResult as StatusCodeResult).StatusCode;
-            code.Should().Be(201);
+            actualResult.Should().BeOfType<CreatedAtActionResult>();
         }
-
         [Fact]
         public async Task CreateAssignment_ShouldReturnBadRequest()
         {
             var assigment = _fixture.Build<AssignmentViewModel>().Without(x => x.File).Create();
             assigment.File = formFile;
-            _assigmentServiceMock.Setup(x => x.CreateAssignment(assigment)).ReturnsAsync(false);
+            _assigmentServiceMock.Setup(x => x.CreateAssignment(assigment)).ReturnsAsync(Guid.Empty);
             var actualResult = await _controller.CreateAssignment(assigment);
             actualResult.Should().BeOfType<NoContentResult>();
         }

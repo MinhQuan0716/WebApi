@@ -58,11 +58,11 @@ namespace WebAPI.Controllers
         public async Task<IActionResult> CreateAssignment([FromForm] AssignmentViewModel assignmentViewModel)
         {
             var result = await _assignmentService.CreateAssignment(assignmentViewModel);
-            if (!result)
+            if (result==Guid.Empty)
             {
                 return NoContent();
             }
-            return StatusCode(StatusCodes.Status201Created);
+            return CreatedAtAction("DownloadAssignment", result);
         }
 
 

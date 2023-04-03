@@ -122,6 +122,7 @@ public class UserControllerTest : SetupTest
     {
         //Arrange
         var updateDTO = _fixture.Create<UpdateDTO>();
+        _claimsServiceMock.Setup(x => x.GetCurrentUserId).Returns(updateDTO.UserId);
         _userServiceMock.Setup(u => u.UpdateUserInformation(updateDTO)).ReturnsAsync(true);
         //Act
 
@@ -136,12 +137,13 @@ public class UserControllerTest : SetupTest
     {
         //Arrange
         var updateDTO = _fixture.Create<UpdateDTO>();
+        _claimsServiceMock.Setup(x => x.GetCurrentUserId).Returns(updateDTO.UserId);
         _userServiceMock.Setup(u => u.UpdateUserInformation(updateDTO)).ReturnsAsync(false);
         //Act
 
         var result = await _userController.UpdateUser(updateDTO);
         //Assert
-        result.Should().BeOfType<BadRequestResult>();
+        result.Should().BeOfType<BadRequestObjectResult>();
 
     }
     [Fact]
@@ -334,7 +336,7 @@ public class UserControllerTest : SetupTest
     [Fact]
     public async Task ChangeUserRole_ShouldReturnNoContent_WhenServiceReturnTrue()
     {
-        var updateDTO = _fixture.Build<UpdateDTO>().Create();
+        var updateDTO = _fixture.Build<UpdateRoleDTO>().Create();
         _userServiceMock.Setup(us => us.ChangeUserRole(updateDTO.UserID, updateDTO.RoleID)).ReturnsAsync(true);
         var result = await _userController.ChangeUserRole(updateDTO);
         Assert.IsType<NoContentResult>(result);
@@ -343,7 +345,7 @@ public class UserControllerTest : SetupTest
     [Fact]
     public async Task ChangeUserRole_ShouldReturnBadRequest_WhenServiceReturnFalse()
     {
-        var updateDTO = _fixture.Build<UpdateDTO>().Create();
+        var updateDTO = _fixture.Build<UpdateRoleDTO>().Create();
         _userServiceMock.Setup(us => us.ChangeUserRole(updateDTO.UserID, updateDTO.RoleID)).ReturnsAsync(false);
         var result = await _userController.ChangeUserRole(updateDTO);
         Assert.IsType<BadRequestResult>(result);
@@ -355,7 +357,7 @@ public class UserControllerTest : SetupTest
         admin.RoleId = 1;
 
         _claimsServiceMock.Setup(ad => ad.GetCurrentUserId).Returns(admin.Id);
-        var updateDTO = _fixture.Build<UpdateDTO>().Create();
+        var updateDTO = _fixture.Build<UpdateRoleDTO>().Create();
         updateDTO.RoleID = 1;
         updateDTO.UserID = admin.Id;
         var result = await _userController.ChangeUserRole(updateDTO);

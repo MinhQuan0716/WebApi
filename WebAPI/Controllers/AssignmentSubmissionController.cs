@@ -12,23 +12,21 @@ namespace WebAPI.Controllers
     {
         private readonly IAssignmentSubmisstionService _assignmentSubmisstionService;
         private readonly IGradingService _gradingService;
-        private readonly IBackgroundJobClient _backgroundJobClient;
-        public AssignmentSubmissionController(IAssignmentSubmisstionService assignmentSubmisstionService, IGradingService gradingService, IBackgroundJobClient backgroundJobClient)
+        public AssignmentSubmissionController(IClaimsService claimsService,IAssignmentSubmisstionService assignmentSubmisstionService, IGradingService gradingService )
         {
             _assignmentSubmisstionService = assignmentSubmisstionService;
             _gradingService = gradingService;
-            _backgroundJobClient = backgroundJobClient;
         }
         [Authorize(Roles = "Trainee")]
         [HttpPost]
-        public async Task<IActionResult> SubmissAssignment(Guid assignmentID, IFormFile file)
+        public async Task<IActionResult> SubmissAssignment(Guid assignmentID,Guid ClassId, IFormFile file)
         {
-            var result = await _assignmentSubmisstionService.AddSubmisstion(assignmentID, file);
-            if (result == false)
+            var result = await _assignmentSubmisstionService.AddSubmisstion(assignmentID,ClassId, file);
+            if (result==Guid.Empty)
             {
                 return NoContent();
             }
-            return StatusCode(StatusCodes.Status201Created);
+            return CreatedAtAction("DownLoadSubmission", result);
         }
         [Authorize(Roles = "Trainee")]
         [HttpDelete]
@@ -68,7 +66,7 @@ namespace WebAPI.Controllers
             var lecture = await _assignmentSubmisstionService.GradingandReviewSubmission(submissionID, gradeNumber, comment);
             if (lecture == Guid.Empty) { return BadRequest(); }
 
-            _backgroundJobClient.Enqueue(() => _gradingService.AddToGrading(new GradingModel(lecture, detailTrainingClassID, letterGrade, gradeNumber)));
+            await _gradingService.AddToGrading(new GradingModel(lecture, detailTrainingClassID, letterGrade, gradeNumber));
             return Ok();
         }
     }

@@ -50,14 +50,7 @@ namespace Infrastructures.Mappers
 
             // Create Mapping UpdateDTO -- User
             CreateMap<UpdateDTO, User>()
-                .ForMember(uu => uu.Level, opt => opt.MapFrom(src => src.Level))
-                .ForMember(uu => uu.UserName, opt => opt.MapFrom(src => src.Email))
-                .ForMember(uu => uu.DateOfBirth, opt => opt.MapFrom(src => src.DateOfBirth))
-                .ForMember(uu => uu.FullName, opt => opt.MapFrom(src => src.FullName))
-                .ForMember(uu => uu.Gender, opt => opt.MapFrom(src => src.Gender))
-                .ForMember(uu => uu.RoleId, opt => opt.MapFrom(src => src.RoleID))
-                .ForMember(uu => uu.Email, opt => opt.MapFrom(src => src.Email))
-                .ForMember(uu => uu.Id, opt => opt.MapFrom(src => src.UserID))
+                .ForMember(x => x.Id, opt => opt.MapFrom(src => src.UserId))
                 .ReverseMap();
 
             CreateMap<RegisterDTO, User>()

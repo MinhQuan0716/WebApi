@@ -13,6 +13,7 @@ namespace Application.ViewModels.AuditModels.AuditSubmissionModels.CreateModels
         public string Message { get; set; } = default!;
         public Guid AuditPlanId { get; set; }
         public Guid UserId { get; set; }
+        public Guid ClassId { get; set;}
         public ICollection<CreateDetailAuditSubmission> AuditSubmissions { get; set; } = default!;
 
     }

@@ -114,8 +114,6 @@ public class UserService : IUserService
         var expireRefreshTokenTime = DateTime.Now.AddHours(24);
 
         user.RefreshToken = refreshToken;
-
-        _memoryCache.Set(refreshToken, user.Id, DateTimeOffset.Now.AddDays(1));
         user.ExpireTokenTime = expireRefreshTokenTime;
         _unitOfWork.UserRepository.Update(user);
         await _unitOfWork.SaveChangeAsync();
@@ -189,6 +187,7 @@ public class UserService : IUserService
         var newRefreshToken = RefreshTokenString.GetRefreshToken();
 
         userLogin.RefreshToken = newRefreshToken;
+        userLogin.ExpireTokenTime = DateTime.Now.AddDays(1);
         _unitOfWork.UserRepository.Update(userLogin);
         await _unitOfWork.SaveChangeAsync();
 
@@ -293,7 +292,8 @@ public class UserService : IUserService
     {
         if (updateUser != null)
         {
-            User user = await _unitOfWork.UserRepository.GetByIdAsync(updateUser.UserID);
+
+            User user = (await _unitOfWork.UserRepository.GetByIdAsync(updateUser.UserId))!;
             _ = _mapper.Map(updateUser, user, typeof(UpdateDTO), typeof(User));
 
             _unitOfWork.UserRepository.Update(user);

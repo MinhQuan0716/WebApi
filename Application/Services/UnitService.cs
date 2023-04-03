@@ -48,7 +48,7 @@ namespace Application.Services
                 IsDeleted = false,
                 Syllabus = syllabus
             };
-            //throw new Exception();
+            throw new Exception();
             await _unitOfWork.UnitRepository.AddAsync(NewUnit);
             return NewUnit;
         }

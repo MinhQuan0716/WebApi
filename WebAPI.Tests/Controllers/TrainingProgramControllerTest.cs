@@ -111,14 +111,6 @@ namespace WebAPI.Tests.Controllers
         }
 
         [Fact]
-        public async Task GetAllTrainingProgram_ShouldReturnOk()
-        {
-            var listTrainingProgram = _fixture.Build<List<ViewAllTrainingProgramDTO>>().Create();
-            _trainingProgramServiceMock.Setup(x => x.ViewAllTrainingProgramDTOs()).ReturnsAsync(listTrainingProgram);
-            var actualResult = await trainingProgramController.GetAllTrainingProgram();
-            actualResult.Should().BeAssignableTo<OkObjectResult>();
-        }
-        [Fact]
         public async Task SearchUserWithFilter_ShouldReturnNoContent_WhenIsNullOrEmpty()
         {
             //act
@@ -129,19 +121,19 @@ namespace WebAPI.Tests.Controllers
             Assert.Equal(StatusCodes.Status204NoContent, result.StatusCode);
         }
 
-        //[Fact]
-        //public async Task GetAllTrainingProgram_ShouldReturnOk()
-        //{
-        //    var listTrainingProgram = _fixture.Build<List<ViewAllTrainingProgramDTO>>().Create();
-        //    _trainingProgramServiceMock.Setup(x => x.viewAllTrainingProgramDTOs()).ReturnsAsync(listTrainingProgram);
-        //    var actualResult = await trainingProgramController.GetAllTrainingProgram();
-        //    actualResult.Should().BeAssignableTo<OkObjectResult>();
-        //}
+        [Fact]
+        public async Task GetAllTrainingProgram_ShouldReturnOk()
+        {
+            var listTrainingProgram = _fixture.Build<List<ViewAllTrainingProgramDTO>>().Create();
+            _trainingProgramServiceMock.Setup(x => x.ViewAllTrainingProgramDTOs()).ReturnsAsync(listTrainingProgram);
+            var actualResult = await trainingProgramController.GetAllTrainingProgram();
+            actualResult.Should().BeAssignableTo<OkObjectResult>();
+        }
         [Fact]
         public async Task GetAllTrainingProgram_ShouldReturnBadRequest()
         {
             var listTrainingProgram = _fixture.Build<List<ViewAllTrainingProgramDTO>>().Create();
-            _trainingProgramServiceMock.Setup(x => x.ViewAllTrainingProgramDTOs()).ReturnsAsync(listTrainingProgram = null);
+            _trainingProgramServiceMock.Setup(x => x.ViewAllTrainingProgramDTOs())!.ReturnsAsync(listTrainingProgram = null);
             var actualResult = await trainingProgramController.GetAllTrainingProgram();
             actualResult.Should().BeAssignableTo<BadRequestObjectResult>();
         }

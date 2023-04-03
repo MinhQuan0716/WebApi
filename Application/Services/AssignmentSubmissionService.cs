@@ -20,16 +20,20 @@ namespace Application.Services
             _claimsService = claimsService;
         }
 
-        public async Task<bool> AddSubmisstion(Guid assignmentID, IFormFile file)
+        public async Task<Guid> AddSubmisstion(Guid assignmentID,Guid ClassId, IFormFile file)
         {
-            var assignment = await _unitOfWork.AssignmentRepository
-                 .FindAsync(a =>
-                 a.Id == assignmentID &&
-                 a.IsOverDue == false &&
-                 a.IsDeleted == false);
-            if (assignment == null) throw new Exception("Assignment is not existed!");
+            //Check User already join class
             var createdBy = _claimsService.GetCurrentUserId;
-            //Check already submiss
+            var checkJoinClass = await _unitOfWork.DetailTrainingClassParticipate.FindAsync(p=>p.TrainingClassID==ClassId && p.UserId==createdBy);
+            if(checkJoinClass.Count() == 0) throw new Exception("User not join in class!");
+            var assignment = await _unitOfWork.AssignmentRepository
+                 .FindAsync(a =>(
+                 a.Id == assignmentID &&
+                 a.IsOverDue == true &&
+                 a.IsDeleted == false )|| 
+                ( a.Id == assignmentID &&
+                 a.IsDeleted == true));
+            if (assignment.Count()==1) throw new Exception("Assignment is overdue!");
             var checkSubmiss = await _unitOfWork.AssignmentSubmissionRepository
                  .FindAsync(a =>
                  a.AssignmentId == assignmentID &&
@@ -40,13 +44,14 @@ namespace Application.Services
             var dbPath = file.ImportFile("AssignmentSubmissions", 1, _claimsService.GetCurrentUserId);
             var submission = new AssignmentSubmission
             {
+                Id=Guid.NewGuid(),
                 FileName = dbPath,
                 Version = 1,
                 AssignmentId = assignmentID,
             };
             await _unitOfWork.AssignmentSubmissionRepository.AddAsync(submission);
-            var result = await _unitOfWork.SaveChangeAsync() > 0;
-            return result;
+            await _unitOfWork.SaveChangeAsync();
+            return submission.Id; ;
         }
 
         public async Task<FileEntity> DownloadSubmiss(Guid assignmentSubmissId)
