@@ -1,9 +1,9 @@
 {
 	"info": {
-		"_postman_id": "e674142a-d7d3-46ca-b860-d864fd0143df",
+		"_postman_id": "b96e0a38-d6f4-43b4-a0c0-01356975ee9f",
 		"name": "FA Learning Management System",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "26236610"
+		"_exporter_id": "25631147"
 	},
 	"item": [
 		{
@@ -1727,7 +1727,6 @@
 								"{{HOST}}"
 							],
 							"path": [
-								"",
 								"api",
 								"Syllabus",
 								"ViewDetail"
@@ -3113,6 +3112,349 @@
 								"e117d7cd-b8c2-4ef1-a6a2-3013300a98ce"
 							]
 						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "AuditPlan",
+			"item": [
+				{
+					"name": "Create",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"auditPlanName\": \"auditPlan1\",\r\n  \"auditLocation\": \"FPT\",\r\n  \"auditDate\": \"2023-03-08T03:56:56.354Z\",\r\n  \"lectureId\": \"67B9682B-5A4C-4C77-BCCE-3AFFD8BB845B\",\r\n  \"createAuditQuestionDTOS\": [\r\n    {\r\n      \"description\": \"Audit plan 1\"\r\n    }\r\n  ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/api/AuditPlan/Create",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"AuditPlan",
+								"Create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetDetail",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/api/AuditPlan/GetDetail?auditPlanId=838F3826-547D-4ED5-97D9-A8E69D9940EB",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"AuditPlan",
+								"GetDetail"
+							],
+							"query": [
+								{
+									"key": "auditPlanId",
+									"value": "838F3826-547D-4ED5-97D9-A8E69D9940EB"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/api/AuditPlan/Delete?auditPlanId",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"AuditPlan",
+								"Delete"
+							],
+							"query": [
+								{
+									"key": "auditPlanId",
+									"value": null
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"auditPlanName\": \"auditPlan1\",\r\n  \"auditLocation\": \"FPT\",\r\n  \"auditDate\": \"2023-03-08T03:56:56.354Z\",\r\n  \"lectureId\": \"2F025D7E-ABE1-483A-B717-C813E909B153\",\r\n  \"createAuditQuestionDTOS\": [\r\n    {\r\n      \"description\": \"Audit plan 1\"\r\n    }\r\n  ],\r\n    \"id\": \"1AA447D0-4BE8-4FC1-B976-6FEDAAF37D9F\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/api/AuditPlan/Update",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"AuditPlan",
+								"Update"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "AuditSubmission",
+			"item": [
+				{
+					"name": "Create",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"submissionDate\": \"2023-03-08T15:51:09.154Z\",\r\n  \"totalGrade\": 10,\r\n  \"message\": \"Done\",\r\n  \"auditPlanId\": \"96FD2F8E-0234-4930-840A-31B36B446BB4\",\r\n  \"userId\": \"BFF249FE-4A6A-46E9-8375-11651BFFE13F\",\r\n  \"auditSubmissions\": [\r\n    {\r\n      \"detailQuesionId\": \"276EA32F-EAAC-4E58-9FC2-A680DF8B6557\",\r\n      \"answer\": \"Done\"\r\n    }\r\n  ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/api/AuditSubmission/Create?detailTrainingClassParticipate=E69CEE3D-3FB5-48B4-8F6E-C9984C4A75B1",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"AuditSubmission",
+								"Create"
+							],
+							"query": [
+								{
+									"key": "detailTrainingClassParticipate",
+									"value": "E69CEE3D-3FB5-48B4-8F6E-C9984C4A75B1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetDetail",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/api/AuditSubmission/GetDetail?auditSubmissionId",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"AuditSubmission",
+								"GetDetail"
+							],
+							"query": [
+								{
+									"key": "auditSubmissionId",
+									"value": null
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/api/AuditSubmission/Delete?auditSubmissionId",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"AuditSubmission",
+								"Delete"
+							],
+							"query": [
+								{
+									"key": "auditSubmissionId",
+									"value": null
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"submissionDate\": \"2023-03-08T15:54:13.644Z\",\r\n  \"totalGrade\": 0,\r\n  \"message\": \"string\",\r\n  \"auditPlanId\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\r\n  \"userId\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\r\n  \"auditSubmissions\": [\r\n    {\r\n      \"detailQuesionId\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\r\n      \"answer\": \"string\"\r\n    }\r\n  ],\r\n  \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/api/AuditSubmission/Update",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"AuditSubmission",
+								"Update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetAllByAuditPlan",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/api/AuditSubmission/GetAllByAuditPlan?auditPLanId",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"AuditSubmission",
+								"GetAllByAuditPlan"
+							],
+							"query": [
+								{
+									"key": "auditPLanId",
+									"value": null
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Assignment",
+			"item": [
+				{
+					"name": "DownloadAssignment",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteAssignment",
+					"request": {
+						"method": "DELETE",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "UpdateAssignment",
+					"request": {
+						"method": "PUT",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "CreateAssignment",
+					"request": {
+						"method": "POST",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "ViewAssignmentByLectureID",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "AssignmentSubmiss",
+			"item": [
+				{
+					"name": "SubmissAssignment",
+					"request": {
+						"method": "POST",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteSubmission",
+					"request": {
+						"method": "DELETE",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "DownLoadSubmission",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "EditSubmission",
+					"request": {
+						"method": "PUT",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "GradingReview",
+					"request": {
+						"method": "PUT",
+						"header": []
 					},
 					"response": []
 				}
