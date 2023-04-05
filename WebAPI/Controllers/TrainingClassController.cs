@@ -26,7 +26,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> SearchClassByName(string name)
+        public async Task<IActionResult> SearchClassByName(string? name)
         {
             var result = await _trainingClassService.SearchClassByNameAsync(name);
             if (!result.IsNullOrEmpty())
